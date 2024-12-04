@@ -51,7 +51,7 @@ If you need help setting up your overlay layout in SimHub, don't hesitate to get
 
 This is to ensure that iRacing has the telemetry data of every car in the session so the overlays work properly.
 
-## SimHub iRacing Extras Configuration
+### SimHub iRacing Extras Configuration
 
 For the overlays to work property, configure the following settings in the **iRacing Extras** menu in **SimHub** (this is Romainrob's plugin):
 - **Live position update** = On
