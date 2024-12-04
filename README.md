@@ -23,7 +23,7 @@ Included in the collection:
 
 ## How to Get
 
-Download and run the installer available from the [releases page](https://github.com/fixfactory/bos-official-overlays/releases). You will be able to choose which overlays you wish to install. Comes with an uninstaller.
+Download and run the installer available from the [releases page](https://github.com/fixfactory/bo2-official-overlays/releases). You will be able to choose which overlays you wish to install. Comes with an uninstaller.
 
 Or, for the security-minded power-user, you can install without running any executable by cloning this repo and copying all the folders from `\Overlays` and pasting them into this folder in your SimHub directory: `C:\Program Files (x86)\SimHub\DashTemplates`
 
