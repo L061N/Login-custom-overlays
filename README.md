@@ -11,7 +11,7 @@ With benofficial2's Official Overlays you get a simple collection of free overla
 </p>
 </a>
 
-Click the image above for a video demo to see them in action.
+To see them in action, click the image above for a video demo.
 
 Included in the collection:
 - **Standings box**: showing the leaderboard
