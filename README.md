@@ -3,7 +3,7 @@
 
 ## Overview
 
-With benofficial2's Official Overlays you get a simple collection of free overlays for [iRacing](https://www.iracing.com/). The overlays are made with SimHub, which means they are fully customizable, and don't require any other executable to run in the background.
+With benofficial2's Official Overlays you get a simple collection of free overlays for [iRacing](https://www.iracing.com/). The overlays are made with [SimHub](https://www.simhubdash.com/download-2/), which means they are fully customizable, and don't require any other executable to run in the background.
 
 <a href="https://www.youtube.com/watch?v=pucGAwFpnjw">
 <p align="center">
