@@ -57,7 +57,7 @@ Function DependenciesPageLeave
 FunctionEnd
 
 ; Installer attributes
-OutFile "bo2-official-overlays-install.exe"
+OutFile "..\Bin\bo2-official-overlays-install-v${PRODUCT_VERSION}.exe"
 InstallDir "$PROGRAMFILES\SimHub"
 ShowInstDetails show
 

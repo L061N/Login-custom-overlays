@@ -1,2 +1,5 @@
 # ignores any folder or sub-folder named "_Backups"
 **/_Backups/
+
+# ignore folders
+Bin/
