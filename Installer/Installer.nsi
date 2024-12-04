@@ -1,7 +1,7 @@
 ; Define the installer name and output
 !define PRODUCT_NAME "benofficial2 Official Overlays"
 Name "${PRODUCT_NAME}"
-!define PRODUCT_VERSION "1.0"
+!define PRODUCT_VERSION "1.1"
 !define PRODUCT_PUBLISHER "benofficial2"
 !define PRODUCT_WEB_SITE "https://twitch.tv/benofficial2"
 !define PRODUCT_DIR_REGKEY "Software\bo2-official-overlays"
