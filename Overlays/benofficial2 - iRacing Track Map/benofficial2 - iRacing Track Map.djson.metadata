@@ -1,0 +1,20 @@
+{
+  "SimHubVersion": "9.6.1",
+  "Category": "RSC",
+  "Title": "benofficial2 - iRacing Track Map",
+  "Description": "",
+  "Author": "twitch.tv/benofficial2",
+  "ScreenCount": 1.0,
+  "InGameScreensIndexs": [
+    0
+  ],
+  "IdleScreensIndexs": [],
+  "MainPreviewIndex": 0,
+  "IsOverlay": true,
+  "Width": 250.0,
+  "Height": 250.0,
+  "OverlaySizeWarning": false,
+  "MetadataVersion": 2.0,
+  "EnableOnDashboardMessaging": false,
+  "PitScreensIndexs": []
+}
