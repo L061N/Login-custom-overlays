@@ -166,7 +166,7 @@ For general help with using SimHub, don't hesitate to get help on the [official 
 
 For help, report problems, and give feedback about the overlays, please hop-in my Discord server: [Ben's Official Server](https://discord.gg/s2834nmdYx).
 
-## Credit & Thanks
+## Credits & Thanks
 
 Thanks to **Wotever** for making [SimHub](https://www.simhubdash.com/download-2/), such a powerful and essential piece of sim-racing software. Consider [buying a license](https://www.simhubdash.com/get-a-license/) to support him.
 
