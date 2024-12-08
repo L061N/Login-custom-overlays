@@ -160,6 +160,18 @@ All those boxes are customizable per-car by editting the javascript files in the
   <img src="Images/Dash-Pit.png" width="543"/>
 </p>
 
+## Setup Cover
+
+For streamers, shows an animation that hides your car setup values when entering the garage.
+
+## Twitch Chat
+
+For streamers, shows your chat on-screen so you can keep up with chat. Powered by [ChatIS](https://chatis.is2511.com/).
+
+<p align="center">
+  <img src="Images/Twitch-Chat.png" width="739"/>
+</p>
+
 ## Help & Feedback
 
 For general help with using SimHub, don't hesitate to get help on the [official SimHub Discord server](https://discord.com/invite/nBBMuX7).

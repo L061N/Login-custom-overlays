@@ -1,5 +1,5 @@
 ; Define the installer name and output
-!define PRODUCT_NAME "benofficial2 Official Overlays"
+!define PRODUCT_NAME "benofficial2's Official Overlays"
 Name "${PRODUCT_NAME}"
 !define PRODUCT_VERSION "1.1"
 !define PRODUCT_PUBLISHER "benofficial2"
@@ -92,6 +92,16 @@ Section "iRacing Track Map" SEC_FOLDER6
   File /r "..\Overlays\benofficial2 - iRacing Track Map\*.*"
 SectionEnd
 
+Section "iRacing Setup Cover" SEC_FOLDER7
+  SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Setup Cover"
+  File /r "..\Overlays\benofficial2 - iRacing Setup Cover\*.*"
+SectionEnd
+
+Section "Twitch Chat" SEC_FOLDER8
+  SetOutPath "$INSTDIR\DashTemplates\benofficial2 - Twitch Chat"
+  File /r "..\Overlays\benofficial2 - Twitch Chat\*.*"
+SectionEnd
+
 Section "Uninstaller"
   SectionIn RO
   WriteUninstaller "$INSTDIR\bo2-official-overlays-uninstall.exe"
@@ -113,6 +123,8 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER4} "Install iRacing Relative SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER5} "Install iRacing Standings SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER6} "Install iRacing Track Map SimHub overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER7} "Install iRacing Setup Cover SimHub overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER8} "Install Twitch Chat SimHub overlay"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ; Uninstaller Section
@@ -123,7 +135,9 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Relative"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Standings"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Track Map"
-    
+  RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Setup Cover"
+  RMDir /r "$INSTDIR\DashTemplates\benofficial2 - Twitch Chat"
+      
   ; Remove the uninstaller itself
   Delete "$INSTDIR\bo2-official-overlays-uninstall.exe"
 
