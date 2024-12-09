@@ -19,7 +19,9 @@ Included in the collection:
 - **Track Map**: showing car positions on a map
 - **Delta bar**: giving you feedback on your pace
 - **Inputs Telemetry**: showing a graph of pedal inputs
-- **Dash** - showing various in-car settings and statuses (DRS, ERS, Fuel, BB, etc.)
+- **Dash**: showing various in-car settings and statuses (DRS, ERS, Fuel, BB, etc.)
+- **Setup Cover**: For streamers, hides the setup page when in garage
+- **Twitch Chat**: For streamers, shows your chat on screen
 
 ## How to Get
 
