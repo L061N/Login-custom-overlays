@@ -25,7 +25,8 @@ function carIsGT3()
            (carId == 'porsche911rgt3') ||
            (carId == 'ferrari488gt3') ||
            (carId == 'audir8gt3') ||
-           (carId == 'bmwz4gt3');
+           (carId == 'bmwz4gt3') ||
+           (carId == 'acuransxevo22gt3');
 }
 
 function carIsGT4()
@@ -114,7 +115,8 @@ function carHasErs()
     return carIsGTP() || 
            (carId == 'mercedesw12') || 
            (carId == 'mercedesw13') ||
-           (carId == 'mclarenmp430');
+           (carId == 'mclarenmp430') ||
+           (carId == 'ferrari499p');
 }
 
 // Used for the upper green box.
@@ -138,7 +140,8 @@ function carHasDeployMode()
     return carIsGTP() || 
            (carId == 'mercedesw12') || 
            (carId == 'mercedesw13') ||
-           (carId == 'mclarenmp430');
+           (carId == 'mclarenmp430') ||
+           (carId == 'ferrari499p');
 }
 
 // Used for the lower green box.
@@ -156,7 +159,8 @@ function carHasDeployModeType2()
     const carId = $prop('DataCorePlugin.GameData.CarId');
     return carIsGTP() || 
            (carId == 'mercedesw12') ||
-           (carId == 'mercedesw13');
+           (carId == 'mercedesw13') ||
+           (carId == 'ferrari499p');
 }
 
 // Used for the lower green box.
@@ -219,7 +223,8 @@ function carHasTC2()
     var carId = $prop('DataCorePlugin.GameData.CarId');
     return carIsGTE() ||
            carIsGTP() ||
-           (carId == 'dallarap217');
+           (carId == 'dallarap217') ||
+           (carId == 'ferrari499p');
 }
 
 // Used for the lower orange box.
@@ -249,7 +254,8 @@ function carHasTC()
            carIsGT4() ||
            carIsGTP() ||
            (carId == 'dallarap217') ||
-           (carId == 'ligierjsp320');
+           (carId == 'ligierjsp320') ||
+           (carId == 'ferrari499p');
 }
 
 // Used for the upper red box.
@@ -294,5 +300,6 @@ function carHasBrakeBiasMigration()
 {
     var carId = $prop('DataCorePlugin.GameData.CarId');
     return (carId == 'cadillacvseriesrgtp') ||
-           (carId == 'porsche963gtp');
+           (carId == 'porsche963gtp') ||
+           (carId == 'ferrari499p');
 }
