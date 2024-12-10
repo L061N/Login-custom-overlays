@@ -119,12 +119,9 @@ function lastPitLap(index)
 
 function isLeadFocusedRow(index)
 {
-    // Hack because we don't have a property 'SLB_LeadFocusedRowCount';
     var dividerVisible = $prop('IRacingExtraProperties.SLB_Top15DividerVisible');
-    return dividerVisible && index <= 3;
-    
-    //var pos = getIndexedProp('IRacingExtraProperties.SLB_PositionInClass', index);
-    //return Number(String(pos).substring(0, String(pos).length - 1)) == index;
+    var leaders = $prop('IRacingExtraProperties.iRacing_LeaderboardLayout_SLBVisibleLeaders')
+    return dividerVisible && (index <= leaders);
 }
 
 function rowTop(index)
@@ -222,30 +219,42 @@ function getTireType(fromSLBIndex)
     } 
 }
 
+// Get the SessionState with a confirmation delay in ms.
+// 0: Invalid
+// 1: GetInCar
+// 2: Warmup
+// 3: ParadeLaps
+// 4: Racing
+// 5: Checkered
+// 6: Cooldown
+function getSessionState(delay)
+{
+    state = $prop('DataCorePlugin.GameRawData.Telemetry.SessionState');
+
+    // Initialize
+    if (root['confirmed'] == null)
+    {
+        root['confirmed'] = state;
+    }
+
+    // Reset timer every time state changes
+    if (state != root['state'])
+    {
+        root['state'] = state;
+        root['changed'] = Date.now() + delay;
+    }
+    
+    // State change confirmed after a delay
+    if (Date.now() >= root['changed'])
+    {
+        root['confirmed'] = state;
+    }
+    
+    return root['confirmed'];
+}
+
 function raceInProgress()
 {
-    if (isRace())
-    {
-        if (root["greenTime"] == null)
-        {
-            // For the race to be considered in progress, we need to have been in state 4 at least once.
-            const isGreen = $prop('DataCorePlugin.GameRawData.Telemetry.SessionState') == 4;
-            if (isGreen)
-            {
-                root["greenTime"] = Date.now();
-            }
-        }
-
-        if (root["greenTime"] != null)
-        {
-            // Wait a few seconds until the data is ready
-            return Date.now() - root["greenTime"] > 3000;
-        }
-        return false;
-    }
-    else
-    {
-        root["greenTime"] = null;
-        return false;
-    }
+    // Wait a few seconds to make sure all the data is available after a race start
+    return isRace() && getSessionState(3000) >= 4;
 }
