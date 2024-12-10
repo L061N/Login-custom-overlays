@@ -108,7 +108,7 @@ Section "Uninstaller"
 
   ; Register uninstaller
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bo2-official-overlays" \
-                "DisplayName" "benofficial2 Official Overlays"
+                "DisplayName" "benofficial2's Official Overlays"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bo2-official-overlays" \
                 "UninstallString" "$\"$INSTDIR\bo2-official-overlays-uninstall.exe$\""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bo2-official-overlays" \
