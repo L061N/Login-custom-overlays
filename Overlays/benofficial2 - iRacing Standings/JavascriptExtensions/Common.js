@@ -107,16 +107,6 @@ function carHasTireCompounds()
     return tire != null || tire2 != null;
 }
 
-function lastPitLap(index)
-{
-    // Does not work for standings
-    return 0;
-
-    /*var currentLap = $prop('PersistantTrackerPlugin.DriverAhead_0' + (index - 1) + '_CurrentLap');
-    var lapsSincePit = $prop('IRacingExtraProperties.iRacing_DriverAhead_0' + (index - 1) + '_LapsSinceLastPit');
-    return currentLap - lapsSincePit - 1;*/
-}
-
 function isLeadFocusedRow(index)
 {
     var dividerVisible = $prop('IRacingExtraProperties.SLB_Top15DividerVisible');
@@ -131,7 +121,7 @@ function rowTop(index)
     {
         gap = 3;
     }
-    return 25 + gap;
+    return 23 + gap;
 }
 
 function isConnected(index)
