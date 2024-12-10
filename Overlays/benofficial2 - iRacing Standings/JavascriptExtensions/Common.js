@@ -121,7 +121,7 @@ function rowTop(index)
     {
         gap = 3;
     }
-    return 23 + gap;
+    return 24.5 + gap;
 }
 
 function isConnected(index)
