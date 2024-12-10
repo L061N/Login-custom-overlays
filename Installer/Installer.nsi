@@ -19,7 +19,7 @@ Name "${PRODUCT_NAME}"
 !define MUI_WELCOMEPAGE_TITLE "Welcome to ${PRODUCT_NAME} ${PRODUCT_VERSION} Setup"
 !define MUI_WELCOMEPAGE_TEXT "You will soon be racing with the greatest homemade overlays in the galaxy.$\r$\n$\r$\nSince the overlays are made with SimHub, it is necessary to have installed SimHub version ${SIMHUB_VERSION} or later. And since the overlays are using custom properties, you will also need to have installed the excellent Romainrob collection.$\r$\n$\r$\nThis Setup will guide you through this process.$\r$\n$\r$\nClick Next to continue."
 
-; Custom Welcome Page Text
+; Custom Finish Page Text
 !define MUI_FINISHPAGE_TITLE "Completing ${PRODUCT_NAME} ${PRODUCT_VERSION} Setup"
 !define MUI_FINISHPAGE_TEXT "Thank you for installing my homemade overlays. I hope you will enjoy them!$\r$\n$\r$\nPlease consider following me on Twitch at twitch.tv/benofficial2$\r$\n$\r$\nClick Finish to close Setup and open Twitch."
 
@@ -60,6 +60,7 @@ FunctionEnd
 OutFile "..\Bin\bo2-official-overlays-install-v${PRODUCT_VERSION}.exe"
 InstallDir "$PROGRAMFILES\SimHub"
 ShowInstDetails show
+ShowUninstDetails show
 
 ; Installer Sections
 Section "iRacing Dash" SEC_FOLDER1
