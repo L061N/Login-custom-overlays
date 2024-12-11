@@ -13,13 +13,14 @@ With benofficial2's Official Overlays you get a simple collection of free overla
 
 To see them in action, click the image above for a video demo.
 
-Included in the collection:
+### Included in the collection
+
 - **Standings box**: showing the leaderboard
 - **Relative box**: showing drivers ahead / behind
 - **Track Map**: showing car positions on a map
 - **Delta bar**: giving you feedback on your pace
 - **Inputs Telemetry**: showing a graph of pedal inputs
-- **Dash**: showing various in-car settings and statuses (DRS, ERS, Fuel, BB, etc.)
+- **Dash overlay**: showing various in-car settings and statuses (DRS, ERS, Fuel, BB, etc.)
 - **Setup Cover**: For streamers, hides the setup page when in garage
 - **Twitch Chat**: For streamers, shows your chat on screen
 
