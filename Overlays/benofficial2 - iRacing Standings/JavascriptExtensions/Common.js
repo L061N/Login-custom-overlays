@@ -167,14 +167,14 @@ function isFlagOut(color)
     return flagOut != 0;
 }
 
-function getCarIdx(fromCarPosition)
+function getCarIdx(fromCarNumber)
 {
-    const positions = $prop('GameRawData.Telemetry.CarIdxPosition');
-    if (positions != null)
+    let drivers = NewRawData().AllSessionData["DriverInfo"]["Drivers"]
+    if (drivers != null)
     {
-        for (let i = 0; i < positions.length; i++) 
+        for (let i = 0; i < drivers.length; i++) 
         {
-            if (positions[i] == fromCarPosition)
+            if (drivers[i]["CarNumber"] == fromCarNumber)
             {
                 return i;
             }
@@ -185,9 +185,8 @@ function getCarIdx(fromCarPosition)
 
 function getTireType(fromSLBIndex)
 {
-    let pos = getIndexedProp('IRacingExtraProperties.SLB_Position', fromSLBIndex);
-    pos = pos.substring(0, pos.length - 2);
-    const idx = getCarIdx(pos);
+    let number = getIndexedProp('IRacingExtraProperties.SLB_CarNumber', fromSLBIndex);
+    const idx = getCarIdx(number);
     const tires = $prop('GameRawData.Telemetry.CarIdxTireCompound')
     if (tires == null || idx == null)
     {
@@ -206,7 +205,7 @@ function getTireType(fromSLBIndex)
 
         default:
         return 'Unknown'
-    } 
+    }
 }
 
 // Get the SessionState with a confirmation delay in ms.
