@@ -134,15 +134,15 @@ Giving you feedback on your pace. The **Delta Time** (center) and **Delta Speed*
 Showing the current **Gear**, **Speed** and a graph of pedal inputs over time. This is useful to understand bad habits.
 
 <p align="center">
-  <img src="Images/Inputs-Gas.png" width="456"/>
+  <img src="Images/Inputs-Gas.png" width="300"/>
 </p>
 
 <p align="center">
-  <img src="Images/Inputs-Brake.png" width="456"/>
+  <img src="Images/Inputs-Brake.png" width="300"/>
 </p>
 
 <p align="center">
-  <img src="Images/Inputs-Crash.png" width="456"/>
+  <img src="Images/Inputs-Crash.png" width="300"/>
 </p>
 
 ## Dash
