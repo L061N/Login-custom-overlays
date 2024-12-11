@@ -58,8 +58,8 @@ This is to ensure that iRacing has the telemetry data of every car in the sessio
 
 For the overlays to work property, configure the following settings in the **iRacing Extras** menu in **SimHub** (this is Romainrob's plugin):
 - **Live position update** = On
-- **Standings Maximum rows** = 8
-- **Standings Lead focused rows** = 3
+- **Standings Maximum rows** = 8 (supports up to 25)
+- **Standings Lead focused rows** = 3 (supports up to 8)
 - **Standings iRating format** = 1.3k
 - **Standings Default class** = Player class
 - **Standings Default focus** = Player
@@ -75,7 +75,7 @@ For a two-PC streaming setup, replace **127.0.0.1** by the **IP Address** of you
 
 ## Standings Box
 
-Shows the **Leaderboard** for the current session. Currently limited to 8 drivers for simplicity. It shows the driver **Name**, **Rating**, **Tire Compound**, **In-pit Status**, **Best Lap Time** (practice and qual only), **Gap to Leader**, and **Last Pitstop Lap** (race only).
+Shows the **Leaderboard** for the current session. Can show up to 25 drivers (personally I just show 8 for simplicity). It shows the driver **Name**, **Rating**, **Tire Compound**, **In-pit Status**, **Best Lap Time** (practice and qual only), **Gap to Leader**, and **Last Pitstop Lap** (race only).
 
 <p align="center">
   <img src="Images/Standings-Pit.png" width="599"/>
