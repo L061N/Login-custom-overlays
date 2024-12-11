@@ -50,12 +50,13 @@ function carIsGTE()
            (carId == 'fordgt2017');
 }
 
-function carIsGTP()
+function carIsLMDh()
 {
     const carId = $prop('DataCorePlugin.GameData.CarId');
     return (carId == 'cadillacvseriesrgtp') ||
            (carId == 'acuraarx06gtp') ||
-           (carId == 'porsche963gtp');
+           (carId == 'porsche963gtp') ||
+           (carId == 'ferrari499p');
 }
 
 // Used for the small top green box.
@@ -112,11 +113,10 @@ function carHasDrsCount()
 function carHasErs()
 {
     const carId = $prop('DataCorePlugin.GameData.CarId');
-    return carIsGTP() || 
+    return carIsLMDh() || 
            (carId == 'mercedesw12') || 
            (carId == 'mercedesw13') ||
-           (carId == 'mclarenmp430') ||
-           (carId == 'ferrari499p');
+           (carId == 'mclarenmp430');
 }
 
 // Used for the upper green box.
@@ -137,11 +137,10 @@ function carHasEnginePowerMode()
 function carHasDeployMode()
 {
     const carId = $prop('DataCorePlugin.GameData.CarId');
-    return carIsGTP() || 
+    return carIsLMDh() || 
            (carId == 'mercedesw12') || 
            (carId == 'mercedesw13') ||
-           (carId == 'mclarenmp430') ||
-           (carId == 'ferrari499p');
+           (carId == 'mclarenmp430');
 }
 
 // Used for the lower green box.
@@ -157,10 +156,9 @@ function carHasDeployModeType1()
 function carHasDeployModeType2()
 {
     const carId = $prop('DataCorePlugin.GameData.CarId');
-    return carIsGTP() || 
+    return carIsLMDh() || 
            (carId == 'mercedesw12') ||
-           (carId == 'mercedesw13') ||
-           (carId == 'ferrari499p');
+           (carId == 'mercedesw13');
 }
 
 // Used for the lower green box.
@@ -222,9 +220,8 @@ function carHasTC2()
 {
     var carId = $prop('DataCorePlugin.GameData.CarId');
     return carIsGTE() ||
-           carIsGTP() ||
-           (carId == 'dallarap217') ||
-           (carId == 'ferrari499p');
+           carIsLMDh() ||
+           (carId == 'dallarap217');
 }
 
 // Used for the lower orange box.
@@ -252,7 +249,7 @@ function carHasTC()
     return carIsGT3() ||
            carIsGTE() ||
            carIsGT4() ||
-           carIsGTP() ||
+           carIsLMDh() ||
            (carId == 'dallarap217') ||
            (carId == 'ligierjsp320') ||
            (carId == 'ferrari499p');
