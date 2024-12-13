@@ -3,3 +3,6 @@
 
 # ignore folders
 Bin/
+
+# Ignore all VS Code workspace files
+*.code-workspace
