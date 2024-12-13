@@ -145,9 +145,9 @@ Showing the current **Gear**, **Speed** and a graph of pedal inputs over time. T
   <img src="Images/Inputs-Crash.png" width="300"/>
 </p>
 
-## Dash
+## Dash Overlay
 
-Showing various in-car settings and statuses. The green boxes typically show statuses about "going faster" such as **DRS**, **ERS**, **P2P**, **OT** (Super Formula), and **Fuel Mix**. The yellow boxes are for **Fuel** and **Laps Remaining Estimate**. A **Pit Indicator** will blink when it's time to pit. The orange boxes are for various in-car settings such as **Entry Diff**. And finally the red boxes are for **Brake Bias** adjustments.
+Useful when the in-game steering wheel is not visible in your FOV. This overlay is showing various in-car settings and statuses. The green boxes typically show statuses about "going faster" such as **DRS**, **ERS**, **P2P**, **OT** (Super Formula), and **Fuel Mix**. The yellow boxes are for **Fuel** and **Laps Remaining Estimate**. A **Pit Indicator** will blink when it's time to pit. The orange boxes are for various in-car settings such as **Entry Diff**. And finally the red boxes are for **Brake Bias** adjustments.
 
 All those boxes are customizable per-car by editting the javascript files in the overlay.
 
