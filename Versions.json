@@ -6,5 +6,6 @@
     "inputs": "1.2",
     "dash": "1.2",
     "setupcover": "1.2",
-    "twitchchat": "1.2"
+    "twitchchat": "1.2",
+    "launchassist": "1.4"
 }
