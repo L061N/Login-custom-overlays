@@ -103,6 +103,11 @@ Section "Twitch Chat" SEC_FOLDER8
   File /r "..\Overlays\benofficial2 - Twitch Chat\*.*"
 SectionEnd
 
+Section "iRacing Launch Assist" SEC_FOLDER9
+  SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Launch Assist"
+  File /r "..\Overlays\benofficial2 - iRacing Launch Assist\*.*"
+SectionEnd
+
 Section "Uninstaller"
   SectionIn RO
   WriteUninstaller "$INSTDIR\bo2-official-overlays-uninstall.exe"
@@ -126,6 +131,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER6} "Install iRacing Track Map SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER7} "Install iRacing Setup Cover SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER8} "Install Twitch Chat SimHub overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER9} "Install iRacing Launch Assist SimHub overlay"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ; Uninstaller Section
@@ -138,6 +144,7 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Track Map"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Setup Cover"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - Twitch Chat"
+  RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Launch Assist"
       
   ; Remove the uninstaller itself
   Delete "$INSTDIR\bo2-official-overlays-uninstall.exe"
