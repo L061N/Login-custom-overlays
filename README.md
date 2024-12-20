@@ -23,6 +23,7 @@ To see them in action, click the image above for a video demo.
 - **Dash overlay**: showing various in-car settings and statuses (DRS, ERS, Fuel, BB, etc.)
 - **Setup Cover**: For streamers, hides the setup page when in garage
 - **Twitch Chat**: For streamers, shows your chat on screen
+- **Launch Assist**: showing precise pedal inputs to nail a perfect start
 
 ## How to Get
 
@@ -173,6 +174,14 @@ For streamers, shows your chat on-screen so you can keep up with chat. Powered b
 
 <p align="center">
   <img src="Images/Twitch-Chat.png" width="739"/>
+</p>
+
+## Launch Assist
+
+Showing precise pedal input bars with values to help you consistently hold the same value each start. There's some randomness to the clutch bitepoint in iRacing, so make sure to experiment to find a safe value.
+
+<p align="center">
+  <img src="Images/Launch-Assist.png" width="80"/>
 </p>
 
 ## Help & Feedback
