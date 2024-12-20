@@ -14,6 +14,7 @@ overlays_to_copy = [
     "benofficial2 - iRacing Relative", 
     "benofficial2 - iRacing Standings", 
     "benofficial2 - iRacing Track Map",
+    "benofficial2 - iRacing Launch Assist",
     "benofficial2 - iRacing Setup Cover",
     "benofficial2 - Twitch Chat"]
 
