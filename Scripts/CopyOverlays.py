@@ -16,6 +16,7 @@ overlays_to_copy = [
     "benofficial2 - iRacing Track Map",
     "benofficial2 - iRacing Launch Assist",
     "benofficial2 - iRacing Setup Cover",
+    "benofficial2 - iRacing Blind Spot Monitor",
     "benofficial2 - Twitch Chat"]
 
 def copy_overlays_from_simhub():

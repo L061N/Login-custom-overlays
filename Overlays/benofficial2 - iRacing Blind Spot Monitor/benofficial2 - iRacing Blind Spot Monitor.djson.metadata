@@ -1,0 +1,22 @@
+{
+  "SimHubVersion": "9.6.1",
+  "Category": null,
+  "Title": null,
+  "Description": null,
+  "Author": "twitch.tv/benofficial2",
+  "ScreenCount": 1.0,
+  "InGameScreensIndexs": [
+    0
+  ],
+  "IdleScreensIndexs": [
+    0
+  ],
+  "MainPreviewIndex": 0,
+  "IsOverlay": true,
+  "Width": 695.0,
+  "Height": 135.0,
+  "OverlaySizeWarning": false,
+  "MetadataVersion": 2.0,
+  "EnableOnDashboardMessaging": true,
+  "PitScreensIndexs": []
+}
