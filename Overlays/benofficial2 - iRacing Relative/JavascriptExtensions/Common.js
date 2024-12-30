@@ -84,3 +84,37 @@ function getLeaderboardProp(name, classIndex, driverIndex)
         + name);    
     }
 }
+
+// Get the SessionState with a confirmation delay in ms.
+// 0: Invalid
+// 1: GetInCar
+// 2: Warmup
+// 3: ParadeLaps
+// 4: Racing
+// 5: Checkered
+// 6: Cooldown
+function getSessionState(delay)
+{
+    state = $prop('DataCorePlugin.GameRawData.Telemetry.SessionState');
+
+    // Initialize
+    if (root['confirmed'] == null)
+    {
+        root['confirmed'] = state;
+    }
+
+    // Reset timer every time state changes
+    if (state != root['state'])
+    {
+        root['state'] = state;
+        root['changed'] = Date.now() + delay;
+    }
+    
+    // State change confirmed after a delay
+    if (Date.now() >= root['changed'])
+    {
+        root['confirmed'] = state;
+    }
+    
+    return root['confirmed'];
+}
