@@ -92,3 +92,8 @@ function getSessionState(delay)
     
     return root['confirmed'];
 }
+
+function getIndexedProp(name, index)
+{
+    return $prop(name + '_' + format(index, '00'));
+}
