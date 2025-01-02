@@ -108,9 +108,9 @@ Section "iRacing Launch Assist" SEC_FOLDER9
   File /r "..\Overlays\benofficial2 - iRacing Launch Assist\*.*"
 SectionEnd
 
-Section "iRacing Blind Spot Monitor" SEC_FOLDER10
-  SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Blind Spot Monitor"
-  File /r "..\Overlays\benofficial2 - iRacing Blind Spot Monitor\*.*"
+Section "iRacing Spotter" SEC_FOLDER10
+  SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Spotter"
+  File /r "..\Overlays\benofficial2 - iRacing Spotter\*.*"
 SectionEnd
 
 Section "Uninstaller"
@@ -137,7 +137,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER7} "Install iRacing Setup Cover SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER8} "Install Twitch Chat SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER9} "Install iRacing Launch Assist SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER10} "Install iRacing Blind Spot Monitor SimHub overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER10} "Install iRacing Spotter SimHub overlay"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ; Uninstaller Section
@@ -151,7 +151,7 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Setup Cover"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - Twitch Chat"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Launch Assist"
-  RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Blind Spot Monitor"
+  RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Spotter"
       
   ; Remove the uninstaller itself
   Delete "$INSTDIR\bo2-official-overlays-uninstall.exe"
