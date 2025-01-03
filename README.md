@@ -15,15 +15,16 @@ To see them in action, click the image above for a video demo.
 
 ### Included in the collection
 
-- **Standings box**: showing the leaderboard
-- **Relative box**: showing drivers ahead / behind
-- **Track Map**: showing car positions on a map
-- **Delta bar**: giving you feedback on your pace
-- **Inputs Telemetry**: showing a graph of pedal inputs
-- **Dash overlay**: showing various in-car settings and statuses (DRS, ERS, Fuel, BB, etc.)
+- **Standings box**: shows the live leaderboard
+- **Relative box**: shows drivers ahead / behind on track
+- **Track Map**: shows cars on a map
+- **Delta bar**: gives you feedback on your pace with time and speed deltas
+- **Inputs Telemetry**: shows pedal inputs and a graph
+- **Dash overlay**: shows various in-car settings and statuses (DRS, ERS, Fuel, BB, etc.)
 - **Setup Cover**: For streamers, hides the setup page when in garage
 - **Twitch Chat**: For streamers, shows your chat on screen
-- **Launch Assist**: showing precise pedal inputs to nail a perfect start
+- **Launch Assist**: shows precise pedal inputs to nail a perfect start
+- **Spotter**: shows orange bars when side-by-side with another car
 
 ## How to Get
 
@@ -184,6 +185,24 @@ Showing precise pedal input bars with values to help you consistently hold the s
   <img src="Images/Launch-Assist.png" width="80"/>
 </p>
 
+## Spotter
+
+Shows orange bars when side-by-side with another car. This complements your audio spotter as it will show up the moment your spotter starts talking. The size of the orange bar gives your an idea of the amount of car overlap and how fast you are passing them so you can time the perfect move. 
+
+Also comes with a **Rejoin Helper** that will show up when stopped or off-track, telling you how safe it is to rejoin by giving you the gap to the next incoming car. Quicker than looking at Relatives.
+
+<p align="center">
+  <img src="Images/Spotter.png" width="400"/>
+</p>
+
+<p align="center">
+  <img src="Images/RejoinHelper.png" width="400"/>
+</p>
+
+Designed to be placed over the virtual mirror, but can be placed wherever you want it to be.
+
+See `Config.js` in the overlay folder to configure the behavior and look.
+
 ## Help & Feedback
 
 For general help with using SimHub, don't hesitate to get help on the [official SimHub Discord server](https://discord.com/invite/nBBMuX7).
@@ -192,9 +211,9 @@ For help, report problems, and give feedback about the overlays, please hop-in m
 
 ## Credits & Thanks
 
-Thanks to **Wotever** for making [SimHub](https://www.simhubdash.com/download-2/), such a powerful and essential piece of sim-racing software. Consider [buying a license](https://www.simhubdash.com/get-a-license/) to support him.
+Thanks to **Wotever** for making [SimHub](https://www.simhubdash.com/download-2/). It is such a powerful and essential piece of sim-racing software. Consider [buying a license](https://www.simhubdash.com/get-a-license/) to support him.
 
-Thanks to **Romainrob** for making the excellent [iRacing Extra Properties](https://www.simhubdash.com/community-2/dashboard-templates/romainrobs-collection/) plugin and his collection of overlays on which mine are built from. Consider [donating to him](https://www.paypal.com/paypalme/Romainrob8045) too.
+Thanks to **Romainrob** for making the excellent [iRacing Extra Properties](https://www.simhubdash.com/community-2/dashboard-templates/romainrobs-collection/) plugin and his collection of overlays which mines are built on. Consider [donating to him](https://www.paypal.com/paypalme/Romainrob8045) too.
 
 The overlays in this collection are made by **benofficial2**. 
 If you like them, consider following me on:
