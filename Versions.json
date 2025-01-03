@@ -1,12 +1,13 @@
 {
-    "standings": "1.4",
-    "relative": "1.2",
-    "trackmap": "1.2",
-    "delta": "1.4",
-    "inputs": "1.2",
-    "dash": "1.2",
+    "standings": "1.5",
+    "relative": "1.5",
+    "trackmap": "1.5",
+    "delta": "1.5",
+    "inputs": "1.5",
+    "dash": "1.5",
     "setupcover": "1.2",
     "twitchchat": "1.2",
-    "launchassist": "1.4",
-    "spotter": "1.5"
+    "launchassist": "1.5",
+    "spotter": "1.5",
+    "fuelcalc": "1.5"
 }
