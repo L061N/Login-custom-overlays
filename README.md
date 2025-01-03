@@ -149,9 +149,7 @@ Showing the current **Gear**, **Speed** and a graph of pedal inputs over time. T
 
 ## Dash Overlay
 
-Useful when the in-game steering wheel is not visible in your FOV. This overlay is showing various in-car settings and statuses. The green boxes typically show statuses about "going faster" such as **DRS**, **ERS**, **P2P**, **OT** (Super Formula), and **Fuel Mix**. The yellow boxes are for **Fuel** and **Laps Remaining Estimate**. A **Pit Indicator** will blink when it's time to pit. The orange boxes are for various in-car settings such as **Entry Diff**. And finally the red boxes are for **Brake Bias** adjustments.
-
-All those boxes are customizable per-car by editting the javascript files in the overlay.
+Useful when the in-game steering wheel is not visible in your FOV. This overlay is showing various in-car settings and statuses. The green boxes typically show statuses about "going faster" such as **DRS**, **ERS**, **P2P**, **OT** (Super Formula), and **Fuel Mix**. 
 
 <p align="center">
   <img src="Images/Dash-ERS-Green.png" width="350"/>
@@ -161,9 +159,13 @@ All those boxes are customizable per-car by editting the javascript files in the
   <img src="Images/Dash-ERS-Red.png" width="350"/>
 </p>
 
+The yellow boxes are for **Fuel** and **Laps Remaining Estimate**. A **Pit Indicator** will blink when it's time to pit. The orange boxes are for various in-car settings such as **Entry Diff**. And finally the red boxes are for **Brake Bias** adjustments.
+
 <p align="center">
   <img src="Images/Dash-Pit.png" width="350"/>
 </p>
+
+All those boxes are customizable per-car by editting the javascript files in the overlay.
 
 ## Setup Cover
 
@@ -189,11 +191,11 @@ Showing precise pedal input bars with values to help you consistently hold the s
 
 Shows orange bars when side-by-side with another car. This complements your audio spotter as it will show up the moment your spotter starts talking. The size of the orange bar gives your an idea of the amount of car overlap and how fast you are passing them so you can time the perfect move. 
 
-Also comes with a **Rejoin Helper** that will show up when stopped or off-track, telling you how safe it is to rejoin by giving you the gap to the next incoming car. Quicker than looking at Relatives.
-
 <p align="center">
   <img src="Images/Spotter.png" width="400"/>
 </p>
+
+Also comes with a **Rejoin Helper** that will show up when stopped or off-track, telling you how safe it is to rejoin by giving you the gap to the next incoming car. Quicker than looking at Relatives.
 
 <p align="center">
   <img src="Images/RejoinHelper.png" width="400"/>
