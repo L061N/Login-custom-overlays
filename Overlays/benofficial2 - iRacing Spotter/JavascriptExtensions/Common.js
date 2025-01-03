@@ -12,7 +12,11 @@ function isReplayPlaying()
 {
     if (isGameIRacing())
     {
-        return $prop('DataCorePlugin.GameRawData.Telemetry.IsReplayPlaying');
+        // There's a short moment when loading into a session when isReplayPlaying is false but position is -1
+        const isReplayPlaying = $prop('DataCorePlugin.GameRawData.Telemetry.IsReplayPlaying');
+        const position = $prop('DataCorePlugin.GameRawData.Telemetry.PlayerCarPosition');
+        const trackSurface = $prop('DataCorePlugin.GameRawData.Telemetry.PlayerTrackSurface');
+        return isReplayPlaying || position < 0 || trackSurface < 0;
     }
     return false;
 }
@@ -29,25 +33,25 @@ function isInPitLane()
 
 function isRace()
 {
-    var sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
+    const sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
     return String(sessionTypeName).indexOf('Race') != -1;   
 }
 
 function isQual()
 {
-    var sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
+    const sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
     return String(sessionTypeName).indexOf('Qual') != -1;
 }
 
 function isLoneQual()
 {
-    var sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
+    const sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
     return String(sessionTypeName).indexOf('Lone Qualify') != -1;
 }
 
 function isPractice()
 {
-    var sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
+    const sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
     return (String(sessionTypeName).indexOf('Practice') != -1) ||
            (String(sessionTypeName).indexOf('Warmup') != -1) ||
            (String(sessionTypeName).indexOf('Testing') != -1);
@@ -55,42 +59,39 @@ function isPractice()
 
 function isOffline()
 {
-    var sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
-    var isPractice = String(sessionTypeName).indexOf('Offline') != -1;
+    const sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
+    return String(sessionTypeName).indexOf('Offline') != -1;
 }
 
-// Get the SessionState with a confirmation delay in ms.
-// 0: Invalid
-// 1: GetInCar
-// 2: Warmup
-// 3: ParadeLaps
-// 4: Racing
-// 5: Checkered
-// 6: Cooldown
-function getSessionState(delay)
+function getSessionStarted(delay)
 {
-    state = $prop('DataCorePlugin.GameRawData.Telemetry.SessionState');
+    // 0: Invalid
+    // 1: GetInCar
+    // 2: Warmup
+    // 3: ParadeLaps
+    // 4: Racing
+    // 5: Checkered
+    // 6: Cooldown
+    const state = $prop('DataCorePlugin.GameRawData.Telemetry.SessionState');
 
-    // Initialize
-    if (root['confirmed'] == null)
+    if (state < 4)
     {
-        root['confirmed'] = state;
+        root['changed'] = null
+        return false;
     }
 
-    // Reset timer every time state changes
-    if (state != root['state'])
+    // State change confirmed after a delay
+    if (root['changed'] == null)
     {
-        root['state'] = state;
         root['changed'] = Date.now() + delay;
     }
-    
-    // State change confirmed after a delay
-    if (Date.now() >= root['changed'])
+
+    if (Date.now() < root['changed'])
     {
-        root['confirmed'] = state;
+        return false;
     }
     
-    return root['confirmed'];
+    return true;
 }
 
 function getIndexedProp(name, index)
