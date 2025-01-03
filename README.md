@@ -80,15 +80,15 @@ For a two-PC streaming setup, replace **127.0.0.1** by the **IP Address** of you
 Shows the **Leaderboard** for the current session. Can show up to 25 drivers (personally I just show 8 for simplicity). It shows the driver **Name**, **Rating**, **Tire Compound**, **In-pit Status**, **Best Lap Time** (practice and qual only), **Gap to Leader**, and **Last Pitstop Lap** (race only).
 
 <p align="center">
-  <img src="Images/Standings-Pit.png" width="599"/>
+  <img src="Images/Standings-Pit.png" width="450"/>
 </p>
 
 <p align="center">
-  <img src="Images/Standings-Soft.png" width="597"/>
+  <img src="Images/Standings-Soft.png" width="450"/>
 </p>
 
 <p align="center">
-  <img src="Images/Standings-Wet.png" width="600"/>
+  <img src="Images/Standings-Wet.png" width="450"/>
 </p>
 
 ## Relative Box
@@ -96,11 +96,11 @@ Shows the **Leaderboard** for the current session. Can show up to 25 drivers (pe
 Showing the nearby drivers **Ahead & Behind** you on-track. This includes cars from every class, cars that are a lap down (blue) or a lap ahead (red). The **Out** indicator shows when a car is on an out-lap. The last column shows your **Gap** in seconds to that car. The temperature is the **Track Temperature**.
 
 <p align="center">
-  <img src="Images/Relative-Blue.png" width="390"/>
+  <img src="Images/Relative-Blue.png" width="350"/>
 </p>
 
 <p align="center">
-  <img src="Images/Relative-Red.png" width="390"/>
+  <img src="Images/Relative-Red.png" width="350"/>
 </p>
 
 ## Track Map
@@ -108,11 +108,11 @@ Showing the nearby drivers **Ahead & Behind** you on-track. This includes cars f
 Showing car positions on a map. Supports multi-class colors.
 
 <p align="center">
-  <img src="Images/Map-Spa.png" width="285"/>
+  <img src="Images/Map-Spa.png" width="200"/>
 </p>
 
 <p align="center">
-  <img src="Images/Map-Zolder.png" width="281"/>
+  <img src="Images/Map-Zolder.png" width="200"/>
 </p>
 
 ## Delta Bar
@@ -120,15 +120,15 @@ Showing car positions on a map. Supports multi-class colors.
 Giving you feedback on your pace. The **Delta Time** (center) and **Delta Speed** (right) are relative to your session's best lap. On the left, in a race, you get **Gap** and **Interval** information about your nearest competitor ahead and behind. Useful to know if your are improving or not relative to them.
 
 <p align="center">
-  <img src="Images/Delta-Best.png" width="595"/>
+  <img src="Images/Delta-Best.png" width="400"/>
 </p>
 
 <p align="center">
-  <img src="Images/Delta-White.png" width="594"/>
+  <img src="Images/Delta-White.png" width="400"/>
 </p>
 
 <p align="center">
-  <img src="Images/Delta-Red.png" width="594"/>
+  <img src="Images/Delta-Red.png" width="400"/>
 </p>
 
 ## Inputs Telemetry
@@ -136,15 +136,15 @@ Giving you feedback on your pace. The **Delta Time** (center) and **Delta Speed*
 Showing the current **Gear**, **Speed** and a graph of pedal inputs over time. This is useful to understand bad habits.
 
 <p align="center">
-  <img src="Images/Inputs-Gas.png" width="300"/>
+  <img src="Images/Inputs-Gas.png" width="250"/>
 </p>
 
 <p align="center">
-  <img src="Images/Inputs-Brake.png" width="300"/>
+  <img src="Images/Inputs-Brake.png" width="250"/>
 </p>
 
 <p align="center">
-  <img src="Images/Inputs-Crash.png" width="300"/>
+  <img src="Images/Inputs-Crash.png" width="250"/>
 </p>
 
 ## Dash Overlay
@@ -154,15 +154,15 @@ Useful when the in-game steering wheel is not visible in your FOV. This overlay 
 All those boxes are customizable per-car by editting the javascript files in the overlay.
 
 <p align="center">
-  <img src="Images/Dash-ERS-Green.png" width="542"/>
+  <img src="Images/Dash-ERS-Green.png" width="350"/>
 </p>
 
 <p align="center">
-  <img src="Images/Dash-ERS-Red.png" width="543"/>
+  <img src="Images/Dash-ERS-Red.png" width="350"/>
 </p>
 
 <p align="center">
-  <img src="Images/Dash-Pit.png" width="543"/>
+  <img src="Images/Dash-Pit.png" width="350"/>
 </p>
 
 ## Setup Cover
@@ -174,7 +174,7 @@ For streamers, shows an animation that hides your car setup values when entering
 For streamers, shows your chat on-screen so you can keep up with chat. Powered by [ChatIS](https://chatis.is2511.com/).
 
 <p align="center">
-  <img src="Images/Twitch-Chat.png" width="739"/>
+  <img src="Images/Twitch-Chat.png" width="500"/>
 </p>
 
 ## Launch Assist
