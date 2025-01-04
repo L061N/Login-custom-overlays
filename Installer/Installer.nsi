@@ -59,8 +59,12 @@ FunctionEnd
 ; Installer attributes
 OutFile "..\Bin\bo2-official-overlays-install-v${PRODUCT_VERSION}.exe"
 InstallDir "$PROGRAMFILES\SimHub"
+DirText "Setup will install ${PRODUCT_NAME} in the following folder.$\r$\nIMPORTANT: Choose the folder where SimHub is installed on your computer."
 ShowInstDetails show
 ShowUninstDetails show
+
+# Use SimHub's install directory from the Registry if present. Fallsback to InstallDir.
+InstallDirRegKey HKCU "SOFTWARE\SimHub" InstallDirectory
 
 ; Installer Sections
 Section "iRacing Dash" SEC_FOLDER1
