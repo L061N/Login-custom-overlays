@@ -13,6 +13,9 @@ const g_SpotterWidth = 12;
 // Thickness of the Spotter's border (between 0-3)
 const g_SpotterBorder = 3;
 
+// Minimum height of the spotter's orange bar so it's easier to notice (0 to disable)
+const g_SpotterMinHeight = 20;
+
 // Enable the Rejoin Helper that shows the gap with the next incomming car
 const g_EnableRejoinHelper = true;
 
