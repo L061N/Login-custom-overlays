@@ -2,7 +2,7 @@
 const g_EnableSpotter = true;
 
 // Distance from another car at which the Spotter's orange bars will show. Also used for showing Blind Spot Monitor.
-const g_SpotterThreshold = 4.5;
+const g_SpotterThreshold = 5.5;
 
 // Height of the Spotter's orange bars (between 1-129)
 const g_SpotterHeight = 129;
