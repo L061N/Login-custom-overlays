@@ -121,6 +121,9 @@ Section "Uninstaller"
   SectionIn RO
   WriteUninstaller "$INSTDIR\bo2-official-overlays-uninstall.exe"
 
+  SetOutPath "$INSTDIR"
+  File /oname=bo2-official-overlays-license.txt "..\LICENSE"
+
   ; Register uninstaller
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bo2-official-overlays" \
                 "DisplayName" "benofficial2's Official Overlays"
@@ -159,6 +162,7 @@ Section "Uninstall"
       
   ; Remove the uninstaller itself
   Delete "$INSTDIR\bo2-official-overlays-uninstall.exe"
+  Delete "$INSTDIR\bo2-official-overlays-license.txt"
 
   DeleteRegKey /ifempty HKCU "${PRODUCT_DIR_REGKEY}"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bo2-official-overlays"
