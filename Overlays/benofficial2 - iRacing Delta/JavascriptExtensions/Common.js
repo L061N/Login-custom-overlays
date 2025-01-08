@@ -300,3 +300,13 @@ function isOutLap()
     
     return root["isOutLap.wasInPit"];
 }
+
+function isRejoinHelperShown()
+{
+    // irsdk_OffTrack = 0
+    const surface = $prop('GameRawData.Telemetry.PlayerTrackSurface');
+    const speed = $prop('SpeedKmh');
+    const isSlow = speed <= g_RejoinHelperMinSpeed;
+    
+    return (surface == 0 || isSlow);
+}
