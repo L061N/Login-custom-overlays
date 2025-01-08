@@ -121,11 +121,12 @@ function isLeadFocusedRow(index)
 function rowTop(index)
 {
     var gap = 0;
-    if (!isLeadFocusedRow(index))
+    var dividerVisible = $prop('IRacingExtraProperties.SLB_Top15DividerVisible');
+    if (dividerVisible && !isLeadFocusedRow(index))
     {
         gap = 3;
     }
-    return 24.5 + gap;
+    return 25.5 + gap;
 }
 
 function isConnected(index)
