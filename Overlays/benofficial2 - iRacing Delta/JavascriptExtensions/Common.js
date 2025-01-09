@@ -41,6 +41,12 @@ function isInPitLane()
     return $prop('DataCorePlugin.GameData.IsInPitLane');
 }
 
+function isApproachingPits()
+{
+    const surface = $prop('GameRawData.Telemetry.PlayerTrackSurface');
+    return surface == 2; // irsdk_AproachingPits = 2
+}
+
 function isGameRunning()
 {
     return $prop('DataCorePlugin.GameRunning');
