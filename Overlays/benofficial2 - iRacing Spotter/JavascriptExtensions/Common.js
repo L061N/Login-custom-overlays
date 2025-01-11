@@ -112,6 +112,44 @@ function getSessionStarted(delay)
     return true;
 }
 
+// Returns true if the player's race is finished (after crossing the finish line)
+function isRaceFinished()
+{
+    // De-initialize when not in race and when changing/restarting session
+    // The latter condition can happen when re-starting an AI race
+    const sessionTime = Number($prop('DataCorePlugin.GameRawData.Telemetry.SessionTime'));
+    if (!isRace() || root["sessionTime"] == null || sessionTime < root["sessionTime"])
+    {
+        root["sessionTime"] = sessionTime;
+        root["lastTrackPct"] = null;
+        root["finished"] = null;
+        return false;
+    }
+
+    if (root["finished"] != null)
+    {
+        return root["finished"];
+    }
+
+    const checkered = $prop('Flag_Checkered') == 1;
+    if (!checkered)
+    {
+        return false;
+    }
+
+    const trackPct = Number($prop('TrackPositionPercent'));
+    if (root["lastTrackPct"] == null || trackPct >= root["lastTrackPct"])
+    {
+        // Heading toward the finish line with checkered flag shown
+        root["lastTrackPct"] = trackPct;
+        return false;
+    }
+
+    // Crossed the finish line with checkered flag shown
+    root["finished"] = true;
+    return true;
+}
+
 function getIndexedProp(name, index)
 {
     return $prop(name + '_' + format(index, '00'));
