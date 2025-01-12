@@ -208,7 +208,7 @@ See `Config.js` in the overlay folder to configure the behavior and look.
 
 ## Fuel Calculator (beta)
 
-Shows up when in the garage / setup screen and tells you how much fuel is needed to start the race. Supports heat races with qualifying and will determine if the race is limited by time or laps. Useful for league races that have a custom race length. You must drive at least one lap for SimHub to calculate the average fuel consumption per lap.
+Shows up when in the garage / setup screen and tells you how much fuel is needed to start the race. Supports heat races and will determine if the race is limited by time or laps. Useful for leagues that have a custom race length. You must drive at least one lap for SimHub to calculate the average fuel consumption per lap.
 
 <p align="center">
   <img src="Images/FuelCalc.png" width="350"/>
