@@ -117,6 +117,11 @@ Section "iRacing Spotter" SEC_FOLDER10
   File /r "..\Overlays\benofficial2 - iRacing Spotter\*.*"
 SectionEnd
 
+Section "iRacing Fuel Calculator" SEC_FOLDER11
+  SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Fuel Calculator"
+  File /r "..\Overlays\benofficial2 - iRacing Fuel Calculator\*.*"
+SectionEnd
+
 Section "Uninstaller"
   SectionIn RO
   WriteUninstaller "$INSTDIR\bo2-official-overlays-uninstall.exe"
@@ -145,6 +150,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER8} "Install Twitch Chat SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER9} "Install iRacing Launch Assist SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER10} "Install iRacing Spotter SimHub overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER11} "Install iRacing Fuel Calculator SimHub overlay"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ; Uninstaller Section
@@ -159,6 +165,7 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - Twitch Chat"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Launch Assist"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Spotter"
+  RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Fuel Calculator"
       
   ; Remove the uninstaller itself
   Delete "$INSTDIR\bo2-official-overlays-uninstall.exe"

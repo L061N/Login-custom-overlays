@@ -25,6 +25,7 @@ To see them in action, click the image above for a video demo.
 - **Twitch Chat**: For streamers, shows your chat on screen
 - **Launch Assist**: shows precise pedal inputs to nail a perfect start
 - **Spotter**: shows orange bars when side-by-side with another car
+- **Fuel Calculator**: when in garage, shows how much fuel is needed for the race
 
 ## How to Get
 
@@ -204,6 +205,16 @@ Also comes with a **Rejoin Helper** that will show up when stopped or off-track,
 Designed to be placed over the virtual mirror, but can be placed wherever you want it to be.
 
 See `Config.js` in the overlay folder to configure the behavior and look.
+
+## Fuel Calculator (beta)
+
+Shows up when in the garage / setup screen and tells you how much fuel is needed to start the race. Supports heat races with qualifying and will determine if the race is limited by time or laps. Useful for league races that have a custom race length. You must drive at least one lap for SimHub to calculate the average fuel consumption per lap.
+
+<p align="center">
+  <img src="Images/FuelCalc.png" width="350"/>
+</p>
+
+*Beta Warning: use at your own risk. The number of pace laps on a rolling start isn't detected and will default to 2, and iracing doesn't always seem to correctly indicate when there's a shorter pace lap (ex: at the Nordschleife).*
 
 ## Help & Feedback
 
