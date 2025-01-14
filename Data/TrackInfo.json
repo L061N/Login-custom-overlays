@@ -2,5 +2,9 @@
     "nurburgring nordschleife": {
         "qualStartTrackPct": 0.93,
         "raceStartTrackPct": 0.93
+    },
+    "talladega": {
+        "qualStartTrackPct": 0.00,
+        "raceStartTrackPct": 0.49
     }
 }
