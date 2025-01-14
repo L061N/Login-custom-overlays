@@ -24,7 +24,8 @@ const g_FuelReserve = 0.5;
 const gWhiteFlagRuleLapPct = 0.60;
 
 // How long is the short parade lap at supported tracks (as a percentage of a lap).
-const g_ShortParadeLapPct = 0.20;
+// This is the default values for tracks we don't have in the database.
+const g_ShortParadeLapPct = 0.50;
 
 // Use the current session's fastest time from the player for fuel calculations.
 // Default to false, because can cause under fueling when significantly off-pace.

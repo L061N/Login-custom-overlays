@@ -17,6 +17,7 @@
 */
 
 const g_literToKg = 0.74380169246343626270662456402943;
+const g_DebugLitersPerLap = -1;
 
 function getSessionDetails(sessionIdx)
 {
@@ -192,33 +193,41 @@ function getFuelInfo(sessionIdx)
         info.fuelNeeded = info.fuelPerLap * lapsEstimate;
     }
 
+    const trackInfo = $prop('variable.trackInfo');
     let outLaps = 0;
     if (String(info.sessionType).indexOf('Qual') != -1)
     {
-        outLaps = 1;
+        outLaps = 1 - trackInfo.qualStartTrackPct;
     }
     else if (String(info.sessionType).indexOf('Race') != -1)
     {
         const standingStart = NewRawData().AllSessionData["WeekendInfo"]["WeekendOptions"]["StandingStart"];
         if (standingStart == 0)
-        {
-            const shortParadeLap = $prop('GameRawData.SessionData.WeekendInfo.WeekendOptions.ShortParadeLap');
-            if (shortParadeLap == 1)
+        {    
+            if (isOvalCategory())
             {
-                // TODO: We probably need a database for each track as it seems to vary wildly
-                outLaps = g_ShortParadeLapPct;
-            }
-            else
-            {
-                if (isOvalCategory())
+                const shortParadeLap = $prop('GameRawData.SessionData.WeekendInfo.WeekendOptions.ShortParadeLap');
+                const trackType = $prop('GameRawData.SessionData.WeekendInfo.TrackType');
+                if (trackInfo.raceStartTrackPct > 0)
                 {
-                    // TODO: Can we check if we do 1 or 2 parade laps?
-                    outLaps = 2;
+                    outLaps = 1 - trackInfo.raceStartTrackPct;
                 }
-                else
+                else if (shortParadeLap == 1)
+                {
+                    outLaps = g_ShortParadeLapPct;
+                }
+                else if(String(trackType) == 'super speedway')            
                 {
                     outLaps = 1;
                 }
+                else
+                {
+                    outLaps = 2;
+                }
+            }
+            else
+            {
+                outLaps = 1 - trackInfo.raceStartTrackPct;
             }
         }
     }
@@ -246,6 +255,11 @@ function getFuelInfo(sessionIdx)
 
 function getFuelLitersPerLap()
 {
+    if (g_DebugLitersPerLap >= 0)
+    {
+        return g_DebugLitersPerLap;
+    }
+
     const trackId = $prop('TrackId');
     const carId = $prop('CarId');
     const combo = String(trackId) + String(carId);
@@ -287,6 +301,42 @@ function getFuelDisplayInfo()
     {
         info.unit = "Kg";
         info.convert = g_literToKg;
+    }
+
+    return info;
+}
+
+function getTrackInfo()
+{
+    let info = {
+        qualStartTrackPct: 0.00, // Default starting from pit, must do full out lap.
+        raceStartTrackPct: 0.00  // Default starting from pit or finish line, must do full parade lap.
+    };
+
+    if (root['cache'])
+    {
+        const trackId = String($prop('TrackId'));
+        const trackInfo = root['cache'][trackId];
+        if (trackInfo != null) 
+        {
+            if (trackInfo['qualStartTrackPct'] != null)
+            {
+                info.qualStartTrackPct = trackInfo['qualStartTrackPct']
+            }
+
+            if (trackInfo['raceStartTrackPct'] != null)
+            {
+                info.raceStartTrackPct = trackInfo['raceStartTrackPct']
+            }
+        }
+        return info;
+    }
+
+    const url = 'https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/TrackInfo.json';
+    const jsonStr = downloadstringasync(500, url);
+    if (jsonStr) 
+    {
+        root['cache'] = JSON.parse(jsonStr);;
     }
 
     return info;
