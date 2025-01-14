@@ -36,6 +36,12 @@ function isReplayPlaying()
     return false;
 }
 
+function isRace()
+{
+    var sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
+    return String(sessionTypeName).indexOf('Race') != -1;   
+}
+
 // This is the clutch that's calibrated with a bite point.
 function getClutch()
 {
@@ -61,4 +67,49 @@ function getClutch2()
 function getThrottle()
 {
     return $prop('Throttle');
+}
+
+function isOffTrack()
+{
+    // irsdk_OffTrack = 0
+    const surface = $prop('GameRawData.Telemetry.PlayerTrackSurface');
+    return (surface == 0);
+}
+
+// Returns true if the player's race is finished (after crossing the finish line)
+function isRaceFinished()
+{
+    // De-initialize when not in race and when changing/restarting session
+    // The latter condition can happen when re-starting an AI race
+    const sessionTime = Number($prop('DataCorePlugin.GameRawData.Telemetry.SessionTime'));
+    if (!isRace() || root["sessionTime"] == null || sessionTime < root["sessionTime"])
+    {
+        root["sessionTime"] = sessionTime;
+        root["lastTrackPct"] = null;
+        root["finished"] = null;
+        return false;
+    }
+
+    if (root["finished"] != null)
+    {
+        return root["finished"];
+    }
+
+    const checkered = $prop('Flag_Checkered') == 1;
+    if (!checkered)
+    {
+        return false;
+    }
+
+    const trackPct = Number($prop('TrackPositionPercent'));
+    if (root["lastTrackPct"] == null || trackPct >= root["lastTrackPct"])
+    {
+        // Heading toward the finish line with checkered flag shown
+        root["lastTrackPct"] = trackPct;
+        return false;
+    }
+
+    // Crossed the finish line with checkered flag shown
+    root["finished"] = true;
+    return true;
 }

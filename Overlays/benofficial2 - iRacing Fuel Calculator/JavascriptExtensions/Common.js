@@ -31,6 +31,12 @@ function isInvalidTime(time)
     return time == null || time == '00:00:00' || time == '00:00.000';
 }
 
+function isOvalCategory()
+{
+    var category = $prop('DataCorePlugin.GameRawData.SessionData.WeekendInfo.Category');
+    return (category == 'Oval' || category == 'DirtOval');
+}
+
 function convertToTimestamp(seconds) 
 {
     // Ensure the input is a number

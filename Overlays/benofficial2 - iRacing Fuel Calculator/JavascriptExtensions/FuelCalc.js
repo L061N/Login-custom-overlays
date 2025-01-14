@@ -76,14 +76,18 @@ function getBestLapTime()
     }
 
     // Return the player's best lap time in the current session.
-    let bestLapTime = $prop('BestLapTime');
-    if (!isInvalidTime(bestLapTime))
+    if (g_UsePlayersFastestTime)
     {
-        return String(bestLapTime).slice(3, -4);
+        let bestLapTime = $prop('BestLapTime');
+        if (!isInvalidTime(bestLapTime))
+        {
+            return String(bestLapTime).slice(3, -4);
+        }
     }
 
-    // Try to find the first valid fastest time in any session.
+    // Try to find the fastest time of any session.
     const numSession = NewRawData().AllSessionData["SessionInfo"]["Sessions"].length;
+    let fastestTime = 0;
     for (let sessionIdx = 0; sessionIdx < numSession; sessionIdx++)
     {
         const session = NewRawData().AllSessionData["SessionInfo"]["Sessions"][sessionIdx];
@@ -91,14 +95,14 @@ function getBestLapTime()
         if (lapNum >= 0)
         {
             const timeSecs = Number(session["ResultsFastestLap"][0]["FastestTime"]);
-            if (timeSecs > 0)
+            if (timeSecs > 0 && (timeSecs < fastestTime || fastestTime == 0))
             {
-                return convertToTimestamp(timeSecs);
+                fastestTime = timeSecs;
             }
         }
     }
-    
-    return "00:00.000";
+
+    return convertToTimestamp(fastestTime);
 }
 
 function getFuelInfo(sessionIdx)
@@ -114,6 +118,11 @@ function getFuelInfo(sessionIdx)
             sessionTime: 0,             // Session time limit in seconds
             sessionBestLapTime: 0
         };
+
+    if (NewRawData() == null)
+    {
+        return info;
+    }
 
     const numSession = NewRawData().AllSessionData["SessionInfo"]["Sessions"].length;
     if (numSession < sessionIdx + 1)
@@ -170,7 +179,16 @@ function getFuelInfo(sessionIdx)
             return info;
         }
         
-        const lapsEstimate = Math.ceil(info.sessionTime / bestLapTimeSecs);
+        let lapsEstimate = Math.ceil(info.sessionTime / bestLapTimeSecs);
+
+        // Add an extra lap if we would cross the line with more than X% of a lap remaining
+        // It is unknown what is the exact rule used by iRacing. Could be 60% of avg from last 3 race laps.
+        const remainingTime = info.sessionTime % bestLapTimeSecs;
+        if (remainingTime > gWhiteFlagRuleLapPct * bestLapTimeSecs)
+        {
+            lapsEstimate++;
+        }
+
         info.fuelNeeded = info.fuelPerLap * lapsEstimate;
     }
 
@@ -192,8 +210,15 @@ function getFuelInfo(sessionIdx)
             }
             else
             {
-                // TODO: Can we check if we do 1 or 2 parade laps?
-                outLaps = 2;
+                if (isOvalCategory())
+                {
+                    // TODO: Can we check if we do 1 or 2 parade laps?
+                    outLaps = 2;
+                }
+                else
+                {
+                    outLaps = 1;
+                }
             }
         }
     }
