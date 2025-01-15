@@ -134,17 +134,20 @@ function getBestLapTimeInClass()
     for (let sessionIdx = 0; sessionIdx < numSession; sessionIdx++)
     {
         const session = data["SessionInfo"]["Sessions"][sessionIdx];
-        const posCount = session["ResultsPositions"].length;
-        for (let posIdx = 0; posIdx < posCount; posIdx++)
+        if (session["ResultsPositions"] != null)
         {
-            // Must be in same class as player
-            const carIdx = session["ResultsPositions"][posIdx]["CarIdx"];
-            if (playerClassId == data["DriverInfo"]["Drivers"][carIdx]["CarClassID"])
+            const posCount = session["ResultsPositions"].length;
+            for (let posIdx = 0; posIdx < posCount; posIdx++)
             {
-                const timeSecs = Number(session["ResultsPositions"][posIdx]["FastestTime"]);
-                if (timeSecs > 0 && (timeSecs < fastestTime || fastestTime == 0))
+                // Must be in same class as player
+                const carIdx = session["ResultsPositions"][posIdx]["CarIdx"];
+                if (playerClassId == data["DriverInfo"]["Drivers"][carIdx]["CarClassID"])
                 {
-                    fastestTime = timeSecs;
+                    const timeSecs = Number(session["ResultsPositions"][posIdx]["FastestTime"]);
+                    if (timeSecs > 0 && (timeSecs < fastestTime || fastestTime == 0))
+                    {
+                        fastestTime = timeSecs;
+                    }
                 }
             }
         }

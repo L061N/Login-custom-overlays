@@ -1,9 +1,9 @@
 {
-  "SimHubVersion": "9.6.1",
+  "SimHubVersion": "9.6.8",
   "Category": "RSC",
   "Title": "benofficial2 - iRacing Setup Cover",
   "Description": "",
-  "Author": "twitch.tv/benofficial2, Romainrob",
+  "Author": "twitch.tv/benofficial2",
   "ScreenCount": 1.0,
   "InGameScreensIndexs": [
     0
