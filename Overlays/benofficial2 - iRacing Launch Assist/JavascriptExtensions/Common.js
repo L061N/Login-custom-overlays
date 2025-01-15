@@ -113,3 +113,9 @@ function isRaceFinished()
     root["finished"] = true;
     return true;
 }
+
+function isStandingStart()
+{
+    const standingStart = $prop('GameRawData.SessionData.WeekendInfo.WeekendOptions.StandingStart');
+    return standingStart == 1;
+}

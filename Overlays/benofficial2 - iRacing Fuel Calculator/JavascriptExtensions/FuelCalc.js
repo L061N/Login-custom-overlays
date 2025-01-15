@@ -71,7 +71,7 @@ function getFuelNeeded(sessionIdx)
 
 function getBestLapTime()
 {
-    if (!isGameIRacing() || !isGameRunning())
+    if (!isGameIRacing() || !isGameRunning() || NewRawData() == null)
     {
         return "00:00.000";
     }
@@ -99,6 +99,53 @@ function getBestLapTime()
             if (timeSecs > 0 && (timeSecs < fastestTime || fastestTime == 0))
             {
                 fastestTime = timeSecs;
+            }
+        }
+    }
+
+    return convertToTimestamp(fastestTime);
+}
+
+function getBestLapTimeInClass()
+{
+    if (!isGameIRacing() || !isGameRunning() || NewRawData() == null)
+    {
+        return "00:00.000";
+    }
+
+    // Return the player's best lap time in the current session
+    if (g_UsePlayersFastestTime)
+    {
+        let bestLapTime = $prop('BestLapTime');
+        if (!isInvalidTime(bestLapTime))
+        {
+            return String(bestLapTime).slice(3, -4);
+        }
+    }
+
+    // Get the player's class
+    const data = NewRawData().AllSessionData;
+    const playerCarIdx = data["DriverInfo"]["DriverCarIdx"];
+    const playerClassId = data["DriverInfo"]["Drivers"][playerCarIdx]["CarClassID"];
+
+    // Try to find the fastest time of any session
+    const numSession = data["SessionInfo"]["Sessions"].length;
+    let fastestTime = 0;
+    for (let sessionIdx = 0; sessionIdx < numSession; sessionIdx++)
+    {
+        const session = data["SessionInfo"]["Sessions"][sessionIdx];
+        const posCount = session["ResultsPositions"].length;
+        for (let posIdx = 0; posIdx < posCount; posIdx++)
+        {
+            // Must be in same class as player
+            const carIdx = session["ResultsPositions"][posIdx]["CarIdx"];
+            if (playerClassId == data["DriverInfo"]["Drivers"][carIdx]["CarClassID"])
+            {
+                const timeSecs = Number(session["ResultsPositions"][posIdx]["FastestTime"]);
+                if (timeSecs > 0 && (timeSecs < fastestTime || fastestTime == 0))
+                {
+                    fastestTime = timeSecs;
+                }
             }
         }
     }
