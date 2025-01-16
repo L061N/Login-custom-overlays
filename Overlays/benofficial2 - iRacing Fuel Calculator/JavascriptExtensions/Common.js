@@ -31,6 +31,12 @@ function isInvalidTime(time)
     return time == null || time == '00:00:00' || time == '00:00.000';
 }
 
+function isRace()
+{
+    const sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
+    return String(sessionTypeName).indexOf('Race') != -1;   
+}
+
 function isOvalCategory()
 {
     var category = $prop('DataCorePlugin.GameRawData.SessionData.WeekendInfo.Category');

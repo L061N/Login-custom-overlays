@@ -18,6 +18,7 @@
 
 const g_literToKg = 0.74380169246343626270662456402943;
 const g_DebugLitersPerLap = -1;
+const g_DebugBestLapTime = ""
 
 function getSessionDetails(sessionIdx)
 {
@@ -65,12 +66,17 @@ function getFuelNeeded(sessionIdx)
         stops = '(' + info.stops + ' stops)';
     }
 
-    const displayInfo = getFuelDisplayInfo();
-    return (info.fuelNeeded * displayInfo.convert).toFixed(1) + ' ' + displayInfo.unit + ' ' + stops;
+    const setupFuelInfo = getSetupFuelInfo();
+    return (info.fuelNeeded * setupFuelInfo.convert).toFixed(1) + ' ' + setupFuelInfo.unit + ' ' + stops;
 }
 
 function getBestLapTime()
 {
+    if (g_DebugBestLapTime != "") 
+    {
+        return g_DebugBestLapTime;
+    }
+
     if (!isGameIRacing() || !isGameRunning() || NewRawData() == null)
     {
         return "00:00.000";
@@ -108,6 +114,11 @@ function getBestLapTime()
 
 function getBestLapTimeInClass()
 {
+    if (g_DebugBestLapTime != "") 
+    {
+        return g_DebugBestLapTime;
+    }
+
     if (!isGameIRacing() || !isGameRunning() || NewRawData() == null)
     {
         return "00:00.000";
@@ -166,8 +177,7 @@ function getFuelInfo(sessionIdx)
             stops: 0,                   // Number of stops required in session
             sessionType: "Invalid",     // Session type string
             sessionLaps: 0,             // -1 is unlimited
-            sessionTime: 0,             // Session time limit in seconds
-            sessionBestLapTime: 0
+            sessionTime: 0              // Session time limit in seconds
         };
 
     if (NewRawData() == null)
@@ -206,9 +216,8 @@ function getFuelInfo(sessionIdx)
         return info;
     }
 
-    info.sessionBestLapTime = $prop('variable.bestLapTime');
-    const bestLapTime = new Date("00:" + info.sessionBestLapTime);
-    const bestLapTimeSecs = bestLapTime.getMinutes() * 60 + bestLapTime.getSeconds();
+    const bestLapTime = new Date("00:" + $prop('variable.bestLapTime'));
+    const bestLapTimeSecs = bestLapTime.getMinutes() * 60 + bestLapTime.getSeconds() + bestLapTime.getMilliseconds() / 1000;
 
     let minTimeForLaps = -1;
     if (info.sessionLaps > 0 && bestLapTimeSecs > 0)
@@ -339,17 +348,50 @@ function getFuelLitersPerLap()
     return 0;
 }
 
-function getFuelDisplayInfo()
+function getSetupFuelInfo()
 {
     let info = {
-        unit: "L",
-        convert: 1
+        fuel: 0,    // Amount of fuel specified in setup, 0 if not found
+        unit: "L",  // Display units, "L" or "Kg"
+        convert: 1  // Multiplier to convert from liters, 1 if already in liters
     };
 
-    const fuelLevel = String($prop('GameRawData.SessionData.CarSetup.Chassis.Rear.FuelLevel'));
-    if (fuelLevel.indexOf("Kg") != -1)
+    // Must handle all the different ways fuel is defined in car setups
+    // Because the telemetry fuel value is 0 when not in-car
+    let fuelLevel = null;
+    fuelLevelProperties = ['GameRawData.SessionData.CarSetup.Suspension.Rear.FuelLevel',
+        'GameRawData.SessionData.CarSetup.Chassis.Rear.FuelLevel',
+        'GameRawData.SessionData.CarSetup.Chassis.Front.FuelLevel',
+        'GameRawData.SessionData.CarSetup.BrakesDriveUnit.Fuel.FuelLevel',
+        'GameRawData.SessionData.CarSetup.Chassis.BrakesInCarMisc.FuelLevel',
+        'GameRawData.SessionData.CarSetup.InCarSystems.Fuel.FuelLevel',
+        'GameRawData.SessionData.CarSetup.Systems.Fuel.FuelLevel',
+        'GameRawData.SessionData.CarSetup.TiresFuel.Fuel.FuelLevel',
+        'GameRawData.SessionData.CarSetup.VehicleSystems.Fuel.FuelLevel'
+    ];
+
+    for (let i = 0; i < fuelLevelProperties.length; i++)
     {
+        fuelLevel = $prop(fuelLevelProperties[i]);
+        if (fuelLevel != null)
+        {
+            break;
+        }
+    }
+    
+    if (fuelLevel.indexOf("L") != -1)
+    {
+        info.fuel = Number(String(fuelLevel).slice(0, -2));
+        info.unit = "L";
+        info.convert = 1;
+    }
+    else if (fuelLevel.indexOf("Kg") != -1)
+    {
+        info.fuel = Number(String(fuelLevel).slice(0, -3));
         info.unit = "Kg";
+        
+        // The value iRacing give is imprecise
+        //info.convert = $prop('GameRawData.SessionData.DriverInfo.DriverCarFuelKgPerLtr');
         info.convert = g_literToKg;
     }
 
@@ -390,4 +432,33 @@ function getTrackInfo()
     }
 
     return info;
+}
+
+function showPreRaceFuelWarning()
+{
+    const garageVisible = $prop('GameRawData.Telemetry.IsGarageVisible');
+    const sessionState = $prop('DataCorePlugin.GameRawData.Telemetry.SessionState');
+    const raceStarted = sessionState >= 4;
+
+    if (!isGameIRacing() || !isGameRunning() || !isRace() || !g_EnablePreRaceFuelWarning || garageVisible || raceStarted)
+    {
+        return false;
+    }
+
+    const setupFuelInfo = getSetupFuelInfo();
+    const sessionNum = NewRawData().Telemetry["SessionNum"];
+    const fuelInfo = getFuelInfo(sessionNum);
+
+    if (fuelInfo.fuelNeeded <= 0 || setupFuelInfo.fuel <= 0)
+    {
+        return false;
+    }
+
+    const errorMargin = 0.05;
+    if ((setupFuelInfo.fuel / setupFuelInfo.convert + errorMargin) >= fuelInfo.fuelNeeded)
+    {
+        return false;
+    }
+
+    return true;
 }
