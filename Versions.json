@@ -1,13 +1,13 @@
 {
     "standings": "1.6",
     "relative": "1.6",
-    "trackmap": "1.6",
+    "trackmap": "1.7",
     "delta": "1.6",
     "inputs": "1.6",
     "dash": "1.6",
     "setupcover": "1.6",
     "twitchchat": "1.6",
-    "launchassist": "1.6",
+    "launchassist": "1.7",
     "spotter": "1.6",
-    "fuelcalc": "1.6"
+    "fuelcalc": "1.7"
 }
