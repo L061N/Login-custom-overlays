@@ -208,13 +208,19 @@ See `Config.js` in the overlay folder to configure the behavior and look.
 
 ## Fuel Calculator (beta)
 
-Shows up when in the garage / setup screen and tells you how much fuel is needed to start the race. Supports heat races and will determine if the race is limited by time or laps. Useful for leagues that have a custom race length. You must drive at least one lap for SimHub to calculate the average fuel consumption per lap.
+Shows up when in the garage / setup screen and tells you how much fuel is needed to start the race. Supports heat races and will determine if the race is limited by time or laps when both are specified. Useful for leagues that have a custom race length.
 
 <p align="center">
-  <img src="Images/FuelCalc.png" width="350"/>
+  <img src="Images/FuelCalc-2.png" width="350"/>
 </p>
 
-*Beta Warning: use at your own risk. The number of pace laps on a rolling start isn't detected and will default to 2, and iracing doesn't always seem to correctly indicate when there's a shorter pace lap (ex: at the Nordschleife).*
+A blinking **Fuel Warning** lights up when you're about to grid with an under-fueled setup. Never start a race with a qualification setup again!
+
+<p align="center">
+  <img src="Images/Fuel-Warning.png" width="200"/>
+</p>
+
+*Beta Warning: use at your own risk. I might have missed an edge case but so far so good in my tests. Please report any issue or feedback in my [Discord](https://discord.gg/s2834nmdYx).*
 
 ## Help & Feedback
 
