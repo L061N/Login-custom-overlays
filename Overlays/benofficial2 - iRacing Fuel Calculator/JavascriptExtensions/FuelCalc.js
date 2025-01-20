@@ -379,6 +379,11 @@ function getSetupFuelInfo()
         }
     }
     
+    if (fuelLevel == null)
+    {
+        return info;
+    }
+
     if (fuelLevel.indexOf("L") != -1)
     {
         info.fuel = Number(String(fuelLevel).slice(0, -2));

@@ -1,9 +1,4 @@
 {
-  "SimHubVersion": "9.6.8",
-  "Category": null,
-  "Title": null,
-  "Description": null,
-  "Author": "twitch.tv/benofficial2",
   "ScreenCount": 1.0,
   "InGameScreensIndexs": [
     0
@@ -13,10 +8,16 @@
   ],
   "MainPreviewIndex": 0,
   "IsOverlay": true,
-  "Width": 400.0,
-  "Height": 230.0,
   "OverlaySizeWarning": false,
   "MetadataVersion": 2.0,
   "EnableOnDashboardMessaging": true,
-  "PitScreensIndexs": []
+  "PitScreensIndexs": [],
+  "SimHubVersion": "9.7.2",
+  "Category": null,
+  "Title": null,
+  "Description": null,
+  "Author": "twitch.tv/benofficial2",
+  "Width": 400.0,
+  "Height": 230.0,
+  "DashboardVersion": ""
 }
