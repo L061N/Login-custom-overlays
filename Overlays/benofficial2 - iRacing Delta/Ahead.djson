@@ -1,1 +1,323 @@
-{"Variables":{"DashboardVariables":[]},"DashboardDebugManager":{"LastPlacement":"156,156,238,22","Maximized":false},"Version":2,"Id":"70d8d327-619a-4f0d-bf99-7c3aadf90111","BaseHeight":22,"BaseWidth":238,"BackgroundColor":"#FF000000","Screens":[{"Name":"Screen1","InGameScreen":true,"IdleScreen":false,"PitScreen":false,"ScreenId":"25d31d5a-13cc-4c77-9608-0ca2c7396e82","AllowOverlays":true,"IsForegroundLayer":false,"IsOverlayLayer":false,"OverlayTriggerExpression":{"Expression":""},"ScreenEnabledExpression":{"Expression":""},"OverlayMaxDuration":0,"OverlayMinDuration":0,"IsBackgroundLayer":false,"BackgroundColor":"#00FFFFFF","Items":[{"$type":"SimHub.Plugins.OutputPlugins.GraphicalDash.Models.Layer, SimHub.Plugins","Top":0.0,"Left":0.0,"Height":22.0,"Width":238.0,"BackgroundColor":"#00FFFFFF","Childrens":[{"$type":"SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins","IsRectangleItem":true,"BackgroundColor":"#FF000000","BorderStyle":{"RadiusTopLeft":3,"RadiusTopRight":3,"RadiusBottomLeft":3,"RadiusBottomRight":3},"Height":22.0,"Left":0.0,"Opacity":80.0,"Top":0.0,"Visible":true,"Width":238.0,"Name":"Background"},{"$type":"SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins","IsTextItem":true,"ShadowBlur":5,"ShadowColor":"#FF000000","Font":"Segoe UI","FontWeight":"Bold","FontSize":17.0,"Text":"2.08","TextColor":"#FFFFFFFF","HorizontalAlignment":2,"VerticalAlignment":1,"BackgroundColor":"#00FFFFFF","Height":20.0,"Left":183.0,"Top":0.0,"Visible":true,"Width":50.0,"Name":"Gap","Bindings":{"Text":{"Formula":{"Interpreter":1,"Expression":"var gap = $prop('IRacingExtraProperties.iRacing_NonRelativeDriverAheadInClass_00_GapToPlayer');\r\nif (gap == null)\r\n{\r\n\treturn '';\r\n}\r\n\r\nif (gap < 0.0)\r\n{\r\n\tgap *= -1.0\r\n}\r\n\r\nif (gap > 99.9)\r\n{\r\n\tgap = 99.9;\r\n}\r\n\r\nreturn gap.toFixed(1); \r\n"},"Mode":2,"TargetPropertyName":"Text"},"TextColor":{"Formula":{"Interpreter":1,"Expression":"return getDriverAheadDeltaColor();"},"StartColor":"#FFFF7F66","EnableMiddleColor":true,"MiddleColor":"#FFFFFFFF","MiddleColorValue":0.0,"EndColor":"#FF52E052","StartColorValue":-1.0,"EndColorValue":1.0,"Mode":4,"TargetPropertyName":"TextColor"}}},{"$type":"SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins","IsTextItem":true,"ShadowBlur":5,"ShadowColor":"#FF000000","Font":"Segoe UI","FontWeight":"Bold","FontSize":17.0,"Text":"+0.44","TextColor":"#FFFFFFFF","HorizontalAlignment":2,"VerticalAlignment":1,"BackgroundColor":"#00FFFFFF","Height":20.0,"Left":141.0,"Top":0.0,"Visible":true,"Width":44.0,"Name":"Delta","Bindings":{"Text":{"Formula":{"Interpreter":1,"Expression":"var ourTime = $prop('DataCorePlugin.GameData.LastLapTime');\r\nvar theirTime = $prop('IRacingExtraProperties.iRacing_NonRelativeDriverAheadInClass_00_LastLapTime');\r\n\r\nreturn computeDeltaTime(ourTime, theirTime);"},"Mode":2,"TargetPropertyName":"Text"},"TextColor":{"Formula":{"Interpreter":1,"Expression":"return getDriverAheadDeltaColor();"},"StartColor":"#FFFF7F66","EnableMiddleColor":true,"MiddleColor":"#FFFFFFFF","MiddleColorValue":0.0,"EndColor":"#FF52E052","StartColorValue":-1.0,"EndColorValue":1.0,"Mode":4,"TargetPropertyName":"TextColor"}}},{"$type":"SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins","IsTextItem":true,"ShadowBlur":5,"ShadowColor":"#FF000000","Font":"Segoe UI","FontWeight":"Bold","FontSize":17.0,"Text":"2:22.0","TextColor":"#FFFFFFFF","HorizontalAlignment":2,"VerticalAlignment":1,"BackgroundColor":"#00FFFFFF","Height":20.0,"Left":73.0,"Top":0.0,"Visible":false,"Width":52.0,"Name":"Time","Bindings":{"Text":{"Formula":{"Interpreter":1,"Expression":"var pos = $prop('IRacingExtraProperties.iRacing_Player_PositionInClass');\r\nif (pos <= 1)\r\n{\r\n\treturn '';\r\n}\r\n\r\nvar time = $prop(getClassLeaderboardProp(pos - 1) + '_LastLapTime');\r\nreturn formatLapTime(time, 1);\r\n\r\n\r\n"},"Mode":2,"TargetPropertyName":"Text"},"TextColor":{"Formula":{"Interpreter":1,"Expression":"var pos = $prop('IRacingExtraProperties.iRacing_Player_PositionInClass');\r\nif (pos <= 1)\r\n{\r\n\treturn 0;\r\n}\r\n\r\nvar ourTime = $prop('DataCorePlugin.GameData.LastLapTime');\r\nvar theirTime = $prop(getClassLeaderboardProp(pos - 1) + '_LastLapTime');\r\n\r\nreturn computeDeltaTimeColor(ourTime, theirTime);"},"StartColor":"#FFFF7F66","EnableMiddleColor":true,"MiddleColor":"#FFFFFFFF","MiddleColorValue":0.0,"EndColor":"#FF52E052","StartColorValue":-1.0,"EndColorValue":1.0,"Mode":4,"TargetPropertyName":"TextColor"}}},{"$type":"SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins","IsTextItem":true,"ShadowBlur":5,"ShadowColor":"#FF000000","Font":"Segoe UI","FontWeight":"Bold","FontSize":14.0,"Text":"D. Michael","TextColor":"#FFFFFFFF","HorizontalAlignment":0,"VerticalAlignment":1,"BackgroundColor":"#00FFFFFF","Height":20.0,"Left":27.0,"Top":0.0,"Visible":true,"Width":102.0,"Name":"Name","Bindings":{"Text":{"Formula":{"Interpreter":1,"Expression":"return $prop('IRacingExtraProperties.iRacing_NonRelativeDriverAheadInClass_00_Name');"},"Mode":2,"TargetPropertyName":"Text"}}},{"$type":"SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins","IsTextItem":true,"ShadowBlur":5,"ShadowColor":"#FF000000","Font":"Segoe UI","FontWeight":"Bold","FontSize":14.0,"Text":"28.","TextColor":"#FFFFFFFF","HorizontalAlignment":2,"VerticalAlignment":1,"BackgroundColor":"#00FFFFFF","Height":20.0,"Left":3.0,"Top":0.0,"Visible":true,"Width":19.0,"Name":"Pos","Bindings":{"Text":{"Formula":{"Interpreter":1,"Expression":"var pos = $prop('IRacingExtraProperties.iRacing_NonRelativeDriverAheadInClass_00_PositionInClass');\r\nreturn pos + '.';"},"Mode":2,"TargetPropertyName":"Text"}}}],"Group":false,"Visible":true,"Name":"Visible","Bindings":{"Visible":{"Formula":{"Interpreter":1,"Expression":"var aheadPos = $prop('IRacingExtraProperties.iRacing_NonRelativeDriverAheadInClass_00_PositionInClass');\r\n\r\nreturn showAheadBehindWidget() && aheadPos > 0;\r\n"},"Mode":2,"TargetPropertyName":"Visible"}}}]}],"SnapToGrid":false,"HideLabels":true,"ShowForeground":true,"ForegroundOpacity":100.0,"ShowBackground":true,"BackgroundOpacity":100.0,"ShowBoundingRectangles":false,"GridSize":10,"Images":[],"Metadata":{"ScreenCount":1.0,"InGameScreensIndexs":[0],"IdleScreensIndexs":[],"MainPreviewIndex":0,"IsOverlay":false,"Width":238.0,"Height":22.0,"OverlaySizeWarning":false,"MetadataVersion":2.0,"EnableOnDashboardMessaging":true,"PitScreensIndexs":[]},"ShowOnScreenControls":true,"IsOverlay":false,"EnableClickThroughOverlay":true,"EnableOnDashboardMessaging":true}
+{
+  "Variables": {
+    "DashboardVariables": []
+  },
+  "DashboardDebugManager": {},
+  "Version": 2,
+  "Id": "d5de5d34-f88b-4007-97d7-e01ea1939dd6",
+  "BaseHeight": 22,
+  "BaseWidth": 238,
+  "BackgroundColor": "#FF000000",
+  "Screens": [
+    {
+      "RenderingSkip": 0,
+      "Name": "Screen1",
+      "InGameScreen": true,
+      "IdleScreen": false,
+      "PitScreen": false,
+      "ScreenId": "25d31d5a-13cc-4c77-9608-0ca2c7396e82",
+      "AllowOverlays": true,
+      "IsForegroundLayer": false,
+      "IsOverlayLayer": false,
+      "OverlayTriggerExpression": {
+        "Expression": ""
+      },
+      "ScreenEnabledExpression": {
+        "Expression": ""
+      },
+      "OverlayMaxDuration": 0,
+      "OverlayMinDuration": 0,
+      "IsBackgroundLayer": false,
+      "BackgroundColor": "#00FFFFFF",
+      "Items": [
+        {
+          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.Layer, SimHub.Plugins",
+          "Group": false,
+          "Repetitions": 0,
+          "Childrens": [
+            {
+              "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
+              "IsRectangleItem": true,
+              "BackgroundColor": "#FF000000",
+              "BorderStyle": {
+                "RadiusTopLeft": 3,
+                "RadiusTopRight": 3,
+                "RadiusBottomLeft": 3,
+                "RadiusBottomRight": 3
+              },
+              "Height": 22.0,
+              "Left": 0.0,
+              "Opacity": 80.0,
+              "Top": 0.0,
+              "Visible": true,
+              "Width": 238.0,
+              "Name": "Background",
+              "RenderingSkip": 0,
+              "MinimumRefreshIntervalMS": 0.0,
+              "Bindings": {
+                "Opacity": {
+                  "Formula": {
+                    "JSExt": 0,
+                    "Interpreter": 1,
+                    "Expression": "return isnull($prop('benofficial2.Delta.BackgroundOpacity'),80)"
+                  },
+                  "Mode": 2
+                }
+              }
+            },
+            {
+              "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+              "IsTextItem": true,
+              "ShadowBlur": 5,
+              "ShadowColor": "#FF000000",
+              "Font": "Segoe UI",
+              "FontWeight": "Bold",
+              "FontSize": 17.0,
+              "Text": "2.08",
+              "TextColor": "#FFFFFFFF",
+              "HorizontalAlignment": 2,
+              "VerticalAlignment": 1,
+              "BackgroundColor": "#00FFFFFF",
+              "Height": 20.0,
+              "Left": 183.0,
+              "Top": 0.0,
+              "Visible": true,
+              "Width": 50.0,
+              "Name": "Gap",
+              "RenderingSkip": 0,
+              "MinimumRefreshIntervalMS": 0.0,
+              "Bindings": {
+                "Text": {
+                  "Formula": {
+                    "JSExt": 3,
+                    "Interpreter": 1,
+                    "Expression": "var gap = $prop('IRacingExtraProperties.iRacing_NonRelativeDriverAheadInClass_00_GapToPlayer');\r\nif (gap == null)\r\n{\r\n\treturn '';\r\n}\r\n\r\nif (gap < 0.0)\r\n{\r\n\tgap *= -1.0\r\n}\r\n\r\nif (gap > 99.9)\r\n{\r\n\tgap = 99.9;\r\n}\r\n\r\nreturn gap.toFixed(1); \r\n"
+                  },
+                  "Mode": 2
+                },
+                "TextColor": {
+                  "Formula": {
+                    "JSExt": 3,
+                    "Interpreter": 1,
+                    "Expression": "return getDriverAheadDeltaColor();"
+                  },
+                  "StartColor": "#FFFF7F66",
+                  "EnableMiddleColor": true,
+                  "MiddleColor": "#FFFFFFFF",
+                  "MiddleColorValue": 0.0,
+                  "EndColor": "#FF52E052",
+                  "StartColorValue": -1.0,
+                  "EndColorValue": 1.0,
+                  "Mode": 4
+                }
+              }
+            },
+            {
+              "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+              "IsTextItem": true,
+              "ShadowBlur": 5,
+              "ShadowColor": "#FF000000",
+              "Font": "Segoe UI",
+              "FontWeight": "Bold",
+              "FontSize": 17.0,
+              "Text": "+0.44",
+              "TextColor": "#FFFFFFFF",
+              "HorizontalAlignment": 2,
+              "VerticalAlignment": 1,
+              "BackgroundColor": "#00FFFFFF",
+              "Height": 20.0,
+              "Left": 141.0,
+              "Top": 0.0,
+              "Visible": true,
+              "Width": 44.0,
+              "Name": "Delta",
+              "RenderingSkip": 0,
+              "MinimumRefreshIntervalMS": 0.0,
+              "Bindings": {
+                "Text": {
+                  "Formula": {
+                    "JSExt": 3,
+                    "Interpreter": 1,
+                    "Expression": "var ourTime = $prop('DataCorePlugin.GameData.LastLapTime');\r\nvar theirTime = $prop('IRacingExtraProperties.iRacing_NonRelativeDriverAheadInClass_00_LastLapTime');\r\n\r\nreturn computeDeltaTime(ourTime, theirTime);"
+                  },
+                  "Mode": 2
+                },
+                "TextColor": {
+                  "Formula": {
+                    "JSExt": 3,
+                    "Interpreter": 1,
+                    "Expression": "return getDriverAheadDeltaColor();"
+                  },
+                  "StartColor": "#FFFF7F66",
+                  "EnableMiddleColor": true,
+                  "MiddleColor": "#FFFFFFFF",
+                  "MiddleColorValue": 0.0,
+                  "EndColor": "#FF52E052",
+                  "StartColorValue": -1.0,
+                  "EndColorValue": 1.0,
+                  "Mode": 4
+                }
+              }
+            },
+            {
+              "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+              "IsTextItem": true,
+              "ShadowBlur": 5,
+              "ShadowColor": "#FF000000",
+              "Font": "Segoe UI",
+              "FontWeight": "Bold",
+              "FontSize": 17.0,
+              "Text": "2:22.0",
+              "TextColor": "#FFFFFFFF",
+              "HorizontalAlignment": 2,
+              "VerticalAlignment": 1,
+              "BackgroundColor": "#00FFFFFF",
+              "Height": 20.0,
+              "Left": 73.0,
+              "Top": 0.0,
+              "Visible": false,
+              "Width": 52.0,
+              "Name": "Time",
+              "RenderingSkip": 0,
+              "MinimumRefreshIntervalMS": 0.0,
+              "Bindings": {
+                "Text": {
+                  "Formula": {
+                    "JSExt": 3,
+                    "Interpreter": 1,
+                    "Expression": "var pos = $prop('IRacingExtraProperties.iRacing_Player_PositionInClass');\r\nif (pos <= 1)\r\n{\r\n\treturn '';\r\n}\r\n\r\nvar time = $prop(getClassLeaderboardProp(pos - 1) + '_LastLapTime');\r\nreturn formatLapTime(time, 1);\r\n\r\n\r\n"
+                  },
+                  "Mode": 2
+                },
+                "TextColor": {
+                  "Formula": {
+                    "JSExt": 3,
+                    "Interpreter": 1,
+                    "Expression": "var pos = $prop('IRacingExtraProperties.iRacing_Player_PositionInClass');\r\nif (pos <= 1)\r\n{\r\n\treturn 0;\r\n}\r\n\r\nvar ourTime = $prop('DataCorePlugin.GameData.LastLapTime');\r\nvar theirTime = $prop(getClassLeaderboardProp(pos - 1) + '_LastLapTime');\r\n\r\nreturn computeDeltaTimeColor(ourTime, theirTime);"
+                  },
+                  "StartColor": "#FFFF7F66",
+                  "EnableMiddleColor": true,
+                  "MiddleColor": "#FFFFFFFF",
+                  "MiddleColorValue": 0.0,
+                  "EndColor": "#FF52E052",
+                  "StartColorValue": -1.0,
+                  "EndColorValue": 1.0,
+                  "Mode": 4
+                }
+              }
+            },
+            {
+              "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+              "IsTextItem": true,
+              "ShadowBlur": 5,
+              "ShadowColor": "#FF000000",
+              "Font": "Segoe UI",
+              "FontWeight": "Bold",
+              "FontSize": 14.0,
+              "Text": "D. Michael",
+              "TextColor": "#FFFFFFFF",
+              "HorizontalAlignment": 0,
+              "VerticalAlignment": 1,
+              "BackgroundColor": "#00FFFFFF",
+              "Height": 20.0,
+              "Left": 27.0,
+              "Top": 0.0,
+              "Visible": true,
+              "Width": 102.0,
+              "Name": "Name",
+              "RenderingSkip": 0,
+              "MinimumRefreshIntervalMS": 0.0,
+              "Bindings": {
+                "Text": {
+                  "Formula": {
+                    "JSExt": 3,
+                    "Interpreter": 1,
+                    "Expression": "return $prop('IRacingExtraProperties.iRacing_NonRelativeDriverAheadInClass_00_Name');"
+                  },
+                  "Mode": 2
+                }
+              }
+            },
+            {
+              "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+              "IsTextItem": true,
+              "ShadowBlur": 5,
+              "ShadowColor": "#FF000000",
+              "Font": "Segoe UI",
+              "FontWeight": "Bold",
+              "FontSize": 14.0,
+              "Text": "28.",
+              "TextColor": "#FFFFFFFF",
+              "HorizontalAlignment": 2,
+              "VerticalAlignment": 1,
+              "BackgroundColor": "#00FFFFFF",
+              "Height": 20.0,
+              "Left": 3.0,
+              "Top": 0.0,
+              "Visible": true,
+              "Width": 19.0,
+              "Name": "Pos",
+              "RenderingSkip": 0,
+              "MinimumRefreshIntervalMS": 0.0,
+              "Bindings": {
+                "Text": {
+                  "Formula": {
+                    "JSExt": 3,
+                    "Interpreter": 1,
+                    "Expression": "var pos = $prop('IRacingExtraProperties.iRacing_NonRelativeDriverAheadInClass_00_PositionInClass');\r\nreturn pos + '.';"
+                  },
+                  "Mode": 2
+                }
+              }
+            }
+          ],
+          "Visible": true,
+          "Name": "Visible",
+          "RenderingSkip": 0,
+          "MinimumRefreshIntervalMS": 0.0,
+          "Bindings": {
+            "Visible": {
+              "Formula": {
+                "JSExt": 3,
+                "Interpreter": 1,
+                "Expression": "var aheadPos = $prop('IRacingExtraProperties.iRacing_NonRelativeDriverAheadInClass_00_PositionInClass');\r\n\r\nreturn showAheadBehindWidget() && aheadPos > 0;\r\n"
+              },
+              "Mode": 2
+            }
+          }
+        }
+      ],
+      "MinimumRefreshIntervalMS": 0.0
+    }
+  ],
+  "SnapToGrid": false,
+  "HideLabels": true,
+  "ShowForeground": true,
+  "ForegroundOpacity": 100.0,
+  "ShowBackground": true,
+  "BackgroundOpacity": 100.0,
+  "ShowBoundingRectangles": false,
+  "GridSize": 10,
+  "Images": [],
+  "Metadata": {
+    "ScreenCount": 1.0,
+    "InGameScreensIndexs": [
+      0
+    ],
+    "IdleScreensIndexs": [],
+    "MainPreviewIndex": 0,
+    "IsOverlay": false,
+    "OverlaySizeWarning": false,
+    "MetadataVersion": 2.0,
+    "EnableOnDashboardMessaging": true,
+    "PitScreensIndexs": [],
+    "SimHubVersion": "9.7.2",
+    "Width": 238.0,
+    "Height": 22.0,
+    "DashboardVersion": ""
+  },
+  "ShowOnScreenControls": true,
+  "IsOverlay": false,
+  "EnableClickThroughOverlay": true,
+  "EnableOnDashboardMessaging": true
+}

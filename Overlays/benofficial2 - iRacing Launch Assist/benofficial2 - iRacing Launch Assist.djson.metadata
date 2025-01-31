@@ -1,9 +1,4 @@
 {
-  "SimHubVersion": "9.6.8",
-  "Category": "RSC",
-  "Title": "benofficial2 - iRacing Launch Assist",
-  "Description": "",
-  "Author": "twitch.tv/benofficial2, Romainrob",
   "ScreenCount": 1.0,
   "InGameScreensIndexs": [
     0
@@ -13,10 +8,16 @@
   ],
   "MainPreviewIndex": 0,
   "IsOverlay": true,
-  "Width": 105.0,
-  "Height": 403.0,
   "OverlaySizeWarning": false,
   "MetadataVersion": 2.0,
   "EnableOnDashboardMessaging": false,
-  "PitScreensIndexs": []
+  "PitScreensIndexs": [],
+  "SimHubVersion": "9.7.2",
+  "Category": "RSC",
+  "Title": "benofficial2 - iRacing Launch Assist",
+  "Description": "",
+  "Author": "twitch.tv/benofficial2, Romainrob",
+  "Width": 105.0,
+  "Height": 403.0,
+  "DashboardVersion": ""
 }
