@@ -1,8 +1,14 @@
-# ignores any folder or sub-folder named "_Backups"
+# Ignore any folder or sub-folder named "_Backups"
 **/_Backups/
 
-# ignore folders
+# Ignore folders
 Bin/
+Plugin/bin/
+Plugin/obj/
+PLugin/.vs/
 
 # Ignore all VS Code workspace files
 *.code-workspace
+
+# Ignore VS user file
+Plugin/benofficial2.Plugin.csproj.user
