@@ -122,12 +122,13 @@ Section "iRacing Fuel Calculator" SEC_FOLDER11
   File /r "..\Overlays\benofficial2 - iRacing Fuel Calculator\*.*"
 SectionEnd
 
-Section "Uninstaller"
+Section "Plugin" SEC_PLUGIN
   SectionIn RO
   WriteUninstaller "$INSTDIR\bo2-official-overlays-uninstall.exe"
 
   SetOutPath "$INSTDIR"
   File /oname=bo2-official-overlays-license.txt "..\LICENSE"
+  File "..\Plugin\bin\Release\benofficial2.Plugin.dll"
 
   ; Register uninstaller
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bo2-official-overlays" \
@@ -151,6 +152,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER9} "Install iRacing Launch Assist SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER10} "Install iRacing Spotter SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER11} "Install iRacing Fuel Calculator SimHub overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PLUGIN} "Install necessary files such as the plugin, license and uninstaller"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ; Uninstaller Section
