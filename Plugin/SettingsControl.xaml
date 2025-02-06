@@ -192,10 +192,26 @@
                             </TextBox.Style>
                         </TextBox>
 
+                        <Label Content="Extra Consumption (%)" Margin="0,10,0,0"/>
+
+                        <TextBox Text="{Binding Settings.FuelCalc.ExtraConsumptionPctString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                                 ToolTip="Extra per-lap consumption in percentage. Can be negative. Use this to increase/decrease the estimated average consumption per lap.">
+                            <!-- Style to highlight invalid input -->
+                            <TextBox.Style>
+                                <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Settings.FuelCalc.ExtraConsumptionPctValid}" Value="False">
+                                            <Setter Property="Background" Value="LightCoral"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBox.Style>
+                        </TextBox>
+                        
                         <Label Content="Extra Lap(s)" Margin="0,10,0,0"/>
 
                         <TextBox Text="{Binding Settings.FuelCalc.ExtraLapsString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
-                                 ToolTip="How many extra laps of fuel to add as a safety. Can have decimals or be negative.">
+                                 ToolTip="How many extra race laps of fuel to add as a safety. Can have decimals or be negative.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">

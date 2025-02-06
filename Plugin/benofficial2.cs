@@ -93,6 +93,7 @@ namespace benofficial2.Plugin
             this.AttachDelegate(name: "FuelCalc.BackgroundOpacity", valueProvider: () => Settings.FuelCalc.BackgroundOpacity);
             this.AttachDelegate(name: "FuelCalc.FuelReserve", valueProvider: () => Settings.FuelCalc.FuelReserve);
             this.AttachDelegate(name: "FuelCalc.ExtraLaps", valueProvider: () => Settings.FuelCalc.ExtraLaps);
+            this.AttachDelegate(name: "FuelCalc.ExtraConsumptionPct", valueProvider: () => Settings.FuelCalc.ExtraConsumptionPct);
             this.AttachDelegate(name: "FuelCalc.EnablePreRaceWarning", valueProvider: () => Settings.FuelCalc.EnablePreRaceWarning);
         }
 

@@ -589,6 +589,54 @@ namespace benofficial2.Plugin
             }
         }
 
+        private float _extraConsumptionPct = 0.02f;
+        private string _extraConsumptionPctString = "0.02";
+        private bool _extraConsumptionPctValid = true;
+
+        public float ExtraConsumptionPct
+        {
+            get { return _extraConsumptionPct; }
+        }
+
+        public string ExtraConsumptionPctString
+        {
+            get => _extraConsumptionPctString;
+            set
+            {
+                if (_extraConsumptionPctString != value)
+                {
+                    _extraConsumptionPctString = value;
+
+                    // Convert to float when set
+                    if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
+                    {
+                        _extraConsumptionPct = result;
+                        ExtraConsumptionPctValid = true;
+                    }
+                    else
+                    {
+                        _extraConsumptionPct = 0;
+                        ExtraConsumptionPctValid = false;
+                    }
+
+                    OnPropertyChanged(nameof(ExtraConsumptionPct));
+                    OnPropertyChanged(nameof(ExtraConsumptionPctString));
+                }
+            }
+        }
+        public bool ExtraConsumptionPctValid
+        {
+            get => _extraConsumptionPctValid;
+            private set
+            {
+                if (_extraConsumptionPctValid != value)
+                {
+                    _extraConsumptionPctValid = value;
+                    OnPropertyChanged(nameof(ExtraConsumptionPctValid));
+                }
+            }
+        }
+
         private bool _enablePreRaceWarning = true;
 
         public bool EnablePreRaceWarning
