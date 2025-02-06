@@ -16,12 +16,9 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// How much fuel to keep as a reserve in liters to avoid bogging down.
-const g_FuelReserve = 0.5;
-
 // Maximum amount of time remaining (in percentage of best lap) for the white flag to be shown.
 // It is unknown what is the exact rule used by iRacing. Could be 60% of avg from last 3 race laps.
-const gWhiteFlagRuleLapPct = 0.60;
+const g_WhiteFlagRuleLapPct = 0.60;
 
 // How long is the short parade lap at supported tracks (as a percentage of a lap).
 // This is the default values for tracks we don't have in the database.
@@ -30,6 +27,3 @@ const g_ShortParadeLapPct = 0.50;
 // Use the current session's fastest time from the player for fuel calculations.
 // Default to false, because can cause under fueling when significantly off-pace.
 const g_UsePlayersFastestTime = false;
-
-// Enable a fuel warning before the race when under-fueled.
-const g_EnablePreRaceFuelWarning = true;

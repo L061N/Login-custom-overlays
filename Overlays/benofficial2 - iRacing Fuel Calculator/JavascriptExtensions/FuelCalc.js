@@ -244,7 +244,7 @@ function getFuelInfo(sessionIdx)
         // Add an extra lap if we would cross the line with more than X% of a lap remaining
         // It is unknown what is the exact rule used by iRacing. Could be 60% of avg from last 3 race laps.
         const remainingTime = info.sessionTime % bestLapTimeSecs;
-        if (remainingTime > gWhiteFlagRuleLapPct * bestLapTimeSecs)
+        if (remainingTime > g_WhiteFlagRuleLapPct * bestLapTimeSecs)
         {
             lapsEstimate++;
         }
@@ -295,7 +295,14 @@ function getFuelInfo(sessionIdx)
 
     if (info.fuelNeeded > 0 && info.fuelPerLap > 0)
     {
-        info.fuelNeeded += g_FuelReserve;
+        const fuelReserve = isnull($prop('benofficial2.FuelCalc.FuelReserve'), 0.5);
+        info.fuelNeeded += fuelReserve;
+
+        if (String(info.sessionType).indexOf('Race') != -1)
+        {
+            const extraLaps = isnull($prop('benofficial2.FuelCalc.ExtraLaps'), 0.0);
+            info.fuelNeeded += info.fuelPerLap * extraLaps;
+        }
     }
 
     const maxFuelTank = $prop('MaxFuel');
@@ -314,11 +321,6 @@ function getFuelInfo(sessionIdx)
 
 function getFuelLitersPerLap()
 {
-    if (g_DebugLitersPerLap >= 0)
-    {
-        return g_DebugLitersPerLap;
-    }
-
     const trackId = $prop('TrackId');
     const carId = $prop('CarId');
     const combo = String(trackId) + String(carId);
@@ -330,14 +332,14 @@ function getFuelLitersPerLap()
         root['lastCombo'] = combo;
     }
 
-    const fuelLitersPerLap = Number($prop('DataCorePlugin.Computed.Fuel_LitersPerLap'));
+    const fuelLitersPerLap = g_DebugLitersPerLap >= 0 ? g_DebugLitersPerLap : Number($prop('DataCorePlugin.Computed.Fuel_LitersPerLap'));
+    const extraConsumptionPct = isnull($prop('benofficial2.FuelCalc.ExtraConsumptionPct'), 0);
 
     if (fuelLitersPerLap > 0)
     {
         // Remember the last valid consumption for this combo
         // Because sometimes when advancing session we lose the computed value
-        root['fuelLitersPerLap'] = fuelLitersPerLap;
-        return fuelLitersPerLap;
+        root['fuelLitersPerLap'] = fuelLitersPerLap * (1 + extraConsumptionPct);
     }
 
     if(root['fuelLitersPerLap'] > 0)
@@ -444,8 +446,9 @@ function showPreRaceFuelWarning()
     const garageVisible = $prop('GameRawData.Telemetry.IsGarageVisible');
     const sessionState = $prop('DataCorePlugin.GameRawData.Telemetry.SessionState');
     const raceStarted = sessionState >= 4;
+    const enablePreRaceFuelWarning = isnull($prop('benofficial2.FuelCalc.EnablePreRaceWarning'), true);
 
-    if (!isGameIRacing() || !isGameRunning() || !isRace() || !g_EnablePreRaceFuelWarning || garageVisible || raceStarted)
+    if (!isGameIRacing() || !isGameRunning() || !isRace() || !enablePreRaceFuelWarning || garageVisible || raceStarted)
     {
         return false;
     }

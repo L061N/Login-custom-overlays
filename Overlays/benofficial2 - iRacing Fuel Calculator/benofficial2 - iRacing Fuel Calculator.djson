@@ -39,7 +39,7 @@
   "DashboardDebugManager": {
     "WindowPositionSettings": {
       "IsFullScreen": false,
-      "Position": "3432,274,400,200",
+      "Position": "3432,274,400,230",
       "TopMost": false,
       "AllowTransparency": true,
       "CloseOnMonitorLoss": false,
@@ -47,7 +47,7 @@
     }
   },
   "Version": 2,
-  "Id": "a6f4630e-910a-4627-8753-acf9597f9d08",
+  "Id": "06289181-e3ce-4285-9e35-c2f2e9eb0931",
   "BaseHeight": 230,
   "BaseWidth": 400,
   "BackgroundColor": "#FF000000",
@@ -116,7 +116,7 @@
               "FontWeight": "Bold",
               "FontStyle": "Italic",
               "FontSize": 14.0,
-              "Text": "Note: See Config.js for options",
+              "Text": "Note: See benofficial2 plugin for options",
               "TextColor": "#FFFFFFFF",
               "HorizontalAlignment": 0,
               "VerticalAlignment": 1,
@@ -648,7 +648,7 @@
                 "JSExt": 0,
                 "Interpreter": 1,
                 "Expression": "if (root['hide'])\r\n{\r\n\treturn false;\r\n}\r\n\r\nconst url = 'https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Versions.json';\r\n\r\nconst jsonStr = downloadstringasync(500, url);\r\n\r\nif (jsonStr) \r\n{\r\n\tconst json = JSON.parse(jsonStr);\r\n\tif (json[root['name']] != root['version']) \r\n\t{\r\n        if (!root['timeChecked'])\r\n        {\r\n\t\t\troot['timeChecked'] = Date.now();\r\n\t\t}\r\n\r\n\t\tif (((Date.now() - root['timeChecked'])) < 5000)\r\n\t\t{\r\n\t\t\treturn true;\r\n        }\r\n    }\r\n\r\n    root['hide'] = true;\r\n}\r\n\r\nreturn false;",
-                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nroot['name'] = 'fuelcalc'\r\nroot['version'] = '1.8'"
+                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nroot['name'] = 'fuelcalc'\r\nroot['version'] = '1.9'"
               },
               "Mode": 2
             }
