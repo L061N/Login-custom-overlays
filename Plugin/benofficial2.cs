@@ -20,6 +20,7 @@ using GameReaderCommon;
 using SimHub.Plugins;
 using System;
 using System.Windows.Media;
+using System.Threading.Tasks;
 
 namespace benofficial2.Plugin
 {
@@ -67,7 +68,19 @@ namespace benofficial2.Plugin
             // Load settings
             Settings = this.ReadCommonSettings<PluginSettings>("GeneralSettings", () => new PluginSettings());
 
+            // Check for latest plugin version
+            if (Settings.CheckForUpdates)
+            {
+                Task.Run(() =>
+                {
+                    VersionChecker versionChecker = new VersionChecker();
+                    versionChecker.CheckForUpdateAsync().Wait();
+                });
+            }
+
             // Declare a property available in the property list, this gets evaluated "on demand" (when shown or used in formulas)
+            this.AttachDelegate(name: "CheckForUpdates", valueProvider: () => Settings.CheckForUpdates);
+
             this.AttachDelegate(name: "Standings.BackgroundOpacity", valueProvider: () => Settings.Standings.BackgroundOpacity);
             this.AttachDelegate(name: "Relative.BackgroundOpacity", valueProvider: () => Settings.Relative.BackgroundOpacity);
             this.AttachDelegate(name: "TrackMap.BackgroundOpacity", valueProvider: () => Settings.TrackMap.BackgroundOpacity);

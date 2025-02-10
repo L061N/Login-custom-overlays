@@ -44,6 +44,17 @@
                     </StackPanel>
                 </styles:SHSection>
 
+                <styles:SHSection Title="GENERAL PLUGIN OPTIONS" ShowSeparator="True">
+                    <StackPanel>
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Check if a new version of the plugin is available when starting SimHub." 
+                            HorizontalAlignment="Left" Margin="0,0,4,4"
+                            IsChecked="{Binding Settings.CheckForUpdates, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Check for updates
+                        </styles:SHToggleCheckbox>
+                    </StackPanel>
+                </styles:SHSection>
+                
                 <styles:SHSection Title="STANDINGS OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
                         <ui:TitledSlider Title="Background Opacity" Maximum="100" Minimum="0" Value="{Binding Settings.Standings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
