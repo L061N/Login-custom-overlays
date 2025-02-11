@@ -5,49 +5,52 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
-public class VersionChecker
+namespace benofficial2.Plugin
 {
-    private const string CurrentVersion = "1.9";
-    private const string VersionUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Versions.json";
-    private const string DownloadPageUrl = "https://github.com/fixfactory/bo2-official-overlays/releases";
-
-    public async Task CheckForUpdateAsync()
+    public class VersionChecker
     {
-        try
+        public const string CurrentVersion = "1.9";
+        private const string VersionUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Versions.json";
+        private const string DownloadPageUrl = "https://github.com/fixfactory/bo2-official-overlays/releases";
+
+        public async Task CheckForUpdateAsync()
         {
-            using (HttpClient client = new HttpClient())
+            try
             {
-                string json = await client.GetStringAsync(VersionUrl);
-                JObject jsonObject = JObject.Parse(json);
-
-                string latestVersion = jsonObject["plugin"]?.ToString();
-
-                if (!string.IsNullOrEmpty(latestVersion) && IsNewerVersion(latestVersion, CurrentVersion))
+                using (HttpClient client = new HttpClient())
                 {
-                    DialogResult result = MessageBox.Show(
-                        $"A new version {latestVersion} for benofficial2 plugin is available. Do you want to visit the download page?",
-                        "Update Available",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Information
-                    );
+                    string json = await client.GetStringAsync(VersionUrl);
+                    JObject jsonObject = JObject.Parse(json);
 
-                    if (result == DialogResult.Yes)
+                    string latestVersion = jsonObject["plugin"]?.ToString();
+
+                    if (!string.IsNullOrEmpty(latestVersion) && IsNewerVersion(latestVersion, CurrentVersion))
                     {
-                        System.Diagnostics.Process.Start(DownloadPageUrl);
+                        DialogResult result = MessageBox.Show(
+                            $"A new version {latestVersion} for benofficial2 plugin is available. Do you want to visit the download page?",
+                            "Update Available",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Information
+                        );
+
+                        if (result == DialogResult.Yes)
+                        {
+                            System.Diagnostics.Process.Start(DownloadPageUrl);
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                SimHub.Logging.Current.Info($"An error occurred while checking for updates:\n{ex.Message}");
+            }
         }
-        catch (Exception ex)
-        {
-            SimHub.Logging.Current.Info($"An error occurred while checking for updates:\n{ex.Message}");
-        }
-    }
 
-    private bool IsNewerVersion(string latestVersion, string currentVersion)
-    {
-        Version latest = new Version(latestVersion);
-        Version current = new Version(currentVersion);
-        return latest > current;
+        private bool IsNewerVersion(string latestVersion, string currentVersion)
+        {
+            Version latest = new Version(latestVersion);
+            Version current = new Version(currentVersion);
+            return latest > current;
+        }
     }
 }
