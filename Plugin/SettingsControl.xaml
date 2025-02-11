@@ -57,43 +57,43 @@
                 
                 <styles:SHSection Title="STANDINGS OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity" Maximum="100" Minimum="0" Value="{Binding Settings.Standings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.Standings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="RELATIVE OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity" Maximum="100" Minimum="0" Value="{Binding Settings.Relative.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.Relative.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="TRACK MAP OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity" Maximum="100" Minimum="0" Value="{Binding Settings.TrackMap.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.TrackMap.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="DELTA OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity" Maximum="100" Minimum="0" Value="{Binding Settings.Delta.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.Delta.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="INPUT TELEMETRY OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity" Maximum="100" Minimum="0" Value="{Binding Settings.Telemetry.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.Telemetry.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="DASH OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity" Maximum="100" Minimum="0" Value="{Binding Settings.Dash.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.Dash.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="LAUNCH ASSIST OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity" Maximum="100" Minimum="0" Value="{Binding Settings.LaunchAssist.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.LaunchAssist.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
@@ -242,7 +242,7 @@
                             Enable Pre-Race Fuel Warning
                         </styles:SHToggleCheckbox>
 
-                        <ui:TitledSlider Title="Background Opacity" Maximum="100" Minimum="0" Value="{Binding Settings.FuelCalc.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.FuelCalc.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" />
                     </StackPanel>
                 </styles:SHSection>
             </StackPanel>
