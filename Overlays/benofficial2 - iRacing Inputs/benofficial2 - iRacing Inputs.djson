@@ -13,7 +13,7 @@
     }
   },
   "Version": 2,
-  "Id": "a3c0d990-7489-4d0a-a47e-bb41eef5ec4d",
+  "Id": "d1ad71c6-0a98-49fb-9016-9e35d3dfcfe9",
   "BaseHeight": 104,
   "BaseWidth": 490,
   "BackgroundColor": "#FF000000",
@@ -845,10 +845,10 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "JSExt": 0,
+                "JSExt": 1,
                 "Interpreter": 1,
-                "Expression": "if (root['hide'])\r\n{\r\n\treturn false;\r\n}\r\n\r\nconst url = 'https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Versions.json';\r\n\r\nconst jsonStr = downloadstringasync(500, url);\r\n\r\nif (jsonStr) \r\n{\r\n\tconst json = JSON.parse(jsonStr);\r\n\tif (json[root['name']] != root['version']) \r\n\t{\r\n        if (!root['timeChecked'])\r\n        {\r\n\t\t\troot['timeChecked'] = Date.now();\r\n\t\t}\r\n\r\n\t\tif (((Date.now() - root['timeChecked'])) < 5000)\r\n\t\t{\r\n\t\t\treturn true;\r\n        }\r\n    }\r\n\r\n    root['hide'] = true;\r\n}\r\n\r\nreturn false;",
-                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nroot['name'] = 'inputs'\r\nroot['version'] = '1.6'"
+                "Expression": "return checkVersion(g_VersionName, g_VersionNumber);",
+                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'inputs'\r\nconst g_VersionNumber = '1.9'"
               },
               "Mode": 2
             }

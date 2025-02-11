@@ -1,9 +1,4 @@
 {
-  "SimHubVersion": "9.6.8",
-  "Category": "RSC",
-  "Title": "benofficial2 - iRacing Setup Cover",
-  "Description": "",
-  "Author": "twitch.tv/benofficial2",
   "ScreenCount": 1.0,
   "InGameScreensIndexs": [
     0
@@ -11,10 +6,16 @@
   "IdleScreensIndexs": [],
   "MainPreviewIndex": 0,
   "IsOverlay": true,
-  "Width": 400.0,
-  "Height": 336.0,
   "OverlaySizeWarning": false,
   "MetadataVersion": 2.0,
   "EnableOnDashboardMessaging": false,
-  "PitScreensIndexs": []
+  "PitScreensIndexs": [],
+  "SimHubVersion": "9.7.2",
+  "Category": "RSC",
+  "Title": "benofficial2 - iRacing Setup Cover",
+  "Description": "",
+  "Author": "twitch.tv/benofficial2",
+  "Width": 400.0,
+  "Height": 336.0,
+  "DashboardVersion": ""
 }
