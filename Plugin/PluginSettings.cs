@@ -589,8 +589,8 @@ namespace benofficial2.Plugin
             }
         }
 
-        private float _extraConsumptionPct = 0.02f;
-        private string _extraConsumptionPctString = "0.02";
+        private float _extraConsumptionPct = 2.0f;
+        private string _extraConsumptionPctString = "2.0";
         private bool _extraConsumptionPctValid = true;
 
         public float ExtraConsumptionPct

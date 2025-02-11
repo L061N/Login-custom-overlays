@@ -333,7 +333,7 @@ function getFuelLitersPerLap()
     }
 
     const fuelLitersPerLap = g_DebugLitersPerLap >= 0 ? g_DebugLitersPerLap : Number($prop('DataCorePlugin.Computed.Fuel_LitersPerLap'));
-    const extraConsumptionPct = isnull($prop('benofficial2.FuelCalc.ExtraConsumptionPct'), 0);
+    const extraConsumptionPct = isnull($prop('benofficial2.FuelCalc.ExtraConsumptionPct'), 0) / 100;
 
     if (fuelLitersPerLap > 0)
     {
