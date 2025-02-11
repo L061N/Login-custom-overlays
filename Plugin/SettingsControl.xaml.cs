@@ -64,5 +64,14 @@ namespace benofficial2.Plugin
                 UseShellExecute = true // Ensures it opens in the default browser
             });
         }
+
+        private void ChatIs_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://chatis.is2511.com/",
+                UseShellExecute = true // Ensures it opens in the default browser
+            });
+        }
     }
 }

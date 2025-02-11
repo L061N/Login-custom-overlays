@@ -659,6 +659,30 @@ namespace benofficial2.Plugin
         }
     }
 
+    public class TwitchChatSettings : INotifyPropertyChanged
+    {
+        private string _url = "";
+
+        public string URL
+        {
+            get { return _url; }
+            set
+            {
+                if (_url != value)
+                {
+                    _url = value;
+                    OnPropertyChanged(nameof(URL));
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
     /// <summary>
     /// Settings class, make sure it can be correctly serialized using JSON.net
     /// </summary>
@@ -676,7 +700,8 @@ namespace benofficial2.Plugin
         public SpotterSettings Spotter { get; set; }
         public RejoinHelperSettings RejoinHelper { get; set; }
         public BlindSpotMonitorSettings BlindSpotMonitor { get; set; }
-        public FuelCalcSettings FuelCalc { get; set; }        
+        public FuelCalcSettings FuelCalc { get; set; }
+        public TwitchChatSettings TwitchChat { get; set; }
 
         public PluginSettings()
         {
@@ -691,6 +716,7 @@ namespace benofficial2.Plugin
             RejoinHelper = new RejoinHelperSettings();
             BlindSpotMonitor = new BlindSpotMonitorSettings();
             FuelCalc = new FuelCalcSettings();
+            TwitchChat = new TwitchChatSettings();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

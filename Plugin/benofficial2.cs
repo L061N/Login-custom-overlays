@@ -108,6 +108,8 @@ namespace benofficial2.Plugin
             this.AttachDelegate(name: "FuelCalc.ExtraLaps", valueProvider: () => Settings.FuelCalc.ExtraLaps);
             this.AttachDelegate(name: "FuelCalc.ExtraConsumptionPct", valueProvider: () => Settings.FuelCalc.ExtraConsumptionPct);
             this.AttachDelegate(name: "FuelCalc.EnablePreRaceWarning", valueProvider: () => Settings.FuelCalc.EnablePreRaceWarning);
+
+            this.AttachDelegate(name: "TwitchChat.URL", valueProvider: () => Settings.TwitchChat.URL);
         }
 
         /// <summary>
