@@ -689,7 +689,6 @@ namespace benofficial2.Plugin
     public class PluginSettings : INotifyPropertyChanged
     {
         public bool CheckForUpdates { get; set; } = true;
-
         public StandingsSettings Standings { get; set; }
         public RelativeSettings Relative { get; set; }
         public TrackMapSettings TrackMap { get; set; }

@@ -21,6 +21,7 @@ using SimHub.Plugins;
 using System;
 using System.Windows.Media;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace benofficial2.Plugin
 {
@@ -30,6 +31,7 @@ namespace benofficial2.Plugin
     public class benofficial2 : IPlugin, IDataPlugin, IWPFSettingsV2
     {
         public PluginSettings Settings;
+        public static List<IPluginModule> Modules { get; private set; }
 
         /// <summary>
         /// Instance of the current plugin manager
@@ -78,6 +80,15 @@ namespace benofficial2.Plugin
                 });
             }
 
+            // Create all the modules
+            Modules = PluginModuleFactory.CreateAllPluginModules();
+
+            // Init each module
+            foreach (var module in Modules)
+            {
+                module.Init(pluginManager, this);
+            }
+
             // Declare a property available in the property list, this gets evaluated "on demand" (when shown or used in formulas)
             this.AttachDelegate(name: "CheckForUpdates", valueProvider: () => Settings.CheckForUpdates);
 
@@ -123,6 +134,12 @@ namespace benofficial2.Plugin
         /// <param name="data">Current game data, including current and previous data frame.</param>
         public void DataUpdate(PluginManager pluginManager, ref GameData data)
         {
+            // Update each module
+            foreach (var module in Modules)
+            {
+                module.DataUpdate(pluginManager, this, ref data);
+            }
+
             // Define the value of our property (declared in init)
             if (data.GameRunning)
             {
@@ -142,6 +159,12 @@ namespace benofficial2.Plugin
         /// <param name="pluginManager"></param>
         public void End(PluginManager pluginManager)
         {
+            // End each module
+            foreach (var module in Modules)
+            {
+                module.End(pluginManager, this);
+            }
+
             // Save settings
             this.SaveCommonSettings("GeneralSettings", Settings);
         }
