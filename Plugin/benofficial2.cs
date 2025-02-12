@@ -30,7 +30,6 @@ namespace benofficial2.Plugin
     [PluginName("benofficial2 Plugin")]
     public class benofficial2 : IPlugin, IDataPlugin, IWPFSettingsV2
     {
-        public PluginSettings Settings;
         public static Dictionary<string, IPluginModule> Modules { get; private set; }
 
         /// <summary>
@@ -67,19 +66,6 @@ namespace benofficial2.Plugin
         {
             SimHub.Logging.Current.Info($"Starting benofficial2 plugin version {VersionChecker.CurrentVersion}");
 
-            // Load settings
-            Settings = this.ReadCommonSettings<PluginSettings>("GeneralSettings", () => new PluginSettings());
-
-            // Check for latest plugin version
-            if (Settings.CheckForUpdates)
-            {
-                Task.Run(() =>
-                {
-                    VersionChecker versionChecker = new VersionChecker();
-                    versionChecker.CheckForUpdateAsync().Wait();
-                });
-            }
-
             // Create all the modules
             Modules = PluginModuleFactory.CreateAllPluginModules();
 
@@ -89,38 +75,15 @@ namespace benofficial2.Plugin
                 module.Init(pluginManager, this);
             }
 
-            // Declare a property available in the property list, this gets evaluated "on demand" (when shown or used in formulas)
-            this.AttachDelegate(name: "CheckForUpdates", valueProvider: () => Settings.CheckForUpdates);
-
-            this.AttachDelegate(name: "Standings.BackgroundOpacity", valueProvider: () => Settings.Standings.BackgroundOpacity);
-            this.AttachDelegate(name: "Relative.BackgroundOpacity", valueProvider: () => Settings.Relative.BackgroundOpacity);
-            this.AttachDelegate(name: "TrackMap.BackgroundOpacity", valueProvider: () => Settings.TrackMap.BackgroundOpacity);
-            this.AttachDelegate(name: "Delta.BackgroundOpacity", valueProvider: () => Settings.Delta.BackgroundOpacity);
-            this.AttachDelegate(name: "Telemetry.BackgroundOpacity", valueProvider: () => Settings.Telemetry.BackgroundOpacity);
-            this.AttachDelegate(name: "Dash.BackgroundOpacity", valueProvider: () => Settings.Dash.BackgroundOpacity);
-            this.AttachDelegate(name: "LaunchAssist.BackgroundOpacity", valueProvider: () => Settings.LaunchAssist.BackgroundOpacity);
-
-            this.AttachDelegate(name: "Spotter.Enabled", valueProvider: () => Settings.Spotter.Enabled);
-            this.AttachDelegate(name: "Spotter.Threshold", valueProvider: () => Settings.Spotter.Threshold);
-            this.AttachDelegate(name: "Spotter.Height", valueProvider: () => Settings.Spotter.Height);
-            this.AttachDelegate(name: "Spotter.MinHeight", valueProvider: () => Settings.Spotter.MinHeight);
-            this.AttachDelegate(name: "Spotter.Width", valueProvider: () => Settings.Spotter.Width);
-            this.AttachDelegate(name: "Spotter.Border", valueProvider: () => Settings.Spotter.Border);
-
-            this.AttachDelegate(name: "RejoinHelper.Enabled", valueProvider: () => Settings.RejoinHelper.Enabled);
-            this.AttachDelegate(name: "RejoinHelper.MinClearGap", valueProvider: () => Settings.RejoinHelper.MinClearGap);
-            this.AttachDelegate(name: "RejoinHelper.MinCareGap", valueProvider: () => Settings.RejoinHelper.MinCareGap);
-            this.AttachDelegate(name: "RejoinHelper.MinSpeed", valueProvider: () => Settings.RejoinHelper.MinSpeed);
-
-            this.AttachDelegate(name: "BlindSpotMonitor.Enabled", valueProvider: () => Settings.BlindSpotMonitor.Enabled);
-
-            this.AttachDelegate(name: "FuelCalc.BackgroundOpacity", valueProvider: () => Settings.FuelCalc.BackgroundOpacity);
-            this.AttachDelegate(name: "FuelCalc.FuelReserve", valueProvider: () => Settings.FuelCalc.FuelReserve);
-            this.AttachDelegate(name: "FuelCalc.ExtraLaps", valueProvider: () => Settings.FuelCalc.ExtraLaps);
-            this.AttachDelegate(name: "FuelCalc.ExtraConsumptionPct", valueProvider: () => Settings.FuelCalc.ExtraConsumptionPct);
-            this.AttachDelegate(name: "FuelCalc.EnablePreRaceWarning", valueProvider: () => Settings.FuelCalc.EnablePreRaceWarning);
-
-            this.AttachDelegate(name: "TwitchChat.URL", valueProvider: () => Settings.TwitchChat.URL);
+            // Check for latest plugin version
+            if (GetModule<General>().Settings.CheckForUpdates)
+            {
+                Task.Run(() =>
+                {
+                    VersionChecker versionChecker = new VersionChecker();
+                    versionChecker.CheckForUpdateAsync().Wait();
+                });
+            }
         }
 
         /// <summary>
@@ -164,9 +127,17 @@ namespace benofficial2.Plugin
             {
                 module.End(pluginManager, this);
             }
+        }
 
-            // Save settings
-            this.SaveCommonSettings("GeneralSettings", Settings);
+        public static T GetModule<T>() where T : class, IPluginModule
+        {
+            var key = typeof(T).Name;
+            if (Modules.TryGetValue(key, out var module))
+            {
+                return module as T;
+            }
+            SimHub.Logging.Current.Info($"Starting benofficial2 plugin version {VersionChecker.CurrentVersion}");
+            return null;
         }
     }
 }

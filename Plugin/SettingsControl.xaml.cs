@@ -27,14 +27,14 @@ namespace benofficial2.Plugin
 {
     public class SettingsControlViewModel
     {
-        public PluginSettings Settings { get; set; }
+        public benofficial2 Plugin { get; }
 
         public SettingsControlViewModel()
         {
         }
         public SettingsControlViewModel(benofficial2 plugin) : this()
         {
-            this.Settings = plugin.Settings;
+            Plugin = plugin;
         }
     }
 

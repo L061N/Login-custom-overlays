@@ -49,7 +49,7 @@
                         <styles:SHToggleCheckbox 
                             ToolTip="Check if a new version of the plugin is available when starting SimHub." 
                             HorizontalAlignment="Left" Margin="0,0,4,4"
-                            IsChecked="{Binding Settings.CheckForUpdates, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            IsChecked="{Binding Plugin.Modules[General].Settings.CheckForUpdates, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Check for updates
                         </styles:SHToggleCheckbox>
                     </StackPanel>
@@ -57,43 +57,43 @@
                 
                 <styles:SHSection Title="STANDINGS OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.Standings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[Standings].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="RELATIVE OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.Relative.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[Relative].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="TRACK MAP OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.TrackMap.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TrackMap].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="DELTA OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.Delta.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[Delta].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="INPUT TELEMETRY OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.Telemetry.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[Telemetry].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="DASH OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.Dash.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[Dash].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="LAUNCH ASSIST OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
-                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.LaunchAssist.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[LaunchAssist].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
 
@@ -102,54 +102,54 @@
                         <styles:SHToggleCheckbox 
                             ToolTip="Enable the Spotter overlay that shows orange bars when the iRacing spotter is calling a car left/right." 
                             HorizontalAlignment="Left" Margin="0,0,4,4"
-                            IsChecked="{Binding Settings.Spotter.Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            IsChecked="{Binding Plugin.Modules[Spotter].Settings.Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Enable Spotter
                         </styles:SHToggleCheckbox>
                         
                         <Label Content="Spotter Threshold" Margin="0,10,0,0"/>
 
-                        <TextBox Text="{Binding Settings.Spotter.ThresholdString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                        <TextBox Text="{Binding Plugin.Modules[Spotter].Settings.ThresholdString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
                                  ToolTip="Distance from another car at which the Spotter's orange bars will show. Also used for showing Blind Spot Monitor.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Settings.Spotter.ThresholdValid}" Value="False">
+                                        <DataTrigger Binding="{Binding Plugin.Modules[Spotter].Settings.ThresholdValid}" Value="False">
                                             <Setter Property="Background" Value="LightCoral"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
-                                               
-                        <ui:TitledSlider Title="Spotter Bar Height" Maximum="129" Minimum="50" Value="{Binding Settings.Spotter.Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
+
+                        <ui:TitledSlider Title="Spotter Bar Height" Maximum="129" Minimum="50" Value="{Binding Plugin.Modules[Spotter].Settings.Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
                                          ToolTip="Height of the Spotter's orange bars"/>
 
-                        <ui:TitledSlider Title="Spotter Bar Min Height" Maximum="25" Minimum="0" Value="{Binding Settings.Spotter.MinHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
+                        <ui:TitledSlider Title="Spotter Bar Min Height" Maximum="25" Minimum="0" Value="{Binding Plugin.Modules[Spotter].Settings.MinHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
                                          ToolTip="Minimum height of the spotter's orange bar so it's easier to notice (0 to disable)"/>
 
-                        <ui:TitledSlider Title="Spotter Bar Width" Maximum="30" Minimum="10" Value="{Binding Settings.Spotter.Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
+                        <ui:TitledSlider Title="Spotter Bar Width" Maximum="30" Minimum="10" Value="{Binding Plugin.Modules[Spotter].Settings.Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
                                          ToolTip="Width of the Spotter's orange bars"/>
 
-                        <ui:TitledSlider Title="Spotter Bar Border" Maximum="3" Minimum="0" Value="{Binding Settings.Spotter.Border, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
+                        <ui:TitledSlider Title="Spotter Bar Border" Maximum="3" Minimum="0" Value="{Binding Plugin.Modules[Spotter].Settings.Border, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
                                          ToolTip="Thickness of the Spotter's border"/>
 
                         <styles:SHToggleCheckbox 
                             ToolTip="Enable the Rejoin Helper that shows the gap with the next incomming car." 
                             HorizontalAlignment="Left" Margin="0,10,4,4"
-                            IsChecked="{Binding Settings.RejoinHelper.Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            IsChecked="{Binding Plugin.Modules[RejoinHelper].Settings.Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Enable Rejoin Helper
                         </styles:SHToggleCheckbox>
 
                         <Label Content="Rejoin Helper Min 'Clear' Gap (seconds)" Margin="0,10,0,0"/>
 
-                        <TextBox Text="{Binding Settings.RejoinHelper.MinClearGapString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                        <TextBox Text="{Binding Plugin.Modules[RejoinHelper].Settings.MinClearGapString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
                                  ToolTip="Minimum gap in seconds at which the Rejoin Helper will show the 'Clear'.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Settings.RejoinHelper.MinClearGapValid}" Value="False">
+                                        <DataTrigger Binding="{Binding Plugin.Modules[RejoinHelper].Settings.MinClearGapValid}" Value="False">
                                             <Setter Property="Background" Value="LightCoral"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -159,13 +159,13 @@
 
                         <Label Content="Rejoin Helper Min 'Care' Gap (seconds)" Margin="0,10,0,0"/>
 
-                        <TextBox Text="{Binding Settings.RejoinHelper.MinCareGapString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                        <TextBox Text="{Binding Plugin.Modules[RejoinHelper].Settings.MinCareGapString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
                                  ToolTip="Minimum gap in seconds at which the Rejoin Helper will show the 'Care'.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Settings.RejoinHelper.MinCareGapValid}" Value="False">
+                                        <DataTrigger Binding="{Binding Plugin.Modules[RejoinHelper].Settings.MinCareGapValid}" Value="False">
                                             <Setter Property="Background" Value="LightCoral"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -173,13 +173,13 @@
                             </TextBox.Style>
                         </TextBox>
 
-                        <ui:TitledSlider Title="Rejoin Helper Min Speed (Km/h)" Maximum="60" Minimum="0" Value="{Binding Settings.RejoinHelper.MinSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
+                        <ui:TitledSlider Title="Rejoin Helper Min Speed (Km/h)" Maximum="60" Minimum="0" Value="{Binding Plugin.Modules[RejoinHelper].Settings.MinSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
                                          ToolTip="Speed in Km/h below which the Rejoin Helper will trigger."/>
 
                         <styles:SHToggleCheckbox 
                             ToolTip="Enable the Blind Spot Monitor that shows a yellow warning sign when cars overlap (iRacing does not specify left/right)." 
                             HorizontalAlignment="Left" Margin="0,10,4,4"
-                            IsChecked="{Binding Settings.BlindSpotMonitor.Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            IsChecked="{Binding Plugin.Modules[BlindSpotMonitor].Settings.Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Enable Blind Spot Monitor
                         </styles:SHToggleCheckbox>
                     </StackPanel>
@@ -189,13 +189,13 @@
                     <StackPanel>
                         <Label Content="Fuel Reserve (liters)"/>
 
-                        <TextBox Text="{Binding Settings.FuelCalc.FuelReserveString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                        <TextBox Text="{Binding Plugin.Modules[FuelCalc].Settings.FuelReserveString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
                                  ToolTip="How much fuel to keep as a reserve in liters to avoid bogging down the engine.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Settings.FuelCalc.FuelReserveValid}" Value="False">
+                                        <DataTrigger Binding="{Binding Plugin.Modules[FuelCalc].Settings.FuelReserveValid}" Value="False">
                                             <Setter Property="Background" Value="LightCoral"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -205,13 +205,13 @@
 
                         <Label Content="Extra Consumption (%)" Margin="0,10,0,0"/>
 
-                        <TextBox Text="{Binding Settings.FuelCalc.ExtraConsumptionPctString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                        <TextBox Text="{Binding Plugin.Modules[FuelCalc].Settings.ExtraConsumptionPctString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
                                  ToolTip="Extra per-lap consumption in percentage. Can be negative. Use this to increase/decrease the estimated average consumption per lap.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Settings.FuelCalc.ExtraConsumptionPctValid}" Value="False">
+                                        <DataTrigger Binding="{Binding Plugin.Modules[FuelCalc].Settings.ExtraConsumptionPctValid}" Value="False">
                                             <Setter Property="Background" Value="LightCoral"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -221,13 +221,13 @@
                         
                         <Label Content="Extra Lap(s)" Margin="0,10,0,0"/>
 
-                        <TextBox Text="{Binding Settings.FuelCalc.ExtraLapsString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                        <TextBox Text="{Binding Plugin.Modules[FuelCalc].Settings.ExtraLapsString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
                                  ToolTip="How many extra race laps of fuel to add as a safety. Can have decimals or be negative.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Settings.FuelCalc.ExtraLapsValid}" Value="False">
+                                        <DataTrigger Binding="{Binding Plugin.Modules[FuelCalc].Settings.ExtraLapsValid}" Value="False">
                                             <Setter Property="Background" Value="LightCoral"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -238,11 +238,11 @@
                         <styles:SHToggleCheckbox 
                             ToolTip="Enable a fuel warning before the race when the current setup is under-fueled." 
                             HorizontalAlignment="Left" Margin="0,20,4,4"
-                            IsChecked="{Binding Settings.FuelCalc.EnablePreRaceWarning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            IsChecked="{Binding Plugin.Modules[FuelCalc].Settings.EnablePreRaceWarning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Enable Pre-Race Fuel Warning
                         </styles:SHToggleCheckbox>
 
-                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Settings.FuelCalc.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" />
+                        <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[FuelCalc].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" />
                     </StackPanel>
                 </styles:SHSection>
 
@@ -264,7 +264,7 @@
                         <styles:SHSubSection Title="Step 3">
                             <StackPanel>
                                 <Label Content="Copy and paste the Browser Source URL here" Margin="0,0,0,0"/>
-                                <TextBox Text="{Binding Settings.TwitchChat.URL, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="600" HorizontalAlignment="Left"
+                                <TextBox Text="{Binding Plugin.Modules[TwitchChat].Settings.URL, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="600" HorizontalAlignment="Left"
                                     ToolTip="How many extra race laps of fuel to add as a safety. Can have decimals or be negative.">
                                 </TextBox>
                             </StackPanel>
