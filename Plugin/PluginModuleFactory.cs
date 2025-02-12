@@ -34,7 +34,7 @@ namespace benofficial2.Plugin
 
     public static class PluginModuleFactory
     {
-        public static List<IPluginModule> CreateAllPluginModules()
+        public static Dictionary<string, IPluginModule> CreateAllPluginModules()
         {
             // Get all types that implement IPluginModule
             var moduleTypes = Assembly.GetExecutingAssembly()
@@ -43,13 +43,13 @@ namespace benofficial2.Plugin
                                       .ToList();
 
             // Instantiate each module type
-            var modules = new List<IPluginModule>();
+            var modules = new Dictionary<string, IPluginModule>();
             foreach (var type in moduleTypes)
             {
                 var instance = Activator.CreateInstance(type) as IPluginModule;
                 if (instance != null)
                 {
-                    modules.Add(instance);
+                    modules[type.Name] = instance;
                 }
             }
 

@@ -24,9 +24,6 @@ using System.Threading.Tasks;
 
 namespace benofficial2.Plugin
 {
-    using System;
-    using System.Collections.Generic;
-
     public class Driver
     {
         public string Name { get; set; }

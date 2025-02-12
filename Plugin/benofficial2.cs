@@ -31,7 +31,7 @@ namespace benofficial2.Plugin
     public class benofficial2 : IPlugin, IDataPlugin, IWPFSettingsV2
     {
         public PluginSettings Settings;
-        public static List<IPluginModule> Modules { get; private set; }
+        public static Dictionary<string, IPluginModule> Modules { get; private set; }
 
         /// <summary>
         /// Instance of the current plugin manager
@@ -84,7 +84,7 @@ namespace benofficial2.Plugin
             Modules = PluginModuleFactory.CreateAllPluginModules();
 
             // Init each module
-            foreach (var module in Modules)
+            foreach (var module in Modules.Values)
             {
                 module.Init(pluginManager, this);
             }
@@ -135,7 +135,7 @@ namespace benofficial2.Plugin
         public void DataUpdate(PluginManager pluginManager, ref GameData data)
         {
             // Update each module
-            foreach (var module in Modules)
+            foreach (var module in Modules.Values)
             {
                 module.DataUpdate(pluginManager, this, ref data);
             }
@@ -160,7 +160,7 @@ namespace benofficial2.Plugin
         public void End(PluginManager pluginManager)
         {
             // End each module
-            foreach (var module in Modules)
+            foreach (var module in Modules.Values)
             {
                 module.End(pluginManager, this);
             }
