@@ -2,7 +2,6 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace benofficial2.Plugin
@@ -42,7 +41,7 @@ namespace benofficial2.Plugin
             }
             catch (Exception ex)
             {
-                SimHub.Logging.Current.Info($"An error occurred while checking for updates:\n{ex.Message}");
+                SimHub.Logging.Current.Error($"An error occurred while checking for benofficial2 plugin updates:\n{ex.Message}");
             }
         }
 
