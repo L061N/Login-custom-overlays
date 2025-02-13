@@ -246,7 +246,7 @@
                     </StackPanel>
                 </styles:SHSection>
 
-                <styles:SHSection Title="TWITCH CHAT OPTIONS" ShowSeparator="True" VerticalAlignment="Top">
+                <styles:SHSection Title="TWITCH CHAT OVERLAY OPTIONS" ShowSeparator="True" VerticalAlignment="Top">
                     <StackPanel>
                         <styles:SHSubSection Title="Step 1">
                             <styles:SHLinkButton HorizontalAlignment="Left" Click="ChatIs_Click" Content="Visit chatis.is2511.com" Margin="20,10,1,1"/>
