@@ -11,6 +11,9 @@ Name "${PRODUCT_NAME}"
 !include "MUI2.nsh"
 !include "InstallOptions.nsh"
 
+; Must have NsProcess plugin v1.6 installed (https://nsis.sourceforge.io/NsProcess_plugin)
+!include "nsProcess.nsh"
+
 ; MUI Settings
 !define MUI_ABORTWARNING
 ;!define MUI_ICON "installer.ico" ; Optional: Add your icon file here
@@ -35,6 +38,16 @@ Page Custom DependenciesPage DependenciesPageLeave
 
 ; Language Selection
 !insertmacro MUI_LANGUAGE "English"
+
+Function .onInit
+    ${nsProcess::FindProcess} "SimHubWPF.exe" $R0
+    ${If} $R0 == "0"
+        MessageBox MB_ICONEXCLAMATION|MB_RETRYCANCEL "SimHub is running. Please close it before continuing." IDRETRY retry
+        Quit
+        retry:
+        Call .onInit ; Retry the check
+    ${EndIf}
+FunctionEnd
 
 Function DependenciesPage
   ReserveFile "DependenciesPage.ini"
