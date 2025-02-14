@@ -185,6 +185,7 @@ Section "Uninstall"
   ; Remove the uninstaller itself
   Delete "$INSTDIR\bo2-official-overlays-uninstall.exe"
   Delete "$INSTDIR\bo2-official-overlays-license.txt"
+  Delete "$INSTDIR\benofficial2.Plugin.dll"
 
   DeleteRegKey /ifempty HKCU "${PRODUCT_DIR_REGKEY}"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bo2-official-overlays"
