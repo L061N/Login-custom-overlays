@@ -37,12 +37,12 @@ namespace benofficial2.Plugin
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
-            plugin.AttachDelegate(name: "PushToPass.Enabled", valueProvider: () => Enabled);
+            /*plugin.AttachDelegate(name: "PushToPass.Enabled", valueProvider: () => Enabled);
             plugin.AttachDelegate(name: "PushToPass.Activated", valueProvider: () => Activated);
             plugin.AttachDelegate(name: "PushToPass.Count", valueProvider: () => Count);
             plugin.AttachDelegate(name: "PushToPass.TimeLeft", valueProvider: () => TimeLeft);
             plugin.AttachDelegate(name: "PushToPass.TimeUsed", valueProvider: () => TimeUsed);
-            plugin.AttachDelegate(name: "PushToPass.Cooldown", valueProvider: () => Cooldown);
+            plugin.AttachDelegate(name: "PushToPass.Cooldown", valueProvider: () => Cooldown);*/
         }
 
         public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
