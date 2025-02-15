@@ -15,17 +15,17 @@ To see them in action, click the image above for a video demo.
 
 ### Included in the collection
 
-- **Standings box**: shows the live leaderboard
-- **Relative box**: shows drivers ahead / behind on track
-- **Track Map**: shows cars on a map
-- **Delta bar**: gives you feedback on your pace with time and speed deltas
-- **Inputs Telemetry**: shows pedal inputs and a graph
-- **Dash overlay**: shows various in-car settings and statuses (DRS, ERS, Fuel, BB, etc.)
-- **Setup Cover**: For streamers, hides the setup page when in garage
-- **Twitch Chat**: For streamers, shows your chat on screen
-- **Launch Assist**: shows precise pedal inputs to nail a perfect start
-- **Spotter**: shows orange bars when side-by-side with another car
-- **Fuel Calculator**: when in garage, shows how much fuel is needed for the race
+- **[Standings Box](#standings-box)**: shows the live leaderboard
+- **[Relative Box](#relative-box)**: shows drivers ahead / behind on track
+- **[Track Map](#track-map)**: shows cars on a map
+- **[Delta Bar](#delta-bar)**: gives you feedback on your pace with time and speed deltas
+- **[Inputs Telemetry](#inputs-telemetry)**: shows pedal inputs and a graph
+- **[Dash Overlay](#dash-overlay)**: shows various in-car settings and statuses (DRS, ERS, Fuel, BB, etc.)
+- **[Setup Cover](#setup-cover)**: For streamers, hides the setup page when in garage
+- **[Twitch Chat](#twitch-chat)**: For streamers, shows your chat on screen
+- **[Launch Assist](#launch-assist)**: shows precise pedal inputs to nail a perfect start
+- **[Spotter](#spotter)**: shows orange bars when side-by-side with another car
+- **[Fuel Calculator](#fuel-calculator)**: when in garage, shows how much fuel is needed for the race
 
 ## How to Get
 
@@ -206,7 +206,7 @@ Designed to be placed over the virtual mirror, but can be placed wherever you wa
 
 See `Config.js` in the overlay folder to configure the behavior and look.
 
-## Fuel Calculator (beta)
+## Fuel Calculator
 
 Shows up when in the garage / setup screen and tells you how much fuel is needed to start the race. Supports heat races and will determine if the race is limited by time or laps when both are specified. Useful for leagues that have a custom race length.
 
