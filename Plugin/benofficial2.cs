@@ -97,6 +97,10 @@ namespace benofficial2.Plugin
         /// <param name="data">Current game data, including current and previous data frame.</param>
         public void DataUpdate(PluginManager pluginManager, ref GameData data)
         {
+            if (!data.GameRunning) return;
+            if (data.GameName != "IRacing") return;
+            if (data.OldData == null || data.NewData == null) return;
+
             // Update each module
             foreach (var module in Modules.Values)
             {

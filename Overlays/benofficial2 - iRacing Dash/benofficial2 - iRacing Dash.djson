@@ -1,18 +1,6 @@
 {
   "Variables": {
-    "DashboardVariables": [
-      {
-        "VariableName": "p2pStatus",
-        "EvaluateOnlyOnce": false,
-        "OverrideWithParentDashboardVariableWhenAvailable": true,
-        "ValueExpression": {
-          "JSExt": 3,
-          "Interpreter": 1,
-          "Expression": "return generateP2pStatus();"
-        },
-        "EvaluateBeforeScreenRoles": false
-      }
-    ]
+    "DashboardVariables": []
   },
   "DashboardDebugManager": {
     "WindowPositionSettings": {
@@ -25,7 +13,7 @@
     }
   },
   "Version": 2,
-  "Id": "dc46c6c3-2774-42f4-9b24-3d5fde59b54f",
+  "Id": "563843ce-dab0-425f-b678-7b1e3cdc8513",
   "BaseHeight": 230,
   "BaseWidth": 582,
   "BackgroundColor": "#FF000000",
