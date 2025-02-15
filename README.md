@@ -31,11 +31,13 @@ To see them in action, click the image above for a video demo.
 
 Download and run the installer available from the [releases page](https://github.com/fixfactory/bo2-official-overlays/releases). You will be able to choose which overlays you wish to install. Comes with an uninstaller.
 
-Or, for the security-minded power-user, you can install without running any executable by cloning this repo and copying all the folders from `\Overlays` and pasting them into this folder in your SimHub directory: `C:\Program Files (x86)\SimHub\DashTemplates`
+Alternatively, for the security-minded power-user, you can install without running any executable by cloning this repo and copying all the folders from `\Overlays` and pasting them in this SimHub directory: `C:\Program Files (x86)\SimHub\DashTemplates`. Then compile the plugin in `\Plugin` with Visual Studio and copy `benofficial2.Plugin.dll` to `C:\Program Files (x86)\SimHub`.
 
 If you don't have them already, you must install these two:
 - [SimHub](https://www.simhubdash.com/download-2/): needed to run the overlays
 - [Romainrob's collection](https://www.simhubdash.com/community-2/dashboard-templates/romainrobs-collection/): needed for the excellent extra properties plugin
+
+When starting SimHub the next time, it will ask you to enable the newly installed plugins. Enable them and toggle "Show in Left Menu" to be able to configure the options.
 
 ## How to Use
 
