@@ -16,7 +16,7 @@
   },
   "DashboardDebugManager": {},
   "Version": 2,
-  "Id": "2338c202-c9fe-42e5-ba77-093d9511bb1b",
+  "Id": "e2c1e0e7-d28d-4ef6-9629-14554ebe9805",
   "BaseHeight": 87,
   "BaseWidth": 137,
   "BackgroundColor": "#FF000000",
@@ -186,7 +186,7 @@
               "Formula": {
                 "JSExt": 1,
                 "Interpreter": 1,
-                "Expression": "if (carHasPushToPassCount())\r\n{\r\n\treturn isnull($prop('benofficial2.PushToPass.Count'), 0);\r\n}\r\nelse if (carHasPushToPassTimer())\r\n{\r\n\tconst timeLeft = isnull($prop('benofficial2.PushToPass.TimeLeft'), 0);\r\n\treturn Number(timeLeft / 1000).toFixed(0);\r\n}\r\nelse if (carHasDrsCount())\r\n{\r\n\tvar drsCount = $prop('DataCorePlugin.GameRawData.Telemetry.DRS_Count');\r\n\treturn drsCount;\r\n}\r\nelse if (carHasErs())\r\n{\r\n\tvar ersBatteryPct = $prop('DataCorePlugin.GameRawData.Telemetry.EnergyERSBatteryPct');\r\n\treturn Number((ersBatteryPct * 100).toFixed(0));\r\n}\r\nelse if (carHasBoost())\r\n{\r\n\treturn $prop('GameRawData.Telemetry.dcBoostLevel');\r\n}\r\nelse if (carHasEnginePowerMode())\r\n{\r\n\treturn $prop('GameRawData.Telemetry.dcEnginePower');\r\n}\r\nreturn '';"
+                "Expression": "if (carHasPushToPassCount())\r\n{\r\n\treturn isnull($prop('benofficial2.PushToPass.Count'), 0);\r\n}\r\nelse if (carHasPushToPassTimer())\r\n{\r\n\tconst timeLeft = isnull($prop('benofficial2.PushToPass.TimeLeft'), 0);\r\n\treturn Number(timeLeft).toFixed(0);\r\n}\r\nelse if (carHasDrsCount())\r\n{\r\n\tvar drsCount = $prop('DataCorePlugin.GameRawData.Telemetry.DRS_Count');\r\n\treturn drsCount;\r\n}\r\nelse if (carHasErs())\r\n{\r\n\tvar ersBatteryPct = $prop('DataCorePlugin.GameRawData.Telemetry.EnergyERSBatteryPct');\r\n\treturn Number((ersBatteryPct * 100).toFixed(0));\r\n}\r\nelse if (carHasBoost())\r\n{\r\n\treturn $prop('GameRawData.Telemetry.dcBoostLevel');\r\n}\r\nelse if (carHasEnginePowerMode())\r\n{\r\n\treturn $prop('GameRawData.Telemetry.dcEnginePower');\r\n}\r\nreturn '';"
               },
               "Mode": 2
             },

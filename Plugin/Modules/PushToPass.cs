@@ -71,11 +71,11 @@ namespace benofficial2.Plugin
                 // We have to generate the other values.
                 Enabled = true;
                 Activated = (bool)data.NewData.PushToPassActive;
-                try { TimeLeft = raw.Telemetry["P2P_Count"] * 1000; }
+                try { TimeLeft = raw.Telemetry["P2P_Count"]; }
                 catch { TimeLeft = 0; }
 
                 // Total cooldown time at that track in milliseconds
-                TotalCooldown = getTotalCooldown(ref data) * 1000;
+                TotalCooldown = getTotalCooldown(ref data);
 
                 // Check if Push-to-Pass was toggled
                 if (Activated != _wasActivated)
@@ -119,9 +119,9 @@ namespace benofficial2.Plugin
                         if (_deactivatedTime != DateTime.MinValue)
                         {
                             TimeSpan deactivatedDuration = DateTime.Now - _deactivatedTime;
-                            if (deactivatedDuration.TotalMilliseconds < TotalCooldown)
+                            if (deactivatedDuration.TotalSeconds < TotalCooldown)
                             {
-                                Cooldown = (float)(TotalCooldown - deactivatedDuration.TotalMilliseconds);
+                                Cooldown = (float)(TotalCooldown - deactivatedDuration.TotalSeconds);
                             }
                             else
                             {

@@ -4,7 +4,7 @@
   },
   "DashboardDebugManager": {},
   "Version": 2,
-  "Id": "1e8d00b9-f22a-42d0-9a87-b07f3b67df6c",
+  "Id": "874260e4-ee5e-4fa5-942a-50ae5c2f3e59",
   "BaseHeight": 35,
   "BaseWidth": 137,
   "BackgroundColor": "#FF000000",
@@ -147,7 +147,7 @@
                   "Formula": {
                     "JSExt": 1,
                     "Interpreter": 1,
-                    "Expression": "if (carHasPushToPass())\r\n{\r\n    if (carHasPushToPassCooldown())\r\n    {\r\n    \tconst cooldown = isnull($prop('benofficial2.PushToPass.Cooldown'), 0);\r\n    \tif (cooldown > 0)\r\n\t    {\r\n        \treturn Number(cooldown / 1000).toFixed(1);\r\n    \t}\r\n    }\r\n    \r\n    if (carHasPushToPassCount())\r\n    {\r\n\t\treturn 'P2P';\r\n\t}\r\n\telse if (carHasPushToPassTimer())\r\n    {\r\n    \treturn 'OT ON';\r\n    }\r\n}\r\nreturn 'DRS'"
+                    "Expression": "if (carHasPushToPass())\r\n{\r\n    if (carHasPushToPassCooldown())\r\n    {\r\n    \tconst cooldown = isnull($prop('benofficial2.PushToPass.Cooldown'), 0);\r\n    \tif (cooldown > 0)\r\n\t    {\r\n        \treturn Number(cooldown).toFixed(1);\r\n    \t}\r\n    }\r\n    \r\n    if (carHasPushToPassCount())\r\n    {\r\n\t\treturn 'P2P';\r\n\t}\r\n\telse if (carHasPushToPassTimer())\r\n    {\r\n    \treturn 'OT ON';\r\n    }\r\n}\r\nreturn 'DRS'"
                   },
                   "Mode": 2
                 }
