@@ -81,6 +81,50 @@
 
                 <styles:SHSection Title="INPUT TELEMETRY OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel>
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show a scrolling chart with input values" 
+                            HorizontalAlignment="Left" Margin="0,0,4,4"
+                            IsChecked="{Binding Plugin.Modules[Telemetry].Settings.TracesVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show Trace Chart
+                        </styles:SHToggleCheckbox>
+
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show the steering input trace on the chart" 
+                            HorizontalAlignment="Left" Margin="0,10,4,4"
+                            IsChecked="{Binding Plugin.Modules[Telemetry].Settings.SteeringTraceVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show Steering Trace
+                        </styles:SHToggleCheckbox>
+
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show the handbrake input trace on the chart" 
+                            HorizontalAlignment="Left" Margin="0,10,4,4"
+                            IsChecked="{Binding Plugin.Modules[Telemetry].Settings.HandbrakeTraceVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show Handbrake Trace
+                        </styles:SHToggleCheckbox>
+
+                        <ui:TitledSlider Title="Trace Chart Width" Maximum="500" Minimum="100" Value="{Binding Plugin.Modules[Telemetry].Settings.TracesWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show a bar graph for each pedal input" 
+                            HorizontalAlignment="Left" Margin="0,0,4,4"
+                            IsChecked="{Binding Plugin.Modules[Telemetry].Settings.PedalsVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show Pedal Inputs
+                        </styles:SHToggleCheckbox>
+
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show a rotating steering wheel image" 
+                            HorizontalAlignment="Left" Margin="0,10,4,4"
+                            IsChecked="{Binding Plugin.Modules[Telemetry].Settings.SteeringVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show Steering Wheel
+                        </styles:SHToggleCheckbox>
+
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show the current gear and speed" 
+                            HorizontalAlignment="Left" Margin="0,10,4,4"
+                            IsChecked="{Binding Plugin.Modules[Telemetry].Settings.GearAndSpeedVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show Gear and Speed
+                        </styles:SHToggleCheckbox>
+
                         <ui:TitledSlider Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[Telemetry].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>
