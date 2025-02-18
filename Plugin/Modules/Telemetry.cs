@@ -19,7 +19,6 @@
 using GameReaderCommon;
 using SimHub.Plugins;
 using System.ComponentModel;
-using System.Drawing.Text;
 
 namespace benofficial2.Plugin
 {
@@ -157,9 +156,9 @@ namespace benofficial2.Plugin
         private const int _tracesWidth = 500;
         private const int _tracesLeft = 17;
         private const int _pedalsLeft = 492;
-        private const int _steeringLeft = 0;
+        private const int _steeringLeft = 650;
         private const int _gearAndSpeedLeft = 573;
-        private const int _backgroundWidth = 650;
+        private const int _backgroundWidth = 760;
 
         public TelemetrySettings Settings { get; set; }
 
@@ -209,12 +208,19 @@ namespace benofficial2.Plugin
             int gearAndSpeedOffset = 0;
             if (!Settings.GearAndSpeedVisible)
             {
-                gearAndSpeedOffset = -(_backgroundWidth - _gearAndSpeedLeft);
+                gearAndSpeedOffset = -(_steeringLeft - _gearAndSpeedLeft);
+            }
+
+            int steeringOffset = 0;
+            if (!Settings.SteeringVisible)
+            {
+                steeringOffset = -(_backgroundWidth - _steeringLeft);
             }
 
             PedalsLeft = _pedalsLeft + tracesOffset;
             GearAndSpeedLeft = _gearAndSpeedLeft + tracesOffset + pedalsOffset;
-            BackgroundWidth = _backgroundWidth + tracesOffset + pedalsOffset + gearAndSpeedOffset;
+            SteeringLeft = _steeringLeft + tracesOffset + pedalsOffset + gearAndSpeedOffset;
+            BackgroundWidth = _backgroundWidth + tracesOffset + pedalsOffset + gearAndSpeedOffset + steeringOffset;
         }
 
         public void End(PluginManager pluginManager, benofficial2 plugin)

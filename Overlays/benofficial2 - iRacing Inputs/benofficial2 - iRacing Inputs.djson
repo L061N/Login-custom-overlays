@@ -5,7 +5,7 @@
   "DashboardDebugManager": {
     "WindowPositionSettings": {
       "IsFullScreen": false,
-      "Position": "2583,317,741,146",
+      "Position": "2583,461,741,125",
       "TopMost": false,
       "AllowTransparency": true,
       "CloseOnMonitorLoss": false,
@@ -13,9 +13,9 @@
     }
   },
   "Version": 2,
-  "Id": "13e05a1e-b064-4939-88ae-b936498f5575",
+  "Id": "0ac0606d-728c-4302-992a-32f43f94917f",
   "BaseHeight": 128,
-  "BaseWidth": 650,
+  "BaseWidth": 760,
   "BackgroundColor": "#FF000000",
   "Screens": [
     {
@@ -60,7 +60,8 @@
               "Opacity": 60.0,
               "Top": 0.0,
               "Visible": true,
-              "Width": 650.0,
+              "Width": 760.0,
+              "IsFreezed": true,
               "Name": "Background",
               "RenderingSkip": 0,
               "MinimumRefreshIntervalMS": 0.0,
@@ -157,47 +158,6 @@
                   "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.ChartItem, SimHub.Plugins",
                   "ChartSuspended": false,
                   "ChartEnabled": true,
-                  "CurrentValue": 100.0,
-                  "Minimum": -1.0,
-                  "UseMinimum": true,
-                  "UseMaximum": true,
-                  "LineColor": "#FF3B5BC0",
-                  "LineTickness": 4,
-                  "Maximum": 101.0,
-                  "PointsCount": 200.0,
-                  "BackgroundColor": "#00FFFFFF",
-                  "Height": 128.0,
-                  "Left": -3.0,
-                  "Top": 0.0,
-                  "Visible": true,
-                  "Width": 500.0,
-                  "IsFreezed": true,
-                  "Name": "Clutch Trace",
-                  "RenderingSkip": 0,
-                  "MinimumRefreshIntervalMS": 0.0,
-                  "Bindings": {
-                    "CurrentValue": {
-                      "Formula": {
-                        "JSExt": 0,
-                        "Interpreter": 1,
-                        "Expression": "return $prop('Clutch');"
-                      },
-                      "Mode": 2
-                    },
-                    "Width": {
-                      "Formula": {
-                        "JSExt": 0,
-                        "Interpreter": 1,
-                        "Expression": "return isnull($prop('benofficial2.Telemetry.TracesWidth'), 500);"
-                      },
-                      "Mode": 2
-                    }
-                  }
-                },
-                {
-                  "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.ChartItem, SimHub.Plugins",
-                  "ChartSuspended": false,
-                  "ChartEnabled": true,
                   "CurrentValue": 0.0,
                   "Minimum": -1.0,
                   "UseMinimum": true,
@@ -238,6 +198,47 @@
                         "JSExt": 0,
                         "Interpreter": 1,
                         "Expression": "return isnull($prop('benofficial2.Telemetry.HandbrakeTraceVisible'), true);"
+                      },
+                      "Mode": 2
+                    }
+                  }
+                },
+                {
+                  "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.ChartItem, SimHub.Plugins",
+                  "ChartSuspended": false,
+                  "ChartEnabled": true,
+                  "CurrentValue": 100.0,
+                  "Minimum": -1.0,
+                  "UseMinimum": true,
+                  "UseMaximum": true,
+                  "LineColor": "#FF3B5BC0",
+                  "LineTickness": 4,
+                  "Maximum": 101.0,
+                  "PointsCount": 200.0,
+                  "BackgroundColor": "#00FFFFFF",
+                  "Height": 128.0,
+                  "Left": -3.0,
+                  "Top": 0.0,
+                  "Visible": true,
+                  "Width": 500.0,
+                  "IsFreezed": true,
+                  "Name": "Clutch Trace",
+                  "RenderingSkip": 0,
+                  "MinimumRefreshIntervalMS": 0.0,
+                  "Bindings": {
+                    "CurrentValue": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return $prop('Clutch');"
+                      },
+                      "Mode": 2
+                    },
+                    "Width": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return isnull($prop('benofficial2.Telemetry.TracesWidth'), 500);"
                       },
                       "Mode": 2
                     }
@@ -1039,6 +1040,59 @@
                   "Mode": 2
                 }
               }
+            },
+            {
+              "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.Layer, SimHub.Plugins",
+              "Group": true,
+              "Repetitions": 0,
+              "Childrens": [
+                {
+                  "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.ImageItem, SimHub.Plugins",
+                  "Image": "Steering-Wheel-iRacing",
+                  "AutoSize": false,
+                  "BackgroundColor": "#00FFFFFF",
+                  "Height": 100.0,
+                  "Left": 650.0,
+                  "Top": 14.0,
+                  "Visible": true,
+                  "Width": 100.0,
+                  "Name": "Steering",
+                  "RenderingSkip": 0,
+                  "MinimumRefreshIntervalMS": 0.0,
+                  "Bindings": {
+                    "Left": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return isnull($prop('benofficial2.Telemetry.SteeringLeft'), 650);"
+                      },
+                      "Mode": 2
+                    },
+                    "Rotation": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "const angleRad = isnull($prop('GameRawData.Telemetry.SteeringWheelAngle'), 0);\r\nreturn -angleRad * (180 / Math.PI);"
+                      },
+                      "Mode": 2
+                    }
+                  }
+                }
+              ],
+              "Visible": true,
+              "Name": "Steering",
+              "RenderingSkip": 0,
+              "MinimumRefreshIntervalMS": 0.0,
+              "Bindings": {
+                "Visible": {
+                  "Formula": {
+                    "JSExt": 0,
+                    "Interpreter": 1,
+                    "Expression": "return isnull($prop('benofficial2.Telemetry.SteeringVisible'), true);"
+                  },
+                  "Mode": 2
+                }
+              }
             }
           ],
           "Visible": true,
@@ -1106,7 +1160,19 @@
   "BackgroundOpacity": 50.0,
   "ShowBoundingRectangles": false,
   "GridSize": 10,
-  "Images": [],
+  "Images": [
+    {
+      "Name": "Steering-Wheel-iRacing",
+      "Extension": ".png",
+      "Modified": false,
+      "Optimized": true,
+      "Width": 256,
+      "Height": 256,
+      "Length": 12593,
+      "MD5": "3d0b76c2ff05ed8114e25ba1352f1564",
+      "Data": "iVBORw0KGgoAAAANSUhEUgAAAyAAAAMgCAMAAADsrvZaAAAKAGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICAgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIgogICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iCiAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIKICAgIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiCiAgICB4bWxuczpleGlmPSJodHRwOi8vbnMuYWRvYmUuY29tL2V4aWYvMS4wLyIKICAgZGM6Zm9ybWF0PSJpbWFnZS9wbmciCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgdGlmZjpJbWFnZUxlbmd0aD0iODAwIgogICB0aWZmOkltYWdlV2lkdGg9IjgwMCIKICAgdGlmZjpSZXNvbHV0aW9uVW5pdD0iMiIKICAgdGlmZjpYUmVzb2x1dGlvbj0iMzAwLzEiCiAgIHRpZmY6WVJlc29sdXRpb249IjMwMC8xIgogICB4bXA6Q3JlYXRlRGF0ZT0iMjAyMC0wNy0wMVQxODoyNDowOSswNTozMCIKICAgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyNS0wMi0xN1QxNzozNDo1NC0wODowMCIKICAgeG1wOk1vZGlmeURhdGU9IjIwMjUtMDItMTdUMTc6MzQ6NTQtMDg6MDAiCiAgIHhtcE1NOkRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDo0YTE5OTIxZS0yN2MyLTgyNGItYmEzMy1lZmY3ZjZiNmEyZGMiCiAgIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6YWZmODYwYjktODk2NS02NTRiLTg0MDMtMDkzMTZkNDNmYzg2IgogICB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9IkM4Rjk4QTFCMUI4RERBQzg2RjMzNjgwNEUwREUyMjg0IgogICBleGlmOlBpeGVsWERpbWVuc2lvbj0iODAwIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iODAwIgogICBleGlmOkNvbG9yU3BhY2U9IjEiPgogICA8ZGM6dGl0bGU+CiAgICA8cmRmOkFsdD4KICAgICA8cmRmOmxpIHhtbDpsYW5nPSJ4LWRlZmF1bHQiPlN0ZWVyaW5nLVdoZWVsLWlSYWNpbmc8L3JkZjpsaT4KICAgIDwvcmRmOkFsdD4KICAgPC9kYzp0aXRsZT4KICAgPHhtcE1NOkRlcml2ZWRGcm9tCiAgICB4bXBNTTpkb2N1bWVudElEPSJDOEY5OEExQjFCOEREQUM4NkYzMzY4MDRFMERFMjI4NCIKICAgIHhtcE1NOmluc3RhbmNlSUQ9InhtcC5paWQ6ZDFiYzg4NjUtZTNjZi0xNjQ0LWE1NGYtMTY0YTIxYzQzNmQxIgogICAgeG1wTU06b3JpZ2luYWxEb2N1bWVudElEPSJDOEY5OEExQjFCOEREQUM4NkYzMzY4MDRFMERFMjI4NCIvPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgeG1wTU06YWN0aW9uPSJzYXZlZCIKICAgICAgeG1wTU06Y2hhbmdlZD0iLyIKICAgICAgeG1wTU06aW5zdGFuY2VJRD0ieG1wLmlpZDpkMWJjODg2NS1lM2NmLTE2NDQtYTU0Zi0xNjRhMjFjNDM2ZDEiCiAgICAgIHhtcE1NOnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMS4wIChXaW5kb3dzKSIKICAgICAgeG1wTU06d2hlbj0iMjAyMC0wNy0wMVQyMzozNTozMCswNTozMCIvPgogICAgIDxyZGY6bGkKICAgICAgeG1wTU06YWN0aW9uPSJjb252ZXJ0ZWQiCiAgICAgIHhtcE1NOnBhcmFtZXRlcnM9ImZyb20gaW1hZ2UvanBlZyB0byBpbWFnZS9wbmciLz4KICAgICA8cmRmOmxpCiAgICAgIHhtcE1NOmFjdGlvbj0iZGVyaXZlZCIKICAgICAgeG1wTU06cGFyYW1ldGVycz0iY29udmVydGVkIGZyb20gaW1hZ2UvanBlZyB0byBpbWFnZS9wbmciLz4KICAgICA8cmRmOmxpCiAgICAgIHhtcE1NOmFjdGlvbj0ic2F2ZWQiCiAgICAgIHhtcE1NOmNoYW5nZWQ9Ii8iCiAgICAgIHhtcE1NOmluc3RhbmNlSUQ9InhtcC5paWQ6YWZmODYwYjktODk2NS02NTRiLTg0MDMtMDkzMTZkNDNmYzg2IgogICAgICB4bXBNTTpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgMjEuMCAoV2luZG93cykiCiAgICAgIHhtcE1NOndoZW49IjIwMjAtMDctMDFUMjM6MzU6MzArMDU6MzAiLz4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0icHJvZHVjZWQiCiAgICAgIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFmZmluaXR5IFBob3RvIDEuMTAuNiIKICAgICAgc3RFdnQ6d2hlbj0iMjAyNS0wMi0xN1QxNzozNDo1NC0wODowMCIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+SRk70gAAAYBpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZHPK0RRFMc/Hhr5EWFhYTEmrIYYNbGxGDEUFmOUwWbmeW9GzYzXe0+SrbJVlNj4teAvYKuslSJSsmZLbJie82bUSObc7rmf+73nnO49F5RoWs1YFT2QydpmJBzyzsRmvZ4XFBopow1fXLWMiamRKCXt404ixW663Fql4/61mgXNUqGsSnhQNUxbeFR4fMU2XN4WblZT8QXhU2G/KRcUvnX1RIGfXU4W+MtlMxoZAqVB2Jv8xYlfrKbMjLC8nPZMeln9uY/7klotOz0lq09mKxYRwoTwMsYwQwTpZUB8kC4CdMuOEvk9+fxJliRXFW+wiskiSVLY+EVdluqarLromow0q27///bV0vsCheq1Iah8cpy3DvBsQW7TcT4PHSd3BOWPcJEt5i8dQP+76JtFrX0f6tfh7LKoJXbgfANaHoy4Gc9L5TIVXYfXE6iLQdM1VM8VevZzzvE9RNfkq65gdw86Jb5+/htcJmfhk90AOAAAAPZQTFRFhYJ5nYxdgIB/zKAljIVykYdrl4pk2qYUoo9W1qUYr5RItJZBupk6wJszxp4s2KUW0KIf06Md1aQb6a0B2aYV26YT3KcR3qgO4KkM4qoK5KoI5qsF6KwDl4lj4qkKgoF8joZu0KIgy6AlxZ0si4VxhoJ4q5JMkodpppBSrZNK5asG46oJ36gN56wE0aIdxp0qwpwwvpo1upg5tZY/rpNHp5BPpI9To49VoI1Ynoxbmotf6q0Ak4hojYVvh4N3AAAAiYN1gICAlYllmIphppBRq5JKsZREtpc+u5k3wZsxyZ8o16UXkIZsl4pji4RyqJFPjIVxyUUm7oU2lgAAAFJ0Uk5T////////////////////////////////////////////////////////////////////////////////////////////////////////////AK0tDHEAAAAJcEhZcwAALiMAAC4jAXilP3YAACAASURBVHic7ZhNj2XZUUXtAhv8RQMtbIsqNQJLSC1bZoQYeJQSPWBk5f//M3RmVmVlvnfffffcE3vviBN7eWCpbXWeWBFLt7J+8miMuclP1A8wJjMOxJgdHIgxOzgQY3ZwIMbs4ECM2cGBGLODAzFmBwei4Cd/+7Of//R//vrLX/36N//wN//4T7/4xTf/8tvf/f6Pf/z46S8/8unjv373+9/99u+++cU///nf/+MPv/n1r37517//6c9/pn51SxwIiYev/Oe3f3nHt99++vbbp/+6+Oev/+TbV/739V+i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"
+    }
+  ],
   "Metadata": {
     "ScreenCount": 1.0,
     "InGameScreensIndexs": [
@@ -1128,7 +1194,7 @@
     "Title": "benofficial2 - iRacing Inputs",
     "Description": "",
     "Author": "twitch.tv/benofficial2, Romainrob ",
-    "Width": 650.0,
+    "Width": 760.0,
     "Height": 128.0,
     "DashboardVersion": ""
   },
