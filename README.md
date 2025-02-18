@@ -120,7 +120,7 @@ Showing car positions on a map. Supports multi-class colors.
 
 ## Delta Bar
 
-Giving you feedback on your pace. The **Delta Time** (center) and **Delta Speed** (right) are relative to your session's best lap. On the left, in a race, you get **Gap** and **Interval** information about your nearest competitor ahead and behind. Useful to know if your are improving or not relative to them.
+Giving you feedback on your pace. The **Delta Time** (center) and **Delta Speed** (right) are relative to your session's best lap. In qualifying, they are relative to your all-time best lap. On the left, in a race, you get **Gap** and **Interval** information about your nearest competitor ahead and behind. Useful to know if your are improving or not relative to them.
 
 <p align="center">
   <img src="Images/Delta-Best.png" width="400"/>
@@ -133,6 +133,8 @@ Giving you feedback on your pace. The **Delta Time** (center) and **Delta Speed*
 <p align="center">
   <img src="Images/Delta-Red.png" width="400"/>
 </p>
+
+This delta bar can help you improve your lap time by giving you on-the-spot feedback in a corner. Because the **Delta Speed** field is big enough, you'll be able to see it change color while keeping your eyes on the track. So you'll know instantly if your mid-corner speed was faster/slower for example. You'll learn quickly what works and what doesn't.
 
 ## Inputs Telemetry
 
