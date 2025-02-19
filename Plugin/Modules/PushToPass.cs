@@ -32,6 +32,7 @@ namespace benofficial2.Plugin
         public float TotalCooldown { get; set; } = 0.0f;
 
         private Track _trackModule = null;
+        private Car _carModule = null;
         private bool _wasActivated = false;
         private DateTime _activatedTime = DateTime.MinValue;
         private DateTime _deactivatedTime = DateTime.MinValue;
@@ -39,6 +40,7 @@ namespace benofficial2.Plugin
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _trackModule = plugin.GetModule<Track>();
+            _carModule = plugin.GetModule<Car>();
 
             plugin.AttachDelegate(name: "PushToPass.Enabled", valueProvider: () => Enabled);
             plugin.AttachDelegate(name: "PushToPass.Activated", valueProvider: () => Activated);
@@ -53,7 +55,7 @@ namespace benofficial2.Plugin
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
 
-            if (data.NewData.CarId == "dallarair18")
+            if (_carModule?.HasPushToPassCount ?? false)
             {
                 Enabled = true;
                 Activated = (bool)data.NewData.PushToPassActive;
@@ -63,7 +65,7 @@ namespace benofficial2.Plugin
                 Cooldown = 0;
                 TotalCooldown = 0;
             }
-            else if (data.NewData.CarId == "superformulasf23 toyota" || data.NewData.CarId == "superformulasf23 honda")
+            else if (_carModule?.HasPushToPassTimer ?? false)
             {
                 // For Super Formula, the telemetry only exposes 'activated' and 'timeLeft'.
                 // We have to generate the other values.
