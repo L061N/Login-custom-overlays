@@ -114,6 +114,7 @@
     <Compile Include="Modules\Spotter.cs" />
     <Compile Include="Modules\Standings.cs" />
     <Compile Include="Modules\Telemetry.cs" />
+    <Compile Include="Modules\Track.cs" />
     <Compile Include="Modules\TrackMap.cs" />
     <Compile Include="Modules\TwitchChat.cs" />
     <Compile Include="PluginModuleFactory.cs" />

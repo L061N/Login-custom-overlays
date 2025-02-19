@@ -30,7 +30,7 @@ namespace benofficial2.Plugin
     [PluginName("benofficial2 Plugin")]
     public class benofficial2 : IPlugin, IDataPlugin, IWPFSettingsV2
     {
-        public static Dictionary<string, IPluginModule> Modules { get; private set; }
+        public Dictionary<string, IPluginModule> Modules { get; private set; }
 
         /// <summary>
         /// Instance of the current plugin manager
@@ -133,14 +133,14 @@ namespace benofficial2.Plugin
             }
         }
 
-        public static T GetModule<T>() where T : class, IPluginModule
+        public T GetModule<T>() where T : class, IPluginModule
         {
             var key = typeof(T).Name;
             if (Modules.TryGetValue(key, out var module))
             {
                 return module as T;
             }
-            SimHub.Logging.Current.Info($"Starting benofficial2 plugin version {VersionChecker.CurrentVersion}");
+            SimHub.Logging.Current.Error($"Missing Plugin Module {typeof(T).Name}");
             return null;
         }
     }

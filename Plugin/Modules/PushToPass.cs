@@ -31,17 +31,15 @@ namespace benofficial2.Plugin
         public float Cooldown { get; set; } = 0.0f;
         public float TotalCooldown { get; set; } = 0.0f;
 
+        private Track _trackModule = null;
         private bool _wasActivated = false;
         private DateTime _activatedTime = DateTime.MinValue;
         private DateTime _deactivatedTime = DateTime.MinValue;
 
-        public PushToPass()
-        {
-            
-        }
-
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
+            _trackModule = plugin.GetModule<Track>();
+
             plugin.AttachDelegate(name: "PushToPass.Enabled", valueProvider: () => Enabled);
             plugin.AttachDelegate(name: "PushToPass.Activated", valueProvider: () => Activated);
             plugin.AttachDelegate(name: "PushToPass.Count", valueProvider: () => Count);
@@ -74,8 +72,8 @@ namespace benofficial2.Plugin
                 try { TimeLeft = raw.Telemetry["P2P_Count"]; }
                 catch { TimeLeft = 0; }
 
-                // Total cooldown time at that track in milliseconds
-                TotalCooldown = getTotalCooldown(ref data);
+                // Total cooldown time at that track in seconds
+                TotalCooldown = _trackModule?.PushToPassCooldown ?? 0.0f;
 
                 // Check if Push-to-Pass was toggled
                 if (Activated != _wasActivated)
@@ -148,18 +146,9 @@ namespace benofficial2.Plugin
             }
         }
 
-
         public void End(PluginManager pluginManager, benofficial2 plugin)
         {
 
-        }
-
-        // Returns the P2P Cooldown Time (aka ReTime) in seconds based on the current track.
-        public float getTotalCooldown(ref GameData data)
-        {
-            string trackIds120 = "twinring fullrc, fuji gp";
-            if (trackIds120.IndexOf(data.NewData.TrackId) != -1) return 120;
-            return 100;
         }
     }
 }
