@@ -104,6 +104,7 @@
   <ItemGroup>
     <Compile Include="benofficial2.cs" />
     <Compile Include="Modules\BlindSpotMonitor.cs" />
+    <Compile Include="Modules\Car.cs" />
     <Compile Include="Modules\Dash.cs" />
     <Compile Include="Modules\Delta.cs" />
     <Compile Include="Modules\FuelCalc.cs" />

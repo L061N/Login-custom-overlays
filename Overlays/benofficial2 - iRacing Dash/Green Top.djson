@@ -4,7 +4,7 @@
   },
   "DashboardDebugManager": {},
   "Version": 2,
-  "Id": "874260e4-ee5e-4fa5-942a-50ae5c2f3e59",
+  "Id": "d2ed20f3-0e8f-4fc8-a21d-775cdb8ecc8f",
   "BaseHeight": 35,
   "BaseWidth": 137,
   "BackgroundColor": "#FF000000",
@@ -163,7 +163,7 @@
               "Formula": {
                 "JSExt": 1,
                 "Interpreter": 1,
-                "Expression": "if (carHasPushToPass())\r\n{\r\n\t/*const p2p = $prop('variable.p2pStatus');\r\n\tif (p2p != null)\r\n\t{\r\n\t\tif (carHasPushToPassCooldown() && p2p.cooldown > 0)\r\n\t\t{\r\n\t\t\treturn true;\r\n\t\t}\r\n\t\treturn p2p.activated;\r\n\t}*/\r\n\tif (carHasPushToPassCooldown())\r\n\t{\r\n\t\tconst cooldown = isnull($prop('benofficial2.PushToPass.Cooldown'), 0);\r\n\t\tif (cooldown > 0)\r\n\t\t{\r\n\t\t\treturn true;\r\n\t\t}\r\n\t}\r\n\treturn isnull($prop('benofficial2.PushToPass.Activated'), false);\r\n}\r\nelse if (carHasDrsDetection())\r\n{\r\n\t// 1 = available soon (in detection zone)\r\n\t// 2 = available now\r\n\t// 3 = active\r\n\tconst drsStatus = $prop('DataCorePlugin.GameRawData.Telemetry.DRS_Status');\r\n\treturn drsStatus > 0\r\n}\r\nelse\r\n{\r\n\t// 1 = available\r\n\t// 2 = active\r\n\tconst drsStatus = $prop('DataCorePlugin.GameRawData.Telemetry.DRS_Status');\r\n\treturn drsStatus == 2;\r\n}\r\nreturn false;"
+                "Expression": "if (carHasPushToPass())\r\n{\r\n\tif (carHasPushToPassCooldown())\r\n\t{\r\n\t\tconst cooldown = isnull($prop('benofficial2.PushToPass.Cooldown'), 0);\r\n\t\tif (cooldown > 0)\r\n\t\t{\r\n\t\t\treturn true;\r\n\t\t}\r\n\t}\r\n\treturn isnull($prop('benofficial2.PushToPass.Activated'), false);\r\n}\r\nelse if (carHasDrsDetection())\r\n{\r\n\t// 1 = available soon (in detection zone)\r\n\t// 2 = available now\r\n\t// 3 = active\r\n\tconst drsStatus = $prop('DataCorePlugin.GameRawData.Telemetry.DRS_Status');\r\n\treturn drsStatus > 0\r\n}\r\nelse\r\n{\r\n\t// 1 = available\r\n\t// 2 = active\r\n\tconst drsStatus = $prop('DataCorePlugin.GameRawData.Telemetry.DRS_Status');\r\n\treturn drsStatus == 2;\r\n}\r\nreturn false;"
               },
               "Mode": 2
             }

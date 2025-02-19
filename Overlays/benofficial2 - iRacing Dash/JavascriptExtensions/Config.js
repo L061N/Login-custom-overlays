@@ -18,292 +18,190 @@
 
 function carIsGT3()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'mclaren720sgt3') ||
-           (carId == 'chevyvettez06rgt3') ||
-           (carId == 'fordmustanggt3') ||
-           (carId == 'audir8lmsevo2gt3') ||
-           (carId == 'ferrari296gt3') ||
-           (carId == 'porsche992rgt3') ||
-           (carId == 'mercedesamggt3') ||
-           (carId == 'bmwm4gt3') ||
-           (carId == 'lamborghinievogt3') ||
-           (carId == 'mclarenmp4') ||
-           (carId == 'porsche911rgt3') ||
-           (carId == 'ferrari488gt3') ||
-           (carId == 'audir8gt3') ||
-           (carId == 'bmwz4gt3') ||
-           (carId == 'acuransxevo22gt3');
+    return isnull($prop('benofficial2.Car.IsGT3'), false);
 }
 
 function carIsGT4()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'bmwm4gt4') ||
-           (carId == 'bmwm4evogt4') ||
-           (carId == 'mercedesamggt4') ||
-           (carId == 'amvantagegt4') ||
-           (carId == 'porsche718gt4') ||
-           (carId == 'mclaren570sgt4');
+    return isnull($prop('benofficial2.Car.IsGT4'), false);
 }
 
 function carIsGTE()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'bmwm8gte') ||
-           (carId == 'porsche991rsr') ||
-           (carId == 'ferrari488gte') ||
-           (carId == 'c8rvettegte') ||
-           (carId == 'fordgt2017');
+    return isnull($prop('benofficial2.Car.IsGTE'), false);
 }
 
 function carIsLMDh()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'cadillacvseriesrgtp') ||
-           (carId == 'acuraarx06gtp') ||
-           (carId == 'porsche963gtp') ||
-           (carId == 'ferrari499p');
+    return isnull($prop('benofficial2.Car.IsGTP'), false);
 }
 
 // Used for the small top green box.
 function carHasPushToPass()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'dallarair18') ||
-           (carId == 'dallaradw12') ||
-           (carId == 'superformulasf23 toyota') ||
-           (carId == 'superformulasf23 honda');
+    return isnull($prop('benofficial2.Car.HasPushToPass'), false);
 }
 
 // Used for the upper green box.
 function carHasPushToPassCount()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'dallarair18') ||
-           (carId == 'dallaradw12');
+    return isnull($prop('benofficial2.Car.HasPushToPassCount'), false);
 }
 
 // Used for the upper green box.
 function carHasPushToPassTimer()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'superformulasf23 toyota') ||
-           (carId == 'superformulasf23 honda');
+    return isnull($prop('benofficial2.Car.HasPushToPassTimer'), false);
 }
 
 // Used for the small top green box.
 function carHasPushToPassCooldown()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'superformulasf23 toyota') ||
-           (carId == 'superformulasf23 honda');
+    return isnull($prop('benofficial2.Car.HasPushToPassCooldown'), false);
 }
 
 // Used for the small top green box.
 function carHasDrsDetection()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'mclarenmp430') || 
-           (carId == 'mercedesw12') || 
-           (carId == 'mercedesw13');
+    return isnull($prop('benofficial2.Car.HasDrsDetection'), false);
 }
 
 // Used for the small top green box.
 function carHasDrsCount()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'formularenault35');
+    return isnull($prop('benofficial2.Car.HasDrsCount'), false);
 }
 
 // Used for the upper green box.
 function carHasErs()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return carIsLMDh() || 
-           (carId == 'mercedesw12') || 
-           (carId == 'mercedesw13') ||
-           (carId == 'mclarenmp430');
+    return isnull($prop('benofficial2.Car.HasErs'), false);
 }
 
 // Used for the upper green box.
 function carHasBoost()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'radicalsr10');
+    return isnull($prop('benofficial2.Car.HasBoost'), false);
 }
 
 // Used for the upper green box.
 function carHasEnginePowerMode()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'williamsfw31');
+    return isnull($prop('benofficial2.Car.HasEnginePowerMode'), false);
 }
 
 // Used for the lower green box.
 function carHasDeployMode()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return carIsLMDh() || 
-           (carId == 'mercedesw12') || 
-           (carId == 'mercedesw13') ||
-           (carId == 'mclarenmp430');
+    return isnull($prop('benofficial2.Car.HasDeployMode'), false);
 }
 
 // Used for the lower green box.
 // This mode shows a target SoC value, or 'Qual'.
 function carHasDeployModeType1()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'mclarenmp430');
+    return isnull($prop('benofficial2.Car.HasDeployModeType1'), false);
 }
 
 // Used for the lower green box.
 // This mode shows a named mode 'Build', 'Bal', etc.
 function carHasDeployModeType2()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return carIsLMDh() || 
-           (carId == 'mercedesw12') ||
-           (carId == 'mercedesw13');
+    return isnull($prop('benofficial2.Car.HasDeployModeType2'), false);
 }
 
 // Used for the lower green box.
 function carHasThrottleShaping()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return carIsGT3() || 
-           (carId == 'formularenault35') ||
-           (carId == 'radicalsr10') ||
-           (carId == 'dallarap217') ||
-           (carId == 'dallarair01') ||
-           (carId == 'superformulasf23 toyota') ||
-           (carId == 'superformulasf23 honda') ||
-           (carId == 'ligierjsp320');
+    return isnull($prop('benofficial2.Car.HasThrottleShaping'), false);
 }
 
 // Used for the lower green box.
 function carHasFuelMix()
 {
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-    return carIsGTE() || 
-           (carId == 'dallarair18') ||
-           (carId == 'dallaradw12') ||
-           (carId == 'williamsfw31');
+    return isnull($prop('benofficial2.Car.HasFuelMix'), false);
 }
 
 // Used for cars that show their ARB as 'P2' instead of '1'.
 function carHasARBModeP()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'dallarair01');
+    return isnull($prop('benofficial2.Car.HasARBModeP'), false);
 }
 
 // Used for the upper orange box.
 function carHasFrontARB()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'dallarair18') ||
-           (carId == 'dallaradw12') ||
-           (carId == 'dallarair01');
+    return isnull($prop('benofficial2.Car.HasFrontARB'), false);
 }
 
 // Used for the upper orange box.
 function carHasExitDiff()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'williamsfw31');
+    return isnull($prop('benofficial2.Car.HasExitDiff'), false);
 }
 
 // Used for the upper orange box.
 function carHasEntryDiffPreload()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'mclarenmp430');
+    return isnull($prop('benofficial2.Car.HasEntryDiffPreload'), false);
 }
 
 // Used for the upper orange box.
 function carHasTC2()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return carIsGTE() ||
-           carIsLMDh() ||
-           (carId == 'dallarap217');
+    return isnull($prop('benofficial2.Car.HasTC2'), false);
 }
 
 // Used for the lower orange box.
 function carHasRearARB()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'dallarair18') ||
-           (carId == 'dallaradw12') ||
-           (carId == 'dallarair01');
+    return isnull($prop('benofficial2.Car.HasRearARB'), false);
 }
 
 // Used for the lower orange box.
 function carHasEntryDiff()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'mclarenmp430') ||
-           (carId == 'mercedesw13') ||
-           (carId == 'williamsfw31');
+    return isnull($prop('benofficial2.Car.HasEntryDiff'), false);
 }
 
 // Used for the lower orange box.
 function carHasTC()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return carIsGT3() ||
-           carIsGTE() ||
-           carIsGT4() ||
-           carIsLMDh() ||
-           (carId == 'dallarap217') ||
-           (carId == 'ligierjsp320') ||
-           (carId == 'ferrari499p');
+    return isnull($prop('benofficial2.Car.HasTC'), false);
 }
 
 // Used for the upper red box.
 function carHasTwoPartBrakeBias()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'mclarenmp430');
+    return isnull($prop('benofficial2.Car.HasTwoPartBrakeBias'), false);
 }
 
 // Used for the lower red box.
 function carHasWeightJacker()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'dallarair18') ||
-           (carId == 'dallaradw12');
+    return isnull($prop('benofficial2.Car.HasWeightJacker'), false);
 }
 
 // Used for the lower red box.
 function carHasTwoPartPeakBrakeBias()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'mclarenmp430');
+    return isnull($prop('benofficial2.Car.HasTwoPartPeakBrakeBias'), false);
 }
 
 // Used for the lower red box.
 function carHasABS()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return carIsGT3() ||
-           carIsGT4();
+    return isnull($prop('benofficial2.Car.HasABS'), false);
 }
 
 // Used for the lower red box.
 function carHasFineBrakeBias()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'mercedesw13');
+    return isnull($prop('benofficial2.Car.HasFineBrakeBias'), false);
 }
 
 // Used for the lower red box.
 function carHasBrakeBiasMigration()
 {
-    var carId = $prop('DataCorePlugin.GameData.CarId');
-    return (carId == 'cadillacvseriesrgtp') ||
-           (carId == 'porsche963gtp') ||
-           (carId == 'ferrari499p');
+    return isnull($prop('benofficial2.Car.HasBrakeBiasMigration'), false);
 }
