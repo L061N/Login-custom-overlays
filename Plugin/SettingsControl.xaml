@@ -85,7 +85,7 @@
                             ToolTip="Show a scrolling chart with input values" 
                             HorizontalAlignment="Left" Margin="0,0,4,4"
                             IsChecked="{Binding Plugin.Modules[Telemetry].Settings.TracesVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            Show Trace Chart
+                            Show Traces
                         </styles:SHToggleCheckbox>
 
                         <styles:SHToggleCheckbox 
