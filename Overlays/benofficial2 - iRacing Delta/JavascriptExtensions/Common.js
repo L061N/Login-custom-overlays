@@ -25,15 +25,7 @@ function isGameIRacing()
 
 function isReplayPlaying()
 {
-    if (isGameIRacing())
-    {
-        // There's a short moment when loading into a session when isReplayPlaying is false but position is -1
-        const isReplayPlaying = $prop('DataCorePlugin.GameRawData.Telemetry.IsReplayPlaying');
-        const position = $prop('DataCorePlugin.GameRawData.Telemetry.PlayerCarPosition');
-        const trackSurface = $prop('DataCorePlugin.GameRawData.Telemetry.PlayerTrackSurface');
-        return isReplayPlaying || position < 0 || trackSurface < 0;
-    }
-    return false;
+    return isnull($prop('benofficial2.Session.ReplayPlaying'), false);
 }
 
 function isInPitLane()
@@ -59,28 +51,22 @@ function isDriving()
 
 function isRace()
 {
-    var sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
-    return String(sessionTypeName).indexOf('Race') != -1;   
+    return isnull($prop('benofficial2.Session.Race'), false);
 }
 
 function isQual()
 {
-    var sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
-    return String(sessionTypeName).indexOf('Qual') != -1;
+    return isnull($prop('benofficial2.Session.Qual'), false);
 }
 
 function isPractice()
 {
-    var sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
-    return (String(sessionTypeName).indexOf('Practice') != -1) ||
-           (String(sessionTypeName).indexOf('Warmup') != -1) ||
-           (String(sessionTypeName).indexOf('Testing') != -1);
+    return isnull($prop('benofficial2.Session.Practice'), false);
 }
 
 function isOffline()
 {
-    var sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
-    var isPractice = String(sessionTypeName).indexOf('Offline') != -1;
+    return isnull($prop('benofficial2.Session.Offline'), false);
 }
 
 function isInvalidTime(time)
