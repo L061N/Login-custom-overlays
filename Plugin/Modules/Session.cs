@@ -66,13 +66,13 @@ namespace benofficial2.Plugin
             // There's a short moment when loading into a session when isReplayPlaying is false
             // but position or trackSurface is -1.
             bool isReplayPLaying = false;
-            try { isReplayPLaying = raw.Telemetry["IsReplayPlaying"]; } catch { }
+            try { isReplayPLaying = (bool)raw.Telemetry["IsReplayPlaying"]; } catch { }
 
             int position = -1;
-            try { position = raw.Telemetry["PlayerCarPosition"]; } catch { }
+            try { position = (int)raw.Telemetry["PlayerCarPosition"]; } catch { }
 
             int trackSurface = -1;
-            try { trackSurface = raw.Telemetry["PlayerTrackSurface"]; } catch { }
+            try { trackSurface = (int)raw.Telemetry["PlayerTrackSurface"]; } catch { }
             
             ReplayPlaying = isReplayPLaying || position < 0 || trackSurface < 0;
         }

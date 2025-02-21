@@ -36,7 +36,7 @@
     }
   },
   "Version": 2,
-  "Id": "893317a9-98ac-4450-9455-ee1db3deb6a8",
+  "Id": "440b9793-f71a-4ad7-a739-7852965274d7",
   "BaseHeight": 115,
   "BaseWidth": 695,
   "BackgroundColor": "#FF000000",
@@ -326,7 +326,7 @@
                 "JSExt": 1,
                 "Interpreter": 1,
                 "Expression": "return checkVersion(g_VersionName, g_VersionNumber);",
-                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'delta'\r\nconst g_VersionNumber = '1.9'"
+                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'delta'\r\nconst g_VersionNumber = '1.10'"
               },
               "Mode": 2
             }

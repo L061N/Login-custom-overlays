@@ -18,6 +18,7 @@
 
 using GameReaderCommon;
 using SimHub.Plugins;
+using System;
 using System.ComponentModel;
 
 namespace benofficial2.Plugin
@@ -48,17 +49,42 @@ namespace benofficial2.Plugin
 
     public class Delta : IPluginModule
     {
+        private Session _sessionModule = null;
+
+        public float Speed { get; internal set; } = 0.0f;
+
         public DeltaSettings Settings { get; set; }
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
+            _sessionModule = plugin.GetModule<Session>();
+
             Settings = plugin.ReadCommonSettings<DeltaSettings>("DeltaSettings", () => new DeltaSettings());
             plugin.AttachDelegate(name: "Delta.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
+            plugin.AttachDelegate(name: "Delta.Speed", valueProvider: () => Speed);
         }
 
         public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
+            dynamic raw = data.NewData.GetRawDataObject();
+            if (raw == null) return;
+            if (_sessionModule == null) return;
 
+            float delta = 0.0f;
+            if (_sessionModule.Practice)
+            {
+                try { delta = (float)raw.Telemetry["LapDeltaToSessionBestLap_DD"]; } catch { }
+            }
+            else if (_sessionModule.Race)
+            {
+                try { delta = (float)raw.Telemetry["LapDeltaToSessionBestLap_DD"]; } catch { }
+            }
+            else if (_sessionModule.Qual)
+            {
+                try { delta = (float)raw.Telemetry["LapDeltaToBestLap_DD"]; } catch { }
+            }
+
+            Speed = Math.Min((float)data.NewData.SpeedLocal, (float)data.NewData.SpeedLocal * -delta);
         }
 
         public void End(PluginManager pluginManager, benofficial2 plugin)
