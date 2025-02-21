@@ -106,17 +106,6 @@ namespace benofficial2.Plugin
             {
                 module.DataUpdate(pluginManager, this, ref data);
             }
-
-            // Define the value of our property (declared in init)
-            if (data.GameRunning)
-            {
-                if (data.OldData != null && data.NewData != null)
-                {
-                    dynamic raw = data.NewData.GetRawDataObject();
-                    string playerName = raw.SessionData.DriverInfo.CompetingDrivers[0].UserName;
-                    float oilLevel = raw.Telemetry.OilLevel;
-                }
-            }
         }
 
         /// <summary>
