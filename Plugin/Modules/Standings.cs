@@ -94,7 +94,7 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class Driver
+    public class StandingRow
     {
         public bool RowVisible { get; set; } = false;
         public string PlayerID { get; set; } = "";
@@ -114,14 +114,14 @@ namespace benofficial2.Plugin
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
     }
 
-    public class CarClass
+    public class StandingCarClass
     {
-        public const int MaxDrivers = 64;
-        public List<Driver> Drivers;
+        public const int MaxRows = 64;
+        public List<StandingRow> Rows;
 
-        public CarClass()
+        public StandingCarClass()
         {
-            Drivers = new List<Driver>(Enumerable.Range(0, MaxDrivers).Select(x => new Driver()));
+            Rows = new List<StandingRow>(Enumerable.Range(0, MaxRows).Select(x => new StandingRow()));
         }
     }
 
@@ -133,13 +133,13 @@ namespace benofficial2.Plugin
         public StandingsSettings Settings { get; set; }
 
         public const int MaxCarClasses = 4;
-        public List<CarClass> CarClasses;
+        public List<StandingCarClass> CarClasses;
 
         public int PlayerCarClassIdx { get; internal set; } = 0;
 
         public Standings()
         {
-            CarClasses = new List<CarClass>(Enumerable.Range(0, MaxCarClasses).Select(x => new CarClass()));
+            CarClasses = new List<StandingCarClass>(Enumerable.Range(0, MaxCarClasses).Select(x => new StandingCarClass()));
         }
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
@@ -150,26 +150,26 @@ namespace benofficial2.Plugin
 
             for (int carClassIdx = 0; carClassIdx < MaxCarClasses; carClassIdx++)
             {
-                CarClass carClass = CarClasses[carClassIdx];
-                for (int driverIdx = 0; driverIdx < CarClass.MaxDrivers; driverIdx++)
+                StandingCarClass carClass = CarClasses[carClassIdx];
+                for (int rowIdx = 0; rowIdx < StandingCarClass.MaxRows; rowIdx++)
                 {
-                    Driver driver = carClass.Drivers[driverIdx];
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.RowVisible", valueProvider: () => driver.RowVisible);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.PlayerID", valueProvider: () => driver.PlayerID);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.Position", valueProvider: () => driver.Position);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.CarNumber", valueProvider: () => driver.CarNumber);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.Name", valueProvider: () => driver.Name);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.IsCarInPitLane", valueProvider: () => driver.IsCarInPitLane);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.OutLap", valueProvider: () => driver.OutLap);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.PitEnterAtLap", valueProvider: () => driver.PitEnterAtLap);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.iRating", valueProvider: () => driver.iRating);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.iRatingText", valueProvider: () => driver.iRatingText);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.CurrentLap", valueProvider: () => driver.CurrentLap);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.LapsToClassLeader", valueProvider: () => driver.LapsToClassLeader);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.GaptoClassLeader", valueProvider: () => driver.GaptoClassLeader);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.TireCompound", valueProvider: () => driver.TireCompound);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.TireCompoundVisible", valueProvider: () => driver.TireCompoundVisible);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Driver{driverIdx:00}.BestLapTime", valueProvider: () => driver.BestLapTime);
+                    StandingRow driver = carClass.Rows[rowIdx];
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.RowVisible", valueProvider: () => driver.RowVisible);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PlayerID", valueProvider: () => driver.PlayerID);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Position", valueProvider: () => driver.Position);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CarNumber", valueProvider: () => driver.CarNumber);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Name", valueProvider: () => driver.Name);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.IsCarInPitLane", valueProvider: () => driver.IsCarInPitLane);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.OutLap", valueProvider: () => driver.OutLap);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PitEnterAtLap", valueProvider: () => driver.PitEnterAtLap);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.iRating", valueProvider: () => driver.iRating);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.iRatingText", valueProvider: () => driver.iRatingText);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CurrentLap", valueProvider: () => driver.CurrentLap);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LapsToClassLeader", valueProvider: () => driver.LapsToClassLeader);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.GaptoClassLeader", valueProvider: () => driver.GaptoClassLeader);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompound", valueProvider: () => driver.TireCompound);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompoundVisible", valueProvider: () => driver.TireCompoundVisible);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.BestLapTime", valueProvider: () => driver.BestLapTime);
                 }
             }
         }
@@ -183,7 +183,7 @@ namespace benofficial2.Plugin
 
             for (int carClassIdx = 0; carClassIdx < MaxCarClasses; carClassIdx++)
             {
-                CarClass carClass = CarClasses[carClassIdx];
+                StandingCarClass carClass = CarClasses[carClassIdx];
                 if (carClassIdx < data.NewData.OpponentsClassses.Count)
                 {
                     List<Opponent> opponents = data.NewData.OpponentsClassses[carClassIdx].Opponents;
@@ -191,27 +191,27 @@ namespace benofficial2.Plugin
                     // Find how many rows to skip to have a lead-focused leaderboard
                     int maxRowCount = 0;
                     int skipRowCount = 0;
-                    int playerDriverIdx = -1;
+                    int playerOpponentIdx = -1;
                     if (PlayerCarClassIdx == carClassIdx)
                     {
                         maxRowCount = Settings.MaxRowsPlayerClass;
 
                         // Find the player's driverIdx in the class
-                        for (int driverIdx = 0; driverIdx < opponents.Count; driverIdx++)
+                        for (int opponentIdx = 0; opponentIdx < opponents.Count; opponentIdx++)
                         {
-                            if (opponents[driverIdx].IsPlayer)
+                            if (opponents[opponentIdx].IsPlayer)
                             {
-                                playerDriverIdx = driverIdx;
+                                playerOpponentIdx = opponentIdx;
                                 break;
                             }
                         }
 
                         // Too many rows to be shown
-                        if (playerDriverIdx > Settings.MaxRowsPlayerClass - 1)
+                        if (playerOpponentIdx > Settings.MaxRowsPlayerClass - 1)
                         {
                             int shown = Math.Max(0, opponents.Count - Settings.LeadFocusedRows);
-                            int before = Math.Max(0, playerDriverIdx - Settings.LeadFocusedRows);
-                            int after = Math.Max(0, opponents.Count - playerDriverIdx);
+                            int before = Math.Max(0, playerOpponentIdx - Settings.LeadFocusedRows);
+                            int after = Math.Max(0, opponents.Count - playerOpponentIdx);
 
                             // Center the player in the view by trying to keep as many rows before as after
                             while (shown > Math.Max(0, Settings.MaxRowsPlayerClass - Settings.LeadFocusedRows)) 
@@ -235,66 +235,66 @@ namespace benofficial2.Plugin
                         maxRowCount = Settings.MaxRowsOtherClasses;
                     }
 
-                    int rowCount = 0;
-                    for (int driverIdx = 0; driverIdx < CarClass.MaxDrivers; driverIdx++)
+                    int visibleRowCount = 0;
+                    for (int rowIdx = 0; rowIdx < StandingCarClass.MaxRows; rowIdx++)
                     {
-                        rowCount++;
-                        Driver driver = carClass.Drivers[driverIdx];
-                        if (rowCount > maxRowCount)
+                        StandingRow row = carClass.Rows[rowIdx];
+                        if (visibleRowCount >= maxRowCount)
                         {
-                            ResetDriver(driver);
+                            ResetRow(row);
                             continue;
                         }
 
-                        if (driverIdx >= opponents.Count)
+                        if (rowIdx >= opponents.Count)
                         {
-                            ResetDriver(driver);
+                            ResetRow(row);
                             continue;
                         }
 
-                        int actualDriverIdx = driverIdx;
-                        if (driverIdx > Settings.LeadFocusedRows)
+                        int actualDriverIdx = rowIdx;
+                        if (rowIdx > Settings.LeadFocusedRows)
                         {
                             actualDriverIdx += skipRowCount;
                         }
 
                         if (actualDriverIdx >= opponents.Count)
                         {
-                            ResetDriver(driver);
+                            ResetRow(row);
                             continue;
                         }
 
                         Opponent opponent = opponents[actualDriverIdx];
                         if (opponent.Position <= 0)
                         {
-                            ResetDriver(driver);
+                            ResetRow(row);
                             continue;
                         }
                         
-                        driver.RowVisible = true;
-                        driver.PlayerID = opponent.Id;
-                        driver.Position = opponent.Position;
-                        driver.CarNumber = opponent.CarNumber;
-                        driver.Name = opponent.Name;
-                        driver.IsCarInPitLane = opponent.IsCarInPitLane;
-                        driver.OutLap = opponent.IsOutLap;
-                        driver.PitEnterAtLap = (int)(opponent.PitEnterAtLap ?? 0);
-                        driver.iRating = (int)opponent.IRacing_IRating;
-                        driver.iRatingText = FormatIRating(driver.iRating);
-                        driver.CurrentLap = opponent.CurrentLap ?? 0;
-                        driver.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;
-                        driver.GaptoClassLeader = opponent.GaptoClassLeader ?? 0;
-                        driver.TireCompound = GetTireCompound(opponent);
-                        driver.TireCompoundVisible = GetTireCompoundVisible(opponent);
-                        driver.BestLapTime = opponent.BestLapTime;
+                        row.RowVisible = true;
+                        row.PlayerID = opponent.Id;
+                        row.Position = opponent.Position;
+                        row.CarNumber = opponent.CarNumber;
+                        row.Name = opponent.Name;
+                        row.IsCarInPitLane = opponent.IsCarInPitLane;
+                        row.OutLap = opponent.IsOutLap;
+                        row.PitEnterAtLap = (int)(opponent.PitEnterAtLap ?? 0);
+                        row.iRating = (int)opponent.IRacing_IRating;
+                        row.iRatingText = FormatIRating(row.iRating);
+                        row.CurrentLap = opponent.CurrentLap ?? 0;
+                        row.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;
+                        row.GaptoClassLeader = opponent.GaptoClassLeader ?? 0;
+                        row.TireCompound = GetTireCompound(opponent);
+                        row.TireCompoundVisible = GetTireCompoundVisible(opponent);
+                        row.BestLapTime = opponent.BestLapTime;
+                        visibleRowCount++;
                     }
                 }
                 else
                 {
-                    for (int driverIdx = 0; driverIdx < CarClass.MaxDrivers; driverIdx++)
+                    for (int driverIdx = 0; driverIdx < StandingCarClass.MaxRows; driverIdx++)
                     {
-                        Driver driver = carClass.Drivers[driverIdx];
-                        ResetDriver(driver);
+                        StandingRow driver = carClass.Rows[driverIdx];
+                        ResetRow(driver);
                     }
                 }
             }
@@ -305,7 +305,7 @@ namespace benofficial2.Plugin
             plugin.SaveCommonSettings("StandingsSettings", Settings);
         }
 
-        public void ResetDriver(Driver driver)
+        public void ResetRow(StandingRow driver)
         {
             driver.RowVisible = false;
             driver.PlayerID = "";
