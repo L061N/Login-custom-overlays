@@ -31,6 +31,7 @@ namespace benofficial2.Plugin
         public bool Practice { get; internal set; } = false;
         public bool Offline { get; internal set; } = false;
         public bool ReplayPlaying { get; internal set; } = false;
+        public bool RaceStarted { get; internal set; } = false;
         public bool RaceFinished { get; internal set; } = false;
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
@@ -40,6 +41,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Session.Practice", valueProvider: () => Practice);
             plugin.AttachDelegate(name: "Session.Offline", valueProvider: () => Offline);
             plugin.AttachDelegate(name: "Session.ReplayPlaying", valueProvider: () => ReplayPlaying);
+            plugin.AttachDelegate(name: "Session.RaceStarted", valueProvider: () => RaceStarted);
             //plugin.AttachDelegate(name: "Session.RaceFinished", valueProvider: () => RaceFinished);
         }
 
@@ -75,6 +77,11 @@ namespace benofficial2.Plugin
             try { trackSurface = (int)raw.Telemetry["PlayerTrackSurface"]; } catch { }
             
             ReplayPlaying = isReplayPLaying || position < 0 || trackSurface < 0;
+
+            // Determine if race started
+            int sessionState = 0;
+            try { sessionState = (int)raw.Telemetry["SessionState"]; } catch { }
+            RaceStarted = Race && sessionState >= 4;
         }
 
         public void End(PluginManager pluginManager, benofficial2 plugin)
