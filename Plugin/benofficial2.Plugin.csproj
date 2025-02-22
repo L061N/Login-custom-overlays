@@ -120,7 +120,6 @@
     <Compile Include="Modules\TrackMap.cs" />
     <Compile Include="Modules\TwitchChat.cs" />
     <Compile Include="PluginModuleFactory.cs" />
-    <Compile Include="Leaderboard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
