@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using SimHub.Plugins.DataPlugins.RGBDriverCommon.Settings;
 
 namespace benofficial2.Plugin
 {
@@ -97,15 +98,19 @@ namespace benofficial2.Plugin
     public class StandingRow
     {
         public bool RowVisible { get; set; } = false;
-        public string PlayerID { get; set; } = "";
-        public int Position { get; set; } = 0;
-        public string CarNumber { get; set; } = "";
-        public string Name { get; set; } = "";
-        public bool IsCarInPitLane { get; set; } = false;
+        public bool IsPlayer { get; set; } = false;
+        public string PlayerID { get; set; } = string.Empty;
+        public bool Connected { get; set; } = false;
+        public int PositionInClass { get; set; } = 0;
+        public string Number { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public bool InPitLane { get; set; } = false;
         public bool OutLap { get; set; } = false;
-        public int PitEnterAtLap { get; set; } = 0;
+        public int EnterPitLap { get; set; } = 0;
         public int iRating { get; set; } = 0;
         public string iRatingText { get; set; } = string.Empty;
+        public string License {  get; set; } = string.Empty;
+        public double SafetyRating { get; set; } = 0;
         public int CurrentLap {  get; set; } = 0;
         public int LapsToClassLeader { get; set; } = 0;
         public double GaptoClassLeader { get; set; } = 0;
@@ -117,7 +122,10 @@ namespace benofficial2.Plugin
     public class StandingCarClass
     {
         public const int MaxRows = 64;
-        public List<StandingRow> Rows;
+        public List<StandingRow> Rows { get; internal set; }
+        public bool LeadFocusedDividerVisible { get; set; } = false;
+        public string Color { get; set; } = string.Empty;
+        public string TextColor { get; set; } = string.Empty;
 
         public StandingCarClass()
         {
@@ -127,7 +135,9 @@ namespace benofficial2.Plugin
 
     public class Standings : IPluginModule
     {
-        private DateTime _lastPacketTime = DateTime.MinValue;
+        private DriverModule _driverModule = null;
+        private Car _carModule = null;
+        private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
 
         public StandingsSettings Settings { get; set; }
@@ -144,29 +154,41 @@ namespace benofficial2.Plugin
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
+            _driverModule = plugin.GetModule<DriverModule>();
+            _carModule = plugin.GetModule<Car>();
+
             Settings = plugin.ReadCommonSettings<StandingsSettings>("StandingsSettings", () => new StandingsSettings());
             plugin.AttachDelegate(name: $"Standings.PlayerCarClassIdx", valueProvider: () => PlayerCarClassIdx);
+            plugin.AttachDelegate(name: $"Standings.LeadFocusedRows", valueProvider: () => Settings.LeadFocusedRows);
             plugin.AttachDelegate(name: "Standings.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
 
             for (int carClassIdx = 0; carClassIdx < MaxCarClasses; carClassIdx++)
             {
                 StandingCarClass carClass = CarClasses[carClassIdx];
+                plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.LeadFocusedDividerVisible", valueProvider: () => carClass.LeadFocusedDividerVisible);
+                plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Color", valueProvider: () => carClass.Color);
+                plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.TextColor", valueProvider: () => carClass.TextColor);
+
                 for (int rowIdx = 0; rowIdx < StandingCarClass.MaxRows; rowIdx++)
                 {
                     StandingRow driver = carClass.Rows[rowIdx];
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.RowVisible", valueProvider: () => driver.RowVisible);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.IsPlayer", valueProvider: () => driver.IsPlayer);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PlayerID", valueProvider: () => driver.PlayerID);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Position", valueProvider: () => driver.Position);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CarNumber", valueProvider: () => driver.CarNumber);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Connected", valueProvider: () => driver.Connected);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PositionInClass", valueProvider: () => driver.PositionInClass);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Number", valueProvider: () => driver.Number);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Name", valueProvider: () => driver.Name);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.IsCarInPitLane", valueProvider: () => driver.IsCarInPitLane);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.InPitLane", valueProvider: () => driver.InPitLane);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.OutLap", valueProvider: () => driver.OutLap);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PitEnterAtLap", valueProvider: () => driver.PitEnterAtLap);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.EnterPitLap", valueProvider: () => driver.EnterPitLap);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.iRating", valueProvider: () => driver.iRating);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.iRatingText", valueProvider: () => driver.iRatingText);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.License", valueProvider: () => driver.License);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.SafetyRating", valueProvider: () => driver.SafetyRating);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CurrentLap", valueProvider: () => driver.CurrentLap);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LapsToClassLeader", valueProvider: () => driver.LapsToClassLeader);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.GaptoClassLeader", valueProvider: () => driver.GaptoClassLeader);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.GapToClassLeader", valueProvider: () => driver.GaptoClassLeader);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompound", valueProvider: () => driver.TireCompound);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompoundVisible", valueProvider: () => driver.TireCompoundVisible);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.BestLapTime", valueProvider: () => driver.BestLapTime);
@@ -176,8 +198,8 @@ namespace benofficial2.Plugin
 
         public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            if (data.NewData.PacketTime - _lastPacketTime < _updateInterval) return;
-            _lastPacketTime = data.NewData.PacketTime;
+            if (DateTime.Now - _lastUpdateTime < _updateInterval) return;
+            _lastUpdateTime = DateTime.Now;
 
             PlayerCarClassIdx = FindPlayerCarClassIdx(ref data);
 
@@ -186,7 +208,11 @@ namespace benofficial2.Plugin
                 StandingCarClass carClass = CarClasses[carClassIdx];
                 if (carClassIdx < data.NewData.OpponentsClassses.Count)
                 {
-                    List<Opponent> opponents = data.NewData.OpponentsClassses[carClassIdx].Opponents;
+                    LeaderboardCarClassDescription opponentClass = data.NewData.OpponentsClassses[carClassIdx];
+                    List<Opponent> opponents = opponentClass.Opponents;
+
+                    carClass.Color = opponentClass.ClassColor;
+                    carClass.TextColor = opponentClass.ClassTextColor;
 
                     // Find how many rows to skip to have a lead-focused leaderboard
                     int maxRowCount = 0;
@@ -207,14 +233,15 @@ namespace benofficial2.Plugin
                         }
 
                         // Too many rows to be shown
-                        if (playerOpponentIdx > Settings.MaxRowsPlayerClass - 1)
+                        if (playerOpponentIdx >= 0 && opponents[playerOpponentIdx].Position > 0 && 
+                            playerOpponentIdx > Settings.MaxRowsPlayerClass - 1)
                         {
                             int shown = Math.Max(0, opponents.Count - Settings.LeadFocusedRows);
                             int before = Math.Max(0, playerOpponentIdx - Settings.LeadFocusedRows);
-                            int after = Math.Max(0, opponents.Count - playerOpponentIdx);
+                            int after = Math.Max(0, opponents.Count - playerOpponentIdx - 1);
 
                             // Center the player in the view by trying to keep as many rows before as after
-                            while (shown > Math.Max(0, Settings.MaxRowsPlayerClass - Settings.LeadFocusedRows)) 
+                            while (shown > Math.Max(0, Settings.MaxRowsPlayerClass - Settings.LeadFocusedRows))
                             {
                                 if (before > after)
                                 {
@@ -235,51 +262,56 @@ namespace benofficial2.Plugin
                         maxRowCount = Settings.MaxRowsOtherClasses;
                     }
 
+                    carClass.LeadFocusedDividerVisible = skipRowCount > 0;
+
                     int visibleRowCount = 0;
                     for (int rowIdx = 0; rowIdx < StandingCarClass.MaxRows; rowIdx++)
                     {
                         StandingRow row = carClass.Rows[rowIdx];
                         if (visibleRowCount >= maxRowCount)
                         {
-                            ResetRow(row);
+                            BlankRow(row);
                             continue;
                         }
 
                         if (rowIdx >= opponents.Count)
                         {
-                            ResetRow(row);
+                            BlankRow(row);
                             continue;
                         }
 
                         int actualDriverIdx = rowIdx;
-                        if (rowIdx > Settings.LeadFocusedRows)
+                        if (rowIdx > Settings.LeadFocusedRows - 1)
                         {
                             actualDriverIdx += skipRowCount;
                         }
 
                         if (actualDriverIdx >= opponents.Count)
                         {
-                            ResetRow(row);
+                            BlankRow(row);
                             continue;
                         }
 
                         Opponent opponent = opponents[actualDriverIdx];
                         if (opponent.Position <= 0)
                         {
-                            ResetRow(row);
+                            BlankRow(row);
                             continue;
                         }
                         
                         row.RowVisible = true;
+                        row.IsPlayer = opponent.IsPlayer;
                         row.PlayerID = opponent.Id;
-                        row.Position = opponent.Position;
-                        row.CarNumber = opponent.CarNumber;
+                        row.Connected = opponent.IsConnected;
+                        row.PositionInClass = opponent.PositionInClass;
+                        row.Number = opponent.CarNumber;
                         row.Name = opponent.Name;
-                        row.IsCarInPitLane = opponent.IsCarInPitLane;
+                        row.InPitLane = opponent.IsCarInPitLane;
                         row.OutLap = opponent.IsOutLap;
-                        row.PitEnterAtLap = (int)(opponent.PitEnterAtLap ?? 0);
+                        row.EnterPitLap = _driverModule.Drivers?[opponent.CarNumber]?.EnterPitLap ?? 0;
                         row.iRating = (int)opponent.IRacing_IRating;
                         row.iRatingText = FormatIRating(row.iRating);
+                        (row.License, row.SafetyRating) = ParseLicenseString(opponent.LicenceString);
                         row.CurrentLap = opponent.CurrentLap ?? 0;
                         row.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;
                         row.GaptoClassLeader = opponent.GaptoClassLeader ?? 0;
@@ -294,7 +326,7 @@ namespace benofficial2.Plugin
                     for (int driverIdx = 0; driverIdx < StandingCarClass.MaxRows; driverIdx++)
                     {
                         StandingRow driver = carClass.Rows[driverIdx];
-                        ResetRow(driver);
+                        BlankRow(driver);
                     }
                 }
             }
@@ -305,18 +337,22 @@ namespace benofficial2.Plugin
             plugin.SaveCommonSettings("StandingsSettings", Settings);
         }
 
-        public void ResetRow(StandingRow driver)
+        public void BlankRow(StandingRow driver)
         {
             driver.RowVisible = false;
-            driver.PlayerID = "";
-            driver.Position = 0;
-            driver.CarNumber = "";
-            driver.Name = "";
-            driver.IsCarInPitLane = false;
+            driver.IsPlayer = false;
+            driver.PlayerID = string.Empty;
+            driver.Connected = false;
+            driver.PositionInClass = 0;
+            driver.Number = string.Empty;
+            driver.Name = string.Empty;
+            driver.InPitLane = false;
             driver.OutLap = false;
-            driver.PitEnterAtLap = 0;
+            driver.EnterPitLap = 0;
             driver.iRating = 0;
-            driver.iRatingText = "0.0k";
+            driver.iRatingText = string.Empty;
+            driver.License = string.Empty;
+            driver.SafetyRating = 0;
             driver.CurrentLap = 0;
             driver.LapsToClassLeader = 0;
             driver.GaptoClassLeader = 0;
@@ -349,12 +385,6 @@ namespace benofficial2.Plugin
             return -1;
         }
 
-        public int FindPlayerPositionInClass()
-        {
-
-            return -1;
-        }
-
         public string FormatIRating(int iRating)
         {
             return (iRating / 1000).ToString("0.0") + "k";
@@ -366,6 +396,16 @@ namespace benofficial2.Plugin
             {
                 return "W";
             }
+
+            // Override SimHub's tire compound for cars that don't have dry compounds
+            // It should be 'H' by default not 'S'
+            // TODO: This logic won't work for multi-class with a mix of cars with/without compounds
+            // because Car module is currently only looking at the player car.
+            if (!_carModule.HasDryTireCompounds)
+            {
+                return "H";
+            }
+
             return opponent.FrontTyreCompound;
         }
 
@@ -375,6 +415,11 @@ namespace benofficial2.Plugin
             if (opponent.FrontTyreCompoundGameCode.Length == 0) return false;
             if (opponent.FrontTyreCompoundGameCode == "-1") return false;
             return true;
+        }
+        public (string license, double rating) ParseLicenseString(string licenseString)
+        {
+            var parts = licenseString.Split(' ');
+            return (parts[0], double.Parse(parts[1]));
         }
     }
 }
