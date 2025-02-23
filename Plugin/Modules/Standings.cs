@@ -22,7 +22,6 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using SimHub.Plugins.DataPlugins.RGBDriverCommon.Settings;
 
 namespace benofficial2.Plugin
 {
