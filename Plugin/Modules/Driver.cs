@@ -60,15 +60,7 @@ namespace benofficial2.Plugin
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
 
-            // De-initialize before the race starts
-            // should not be needed, sessionTime check should be enough, to validate
-            /*if (_sessionModule.Race && !_sessionModule.RaceStarted)
-            {
-                Drivers = null;
-                return;
-            }*/
-
-            // De-initialize when changing/restarting session
+            // Reset when changing/restarting session
             double sessionTime = 0;
             try { sessionTime = (double)raw.Telemetry["SessionTime"]; } catch { }
             if (sessionTime == 0 || sessionTime < _lastSessionTime)
