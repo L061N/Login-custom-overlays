@@ -153,7 +153,8 @@
         "hasFuelMix": true,
         "hasFrontARB": true,
         "hasRearARB": true,
-        "hasWeightJacker": true
+        "hasWeightJacker": true,
+        "hasDryTireCompounds": true
     },
     "dallaradw12": {
         "hasPushToPass": true,
@@ -189,7 +190,8 @@
         "hasDrsDetection": true,
         "hasErs": true,
         "hasDeployMode": true,
-        "hasDeployModeType2": true
+        "hasDeployModeType2": true,
+        "hasDryTireCompounds": true
     },
     "mercedesw13": {
         "hasDrsDetection": true,
@@ -197,7 +199,8 @@
         "hasDeployMode": true,
         "hasDeployModeType2": true,
         "hasEntryDiff": true,
-        "hasFineBrakeBias": true
+        "hasFineBrakeBias": true,
+        "hasDryTireCompounds": true
     },
     "formularenault35": {
         "hasDrsCount": true,
@@ -221,7 +224,8 @@
         "hasThrottleShaping": true,
         "hasARBModeP": true,
         "hasFrontARB": true,
-        "hasRearARB": true
+        "hasRearARB": true,
+        "hasDryTireCompounds": true
     },
     "ligierjsp320": {
         "isLMP3": true,
