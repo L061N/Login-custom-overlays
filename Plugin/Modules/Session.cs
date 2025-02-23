@@ -25,6 +25,9 @@ namespace benofficial2.Plugin
     public class Session : IPluginModule
     {
         private string _lastSessionTypeName = string.Empty;
+        private double _lastSessionTime = 0;
+        private bool _raceFinishedForPlayer = false;
+        private double? _lastTrackPct = null;
 
         public bool Race { get; internal set; } = false;
         public bool Qual { get; internal set; } = false;
@@ -42,7 +45,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Session.Offline", valueProvider: () => Offline);
             plugin.AttachDelegate(name: "Session.ReplayPlaying", valueProvider: () => ReplayPlaying);
             plugin.AttachDelegate(name: "Session.RaceStarted", valueProvider: () => RaceStarted);
-            //plugin.AttachDelegate(name: "Session.RaceFinished", valueProvider: () => RaceFinished);
+            plugin.AttachDelegate(name: "Session.RaceFinished", valueProvider: () => RaceFinished);
         }
 
         public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -82,6 +85,45 @@ namespace benofficial2.Plugin
             int sessionState = 0;
             try { sessionState = (int)raw.Telemetry["SessionState"]; } catch { }
             RaceStarted = Race && sessionState >= 4;
+
+            // Determine if race finished for the player
+            double sessionTime = 0;
+            try { sessionTime = (double)raw.Telemetry["SessionTime"]; } catch { }
+            if (!Race || sessionTime == 0 || sessionTime < _lastSessionTime)
+            {
+                // Reset when changing/restarting session
+                _lastSessionTime = sessionTime;
+                _lastTrackPct = null;
+                _raceFinishedForPlayer = false;
+                RaceFinished = false;
+            }
+            else
+            {
+                _lastSessionTime = sessionTime;
+
+                if (_raceFinishedForPlayer)
+                {
+                    // Race finished
+                    RaceFinished = true;
+                }
+                else if (data.NewData.Flag_Checkered != 1)
+                {
+                    // Checkered flag is not shown
+                    RaceFinished = false;
+                }
+                else if (!_lastTrackPct.HasValue || _lastTrackPct.Value >= data.NewData.TrackPositionPercent)
+                {
+                    // Heading toward the checkered flag
+                    _lastTrackPct = data.NewData.TrackPositionPercent;
+                    RaceFinished = false;
+                }
+                else
+                {
+                    // Crossed the line with the checkered flag
+                    _raceFinishedForPlayer = true;
+                    RaceFinished = true;
+                }
+            }
         }
 
         public void End(PluginManager pluginManager, benofficial2 plugin)
