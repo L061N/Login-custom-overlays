@@ -136,6 +136,8 @@ namespace benofficial2.Plugin
     {
         private DriverModule _driverModule = null;
         private Car _carModule = null;
+        private Session _sessionModule = null;
+
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
 
@@ -155,6 +157,7 @@ namespace benofficial2.Plugin
         {
             _driverModule = plugin.GetModule<DriverModule>();
             _carModule = plugin.GetModule<Car>();
+            _sessionModule = plugin.GetModule<Session>();
 
             Settings = plugin.ReadCommonSettings<StandingsSettings>("StandingsSettings", () => new StandingsSettings());
             plugin.AttachDelegate(name: $"Standings.PlayerCarClassIdx", valueProvider: () => PlayerCarClassIdx);
@@ -208,53 +211,27 @@ namespace benofficial2.Plugin
                 if (carClassIdx < data.NewData.OpponentsClassses.Count)
                 {
                     LeaderboardCarClassDescription opponentClass = data.NewData.OpponentsClassses[carClassIdx];
-                    List<Opponent> opponents = opponentClass.Opponents;
+                    List<Opponent> opponents = new List<Opponent>(opponentClass.Opponents);
+
+                    // In a race, get a live leaderboard by sorting on track position
+                    // Don't sort before race: keep qualification result
+                    // Don't sort after race: keep race result
+                    if (_sessionModule.RaceStarted && !_sessionModule.RaceFinished)
+                    {
+                        opponents = opponents.OrderByDescending(p => p.CurrentLapHighPrecision).ToList();
+                    }
 
                     carClass.Color = opponentClass.ClassColor;
                     carClass.TextColor = opponentClass.ClassTextColor;
 
-                    // Find how many rows to skip to have a lead-focused leaderboard
                     int maxRowCount = 0;
                     int skipRowCount = 0;
-                    int playerOpponentIdx = -1;
                     if (PlayerCarClassIdx == carClassIdx)
                     {
                         maxRowCount = Settings.MaxRowsPlayerClass;
 
-                        // Find the player's driverIdx in the class
-                        for (int opponentIdx = 0; opponentIdx < opponents.Count; opponentIdx++)
-                        {
-                            if (opponents[opponentIdx].IsPlayer)
-                            {
-                                playerOpponentIdx = opponentIdx;
-                                break;
-                            }
-                        }
-
-                        // Too many rows to be shown
-                        if (playerOpponentIdx >= 0 && opponents[playerOpponentIdx].Position > 0 && 
-                            playerOpponentIdx > Settings.MaxRowsPlayerClass - 1)
-                        {
-                            int shown = Math.Max(0, opponents.Count - Settings.LeadFocusedRows);
-                            int before = Math.Max(0, playerOpponentIdx - Settings.LeadFocusedRows);
-                            int after = Math.Max(0, opponents.Count - playerOpponentIdx - 1);
-
-                            // Center the player in the view by trying to keep as many rows before as after
-                            while (shown > Math.Max(0, Settings.MaxRowsPlayerClass - Settings.LeadFocusedRows))
-                            {
-                                if (before > after)
-                                {
-                                    before--;
-                                    shown--;
-                                    skipRowCount++;
-                                }
-                                else
-                                {
-                                    after--;
-                                    shown--;
-                                }
-                            }
-                        }
+                        // How many rows to skip to have a lead-focused leaderboard
+                        skipRowCount = GetLeadFocusedSkipRowCount(opponents);
                     }
                     else
                     {
@@ -269,12 +246,7 @@ namespace benofficial2.Plugin
                         StandingRow row = carClass.Rows[rowIdx];
                         if (visibleRowCount >= maxRowCount)
                         {
-                            BlankRow(row);
-                            continue;
-                        }
-
-                        if (rowIdx >= opponents.Count)
-                        {
+                            // Reached row count limit
                             BlankRow(row);
                             continue;
                         }
@@ -292,7 +264,7 @@ namespace benofficial2.Plugin
                         }
 
                         Opponent opponent = opponents[actualDriverIdx];
-                        if (opponent.Position <= 0)
+                        if (!IsValidRow(opponent))
                         {
                             BlankRow(row);
                             continue;
@@ -302,7 +274,7 @@ namespace benofficial2.Plugin
                         row.IsPlayer = opponent.IsPlayer;
                         row.PlayerID = opponent.Id;
                         row.Connected = opponent.IsConnected;
-                        row.PositionInClass = opponent.PositionInClass;
+                        row.PositionInClass = actualDriverIdx + 1;
                         row.Number = opponent.CarNumber;
                         row.Name = opponent.Name;
                         row.InPitLane = opponent.IsCarInPitLane;
@@ -314,8 +286,7 @@ namespace benofficial2.Plugin
                         row.CurrentLap = opponent.CurrentLap ?? 0;
                         row.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;
                         row.GaptoClassLeader = opponent.GaptoClassLeader ?? 0;
-                        row.TireCompound = GetTireCompound(opponent);
-                        row.TireCompoundVisible = GetTireCompoundVisible(opponent);
+                        (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, opponent);
                         row.BestLapTime = opponent.BestLapTime;
                         visibleRowCount++;
                     }
@@ -386,14 +357,26 @@ namespace benofficial2.Plugin
 
         public string FormatIRating(int iRating)
         {
-            return (iRating / 1000).ToString("0.0") + "k";
+            return ((double)iRating / 1000.0).ToString("0.0") + "k";
         }
 
-        public string GetTireCompound(Opponent opponent)
+        public (string compound, bool visible) GetTireCompound(ref GameData data, Opponent opponent)
         {
-            if (opponent.FrontTyreCompoundGameCode == "1")
+            dynamic raw = data.NewData.GetRawDataObject();
+            if (raw == null) return ("", false);
+
+            List<int> rawCompounds = null;
+            try { rawCompounds = new List<int>(raw.Telemetry["CarIdxTireCompound"]); } catch { }
+            if (rawCompounds != null && opponent.FrontTyreCompoundGameCode == "1")
             {
-                return "W";
+                // Wet enabled car with wet tires
+                return ("W", true);
+            }
+
+            if (opponent.FrontTyreCompoundGameCode == "-1")
+            {
+                // Hidden
+                return ("", false);
             }
 
             // Override SimHub's tire compound for cars that don't have dry compounds
@@ -402,23 +385,89 @@ namespace benofficial2.Plugin
             // because Car module is currently only looking at the player car.
             if (!_carModule.HasDryTireCompounds)
             {
-                return "H";
+                return ("H", true);
             }
 
-            return opponent.FrontTyreCompound;
+            return (opponent.FrontTyreCompound, opponent.FrontTyreCompound.Length > 0);
         }
 
-        public bool GetTireCompoundVisible(Opponent opponent)
-        {
-            if (opponent.FrontTyreCompound.Length == 0) return false;
-            if (opponent.FrontTyreCompoundGameCode.Length == 0) return false;
-            if (opponent.FrontTyreCompoundGameCode == "-1") return false;
-            return true;
-        }
         public (string license, double rating) ParseLicenseString(string licenseString)
         {
             var parts = licenseString.Split(' ');
             return (parts[0], double.Parse(parts[1]));
+        }
+
+        public bool IsValidRow(Opponent opponent)
+        {
+            return opponent.PositionInClass > 0;
+        }
+
+        public int GetValidRowCount(List<Opponent> opponents)
+        {
+            int validRowCount = 0;
+            for (int opponentIdx = 0; opponentIdx < opponents.Count; opponentIdx++)
+            {
+                if (IsValidRow(opponents[opponentIdx])) { validRowCount++; }               
+            }
+            return validRowCount;
+        }
+
+        public int GetLeadFocusedSkipRowCount(List<Opponent> opponents)
+        {
+            // Find the player in the opponent list
+            int playerOpponentIdx = -1;
+            for (int opponentIdx = 0; opponentIdx < opponents.Count; opponentIdx++)
+            {
+                if (opponents[opponentIdx].IsPlayer)
+                {
+                    playerOpponentIdx = opponentIdx;
+                    break;
+                }
+            }
+
+            if (playerOpponentIdx < 0 || !IsValidRow(opponents[playerOpponentIdx]))
+            {
+                // Player not in opponent list
+                return 0;
+            }
+
+            int validRowCount = GetValidRowCount(opponents);
+            if (validRowCount <= Settings.MaxRowsPlayerClass)
+            {
+                // They all fit in
+                return 0;
+            }
+
+            int nonLeadFocusedRowCount = Math.Max(0, Settings.MaxRowsPlayerClass - Settings.LeadFocusedRows);
+            if (playerOpponentIdx <= Settings.LeadFocusedRows + nonLeadFocusedRowCount / 2)
+            {
+                // Player already centered in top rows
+                return 0;
+            }
+
+            // Center the player in the view by trying to keep an equal amount of rows before as after 
+            int shown = Math.Max(0, validRowCount - Settings.LeadFocusedRows);
+            int before = Math.Max(0, playerOpponentIdx - Settings.LeadFocusedRows);
+            int after = Math.Max(0, validRowCount - playerOpponentIdx - 1);         
+            int skipRowCount = 0;
+
+            // TODO make this O(1)
+            while (shown > nonLeadFocusedRowCount)
+            {
+                if (before > after)
+                {
+                    before--;
+                    shown--;
+                    skipRowCount++;
+                }
+                else
+                {
+                    after--;
+                    shown--;
+                }
+            }
+
+            return skipRowCount;
         }
     }
 }
