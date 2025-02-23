@@ -65,6 +65,7 @@ namespace benofficial2.Plugin
         public bool HasABS { get; set; } = false;
         public bool HasFineBrakeBias { get; set; } = false;
         public bool HasBrakeBiasMigration { get; set; } = false;
+        public bool HasDryTireCompounds { get; set; } = false;
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
@@ -105,6 +106,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Car.HasABS", valueProvider: () => HasABS);
             plugin.AttachDelegate(name: "Car.HasFineBrakeBias", valueProvider: () => HasFineBrakeBias);
             plugin.AttachDelegate(name: "Car.HasBrakeBiasMigration", valueProvider: () => HasBrakeBiasMigration);
+            plugin.AttachDelegate(name: "Car.HasDryTireCompounds", valueProvider: () => HasDryTireCompounds);
         }
 
         public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -149,6 +151,7 @@ namespace benofficial2.Plugin
                 HasABS = false;
                 HasFineBrakeBias = false;
                 HasBrakeBiasMigration = false;
+                HasDryTireCompounds = false;
                 return;
             }
 
@@ -184,6 +187,7 @@ namespace benofficial2.Plugin
             HasABS = car["hasABS"]?.Value<bool>() ?? false;
             HasFineBrakeBias = car["hasFineBrakeBias"]?.Value<bool>() ?? false;
             HasBrakeBiasMigration = car["hasBrakeBiasMigration"]?.Value<bool>() ?? false;
+            HasDryTireCompounds = car["hasDryTireCompounds"]?.Value<bool>() ?? false;
         }
 
         public void End(PluginManager pluginManager, benofficial2 plugin)
