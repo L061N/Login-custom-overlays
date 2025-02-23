@@ -32,6 +32,9 @@ namespace benofficial2.Plugin
     {
         public Dictionary<string, IPluginModule> Modules { get; private set; }
 
+        public bool PluginRunning { get; internal set; } = false;
+        public bool iRacingRunning { get; internal set; } = false;
+
         /// <summary>
         /// Instance of the current plugin manager
         /// </summary>
@@ -66,6 +69,9 @@ namespace benofficial2.Plugin
         {
             SimHub.Logging.Current.Info($"Starting benofficial2 plugin version {VersionChecker.CurrentVersion}");
 
+            this.AttachDelegate(name: "PluginRunning", valueProvider: () => PluginRunning);
+            this.AttachDelegate(name: "iRacingRunning", valueProvider: () => iRacingRunning);
+
             // Create all the modules
             Modules = PluginModuleFactory.CreateAllPluginModules();
 
@@ -84,6 +90,8 @@ namespace benofficial2.Plugin
                     versionChecker.CheckForUpdateAsync().Wait();
                 });
             }
+
+            PluginRunning = true;
         }
 
         /// <summary>
@@ -97,8 +105,8 @@ namespace benofficial2.Plugin
         /// <param name="data">Current game data, including current and previous data frame.</param>
         public void DataUpdate(PluginManager pluginManager, ref GameData data)
         {
-            if (!data.GameRunning) return;
-            if (data.GameName != "IRacing") return;
+            iRacingRunning = data.GameRunning && data.GameName == "IRacing";
+            if (!iRacingRunning) return;
             if (data.OldData == null || data.NewData == null) return;
 
             // Update each module
@@ -120,6 +128,8 @@ namespace benofficial2.Plugin
             {
                 module.End(pluginManager, this);
             }
+
+            PluginRunning = false;
         }
 
         public T GetModule<T>() where T : class, IPluginModule
