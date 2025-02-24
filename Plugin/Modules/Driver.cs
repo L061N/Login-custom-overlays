@@ -24,11 +24,19 @@ using System.Linq;
 
 namespace benofficial2.Plugin
 {
+    public class RawDriverInfo
+    {
+        // Index in the raw table AllSessionData["DriverInfo"]["Drivers"]
+        public int driverInfoIdx = 0;
+    }
+
     public class Driver
     {
         public int EnterPitLapUnconfirmed { get; set; } = 0;
         public int EnterPitLap { get; set; } = 0;
         public DateTime InPitSince { get; set; } = DateTime.MinValue;
+        public int QualPositionInClass { get; set; } = 0;
+        public double QualFastestTime { get; set; } = 0;
     }
 
     public class DriverModule : IPluginModule
@@ -41,6 +49,9 @@ namespace benofficial2.Plugin
 
         public const int MaxDrivers = 64;
         public Dictionary<string, Driver> Drivers { get; private set; } = null;
+
+        // Key is carIdx
+        public Dictionary<int, RawDriverInfo> DriverInfos { get; private set; } = null;
 
         public DriverModule()
         {
@@ -77,6 +88,9 @@ namespace benofficial2.Plugin
             {
                 Drivers = new Dictionary<string, Driver>();
             }
+
+            // TODO enable this if we want to show qual result before race start.
+            //UpdateQualResult(ref data);
 
             for (int i = 0; i < data.NewData.Opponents.Count; i++)
             {
@@ -115,6 +129,85 @@ namespace benofficial2.Plugin
         public void End(PluginManager pluginManager, benofficial2 plugin)
         {
 
+        }
+        public static string FormatIRating(int iRating)
+        {
+            return ((double)iRating / 1000.0).ToString("0.0") + "k";
+        }
+
+        public static (string license, double rating) ParseLicenseString(string licenseString)
+        {
+            var parts = licenseString.Split(' ');
+            return (parts[0], double.Parse(parts[1]));
+        }
+        public void UpdateQualResult(ref GameData data)
+        {
+            // Only needed before the race start to show qual position
+            if (!(_sessionModule.Race && !_sessionModule.RaceStarted)) return;
+
+            dynamic raw = data.NewData.GetRawDataObject();
+            if (raw == null) return;
+
+            UpdateRawDriverInfo(ref data);
+
+            int resultCount = 0;
+            try { resultCount = (int)raw.AllSessionData["QualifyResultsInfo"]["Results"].Count; } catch { }
+
+            for (int i = 0; i < resultCount; i++)
+            {
+                int carIdx = 0;
+                try { carIdx = int.Parse(raw.AllSessionData["QualifyResultsInfo"]["Results"][i]["CarIdx"]); } catch { }
+
+                int positionInClass = 0;
+                try { positionInClass = int.Parse(raw.AllSessionData["QualifyResultsInfo"]["Results"][i]["ClassPosition"]) + 1; } catch { }
+
+                double fastestTime = 0;
+                try { fastestTime = double.Parse(raw.AllSessionData["QualifyResultsInfo"]["Results"][i]["FastestTime"]); } catch { }
+
+                if (!DriverInfos.TryGetValue(carIdx, out RawDriverInfo driverInfo))
+                {
+                    continue;
+                }
+
+                string carNumber = string.Empty;
+                try { carNumber = raw.AllSessionData["DriverInfo"]["Drivers"][driverInfo.driverInfoIdx]["CarNumber"]; } catch { }
+                if (carNumber == string.Empty) continue;
+
+                if (!Drivers.TryGetValue(carNumber, out Driver driver))
+                {
+                    driver = new Driver();
+                }
+
+                driver.QualPositionInClass = positionInClass;
+                driver.QualFastestTime = fastestTime;
+                Drivers[carNumber] = driver;
+            }
+        }
+
+        public void UpdateRawDriverInfo(ref GameData data)
+        {
+            dynamic raw = data.NewData.GetRawDataObject();
+            if (raw == null) return;
+
+            // Create a dictionary to cache the driverInfo index for each carIdx.
+            // Because they will not always match; they can be different when server slots
+            // are reclaimed by another driver.
+            DriverInfos = new Dictionary<int, RawDriverInfo>();
+            int driverCount = 0;
+            try { driverCount = (int)raw.AllSessionData["DriverInfo"]["Drivers"].Count; } catch { }
+
+            for (int i = 0; i < driverCount; i++)
+            {
+                int carIdx = -1;
+                try { carIdx = int.Parse(raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarIdx"]); } catch { }
+                
+                if (carIdx >= 0)
+                {
+                    RawDriverInfo driverInfo = new RawDriverInfo();
+                    driverInfo.driverInfoIdx = i;
+                    DriverInfos[carIdx] = driverInfo;
+                }
+            }
         }
     }
 }
