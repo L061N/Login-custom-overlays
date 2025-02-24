@@ -112,7 +112,7 @@ namespace benofficial2.Plugin
         public double SafetyRating { get; set; } = 0;
         public int CurrentLap {  get; set; } = 0;
         public int LapsToClassLeader { get; set; } = 0;
-        public double GaptoClassLeader { get; set; } = 0;
+        public double GapToClassLeader { get; set; } = 0;
         public string TireCompound {  get; set; } = string.Empty;
         public bool TireCompoundVisible { get; set; } = false;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
@@ -173,27 +173,27 @@ namespace benofficial2.Plugin
 
                 for (int rowIdx = 0; rowIdx < StandingCarClass.MaxRows; rowIdx++)
                 {
-                    StandingRow driver = carClass.Rows[rowIdx];
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.RowVisible", valueProvider: () => driver.RowVisible);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.IsPlayer", valueProvider: () => driver.IsPlayer);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PlayerID", valueProvider: () => driver.PlayerID);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Connected", valueProvider: () => driver.Connected);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PositionInClass", valueProvider: () => driver.PositionInClass);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Number", valueProvider: () => driver.Number);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Name", valueProvider: () => driver.Name);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.InPitLane", valueProvider: () => driver.InPitLane);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.OutLap", valueProvider: () => driver.OutLap);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.EnterPitLap", valueProvider: () => driver.EnterPitLap);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.iRating", valueProvider: () => driver.iRating);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.iRatingText", valueProvider: () => driver.iRatingText);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.License", valueProvider: () => driver.License);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.SafetyRating", valueProvider: () => driver.SafetyRating);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CurrentLap", valueProvider: () => driver.CurrentLap);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LapsToClassLeader", valueProvider: () => driver.LapsToClassLeader);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.GapToClassLeader", valueProvider: () => driver.GaptoClassLeader);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompound", valueProvider: () => driver.TireCompound);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompoundVisible", valueProvider: () => driver.TireCompoundVisible);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.BestLapTime", valueProvider: () => driver.BestLapTime);
+                    StandingRow row = carClass.Rows[rowIdx];
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.RowVisible", valueProvider: () => row.RowVisible);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.IsPlayer", valueProvider: () => row.IsPlayer);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PlayerID", valueProvider: () => row.PlayerID);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Connected", valueProvider: () => row.Connected);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PositionInClass", valueProvider: () => row.PositionInClass);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Number", valueProvider: () => row.Number);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Name", valueProvider: () => row.Name);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.InPitLane", valueProvider: () => row.InPitLane);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.OutLap", valueProvider: () => row.OutLap);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.EnterPitLap", valueProvider: () => row.EnterPitLap);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.iRating", valueProvider: () => row.iRating);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.iRatingText", valueProvider: () => row.iRatingText);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.License", valueProvider: () => row.License);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.SafetyRating", valueProvider: () => row.SafetyRating);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CurrentLap", valueProvider: () => row.CurrentLap);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LapsToClassLeader", valueProvider: () => row.LapsToClassLeader);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.GapToClassLeader", valueProvider: () => row.GapToClassLeader);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompound", valueProvider: () => row.TireCompound);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompoundVisible", valueProvider: () => row.TireCompoundVisible);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.BestLapTime", valueProvider: () => row.BestLapTime);
                 }
             }
         }
@@ -214,9 +214,9 @@ namespace benofficial2.Plugin
                     List<Opponent> opponents = new List<Opponent>(opponentClass.Opponents);
 
                     // In a race, get a live leaderboard by sorting on track position
-                    // Don't sort before race: keep qualification result
+                    // TODO: Don't sort before race: show qualification result
                     // Don't sort after race: keep race result
-                    if (_sessionModule.RaceStarted && !_sessionModule.RaceFinished)
+                    if (_sessionModule.Race && !_sessionModule.RaceFinished)
                     {
                         opponents = opponents.OrderByDescending(p => p.CurrentLapHighPrecision).ToList();
                     }
@@ -274,18 +274,28 @@ namespace benofficial2.Plugin
                         row.IsPlayer = opponent.IsPlayer;
                         row.PlayerID = opponent.Id;
                         row.Connected = opponent.IsConnected;
-                        row.PositionInClass = actualDriverIdx + 1;
+
+                        if (_sessionModule.Race)
+                        {
+                            row.PositionInClass = actualDriverIdx + 1;
+                        }
+                        else
+                        {
+                            row.PositionInClass = opponent.Position > 0 ? actualDriverIdx + 1 : 0;
+                        }
+
                         row.Number = opponent.CarNumber;
                         row.Name = opponent.Name;
                         row.InPitLane = opponent.IsCarInPitLane;
                         row.OutLap = opponent.IsOutLap;
-                        row.EnterPitLap = _driverModule.Drivers?[opponent.CarNumber]?.EnterPitLap ?? 0;
+                        try { row.EnterPitLap = _driverModule.Drivers?[opponent.CarNumber]?.EnterPitLap ?? 0; }
+                        catch { row.EnterPitLap = 0; }
                         row.iRating = (int)opponent.IRacing_IRating;
-                        row.iRatingText = FormatIRating(row.iRating);
-                        (row.License, row.SafetyRating) = ParseLicenseString(opponent.LicenceString);
+                        row.iRatingText = DriverModule.FormatIRating(row.iRating);
+                        (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
                         row.CurrentLap = opponent.CurrentLap ?? 0;
                         row.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;
-                        row.GaptoClassLeader = opponent.GaptoClassLeader ?? 0;
+                        row.GapToClassLeader = opponent.GaptoClassLeader ?? 0;
                         (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, opponent);
                         row.BestLapTime = opponent.BestLapTime;
                         visibleRowCount++;
@@ -307,28 +317,28 @@ namespace benofficial2.Plugin
             plugin.SaveCommonSettings("StandingsSettings", Settings);
         }
 
-        public void BlankRow(StandingRow driver)
+        public void BlankRow(StandingRow row)
         {
-            driver.RowVisible = false;
-            driver.IsPlayer = false;
-            driver.PlayerID = string.Empty;
-            driver.Connected = false;
-            driver.PositionInClass = 0;
-            driver.Number = string.Empty;
-            driver.Name = string.Empty;
-            driver.InPitLane = false;
-            driver.OutLap = false;
-            driver.EnterPitLap = 0;
-            driver.iRating = 0;
-            driver.iRatingText = string.Empty;
-            driver.License = string.Empty;
-            driver.SafetyRating = 0;
-            driver.CurrentLap = 0;
-            driver.LapsToClassLeader = 0;
-            driver.GaptoClassLeader = 0;
-            driver.TireCompound = string.Empty;
-            driver.TireCompoundVisible = false;
-            driver.BestLapTime = TimeSpan.Zero;
+            row.RowVisible = false;
+            row.IsPlayer = false;
+            row.PlayerID = string.Empty;
+            row.Connected = false;
+            row.PositionInClass = 0;
+            row.Number = string.Empty;
+            row.Name = string.Empty;
+            row.InPitLane = false;
+            row.OutLap = false;
+            row.EnterPitLap = 0;
+            row.iRating = 0;
+            row.iRatingText = string.Empty;
+            row.License = string.Empty;
+            row.SafetyRating = 0;
+            row.CurrentLap = 0;
+            row.LapsToClassLeader = 0;
+            row.GapToClassLeader = 0;
+            row.TireCompound = string.Empty;
+            row.TireCompoundVisible = false;
+            row.BestLapTime = TimeSpan.Zero;
         }
 
         public int FindPlayerCarClassIdx(ref GameData data)
@@ -355,15 +365,16 @@ namespace benofficial2.Plugin
             return -1;
         }
 
-        public string FormatIRating(int iRating)
-        {
-            return ((double)iRating / 1000.0).ToString("0.0") + "k";
-        }
-
         public (string compound, bool visible) GetTireCompound(ref GameData data, Opponent opponent)
         {
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return ("", false);
+
+            // TODO Revisit this logic when these cars get wet tires
+            if (_carModule.HasDryTireCompounds)
+            {
+                return (opponent.FrontTyreCompound, opponent.FrontTyreCompound.Length > 0);
+            }
 
             List<int> rawCompounds = null;
             try { rawCompounds = new List<int>(raw.Telemetry["CarIdxTireCompound"]); } catch { }
@@ -383,18 +394,7 @@ namespace benofficial2.Plugin
             // It should be 'H' by default not 'S'
             // TODO: This logic won't work for multi-class with a mix of cars with/without compounds
             // because Car module is currently only looking at the player car.
-            if (!_carModule.HasDryTireCompounds)
-            {
-                return ("H", true);
-            }
-
-            return (opponent.FrontTyreCompound, opponent.FrontTyreCompound.Length > 0);
-        }
-
-        public (string license, double rating) ParseLicenseString(string licenseString)
-        {
-            var parts = licenseString.Split(' ');
-            return (parts[0], double.Parse(parts[1]));
+            return ("H", true);
         }
 
         public bool IsValidRow(Opponent opponent)
