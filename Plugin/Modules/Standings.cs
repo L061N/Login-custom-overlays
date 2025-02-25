@@ -291,7 +291,7 @@ namespace benofficial2.Plugin
                         row.OutLap = opponent.IsOutLap;
                         try { row.EnterPitLap = _driverModule.Drivers?[opponent.CarNumber]?.EnterPitLap ?? 0; }
                         catch { row.EnterPitLap = 0; }
-                        row.iRating = (int)opponent.IRacing_IRating;
+                        row.iRating = (int)(opponent.IRacing_IRating ?? 0);
                         (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
                         row.CurrentLap = opponent.CurrentLap ?? 0;
                         row.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;

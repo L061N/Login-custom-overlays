@@ -170,7 +170,7 @@ namespace benofficial2.Plugin
                 row.Name = opponent.Name;
                 try { row.OutLap = _driverModule.Drivers?[opponent.CarNumber]?.OutLap ?? false; }
                 catch { row.OutLap = false; }
-                row.iRating = (int)opponent.IRacing_IRating;
+                row.iRating = (int)(opponent.IRacing_IRating ?? 0);
                 (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
                 row.GapToPlayer = opponent.RelativeGapToPlayer ?? 0;
                 row.GapToPlayerCombined = opponent.GapToPlayerCombined;
