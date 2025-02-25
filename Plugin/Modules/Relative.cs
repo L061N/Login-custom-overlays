@@ -90,6 +90,7 @@ namespace benofficial2.Plugin
     {
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
+        private DriverModule _driverModule = null;
 
         public RelativeSettings Settings { get; set; }
 
@@ -104,6 +105,8 @@ namespace benofficial2.Plugin
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
+            _driverModule = plugin.GetModule<DriverModule>();
+
             Settings = plugin.ReadCommonSettings<RelativeSettings>("RelativeSettings", () => new RelativeSettings());
             plugin.AttachDelegate(name: "Relative.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
 
@@ -160,12 +163,13 @@ namespace benofficial2.Plugin
                 }
 
                 row.RowVisible = true;
-                row.PositionInClass = opponent.PositionInClass;
+                row.PositionInClass = opponent.Position > 0 ? opponent.PositionInClass : 0;
                 row.ClassColor = opponent.CarClassColor;
                 row.ClassTextColor = opponent.CarClassTextColor;
                 row.Number = opponent.CarNumber;
                 row.Name = opponent.Name;
-                row.OutLap = opponent.IsOutLap; // TODO use driverModule
+                try { row.OutLap = _driverModule.Drivers?[opponent.CarNumber]?.OutLap ?? false; }
+                catch { row.OutLap = false; }
                 row.iRating = (int)opponent.IRacing_IRating;
                 (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
                 row.GapToPlayer = opponent.RelativeGapToPlayer ?? 0;

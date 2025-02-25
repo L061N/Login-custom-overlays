@@ -34,24 +34,33 @@ namespace benofficial2.Plugin
     {
         public int EnterPitLapUnconfirmed { get; set; } = 0;
         public int EnterPitLap { get; set; } = 0;
+        public int ExitPitLap { get; set; } = 0;
+        public bool OutLap { get; set; } = false;
         public DateTime InPitSince { get; set; } = DateTime.MinValue;
         public int QualPositionInClass { get; set; } = 0;
         public double QualFastestTime { get; set; } = 0;
+        
     }
 
     public class DriverModule : IPluginModule
     {
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
-        private TimeSpan _minTimeInPit = TimeSpan.FromMilliseconds(4000);
+        private TimeSpan _minTimeInPit = TimeSpan.FromMilliseconds(2500);
         private double _lastSessionTime = 0;
         private Session _sessionModule;
 
         public const int MaxDrivers = 64;
+
+        // Key is car number
         public Dictionary<string, Driver> Drivers { get; private set; } = null;
 
         // Key is carIdx
         public Dictionary<int, RawDriverInfo> DriverInfos { get; private set; } = null;
+
+        public bool PlayerOutLap { get; internal set; } = false;
+        public string PlayerNumber { get; internal set; } = "";
+        public int PlayerPositionInClass { get; internal set; } = 0;
 
         public DriverModule()
         {
@@ -61,6 +70,10 @@ namespace benofficial2.Plugin
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _sessionModule = plugin.GetModule<Session>();
+
+            plugin.AttachDelegate(name: "Player.OutLap", valueProvider: () => PlayerOutLap);
+            plugin.AttachDelegate(name: "Player.Number", valueProvider: () => PlayerNumber);
+            plugin.AttachDelegate(name: "Player.PositionInClass", valueProvider: () => PlayerPositionInClass);
         }
 
         public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -116,13 +129,38 @@ namespace benofficial2.Plugin
                     {
                         driver.EnterPitLap = driver.EnterPitLapUnconfirmed;
                     }
+
+                    driver.OutLap = false;
+                    driver.ExitPitLap = 0;
                 }
                 else
                 {
+                    // If they are in the pit for a very short time then we consider that a glitch in telemetry and ignore it.
+                    if (driver.InPitSince > DateTime.MinValue &&
+                        driver.InPitSince + _minTimeInPit < DateTime.Now)
+                    {
+                        driver.ExitPitLap = opponent.CurrentLap ?? 0;
+
+                        // Edge case when the pit exit is before the finish line.
+                        // The currentLap will increment, so consider the next lap an out lap too.
+                        if (opponent.TrackPositionPercent > 0.5)
+                        {
+                            driver.ExitPitLap++;
+                        }
+                    }
+
+                    driver.OutLap = driver.ExitPitLap >= opponent.CurrentLap;
                     driver.InPitSince = DateTime.MinValue;
                 }
 
                 Drivers[opponent.CarNumber] = driver;
+
+                if (opponent.IsPlayer)
+                {
+                    PlayerOutLap = driver.OutLap;
+                    PlayerNumber = opponent.CarNumber;
+                    PlayerPositionInClass = opponent.Position > 0 ? opponent.PositionInClass : 0;
+                }
             }
         }
 
