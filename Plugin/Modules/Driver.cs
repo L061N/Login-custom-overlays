@@ -32,9 +32,9 @@ namespace benofficial2.Plugin
 
     public class Driver
     {
-        public int EnterPitLapUnconfirmed { get; set; } = 0;
-        public int EnterPitLap { get; set; } = 0;
-        public int ExitPitLap { get; set; } = 0;
+        public int EnterPitLapUnconfirmed { get; set; } = -1;
+        public int EnterPitLap { get; set; } = -1;
+        public int ExitPitLap { get; set; } = -1;
         public bool OutLap { get; set; } = false;
         public DateTime InPitSince { get; set; } = DateTime.MinValue;
         public int QualPositionInClass { get; set; } = 0;
@@ -120,7 +120,7 @@ namespace benofficial2.Plugin
                     if (driver.InPitSince == DateTime.MinValue)
                     {
                         driver.InPitSince = DateTime.Now;
-                        driver.EnterPitLapUnconfirmed = opponent.CurrentLap ?? 0;
+                        driver.EnterPitLapUnconfirmed = opponent.CurrentLap ?? -1;
                     }
 
                     // If they are in the pit for a very short time then we consider that a glitch in telemetry and ignore it.
@@ -131,7 +131,7 @@ namespace benofficial2.Plugin
                     }
 
                     driver.OutLap = false;
-                    driver.ExitPitLap = 0;
+                    driver.ExitPitLap = -1;
                 }
                 else
                 {
@@ -139,7 +139,7 @@ namespace benofficial2.Plugin
                     if (driver.InPitSince > DateTime.MinValue &&
                         driver.InPitSince + _minTimeInPit < DateTime.Now)
                     {
-                        driver.ExitPitLap = opponent.CurrentLap ?? 0;
+                        driver.ExitPitLap = opponent.CurrentLap ?? -1;
 
                         // Edge case when the pit exit is before the finish line.
                         // The currentLap will increment, so consider the next lap an out lap too.
