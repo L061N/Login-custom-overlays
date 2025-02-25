@@ -59,10 +59,10 @@ namespace benofficial2.Plugin
         public string Name { get; set; } = string.Empty;
         public bool OutLap { get; set; } = false;
         public int iRating { get; set; } = 0;
-        public string iRatingText { get; set; } = string.Empty;
         public string License { get; set; } = string.Empty;
         public double SafetyRating { get; set; } = 0;
         public double GapToPlayer { get; set; } = 0;
+        public string GapToPlayerCombined { get; set; } = string.Empty;
     }
 
     public class RelativeAhead
@@ -124,10 +124,10 @@ namespace benofficial2.Plugin
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.Name", valueProvider: () => row.Name);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.OutLap", valueProvider: () => row.OutLap);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.iRating", valueProvider: () => row.iRating);
-                plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.iRatingText", valueProvider: () => row.iRatingText);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.License", valueProvider: () => row.License);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.SafetyRating", valueProvider: () => row.SafetyRating);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.GapToPlayer", valueProvider: () => row.GapToPlayer);
+                plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.GapToPlayerCombined", valueProvider: () => row.GapToPlayerCombined);
             }
         }
 
@@ -167,9 +167,9 @@ namespace benofficial2.Plugin
                 row.Name = opponent.Name;
                 row.OutLap = opponent.IsOutLap; // TODO use driverModule
                 row.iRating = (int)opponent.IRacing_IRating;
-                row.iRatingText = DriverModule.FormatIRating(row.iRating);
                 (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
-                row.GapToPlayer = opponent.GaptoPlayer ?? 0;
+                row.GapToPlayer = opponent.RelativeGapToPlayer ?? 0;
+                row.GapToPlayerCombined = opponent.GapToPlayerCombined;
             }
         }
 
@@ -188,10 +188,10 @@ namespace benofficial2.Plugin
             row.Name = string.Empty;
             row.OutLap = false;
             row.iRating = 0;
-            row.iRatingText = string.Empty;
             row.License = string.Empty;
             row.SafetyRating = 0;
             row.GapToPlayer = 0;
+            row.GapToPlayerCombined = string.Empty;
         }
         public bool IsValidRow(Opponent opponent)
         {
