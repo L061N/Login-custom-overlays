@@ -107,7 +107,6 @@ namespace benofficial2.Plugin
         public bool OutLap { get; set; } = false;
         public int EnterPitLap { get; set; } = 0;
         public int iRating { get; set; } = 0;
-        public string iRatingText { get; set; } = string.Empty;
         public string License {  get; set; } = string.Empty;
         public double SafetyRating { get; set; } = 0;
         public int CurrentLap {  get; set; } = 0;
@@ -125,6 +124,7 @@ namespace benofficial2.Plugin
         public bool LeadFocusedDividerVisible { get; set; } = false;
         public string Color { get; set; } = string.Empty;
         public string TextColor { get; set; } = string.Empty;
+        public int Sof { get; set; } = 0;
 
         public StandingCarClass()
         {
@@ -170,6 +170,7 @@ namespace benofficial2.Plugin
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.LeadFocusedDividerVisible", valueProvider: () => carClass.LeadFocusedDividerVisible);
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Color", valueProvider: () => carClass.Color);
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.TextColor", valueProvider: () => carClass.TextColor);
+                plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Sof", valueProvider: () => carClass.Sof);
 
                 for (int rowIdx = 0; rowIdx < StandingCarClass.MaxRows; rowIdx++)
                 {
@@ -185,7 +186,6 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.OutLap", valueProvider: () => row.OutLap);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.EnterPitLap", valueProvider: () => row.EnterPitLap);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.iRating", valueProvider: () => row.iRating);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.iRatingText", valueProvider: () => row.iRatingText);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.License", valueProvider: () => row.License);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.SafetyRating", valueProvider: () => row.SafetyRating);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CurrentLap", valueProvider: () => row.CurrentLap);
@@ -223,6 +223,7 @@ namespace benofficial2.Plugin
 
                     carClass.Color = opponentClass.ClassColor;
                     carClass.TextColor = opponentClass.ClassTextColor;
+                    carClass.Sof = CalculateSof(opponents);
 
                     int maxRowCount = 0;
                     int skipRowCount = 0;
@@ -291,7 +292,6 @@ namespace benofficial2.Plugin
                         try { row.EnterPitLap = _driverModule.Drivers?[opponent.CarNumber]?.EnterPitLap ?? 0; }
                         catch { row.EnterPitLap = 0; }
                         row.iRating = (int)opponent.IRacing_IRating;
-                        row.iRatingText = DriverModule.FormatIRating(row.iRating);
                         (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
                         row.CurrentLap = opponent.CurrentLap ?? 0;
                         row.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;
@@ -330,7 +330,6 @@ namespace benofficial2.Plugin
             row.OutLap = false;
             row.EnterPitLap = 0;
             row.iRating = 0;
-            row.iRatingText = string.Empty;
             row.License = string.Empty;
             row.SafetyRating = 0;
             row.CurrentLap = 0;
@@ -468,6 +467,17 @@ namespace benofficial2.Plugin
             }
 
             return skipRowCount;
+        }
+
+        public int CalculateSof(List<Opponent> opponents)
+        {
+            if (opponents.Count <= 0) return 0;
+            double totalSof = 0;
+            for (int opponentIdx = 0; opponentIdx < opponents.Count; opponentIdx++)
+            {
+                totalSof += opponents[opponentIdx].IRacing_IRating ?? 0;
+            }
+            return (int)(totalSof / opponents.Count);
         }
     }
 }
