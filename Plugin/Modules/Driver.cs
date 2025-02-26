@@ -139,7 +139,9 @@ namespace benofficial2.Plugin
                 else
                 {
                     // If they are in the pit for a very short time then we consider that a glitch in telemetry and ignore it.
+                    // Ignore pit exit before the race start.
                     if (driver.InPitSince > DateTime.MinValue &&
+                        !(_sessionModule.Race && !_sessionModule.RaceStarted) &&
                         driver.InPitSince + _minTimeInPit < DateTime.Now)
                     {
                         driver.ExitPitLap = opponent.CurrentLap ?? -1;
