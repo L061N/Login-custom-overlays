@@ -100,7 +100,7 @@ namespace benofficial2.Plugin
         public bool IsPlayer { get; set; } = false;
         public string PlayerID { get; set; } = string.Empty;
         public bool Connected { get; set; } = false;
-        public int PositionInClass { get; set; } = 0;
+        public int LivePositionInClass { get; set; } = 0;
         public string Number { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public bool InPitLane { get; set; } = false;
@@ -179,7 +179,7 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.IsPlayer", valueProvider: () => row.IsPlayer);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PlayerID", valueProvider: () => row.PlayerID);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Connected", valueProvider: () => row.Connected);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PositionInClass", valueProvider: () => row.PositionInClass);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LivePositionInClass", valueProvider: () => row.LivePositionInClass);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Number", valueProvider: () => row.Number);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Name", valueProvider: () => row.Name);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.InPitLane", valueProvider: () => row.InPitLane);
@@ -278,11 +278,11 @@ namespace benofficial2.Plugin
 
                         if (_sessionModule.Race)
                         {
-                            row.PositionInClass = actualDriverIdx + 1;
+                            row.LivePositionInClass = actualDriverIdx + 1;
                         }
                         else
                         {
-                            row.PositionInClass = opponent.Position > 0 ? actualDriverIdx + 1 : 0;
+                            row.LivePositionInClass = opponent.Position > 0 ? actualDriverIdx + 1 : 0;
                         }
 
                         row.Number = opponent.CarNumber;
@@ -299,6 +299,11 @@ namespace benofficial2.Plugin
                         (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, opponent);
                         row.BestLapTime = opponent.BestLapTime;
                         visibleRowCount++;
+
+                        if (row.IsPlayer)
+                        {
+                            _driverModule.PlayerLivePositionInClass = row.LivePositionInClass;
+                        }
                     }
                 }
                 else
@@ -323,7 +328,7 @@ namespace benofficial2.Plugin
             row.IsPlayer = false;
             row.PlayerID = string.Empty;
             row.Connected = false;
-            row.PositionInClass = 0;
+            row.LivePositionInClass = 0;
             row.Number = string.Empty;
             row.Name = string.Empty;
             row.InPitLane = false;

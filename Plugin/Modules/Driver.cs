@@ -61,6 +61,7 @@ namespace benofficial2.Plugin
         public bool PlayerOutLap { get; internal set; } = false;
         public string PlayerNumber { get; internal set; } = "";
         public int PlayerPositionInClass { get; internal set; } = 0;
+        public int PlayerLivePositionInClass { get; internal set; } = 0;
 
         public DriverModule()
         {
@@ -74,6 +75,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.OutLap", valueProvider: () => PlayerOutLap);
             plugin.AttachDelegate(name: "Player.Number", valueProvider: () => PlayerNumber);
             plugin.AttachDelegate(name: "Player.PositionInClass", valueProvider: () => PlayerPositionInClass);
+            plugin.AttachDelegate(name: "Player.LivePositionInClass", valueProvider: () => PlayerLivePositionInClass);
         }
 
         public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -90,6 +92,7 @@ namespace benofficial2.Plugin
             if (sessionTime == 0 || sessionTime < _lastSessionTime)
             {
                 Drivers = null;
+                PlayerLivePositionInClass = 0;
                 _lastSessionTime = sessionTime;
                 return;
             }
