@@ -18,6 +18,7 @@
 
 using GameReaderCommon;
 using SimHub.Plugins;
+using System;
 using System.ComponentModel;
 
 namespace benofficial2.Plugin
@@ -48,17 +49,30 @@ namespace benofficial2.Plugin
 
     public class BlindSpotMonitor : IPluginModule
     {
+        private Spotter _spotterModule = null;
+
         public BlindSpotMonitorSettings Settings { get; set; }
+        public bool Visible { get; set; } = false;
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
+            _spotterModule = plugin.GetModule<Spotter>();
+
             Settings = plugin.ReadCommonSettings<BlindSpotMonitorSettings>("BlindSpotMonitorSettings", () => new BlindSpotMonitorSettings());
             plugin.AttachDelegate(name: "BlindSpotMonitor.Enabled", valueProvider: () => Settings.Enabled);
+            plugin.AttachDelegate(name: "BlindSpotMonitor.Visible", valueProvider: () => Visible);
         }
 
         public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-
+            if (!Settings.Enabled)
+            {
+                Visible = false;
+            }
+            else
+            {
+                Visible = _spotterModule.OverlapAhead < 0 || _spotterModule.OverlapBehind > 0;
+            }
         }
 
         public void End(PluginManager pluginManager, benofficial2 plugin)

@@ -2,17 +2,6 @@
   "Variables": {
     "DashboardVariables": [
       {
-        "VariableName": "monitorVisible",
-        "EvaluateOnlyOnce": false,
-        "OverrideWithParentDashboardVariableWhenAvailable": true,
-        "ValueExpression": {
-          "JSExt": 0,
-          "Interpreter": 1,
-          "Expression": "// In iRacing SDK we don't have the data for opponents car position, so we can't tell if the car is left or right. Only the spotter gives us that information, but it wouldn't trigger with every overlap (ex: on the pace lap).\r\nconst behindDist0 = $prop('IRacingExtraProperties.iRacing_DriverBehind_00_Distance');\r\nconst behindDist1 = $prop('IRacingExtraProperties.iRacing_DriverBehind_01_Distance');\r\nconst aheadDist0 = $prop('IRacingExtraProperties.iRacing_DriverAhead_00_Distance');\r\nconst aheadDist1 = $prop('IRacingExtraProperties.iRacing_DriverAhead_01_Distance');\r\nconst spotterThreshold = isnull($prop('benofficial2.Spotter.Threshold'), 5.5);\r\n\r\nconst behind = (behindDist0 > 0 && behindDist0 <= spotterThreshold) || \r\n               (behindDist1 > 0 && behindDist1 <= spotterThreshold);\r\n\r\nconst ahead = (aheadDist0 < 0 && aheadDist0 >= -spotterThreshold) || \r\n              (aheadDist1 < 0 && aheadDist1 >= -spotterThreshold);\r\n\r\nreturn ahead || behind;"
-        },
-        "EvaluateBeforeScreenRoles": false
-      },
-      {
         "VariableName": "spotterHeight",
         "EvaluateOnlyOnce": false,
         "OverrideWithParentDashboardVariableWhenAvailable": true,
@@ -58,7 +47,7 @@
     }
   },
   "Version": 2,
-  "Id": "3d7409e4-d8b4-4b61-a0ec-327b74bfdbb6",
+  "Id": "88224ef8-7167-4ec1-9480-c092d5bf3a7c",
   "BaseHeight": 135,
   "BaseWidth": 695,
   "BackgroundColor": "#FF000000",
@@ -385,7 +374,7 @@
                   "Formula": {
                     "JSExt": 0,
                     "Interpreter": 1,
-                    "Expression": "const enableBlindSpotMonitor = isnull($prop('benofficial2.BlindSpotMonitor.Enabled'), false);\r\nreturn enableBlindSpotMonitor && $prop('variable.monitorVisible');"
+                    "Expression": "return isnull($prop('benofficial2.BlindSpotMonitor.Visible'), false);"
                   },
                   "Mode": 2
                 }
