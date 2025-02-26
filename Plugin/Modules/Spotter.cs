@@ -18,6 +18,8 @@
 
 using GameReaderCommon;
 using SimHub.Plugins;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 
@@ -158,6 +160,9 @@ namespace benofficial2.Plugin
     {
         public SpotterSettings Settings { get; set; }
 
+        public double OverlapAhead { get; internal set; } = 0;
+        public double OverlapBehind { get; internal set; } = 0;
+
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<SpotterSettings>("SpotterSettings", () => new SpotterSettings());
@@ -167,16 +172,61 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Spotter.MinHeight", valueProvider: () => Settings.MinHeight);
             plugin.AttachDelegate(name: "Spotter.Width", valueProvider: () => Settings.Width);
             plugin.AttachDelegate(name: "Spotter.Border", valueProvider: () => Settings.Border);
+            plugin.AttachDelegate(name: "Spotter.OverlapAhead", valueProvider: () => OverlapAhead);
+            plugin.AttachDelegate(name: "Spotter.OverlapBehind", valueProvider: () => OverlapBehind);
         }
 
         public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
+            UpdateOverlapAhead(ref data);
+            UpdateOverlapBehind(ref data);
+        }
 
+        public void UpdateOverlapAhead(ref GameData data)
+        {
+            (double dist0, double dist1) = GetNearestDistances(data.NewData.OpponentsAheadOnTrack);
+            double overlap = 0;
+            if (dist0 < 0 && dist0 >= -Settings.Threshold)
+            {
+                overlap = dist0;
+            }
+
+            if (dist1 < 0 && dist1 >= -Settings.Threshold)
+            {
+                overlap = Math.Min(overlap, dist1);
+            }
+
+            OverlapAhead = overlap;
+        }
+
+        public void UpdateOverlapBehind(ref GameData data)
+        {
+            (double dist0, double dist1) = GetNearestDistances(data.NewData.OpponentsBehindOnTrack);
+            double overlap = 0;
+            if (dist0 > 0 && dist0 <= Settings.Threshold)
+            {
+                overlap = dist0;
+            }
+
+            if (dist1 > 0 && dist1 <= Settings.Threshold)
+            {
+                overlap = Math.Max(overlap, dist1);
+            }
+
+            OverlapBehind = overlap;
         }
 
         public void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("SpotterSettings", Settings);
+        }
+
+        public (double dist0, double dist1) GetNearestDistances(List<Opponent> opponents)
+        {
+            double dist0 = 0, dist1 = 0;
+            if (opponents.Count > 0) dist0 = opponents[0].RelativeDistanceToPlayer ?? 0;
+            if (opponents.Count > 1) dist1 = opponents[1].RelativeDistanceToPlayer ?? 0;
+            return (dist0, dist1);
         }
     }
 }

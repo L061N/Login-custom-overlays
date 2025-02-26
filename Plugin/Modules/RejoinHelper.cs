@@ -18,6 +18,7 @@
 
 using GameReaderCommon;
 using SimHub.Plugins;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 
@@ -158,20 +159,90 @@ namespace benofficial2.Plugin
 
     public class RejoinHelper : IPluginModule
     {
+        private Session _sessionModule = null;
+
         public RejoinHelperSettings Settings { get; set; }
+        public bool Visible { get; set; } = false;
+        public double Gap { get; set; } = 0;
+        public string State { get; set; } = string.Empty;
+        public double ColorPct { get; set; } = 0;
+
+        public const string StateClear = "Clear";
+        public const string StateCare = "Care";
+        public const string StateYield = "Yield";
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
+            _sessionModule = plugin.GetModule<Session>();
+
             Settings = plugin.ReadCommonSettings<RejoinHelperSettings>("RejoinHelperSettings", () => new RejoinHelperSettings());
             plugin.AttachDelegate(name: "RejoinHelper.Enabled", valueProvider: () => Settings.Enabled);
             plugin.AttachDelegate(name: "RejoinHelper.MinClearGap", valueProvider: () => Settings.MinClearGap);
             plugin.AttachDelegate(name: "RejoinHelper.MinCareGap", valueProvider: () => Settings.MinCareGap);
             plugin.AttachDelegate(name: "RejoinHelper.MinSpeed", valueProvider: () => Settings.MinSpeed);
+            plugin.AttachDelegate(name: "RejoinHelper.Visible", valueProvider: () => Visible);
+            plugin.AttachDelegate(name: "RejoinHelper.Gap", valueProvider: () => Gap);
+            plugin.AttachDelegate(name: "RejoinHelper.State", valueProvider: () => State);
+            plugin.AttachDelegate(name: "RejoinHelper.ColorPct", valueProvider: () => ColorPct);
         }
 
         public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
+            dynamic raw = data.NewData.GetRawDataObject();
+            if (raw == null) return;
 
+            // Wait for race to be started for a few seconds not to trigger on a standing start
+            if (!Settings.Enabled || (_sessionModule.Race && (_sessionModule.RaceFinished || _sessionModule.RaceTimer < 3)))
+            {
+                Visible = false;
+                Gap = 0;
+                State = StateClear;
+                ColorPct = 100;
+            }
+            else
+            {
+                int trackSurface = 0;
+                try { trackSurface = (int)raw.Telemetry["PlayerTrackSurface"]; } catch { }
+
+                bool isSlow = data.NewData.SpeedKmh < Settings.MinSpeed;
+                Visible = isSlow || trackSurface == 0;
+
+                List<Opponent> opponents = data.NewData.OpponentsBehindOnTrack;
+                if (opponents.Count > 0)
+                {
+                    Gap = opponents[0].RelativeGapToPlayer ?? 0;
+                }
+                else
+                {
+                    Gap = 0;
+                }
+
+                if (Gap <= 0)
+                {
+                    State = StateClear;
+                    ColorPct = 100;
+                }
+                else
+                {
+                    if (Gap >= Settings.MinClearGap)
+                    {
+                        State = StateClear;
+                        ColorPct = 100;
+                    }
+                    else if (Gap >= Settings.MinCareGap)
+                    {
+                        State = StateCare;
+                        double ratio = (Gap - Settings.MinCareGap) / (Settings.MinClearGap - Settings.MinCareGap);
+                        ColorPct = ((100 - 50) * ratio) + 50;
+                    }
+                    else
+                    {
+                        State = StateYield;
+                        double ratio = Gap / Settings.MinClearGap;
+                        ColorPct = 50 * ratio;
+                    }
+                }
+            }
         }
 
         public void End(PluginManager pluginManager, benofficial2 plugin)
