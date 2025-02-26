@@ -18,6 +18,7 @@
 
 using GameReaderCommon;
 using SimHub.Plugins;
+using System;
 using System.Runtime;
 
 namespace benofficial2.Plugin
@@ -28,6 +29,7 @@ namespace benofficial2.Plugin
         private double _lastSessionTime = 0;
         private bool _raceFinishedForPlayer = false;
         private double? _lastTrackPct = null;
+        private DateTime _raceStartedTime = DateTime.MinValue;
 
         public bool Race { get; internal set; } = false;
         public bool Qual { get; internal set; } = false;
@@ -36,6 +38,7 @@ namespace benofficial2.Plugin
         public bool ReplayPlaying { get; internal set; } = false;
         public bool RaceStarted { get; internal set; } = false;
         public bool RaceFinished { get; internal set; } = false;
+        public double RaceTimer { get; internal set; } = 0;
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
@@ -46,6 +49,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Session.ReplayPlaying", valueProvider: () => ReplayPlaying);
             plugin.AttachDelegate(name: "Session.RaceStarted", valueProvider: () => RaceStarted);
             plugin.AttachDelegate(name: "Session.RaceFinished", valueProvider: () => RaceFinished);
+            plugin.AttachDelegate(name: "Session.RaceTimer", valueProvider: () => RaceTimer);
         }
 
         public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -61,7 +65,7 @@ namespace benofficial2.Plugin
                 Practice = data.NewData.SessionTypeName.IndexOf("Practice") != -1 ||
                     data.NewData.SessionTypeName.IndexOf("Warmup") != -1 ||
                     data.NewData.SessionTypeName.IndexOf("Testing") != -1;
-                
+
                 Offline = data.NewData.SessionTypeName.IndexOf("Offline") != -1;
 
                 _lastSessionTypeName = data.NewData.SessionTypeName;
@@ -78,7 +82,7 @@ namespace benofficial2.Plugin
 
             int trackSurface = -1;
             try { trackSurface = (int)raw.Telemetry["PlayerTrackSurface"]; } catch { }
-            
+
             ReplayPlaying = isReplayPLaying || position < 0 || trackSurface < 0;
 
             // Determine if race started
@@ -123,6 +127,26 @@ namespace benofficial2.Plugin
                     _raceFinishedForPlayer = true;
                     RaceFinished = true;
                 }
+            }
+
+            // Update race timer
+            if (RaceStarted)
+            {
+                // Freeze timer when race is finished
+                if (!RaceFinished)
+                {
+                    if (_raceStartedTime == DateTime.MinValue)
+                    {
+                        _raceStartedTime = DateTime.Now;
+                    }
+
+                    RaceTimer = (DateTime.Now - _raceStartedTime).TotalSeconds;
+                }
+            }
+            else
+            {
+                RaceTimer = 0;
+                _raceStartedTime = DateTime.MinValue;
             }
         }
 
