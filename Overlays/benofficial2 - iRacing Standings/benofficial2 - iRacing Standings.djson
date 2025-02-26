@@ -37,7 +37,7 @@
     }
   },
   "Version": 2,
-  "Id": "13d241e9-b1e7-4cbc-aeca-9cd303f19436",
+  "Id": "bcba594b-4be5-4373-a87e-ab75641eb60b",
   "BaseHeight": 530,
   "BaseWidth": 363,
   "BackgroundColor": "#FF000000",
@@ -505,7 +505,7 @@
                         },
                         "TextColor": {
                           "Formula": {
-                            "JSExt": 3,
+                            "JSExt": 1,
                             "Interpreter": 1,
                             "Expression": "if (!carHasTireCompounds())\r\n{\r\n\tif (getTireType(repeatindex()) == 'Wet')\r\n\t{\r\n\t\treturn 'DeepSkyBlue'\r\n\t}\r\n\treturn 'White';\r\n}\r\n\r\nconst color = getIndexedProp('IRacingExtraProperties.SLB_TireCompoundColor', repeatindex());\r\nconst compound = getIndexedProp('IRacingExtraProperties.SLB_TireCompound', repeatindex());\r\nconst carId = $prop('DataCorePlugin.GameData.CarId');\r\n\r\nif (carId == 'dallarair18')\r\n{\r\n\t// Special case for IndyCar, return M as S and S as H because that's matching the color.\r\n\tif (compound == 'M')\r\n\t{\r\n\t\treturn 'Red';\r\n\t}\r\n\telse if (compound == 'S')\r\n\t{\r\n\t\treturn 'White';\r\n\t}\r\n}\r\n\r\nreturn color;"
                           },
@@ -686,7 +686,7 @@
                   "Bindings": {
                     "Visible": {
                       "Formula": {
-                        "JSExt": 3,
+                        "JSExt": 1,
                         "Interpreter": 1,
                         "Expression": "return getIndexedProp('IRacingExtraProperties.SLB_RowIsVisible', repeatindex());"
                       },
@@ -715,7 +715,7 @@
               "Bindings": {
                 "Top": {
                   "Formula": {
-                    "JSExt": 3,
+                    "JSExt": 1,
                     "Interpreter": 1,
                     "Expression": "return 24 + $prop('IRacingExtraProperties.iRacing_LeaderboardLayout_SLBVisibleLeaders') * 20;"
                   },
@@ -946,7 +946,7 @@
     "MetadataVersion": 2.0,
     "EnableOnDashboardMessaging": true,
     "PitScreensIndexs": [],
-    "SimHubVersion": "9.7.2",
+    "SimHubVersion": "9.7.3",
     "Title": "benofficial2 - iRacing Standings",
     "Author": "twitch.tv/benofficial2",
     "Width": 363.0,

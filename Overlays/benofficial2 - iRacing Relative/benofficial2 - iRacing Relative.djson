@@ -47,7 +47,7 @@
     }
   },
   "Version": 2,
-  "Id": "56b86258-785f-4c57-96fb-305f2981b556",
+  "Id": "02cfaa72-ef7f-47d9-9995-3766de092bb5",
   "BaseHeight": 170,
   "BaseWidth": 305,
   "BackgroundColor": "#FF000000",
@@ -1103,34 +1103,6 @@
                       "Mode": 2
                     }
                   }
-                },
-                {
-                  "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-                  "IsTextItem": true,
-                  "Font": "Roboto",
-                  "FontWeight": "Bold",
-                  "FontSize": 14.0,
-                  "Text": "22:22:22",
-                  "TextColor": "#FFFFFFFF",
-                  "HorizontalAlignment": 0,
-                  "VerticalAlignment": 1,
-                  "BackgroundColor": "#00FFFFFF",
-                  "Height": 20.0,
-                  "Left": 5.0,
-                  "Top": 2.0,
-                  "Visible": false,
-                  "Width": 60.0,
-                  "Name": "Timer",
-                  "RenderingSkip": 0,
-                  "MinimumRefreshIntervalMS": 0.0,
-                  "Bindings": {
-                    "Text": {
-                      "Formula": {
-                        "Expression": "toshorttime(\r\n\r\n\r\nif(![DataCorePlugin.GameRunning],'--:--.---',(\r\n\r\nif(isnull([DataCorePlugin.CurrentGame],0)=='IRacing'\r\n,\r\n(\r\nif(\r\n(isnull([DataCorePlugin.GameRawData.Telemetry.SessionTimeRemain],0)<>604800),\r\nsecondstotimespan(isnull([DataCorePlugin.GameRawData.Telemetry.SessionTimeRemain],0)),'∞')\r\n)\r\n,isnull([DataCorePlugin.GameData.NewData.SessionTimeLeft],0))\r\n))\r\n\r\n,0,0,1)"
-                      },
-                      "Mode": 2
-                    }
-                  }
                 }
               ],
               "Visible": true,
@@ -1219,7 +1191,7 @@
     "MetadataVersion": 2.0,
     "EnableOnDashboardMessaging": true,
     "PitScreensIndexs": [],
-    "SimHubVersion": "9.7.2",
+    "SimHubVersion": "9.7.4",
     "Title": "benofficial2 - iRacing Relative",
     "Author": "twitch.tv/benofficial2",
     "Width": 305.0,

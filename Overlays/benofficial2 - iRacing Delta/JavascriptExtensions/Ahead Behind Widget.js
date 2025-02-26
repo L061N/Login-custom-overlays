@@ -16,28 +16,23 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-function showAheadBehindWidget()
+function getDriverPositionInClass(relativeIdx)
 {
-    if (isRace())
-    {
-        var lap = $prop('DataCorePlugin.GameData.CurrentLap');
-        return lap > 1;
-    }
-    return false;
+    // SimHub does not return a live position
+    //const pos = getopponentleaderboardposition_aheadbehind_playerclassonly(relativeIdx);
+    //return driverclassposition(pos);
+
+    const playerPos = isnull($prop('benofficial2.Player.LivePositionInClass'), 0);
+    if (playerPos <= 0) return 0;
+    return playerPos + relativeIdx;
 }
 
-function getDriverAheadDeltaColor()
+function getDriverLastLapDeltaToPlayer(relativeIdx)
 {
-    var ourTime = $prop('DataCorePlugin.GameData.LastLapTime');
-    var theirTime = $prop('IRacingExtraProperties.iRacing_NonRelativeDriverAheadInClass_00_LastLapTime');
+    const playerTime = $prop('DataCorePlugin.GameData.LastLapTime');
 
-    return computeDeltaTimeColor(ourTime, theirTime);
-}
+    const pos = getopponentleaderboardposition_aheadbehind_playerclassonly(relativeIdx);
+    const driverTime = driverlastlap(pos);
 
-function getDriverBehindDeltaColor()
-{
-    var ourTime = $prop('DataCorePlugin.GameData.LastLapTime');
-    var theirTime = $prop('IRacingExtraProperties.iRacing_NonRelativeDriverBehindInClass_00_LastLapTime');
-
-    return computeDeltaTimeColor(ourTime, theirTime);
+    return computeDeltaTime(playerTime, driverTime);
 }
