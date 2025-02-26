@@ -6,7 +6,7 @@
         "EvaluateOnlyOnce": false,
         "OverrideWithParentDashboardVariableWhenAvailable": true,
         "ValueExpression": {
-          "JSExt": 3,
+          "JSExt": 1,
           "Interpreter": 1,
           "Expression": "// Remember the reference lap time we used during the current lap,\r\n// so that we can use it on the next lap.\r\nvar trackPercent = $prop('DataCorePlugin.GameData.TrackPositionPercent');\r\nif (trackPercent > 0.97)\r\n{\r\n    root['previousReferenceTime'] = getReferenceLapTime();\r\n}\r\n\r\nreturn root['previousReferenceTime'];"
         },
@@ -16,7 +16,7 @@
   },
   "DashboardDebugManager": {},
   "Version": 2,
-  "Id": "1370df33-d2c1-401d-a3e8-8527e2c164a6",
+  "Id": "23dfddef-a8bf-4130-aa34-bf058d7e01c7",
   "BaseHeight": 38,
   "BaseWidth": 276,
   "BackgroundColor": "#FF000000",
@@ -73,7 +73,7 @@
                   "Bindings": {
                     "BackgroundColor": {
                       "Formula": {
-                        "JSExt": 3,
+                        "JSExt": 1,
                         "Interpreter": 1,
                         "Expression": "var delta = getDeltaToPreviousReferenceTime();\r\nreturn getDeltaTimeColor(delta);"
                       },
@@ -111,7 +111,7 @@
                   "Bindings": {
                     "Text": {
                       "Formula": {
-                        "JSExt": 3,
+                        "JSExt": 1,
                         "Interpreter": 1,
                         "Expression": "return getDeltaToPreviousReferenceTime();"
                       },
@@ -127,7 +127,7 @@
               "Bindings": {
                 "Visible": {
                   "Formula": {
-                    "JSExt": 3,
+                    "JSExt": 1,
                     "Interpreter": 1,
                     "Expression": "var delta = getDeltaToPreviousReferenceTime();\r\nreturn delta != '';"
                   },
@@ -202,7 +202,7 @@
                     },
                     "BlinkEnabled": {
                       "Formula": {
-                        "JSExt": 3,
+                        "JSExt": 1,
                         "Interpreter": 1,
                         "Expression": "var currentLapTime = $prop('DataCorePlugin.GameData.CurrentLapTime');\r\nvar d = new Date(currentLapTime);\r\nvar min = d.getMinutes();\r\nvar sec = d.getSeconds();\r\n\r\nvar blinkForSecs = 5\r\nvar blink = (min == 0 && sec <= blinkForSecs);\r\n\r\nvar delta = getDeltaToPreviousReferenceTime();\r\n\r\nif (blink)\r\n{\r\n\t// Only blink a green lap\r\n\tif (getDeltaTimeColor(delta) == 1)\r\n\t{\r\n\t\tvar lastLapTime = $prop('DataCorePlugin.GameData.LastLapTime');\r\n\t\tif (!isInvalidTime(lastLapTime))\r\n\t\t{\r\n\t\t\t// Happens when getting out of the pit after a reset.\r\n\t\t\treturn true\r\n\t\t}\r\n\t}\r\n}\r\n\r\nreturn false"
                       },
@@ -269,9 +269,9 @@
               "Bindings": {
                 "Visible": {
                   "Formula": {
-                    "JSExt": 3,
+                    "JSExt": 1,
                     "Interpreter": 1,
-                    "Expression": "var delta = getDeltaToPreviousReferenceTime();\r\nreturn getDeltaTimeColor(delta) == 1;\r\n"
+                    "Expression": "var delta = getDeltaToPreviousReferenceTime();\r\nreturn getDeltaTimeColor(delta) == 1;"
                   },
                   "Mode": 2
                 }
@@ -279,13 +279,13 @@
             }
           ],
           "Visible": true,
-          "Name": "Everything",
+          "Name": "Visible",
           "RenderingSkip": 0,
           "MinimumRefreshIntervalMS": 0.0,
           "Bindings": {
             "Visible": {
               "Formula": {
-                "JSExt": 3,
+                "JSExt": 1,
                 "Interpreter": 1,
                 "Expression": "return showTimerDelta();"
               },
@@ -345,7 +345,7 @@
     "MetadataVersion": 2.0,
     "EnableOnDashboardMessaging": true,
     "PitScreensIndexs": [],
-    "SimHubVersion": "9.7.2",
+    "SimHubVersion": "9.7.4",
     "Width": 276.0,
     "Height": 38.0,
     "DashboardVersion": ""

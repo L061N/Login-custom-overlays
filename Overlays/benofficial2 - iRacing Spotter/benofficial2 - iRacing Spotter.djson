@@ -13,35 +13,13 @@
         "EvaluateBeforeScreenRoles": false
       },
       {
-        "VariableName": "overlapBehind",
-        "EvaluateOnlyOnce": false,
-        "OverrideWithParentDashboardVariableWhenAvailable": true,
-        "ValueExpression": {
-          "JSExt": 1,
-          "Interpreter": 1,
-          "Expression": "const behindDist0 = $prop('IRacingExtraProperties.iRacing_DriverBehind_00_Distance');\r\nconst behindDist1 = $prop('IRacingExtraProperties.iRacing_DriverBehind_01_Distance');\r\nconst spotterThreshold = isnull($prop('benofficial2.Spotter.Threshold'), 5.5);\r\nlet behind = 0\r\n\r\nif (behindDist0 > 0 && behindDist0 <= spotterThreshold)\r\n{\r\n\tbehind = behindDist0;\r\n}\r\n\r\nif (behindDist1 > 0 && behindDist1 <= spotterThreshold)\r\n{\r\n\tbehind = Math.max(behind, behindDist1);\r\n}\r\n\r\nreturn behind;"
-        },
-        "EvaluateBeforeScreenRoles": false
-      },
-      {
-        "VariableName": "overlapAhead",
-        "EvaluateOnlyOnce": false,
-        "OverrideWithParentDashboardVariableWhenAvailable": true,
-        "ValueExpression": {
-          "JSExt": 0,
-          "Interpreter": 1,
-          "Expression": "const aheadDist0 = $prop('IRacingExtraProperties.iRacing_DriverAhead_00_Distance');\r\nconst aheadDist1 = $prop('IRacingExtraProperties.iRacing_DriverAhead_01_Distance');\r\nconst spotterThreshold = isnull($prop('benofficial2.Spotter.Threshold'), 5.5);\r\nlet ahead = 0;\r\n\r\nif (aheadDist0 < 0 && aheadDist0 >= -spotterThreshold)\r\n{\r\n\tahead = aheadDist0;\r\n}\r\n\r\nif (aheadDist1 < 0 && aheadDist1 >= -spotterThreshold)\r\n{\r\n\tahead = Math.min(ahead, aheadDist1);\r\n}\r\n\r\nreturn ahead;"
-        },
-        "EvaluateBeforeScreenRoles": false
-      },
-      {
         "VariableName": "spotterHeight",
         "EvaluateOnlyOnce": false,
         "OverrideWithParentDashboardVariableWhenAvailable": true,
         "ValueExpression": {
           "JSExt": 0,
           "Interpreter": 1,
-          "Expression": "const spotterThreshold = isnull($prop('benofficial2.Spotter.Threshold'), 5.5);\r\nconst spotterHeight = isnull($prop('benofficial2.Spotter.Height'), 129);\r\nconst spotterMinHeight = isnull($prop('benofficial2.Spotter.MinHeight'), 15);\r\n\r\nif ($prop('variable.overlapAhead') < 0 && $prop('variable.overlapBehind') > 0)\r\n{\r\n\treturn spotterHeight;\r\n}\r\n\r\nif ($prop('variable.overlapBehind') > 0)\r\n{\r\n\treturn spotterHeight - (spotterHeight - spotterMinHeight) * $prop('variable.overlapBehind') / spotterThreshold;\r\n}\r\n\r\nif ($prop('variable.overlapAhead') < 0)\r\n{\r\n\treturn spotterHeight + (spotterHeight - spotterMinHeight) * $prop('variable.overlapAhead') / spotterThreshold;\r\n}\r\n\r\nreturn 0;"
+          "Expression": "const spotterThreshold = isnull($prop('benofficial2.Spotter.Threshold'), 5.5);\r\nconst spotterHeight = isnull($prop('benofficial2.Spotter.Height'), 129);\r\nconst spotterMinHeight = isnull($prop('benofficial2.Spotter.MinHeight'), 15);\r\nconst overlapAhead = isnull($prop('benofficial2.Spotter.OverlapAhead'), 0);\r\nconst overlapBehind = isnull($prop('benofficial2.Spotter.OverlapBehind'), 0);\r\n\r\nif (overlapAhead < 0 && overlapBehind > 0)\r\n{\r\n\treturn spotterHeight;\r\n}\r\n\r\nif (overlapBehind > 0)\r\n{\r\n\treturn spotterHeight - (spotterHeight - spotterMinHeight) * overlapBehind / spotterThreshold;\r\n}\r\n\r\nif (overlapAhead < 0)\r\n{\r\n\treturn spotterHeight + (spotterHeight - spotterMinHeight) * overlapAhead / spotterThreshold;\r\n}\r\n\r\nreturn 0;"
         },
         "EvaluateBeforeScreenRoles": false
       },
@@ -52,7 +30,7 @@
         "ValueExpression": {
           "JSExt": 0,
           "Interpreter": 1,
-          "Expression": "const spotterThreshold = isnull($prop('benofficial2.Spotter.Threshold'), 5.5);\r\nconst spotterBorder = isnull($prop('benofficial2.Spotter.Border'), 3);\r\nconst spotterHeight = isnull($prop('benofficial2.Spotter.Height'), 129);\r\nconst spotterMinHeight = isnull($prop('benofficial2.Spotter.MinHeight'), 15);\r\n\r\nif ($prop('variable.overlapAhead') < 0 && $prop('variable.overlapBehind') > 0)\r\n{\r\n\treturn spotterBorder;\r\n}\r\n\r\nif ($prop('variable.overlapBehind') > 0)\r\n{\r\n\treturn spotterBorder + (spotterHeight - spotterMinHeight) * $prop('variable.overlapBehind') / spotterThreshold;\r\n}\r\n\r\nreturn spotterBorder;"
+          "Expression": "const spotterThreshold = isnull($prop('benofficial2.Spotter.Threshold'), 5.5);\r\nconst spotterBorder = isnull($prop('benofficial2.Spotter.Border'), 3);\r\nconst spotterHeight = isnull($prop('benofficial2.Spotter.Height'), 129);\r\nconst spotterMinHeight = isnull($prop('benofficial2.Spotter.MinHeight'), 15);\r\nconst overlapAhead = isnull($prop('benofficial2.Spotter.OverlapAhead'), 0);\r\nconst overlapBehind = isnull($prop('benofficial2.Spotter.OverlapBehind'), 0);\r\n\r\nif (overlapAhead < 0 && overlapBehind > 0)\r\n{\r\n\treturn spotterBorder;\r\n}\r\n\r\nif (overlapBehind > 0)\r\n{\r\n\treturn spotterBorder + (spotterHeight - spotterMinHeight) * overlapBehind / spotterThreshold;\r\n}\r\n\r\nreturn spotterBorder;"
         },
         "EvaluateBeforeScreenRoles": false
       },
@@ -80,7 +58,7 @@
     }
   },
   "Version": 2,
-  "Id": "c2a95aa9-1e17-4301-8aed-1b15089dd9f6",
+  "Id": "3d7409e4-d8b4-4b61-a0ec-327b74bfdbb6",
   "BaseHeight": 135,
   "BaseWidth": 695,
   "BackgroundColor": "#FF000000",
@@ -444,9 +422,9 @@
                   "Bindings": {
                     "BackgroundColor": {
                       "Formula": {
-                        "JSExt": 1,
+                        "JSExt": 0,
                         "Interpreter": 1,
-                        "Expression": "let name = getIndexedProp('IRacingExtraProperties.RLB_Behind_Name', 1)\r\nif (name == null || name == '')\r\n{\r\n\treturn 100;\r\n}\r\n\r\nlet gap = getIndexedProp('IRacingExtraProperties.RLB_Behind_RelativeGapToPlayer', 1);\r\ngap = Math.abs(gap);\r\n\r\nconst care = isnull($prop('benofficial2.RejoinHelper.MinCareGap'), 1.5);\r\nconst clear = isnull($prop('benofficial2.RejoinHelper.MinClearGap'), 3.5);\r\n\r\nif (gap >= clear)\r\n{\r\n\treturn 100;\r\n}\r\nelse if (gap >= care)\r\n{\r\n\tconst ratio = (gap - care) / (clear - care);\r\n\treturn ((100 - 50) * ratio) + 50;\r\n}\r\n\r\nconst ratio = gap / clear;\r\nreturn 50 * ratio;"
+                        "Expression": "return isnull($prop('benofficial2.RejoinHelper.ColorPct'), 100);"
                       },
                       "StartColor": "#FFFF6345",
                       "EnableMiddleColor": true,
@@ -481,9 +459,9 @@
                   "Bindings": {
                     "Text": {
                       "Formula": {
-                        "JSExt": 1,
+                        "JSExt": 0,
                         "Interpreter": 1,
-                        "Expression": "let name = getIndexedProp('IRacingExtraProperties.RLB_Behind_Name', 1)\r\nif (name == null || name == '')\r\n{\r\n\treturn '';\r\n}\r\n\r\nlet gap = getIndexedProp('IRacingExtraProperties.RLB_Behind_RelativeGapToPlayer', 1);\r\ngap = Math.abs(gap).toFixed(1);\r\nreturn gap;"
+                        "Expression": "const gap = isnull($prop('benofficial2.RejoinHelper.Gap'), 0);\r\nreturn gap > 0 ? Math.abs(gap).toFixed(1) : '';"
                       },
                       "Mode": 2
                     }
@@ -511,9 +489,9 @@
                   "Bindings": {
                     "Text": {
                       "Formula": {
-                        "JSExt": 1,
+                        "JSExt": 0,
                         "Interpreter": 1,
-                        "Expression": "const rejoinHelperClear = isnull($prop('benofficial2.RejoinHelper.MinClearGap'), 3.5);\r\nconst rejoinHelperCare = isnull($prop('benofficial2.RejoinHelper.MinCareGap'), 1.5);\r\n\r\nlet name = getIndexedProp('IRacingExtraProperties.RLB_Behind_Name', 1)\r\nif (name == null || name == '')\r\n{\r\n\treturn 'Clear';\r\n}\r\n\r\nlet gap = getIndexedProp('IRacingExtraProperties.RLB_Behind_RelativeGapToPlayer', 1);\r\ngap = Math.abs(gap)\r\n\r\nif (gap >= rejoinHelperClear)\r\n{\r\n\treturn 'Clear';\r\n}\r\nelse if (gap >= rejoinHelperCare)\r\n{\r\n\treturn 'Care';\r\n}\r\n\r\nreturn 'Yield';"
+                        "Expression": "return isnull($prop('benofficial2.RejoinHelper.State'), 'Clear');"
                       },
                       "Mode": 2
                     }
@@ -527,9 +505,9 @@
               "Bindings": {
                 "Visible": {
                   "Formula": {
-                    "JSExt": 1,
+                    "JSExt": 0,
                     "Interpreter": 1,
-                    "Expression": "// irsdk_OffTrack = 0\r\nconst enableRejoinHelper = isnull($prop('benofficial2.RejoinHelper.Enabled'), true);\r\nconst rejoinHelperMinSpeed = isnull($prop('benofficial2.RejoinHelper.MinSpeed'), 35);\r\nconst surface = $prop('GameRawData.Telemetry.PlayerTrackSurface');\r\nconst speed = $prop('SpeedKmh');\r\nconst isSlow = speed <= rejoinHelperMinSpeed;\r\nconst gapReady = $prop('IRacingExtraProperties.GapTrackingReady');\r\nconst isRaceFinished = $prop('variable.isRaceFinished');\r\n\r\n// Wait a few seconds not to trigger on a standing start\r\nconst sessionStarted = getSessionStarted(3000);\r\n\r\nreturn enableRejoinHelper && sessionStarted && !isRaceFinished && gapReady && (surface == 0 || isSlow);"
+                    "Expression": "return isnull($prop('benofficial2.RejoinHelper.Visible'), false);"
                   },
                   "Mode": 2
                 }
@@ -545,7 +523,7 @@
               "Formula": {
                 "JSExt": 1,
                 "Interpreter": 1,
-                "Expression": "return isGameIRacing() && isGameRunning() && !isReplayPlaying() && !isInPitLane() &&\r\n       !isLoneQual();"
+                "Expression": "return isGameRunning() && !isReplayPlaying() && !isInPitLane() && !isLoneQual();"
               },
               "Mode": 2
             }
@@ -583,7 +561,7 @@
                 "JSExt": 1,
                 "Interpreter": 1,
                 "Expression": "return checkVersion(g_VersionName, g_VersionNumber);",
-                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'spotter'\r\nconst g_VersionNumber = '1.9'"
+                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'spotter'\r\nconst g_VersionNumber = '2.0'"
               },
               "Mode": 2
             }
@@ -658,7 +636,7 @@
     "MetadataVersion": 2.0,
     "EnableOnDashboardMessaging": true,
     "PitScreensIndexs": [],
-    "SimHubVersion": "9.7.2",
+    "SimHubVersion": "9.7.4",
     "Author": "twitch.tv/benofficial2",
     "Width": 695.0,
     "Height": 135.0,

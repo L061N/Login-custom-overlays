@@ -25,7 +25,7 @@
     }
   },
   "Version": 2,
-  "Id": "2a134d73-c8db-4c19-b6f5-540fe0b0b256",
+  "Id": "0c8545b0-1f20-42e9-9989-015c708d73a5",
   "BaseHeight": 403,
   "BaseWidth": 105,
   "BackgroundColor": "#FF000000",
@@ -213,7 +213,7 @@
     "MetadataVersion": 2.0,
     "EnableOnDashboardMessaging": false,
     "PitScreensIndexs": [],
-    "SimHubVersion": "9.7.2",
+    "SimHubVersion": "9.7.4",
     "Category": "RSC",
     "Title": "benofficial2 - iRacing Launch Assist",
     "Description": "",

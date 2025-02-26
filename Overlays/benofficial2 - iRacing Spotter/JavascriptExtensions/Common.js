@@ -16,27 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-function isGameIRacing()
-{
-    return $prop('DataCorePlugin.CurrentGame') == 'IRacing';
-}
-
 function isGameRunning()
 {
-    return $prop('DataCorePlugin.GameRunning');
+    return isnull($prop('benofficial2.iRacingRunning'), false);
 }
 
 function isReplayPlaying()
 {
-    if (isGameIRacing())
-    {
-        // There's a short moment when loading into a session when isReplayPlaying is false but position is -1
-        const isReplayPlaying = $prop('DataCorePlugin.GameRawData.Telemetry.IsReplayPlaying');
-        const position = $prop('DataCorePlugin.GameRawData.Telemetry.PlayerCarPosition');
-        const trackSurface = $prop('DataCorePlugin.GameRawData.Telemetry.PlayerTrackSurface');
-        return isReplayPlaying || position < 0 || trackSurface < 0;
-    }
-    return false;
+    return isnull($prop('benofficial2.Session.ReplayPlaying'), false);
 }
 
 function isDriving()
@@ -51,14 +38,27 @@ function isInPitLane()
 
 function isRace()
 {
-    const sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
-    return String(sessionTypeName).indexOf('Race') != -1;   
+    return isnull($prop('benofficial2.Session.Race'), false);
+}
+
+function isRaceStarted()
+{
+    return isnull($prop('benofficial2.Session.RaceStarted'), false);
+}
+
+function isRaceFinished()
+{
+    return isnull($prop('benofficial2.Session.RaceFinished'), false);
+}
+
+function isRaceInProgress()
+{
+    return isRaceStarted() && !isRaceFinished();
 }
 
 function isQual()
 {
-    const sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
-    return String(sessionTypeName).indexOf('Qual') != -1;
+    return isnull($prop('benofficial2.Session.Qual'), false);
 }
 
 function isLoneQual()
@@ -69,88 +69,10 @@ function isLoneQual()
 
 function isPractice()
 {
-    const sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
-    return (String(sessionTypeName).indexOf('Practice') != -1) ||
-           (String(sessionTypeName).indexOf('Warmup') != -1) ||
-           (String(sessionTypeName).indexOf('Testing') != -1);
+    return isnull($prop('benofficial2.Session.Practice'), false);
 }
 
 function isOffline()
 {
-    const sessionTypeName = $prop('DataCorePlugin.GameData.SessionTypeName');
-    return String(sessionTypeName).indexOf('Offline') != -1;
-}
-
-function getSessionStarted(delay)
-{
-    // 0: Invalid
-    // 1: GetInCar
-    // 2: Warmup
-    // 3: ParadeLaps
-    // 4: Racing
-    // 5: Checkered
-    // 6: Cooldown
-    const state = $prop('DataCorePlugin.GameRawData.Telemetry.SessionState');
-
-    if (state < 4)
-    {
-        root['changed'] = null
-        return false;
-    }
-
-    // State change confirmed after a delay
-    if (root['changed'] == null)
-    {
-        root['changed'] = Date.now() + delay;
-    }
-
-    if (Date.now() < root['changed'])
-    {
-        return false;
-    }
-    
-    return true;
-}
-
-// Returns true if the player's race is finished (after crossing the finish line)
-function isRaceFinished()
-{
-    // De-initialize when not in race and when changing/restarting session
-    // The latter condition can happen when re-starting an AI race
-    const sessionTime = Number($prop('DataCorePlugin.GameRawData.Telemetry.SessionTime'));
-    if (!isRace() || root["sessionTime"] == null || sessionTime < root["sessionTime"])
-    {
-        root["sessionTime"] = sessionTime;
-        root["lastTrackPct"] = null;
-        root["finished"] = null;
-        return false;
-    }
-
-    if (root["finished"] != null)
-    {
-        return root["finished"];
-    }
-
-    const checkered = $prop('Flag_Checkered') == 1;
-    if (!checkered)
-    {
-        return false;
-    }
-
-    const trackPct = Number($prop('TrackPositionPercent'));
-    if (root["lastTrackPct"] == null || trackPct >= root["lastTrackPct"])
-    {
-        // Heading toward the finish line with checkered flag shown
-        root["lastTrackPct"] = trackPct;
-        return false;
-    }
-
-    // Crossed the finish line with checkered flag shown
-    root["finished"] = true;
-    return true;
-}
-
-function getIndexedProp(name, index)
-{
-    return $prop(name + '_' + format(index, '00'));
+    return isnull($prop('benofficial2.Session.Offline'), false);
 }

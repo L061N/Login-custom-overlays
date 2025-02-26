@@ -88,29 +88,3 @@ function isFlagOut(color)
     const flagOut = isnull($prop('DataCorePlugin.GameData.Flag_' + color), 0);
     return flagOut != 0;
 }
-
-
-
-
-// TODO remove
-function getClassLeaderboardProp(position)
-{
-    return 'IRacingExtraProperties.iRacing_ClassLeaderboard_Driver_' + String(position - 1).padStart(2, '0');
-}
-
-
-
-
-
-
-// TODO move logic to plugin
-function isRejoinHelperShown()
-{
-    // irsdk_OffTrack = 0
-    const surface = $prop('GameRawData.Telemetry.PlayerTrackSurface');
-    const speed = $prop('SpeedKmh');
-    const isSlow = speed <= g_RejoinHelperMinSpeed;
-    
-    return (surface == 0 || isSlow);
-}
-

@@ -24,31 +24,34 @@ function isInvalidTime(time)
 function getSessionBestTime()
 {
     // The live delta seems to always be against the best clean lap.
-    var best = $prop('IRacingExtraProperties.iRacing_Player_SessionBestCleanLapTime');
+    // TODO: Track the session best clean lap time in the plugin
+    let best = $prop('benofficial2.Player.SessionBestCleanLapTime');
     if (isInvalidTime(best))
     {
-        // But when there's no clean lap, it is against this value instead??
+        // When there's no clean lap, fallback to SessionBest
         best = $prop('PersistantTrackerPlugin.SessionBest');
+        if (isInvalidTime(best))
+        {
+            best = $prop('DataCorePlugin.GameData.BestLapTime');
+        }
     }
     return best;    
 }
 
 function getReferenceLapTime()
 {
-    var best = null;
+    let best = null;
     if (isQual())
     {
         best = $prop('PersistantTrackerPlugin.AllTimeBest');
     }
     else if (isRace())
     {
-        //best = $prop('DataCorePlugin.GameData.BestLapTime');
-        best = $prop('IRacingExtraProperties.iRacing_Player_SessionBestCleanLapTime');
-        //best = $prop('PersistantTrackerPlugin.SessionBest');
+        best = getSessionBestTime();
     }
     else if (isPractice())
     {
-        best = $prop('IRacingExtraProperties.iRacing_Player_SessionBestCleanLapTime');
+        best = getSessionBestTime();
     }
 
     if (isInvalidTime(best))
@@ -57,7 +60,6 @@ function getReferenceLapTime()
         // Happens on the 2nd lap of the race.
         best = $prop('DataCorePlugin.GameData.LastLapTime');
     }
-
     return best;
 }
 
@@ -128,7 +130,6 @@ function getBestLiveDeltaTimeSecs()
         delta = $prop('DataCorePlugin.GameRawData.Telemetry.LapDeltaToSessionBestLap');
         //delta = $prop('PersistantTrackerPlugin.SessionBestLiveDeltaSeconds');
     }
-
     return delta;
 }
 
@@ -159,9 +160,6 @@ function computeDeltaTime(ourTime, theirTime)
     return sign + sec + '.' + mil;
 }
 
-//  0: White (255, 255, 255)
-//  1: Green ( 82, 224,  82)
-// -1: Red   (255, 127, 102)
 function getDeltaTimeColor(deltaTimeWithSign)
 {
     var sign = String(deltaTimeWithSign).substring(0, 1);
@@ -180,9 +178,6 @@ function getDeltaTimeColor(deltaTimeWithSign)
 }
 
 // TODO REMOVE (was an optim)
-//  0: White (255, 255, 255)
-//  1: Green ( 82, 224,  82)
-// -1: Red   (255, 127, 102)
 function computeDeltaTimeColor(ourTime, theirTime)
 {
     if (isInvalidTime(ourTime) || isInvalidTime(theirTime))

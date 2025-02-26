@@ -6,7 +6,7 @@
         "EvaluateOnlyOnce": false,
         "OverrideWithParentDashboardVariableWhenAvailable": true,
         "ValueExpression": {
-          "JSExt": 3,
+          "JSExt": 0,
           "Interpreter": 1,
           "Expression": "// Remember this lap's best for displaying the delta on the next lap.\r\n// Because when we beat the best time, we don't have access to the previous best anymore.\r\nvar bestTime = $prop('PersistantTrackerPlugin.AllTimeBest');\r\nvar trackPercent = $prop('DataCorePlugin.GameData.TrackPositionPercent');\r\nif (trackPercent > 0.97)\r\n{\r\n    root['previousAllTimeBestTime'] = bestTime;\r\n}\r\n\r\nreturn root['previousAllTimeBestTime'];"
         },
@@ -17,7 +17,7 @@
         "EvaluateOnlyOnce": false,
         "OverrideWithParentDashboardVariableWhenAvailable": true,
         "ValueExpression": {
-          "JSExt": 3,
+          "JSExt": 1,
           "Interpreter": 1,
           "Expression": "// Remember this lap's best for displaying the delta on the next lap.\r\n// Because when we beat the best time, we don't have access to the previous best anymore.\r\nvar bestTime = getSessionBestTime();\r\nvar trackPercent = $prop('DataCorePlugin.GameData.TrackPositionPercent');\r\nif (trackPercent > 0.97)\r\n{\r\n    root['previousSessionBestTime'] = bestTime;\r\n}\r\n\r\nreturn root['previousSessionBestTime'];"
         },
@@ -28,7 +28,7 @@
         "EvaluateOnlyOnce": false,
         "OverrideWithParentDashboardVariableWhenAvailable": true,
         "ValueExpression": {
-          "JSExt": 3,
+          "JSExt": 1,
           "Interpreter": 1,
           "Expression": "// Returns true when both the trackPercent and currentLapTime have reset and \r\n// are both growing. Because trackPercent resets before currentLapTime is updated\r\n// when crossing the finish line.\r\nif (root['previousTrackPercent'] == null) { root['previousTrackPercent'] = 0; }\r\nif (root['previousTime'] == null) { root['previousTime'] = new Date('00:00:00.0'); }\r\n\r\nvar trackPercent = $prop('DataCorePlugin.GameData.TrackPositionPercent');\r\nvar time = new Date($prop('DataCorePlugin.GameData.CurrentLapTime'));\r\n\r\n// Considered 'updated' when both have reset together.\r\nif (trackPercent < root['previousTrackPercent'] && time >= root['previousTime'])\r\n{\r\n\treturn false;\r\n}\r\n\r\nif (time < root['previousTime'] && trackPercent >= root['previousTrackPercent'])\r\n{\r\n\treturn false;\r\n}\r\n\r\n// Wait an extra time because all-time best is updated slightly after current time.\r\nif (time.getMinutes() <= 0 && time.getSeconds() <= 0 && time.getMilliseconds() <= 500)\r\n{\r\n\treturn false;\r\n}\r\n\r\nroot['previousTrackPercent'] = trackPercent;\r\nroot['previousTime'] = time;\r\n\t\r\nreturn true;"
         },
@@ -38,7 +38,7 @@
   },
   "DashboardDebugManager": {},
   "Version": 2,
-  "Id": "5282a2e7-b3ad-44bc-a2d1-1f9d94a0541a",
+  "Id": "4c05893d-4105-47fa-978e-43a73ede3c29",
   "BaseHeight": 44,
   "BaseWidth": 238,
   "BackgroundColor": "#FF000000",
@@ -123,7 +123,7 @@
               "Bindings": {
                 "Text": {
                   "Formula": {
-                    "JSExt": 3,
+                    "JSExt": 1,
                     "Interpreter": 1,
                     "Expression": "return getDeltaToPreviousSessionBest();"
                   },
@@ -131,7 +131,7 @@
                 },
                 "TextColor": {
                   "Formula": {
-                    "JSExt": 3,
+                    "JSExt": 1,
                     "Interpreter": 1,
                     "Expression": "return getDeltaTimeColor(getDeltaToPreviousSessionBest());"
                   },
@@ -170,9 +170,9 @@
               "Bindings": {
                 "Text": {
                   "Formula": {
-                    "JSExt": 3,
+                    "JSExt": 1,
                     "Interpreter": 1,
-                    "Expression": "var time = getSessionBestTime();\r\nreturn formatLapTime(time, 3); "
+                    "Expression": "var time = getSessionBestTime();\r\nreturn formatLapTime(time, 3);"
                   },
                   "Mode": 2
                 }
@@ -224,7 +224,7 @@
               "Bindings": {
                 "Text": {
                   "Formula": {
-                    "JSExt": 3,
+                    "JSExt": 1,
                     "Interpreter": 1,
                     "Expression": "return getDeltaToPreviousAllTimeBest();"
                   },
@@ -232,7 +232,7 @@
                 },
                 "TextColor": {
                   "Formula": {
-                    "JSExt": 3,
+                    "JSExt": 1,
                     "Interpreter": 1,
                     "Expression": "return getDeltaTimeColor(getDeltaToPreviousAllTimeBest());"
                   },
@@ -272,9 +272,9 @@
               "Bindings": {
                 "Text": {
                   "Formula": {
-                    "JSExt": 3,
+                    "JSExt": 1,
                     "Interpreter": 1,
-                    "Expression": "var time = $prop('PersistantTrackerPlugin.AllTimeBest');\r\nreturn formatLapTime(time, 3)"
+                    "Expression": "const time = $prop('PersistantTrackerPlugin.AllTimeBest');\r\nreturn formatLapTime(time, 3)"
                   },
                   "Mode": 2
                 }
@@ -304,13 +304,13 @@
             }
           ],
           "Visible": true,
-          "Name": "Everything",
+          "Name": "Visible",
           "RenderingSkip": 0,
           "MinimumRefreshIntervalMS": 0.0,
           "Bindings": {
             "Visible": {
               "Formula": {
-                "JSExt": 3,
+                "JSExt": 1,
                 "Interpreter": 1,
                 "Expression": "return (isPractice() || isQual()) && isReferenceLapTimeOk();"
               },
@@ -343,7 +343,7 @@
     "MetadataVersion": 2.0,
     "EnableOnDashboardMessaging": true,
     "PitScreensIndexs": [],
-    "SimHubVersion": "9.7.2",
+    "SimHubVersion": "9.7.4",
     "Width": 238.0,
     "Height": 44.0,
     "DashboardVersion": ""

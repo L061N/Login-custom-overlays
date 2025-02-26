@@ -4,7 +4,7 @@
   },
   "DashboardDebugManager": {},
   "Version": 2,
-  "Id": "48bffdb5-a3f8-490a-8787-bc3f7ca77450",
+  "Id": "28de922f-d34b-488e-ad1a-c4f6c2bf1828",
   "BaseHeight": 45,
   "BaseWidth": 115,
   "BackgroundColor": "#FF000000",
@@ -90,7 +90,7 @@
               "Bindings": {
                 "Text": {
                   "Formula": {
-                    "JSExt": 3,
+                    "JSExt": 1,
                     "Interpreter": 1,
                     "Expression": "var delta = getBestLiveDeltaTimeSecs()\r\nvar d = new Date(0);\r\nd.setMilliseconds(Math.abs(delta) * 1000);\r\n\r\nvar sign = '+';\r\nif (delta < 0)\r\n{\r\n\tsign = '-';\r\n}\r\n\r\nif (d.getSeconds() > 9 || d.getMinutes() > 0)\r\n{\r\n\treturn sign + '9.99';\r\n}\r\n\r\nvar sec = String(d.getSeconds())\r\nvar mil = String(Math.floor(d.getMilliseconds() / 10)).padStart(2, '0');\r\n\r\nreturn sign + sec + '.' + mil;"
                   },
@@ -115,7 +115,7 @@
             }
           ],
           "Visible": true,
-          "Name": "Everything",
+          "Name": "Visible",
           "RenderingSkip": 0,
           "MinimumRefreshIntervalMS": 0.0,
           "Bindings": {
@@ -154,6 +154,7 @@
     "MetadataVersion": 2.0,
     "EnableOnDashboardMessaging": true,
     "PitScreensIndexs": [],
+    "SimHubVersion": "9.7.4",
     "Width": 115.0,
     "Height": 45.0,
     "DashboardVersion": ""
