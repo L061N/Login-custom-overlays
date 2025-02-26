@@ -25,7 +25,7 @@ using System.Collections.Generic;
 
 namespace benofficial2.Plugin
 {
-    [PluginDescription("Enable this plugin to use benofficial's Official Overlay Collection for iRacing. Enable Show in Left Menu to access configuration options.")]
+    [PluginDescription("Adds extra properties needed to use benofficial2's Official Overlays for iRacing. Enable Show in left menu to access overlay configuration options.")]
     [PluginAuthor("benofficial2")]
     [PluginName("benofficial2 Plugin")]
     public class benofficial2 : IPlugin, IDataPlugin, IWPFSettingsV2
