@@ -20,7 +20,7 @@ Name "${PRODUCT_NAME}"
 
 ; Custom Welcome Page Text
 !define MUI_WELCOMEPAGE_TITLE "Welcome to ${PRODUCT_NAME} ${PRODUCT_VERSION} Setup"
-!define MUI_WELCOMEPAGE_TEXT "You will soon be racing with the greatest homemade overlays in the galaxy.$\r$\n$\r$\nSince the overlays are made with SimHub, it is necessary to have installed SimHub version ${SIMHUB_VERSION} or later. And since the overlays are using custom properties, you will also need to have installed the excellent Romainrob collection.$\r$\n$\r$\nThis Setup will guide you through this process.$\r$\n$\r$\nClick Next to continue."
+!define MUI_WELCOMEPAGE_TEXT "You will soon be racing with the greatest homemade overlays in sim-racing history.$\r$\n$\r$\nSince the overlays are made with SimHub, it is necessary to have installed SimHub version ${SIMHUB_VERSION} or later.$\r$\n$\r$\nThis Setup will guide you through this process.$\r$\n$\r$\nClick Next to continue."
 
 ; Custom Finish Page Text
 !define MUI_FINISHPAGE_TITLE "Completing ${PRODUCT_NAME} ${PRODUCT_VERSION} Setup"
@@ -51,7 +51,7 @@ FunctionEnd
 
 Function DependenciesPage
   ReserveFile "DependenciesPage.ini"
-  !insertmacro MUI_HEADER_TEXT "Important Pre-requisites" "You need to install those two before continuing if you don't have them already"
+  !insertmacro MUI_HEADER_TEXT "Important Pre-requisites" "You need to install SimHub before continuing if you don't have it already"
   !insertmacro INSTALLOPTIONS_EXTRACT "DependenciesPage.ini"
   !insertmacro INSTALLOPTIONS_DISPLAY "DependenciesPage.ini"
 FunctionEnd
@@ -61,10 +61,6 @@ Function DependenciesPageLeave
   !insertmacro INSTALLOPTIONS_READ $R0 "DependenciesPage.ini" "Settings" "State"
   ${If} $R0 == 2 # Field 2.
     ExecShell "open" "https://www.simhubdash.com/download-2/"
-    abort
-  ${EndIf}
-  ${If} $R0 == 4 # Field 4.
-    ExecShell "open" "https://www.simhubdash.com/community-2/dashboard-templates/romainrobs-collection/"
     abort
   ${EndIf}
 FunctionEnd
