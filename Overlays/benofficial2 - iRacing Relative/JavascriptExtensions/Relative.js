@@ -16,98 +16,299 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// Interval in ms at which we refresh the array. Set 0 to use SimHub's min interval.
-const g_RefreshIntervalMs = 0;
+const g_UseSimHubProp = false;
 
-// Shared driver info about all cars.
-function getDriverInfo()
+function getRelativeProp(index, prop)
 {
-    // De-initialize when game not running, and before the race starts
-    if (!isGameRunning() || (isRace() && getSessionState(0) < 4))
-    {  
-        root["sessionTime"] = null;
-        root["driverInfo"] = null;
-        root["refreshTime"] = null;
-        return null;
+    if (index > 0)
+    {
+        return $prop('benofficial2.Relative.Behind' + format(index - 1, '00') + '.' + prop);
+    }
+    return $prop('benofficial2.Relative.Ahead' + format(Math.abs(index + 1), '00') + '.' + prop);
+}
+
+function getStandingsClassProp(classIdx, prop)
+{
+    return $prop('benofficial2.Standings.Class' + format(classIdx, '00') 
+        + '.' + prop);
+}
+
+function getRelativeRowVisible(index)
+{
+    if (index == 0 || g_UseSimHubProp)
+    {
+        const position = getopponentleaderboardposition_aheadbehind(index);
+        return position >= 0;
+    }
+    else
+    {
+        return getRelativeProp(index, 'RowVisible');
+    }
+}
+
+function getRelativePositionInClass(index)
+{
+    let posInClass = 0;
+    if (g_UseSimHubProp)
+    {
+        const position = getopponentleaderboardposition_aheadbehind(index);
+        posInClass = driverclassposition(position);
+    }
+    else if (index == 0)
+    {
+        posInClass = isnull($prop('benofficial2.Player.PositionInClass'), 0);
+    }
+    else
+    {
+        posInClass = getRelativeProp(index, 'PositionInClass');
+    }
+    return posInClass > 0 ? posInClass : '';
+}
+
+function getRelativeNumber(index)
+{
+    let number = '';
+    if (index == 0 || g_UseSimHubProp)
+    {
+        const position = getopponentleaderboardposition_aheadbehind(index);
+        number = drivercarnumber(position);
+    }
+    else
+    {
+        number = getRelativeProp(index, 'Number');
+    }
+    return '#' + number;
+}
+
+function getRelativeClassColor(index)
+{
+    if (index == 0 || g_UseSimHubProp)
+    {
+        const position = getopponentleaderboardposition_aheadbehind(index);
+        return drivercarclasscolor(position);
+    }
+    else
+    {
+        return getRelativeProp(index, 'ClassColor');
+    }
+}
+
+function getRelativeIsOutLap(index)
+{
+    if (g_UseSimHubProp)
+    {
+        const position = getopponentleaderboardposition_aheadbehind(index);
+        return driverisoutlap(position);
+    }
+    else if (index == 0)
+    {
+        return isnull($prop('benofficial2.Player.OutLap'), false);
+    }
+    else
+    {
+        return getRelativeProp(index, 'OutLap');
+    }
+}
+
+function getRelativeName(index)
+{
+    if (index == 0 || g_UseSimHubProp)
+    {
+        const position = getopponentleaderboardposition_aheadbehind(index);
+        return drivername(position);
+    }
+    else
+    {
+        return getRelativeProp(index, 'Name');
+    }
+}
+
+function getRelativeIRating(index)
+{
+    let iRating;
+    if (index == 0 || g_UseSimHubProp)
+    {
+        const position = getopponentleaderboardposition_aheadbehind(index);
+        iRating = driveriracingirating(position);
+    }
+    else
+    {
+        iRating = getRelativeProp(index, 'iRating');
+    }
+    return formatIRating(iRating);
+}
+
+function getRelativeLicense(index)
+{
+    if (index == 0 || g_UseSimHubProp)
+    {
+        const position = getopponentleaderboardposition_aheadbehind(index);
+        return String(driverlicencestring(position)).slice(0, -5);
+    }
+    else
+    {
+        return getRelativeProp(index, 'License');
+    }
+}
+
+function getRelativeLicenseColor(index)
+{
+    const license = getRelativeLicense(index);
+    if (license == 'A')
+    {
+        return '#006EFF'
+    }
+    else if (license == 'B')
+    {
+        return '#33CC00'
+    }
+    else if (license == 'C')
+    {
+        return '#FFCC00'
+    }
+    else if (license == 'D')
+    {
+        return '#FF6600'
+    }
+    else if (license == 'R')
+    {
+        return '#E1251B'
+    }
+    return 'Black'
+}
+
+function getRelativeLicenseTextColor(index)
+{
+    const license = getRelativeLicense(index);
+    if (license == 'A')
+    {
+        return '#66A8FF'
+    }
+    else if (license == 'B')
+    {
+        return '#85E066'
+    }
+    else if (license == 'C')
+    {
+        return '#FFE066'
+    }
+    else if (license == 'D')
+    {
+        return '#FFA366'
+    }
+    else if (license == 'R')
+    {
+        return '#ED7C66'
+    }
+    return 'White'
+}
+
+function getRelativeLicenseBackColor(index)
+{
+    const license = getRelativeLicense(index);
+    if (license == 'A')
+    {
+        return '#032F6F'
+    }
+    else if (license == 'B')
+    {
+        return '#175509'
+    }
+    else if (license == 'C')
+    {
+        return '#50410A'
+    }
+    else if (license == 'D')
+    {
+        return '#692C09'
+    }
+    else if (license == 'R')
+    {
+        return '#5D1214'
+    }
+    return 'Black'
+}
+
+function getRelativeGapToPlayer(index)
+{
+    let gap;
+    if (index == 0 || g_UseSimHubProp)
+    {
+        const position = getopponentleaderboardposition_aheadbehind(index);
+        gap = driverrelativegaptoplayer(position);
+    }
+    else
+    {
+        gap = getRelativeProp(index, 'GapToPlayer');
+    }
+    return Math.abs(gap).toFixed(1);
+}
+
+function getRelativeTextColor(index)
+{
+    if (!isRace())
+    {
+        return 'White';
     }
 
-    // De-initialize when changing/restarting session
-    const sessionTime = NewRawData().Telemetry["SessionTime"];
-    if (root["sessionTime"] == null || sessionTime < root["sessionTime"])
+    let gap;
+    if (index == 0 || g_UseSimHubProp)
     {
-        root["sessionTime"] = sessionTime;    
-        root["driverInfo"] = null;
-        root["refreshTime"] = null;
-        return null;
+        const position = getopponentleaderboardposition_aheadbehind(index);
+        gap = driverrelativegaptoplayer(position);
+    }
+    else
+    {
+        gap = getRelativeProp(index, 'GapToPlayerCombined');
     }
 
-    // Initialize
-    if (root["driverInfo"] == null)
-    {
-        root["driverInfo"] = [];
-        root["refreshTime"] = Date.now();
-        //log("driverInfo initialized");
-    }
+    let lapping = false;
+    let lapped = false;
 
-    // Refresh the data at a given interval
-    if (root["refreshTime"] <= Date.now())
+    if (String(gap).indexOf('lap') != -1)
     {
-        root["refreshTime"] = Date.now() + g_RefreshIntervalMs;
-           
-        for (let i = 0; i < 64; i++) 
+        if (String(gap).indexOf('+') != -1)
         {
-            const number = getLeaderboardProp('CarNumber', 0, i);
-            if (number == null || number == '')
-            {
-                continue;
-            }
-
-            let info = root["driverInfo"][number];
-            if (info == null)
-            {
-                info = {
-                    inPitSince: null,
-                    currentLap: 0,
-                    outLap: 0,
-                };
-            }
-                
-            info.currentLap = getLeaderboardProp('CurrentLap', 0, i);    
-            const inPit = getLeaderboardProp('IsInPit', 0, i);
-            
-            if (inPit)
-            {
-                if (info.inPitSince == null)
-                {
-                    info.inPitSince = Date.now()
-                }
-            }
-            else
-            {
-                // If the driver is in pit for a short time, consider this a glitch in telemetry.
-                if (info.inPitSince != null
-                    && info.inPitSince + 1500 < Date.now())
-                {
-                    // Remember the lap when they exited the pit.
-                    // We use 'their' lap, not the leader's lap.
-                    info.outLap = info.currentLap;
-                    
-                    // Edge case when the pit exit is before the finish line.
-                    // The currentLap will increment, so consider the next lap an out lap too.
-                    let trackPct = getLeaderboardProp('LapDistPct', 0, i);
-                    if (trackPct > 0.5)
-                    {
-                        info.outLap++;
-                    }
-                }
-                
-                info.inPitSince = null;
-            }
-            
-            root["driverInfo"][number] = info;
+            lapping = true;
+        }
+        else
+        {
+            lapped = true;
+        }
+    }
+    else
+    {
+        if (String(gap).indexOf('-') != -1 && index > 0)
+        {
+            // Car behind is ahead (they're about to lap us)
+            lapping = true;
+        }
+        else if (String(gap).indexOf('+') != -1 && index < 0)
+        {
+            // Car ahead is behind (we're about to lap them)
+            lapped = true;
         }
     }
 
-    root["sessionTime"] = sessionTime;
-    return root["driverInfo"];
+    if (lapping)
+    {
+        // Red
+        return '#FFFF6345';
+    }
+    else if (lapped)
+    {
+        // Blue
+        return '#43B7EA';
+    }
+    return 'White';
+}
+
+function getClassSof(classIdx)
+{
+    return isnull(getStandingsClassProp(classIdx, 'Sof'), 0);
+}
+
+function formatIRating(iRating)
+{
+    return (Number(iRating) / 1000).toFixed(1) + 'k';
 }
