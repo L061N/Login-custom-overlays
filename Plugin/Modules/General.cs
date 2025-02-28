@@ -46,7 +46,7 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class General : IPluginModule
+    public class GeneralModule : IPluginModule
     {
         public GeneralSettings Settings { get; set; }
 

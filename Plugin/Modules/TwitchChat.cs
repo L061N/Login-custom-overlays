@@ -46,7 +46,7 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class TwitchChat : IPluginModule
+    public class TwitchChatModule : IPluginModule
     {
         public TwitchChatSettings Settings { get; set; }
 

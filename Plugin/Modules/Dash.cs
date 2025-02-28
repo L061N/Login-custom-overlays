@@ -46,7 +46,7 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class Dash : IPluginModule
+    public class DashModule : IPluginModule
     {
         public DashSettings Settings { get; set; }
 

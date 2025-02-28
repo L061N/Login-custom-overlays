@@ -151,7 +151,7 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class Telemetry : IPluginModule
+    public class TelemetryModule : IPluginModule
     {
         private const int _tracesWidth = 500;
         private const int _tracesLeft = 17;

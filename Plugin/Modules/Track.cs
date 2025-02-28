@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace benofficial2.Plugin
 {
-    public class Track : IPluginModule
+    public class TrackModule : IPluginModule
     {
         private const string TrackInfoUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/TrackInfo.json";
 

@@ -48,7 +48,7 @@ namespace benofficial2.Plugin
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
         private TimeSpan _minTimeInPit = TimeSpan.FromMilliseconds(2500);
         private double _lastSessionTime = 0;
-        private Session _sessionModule;
+        private SessionModule _sessionModule;
 
         public const int MaxDrivers = 64;
 
@@ -70,7 +70,7 @@ namespace benofficial2.Plugin
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
-            _sessionModule = plugin.GetModule<Session>();
+            _sessionModule = plugin.GetModule<SessionModule>();
 
             plugin.AttachDelegate(name: "Player.OutLap", valueProvider: () => PlayerOutLap);
             plugin.AttachDelegate(name: "Player.Number", valueProvider: () => PlayerNumber);

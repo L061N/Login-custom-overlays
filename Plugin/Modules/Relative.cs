@@ -86,7 +86,7 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class Relative : IPluginModule
+    public class RelativeModule : IPluginModule
     {
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
@@ -97,7 +97,7 @@ namespace benofficial2.Plugin
         public RelativeAhead Ahead;
         public RelativeBehind Behind;
 
-        public Relative()
+        public RelativeModule()
         {
             Ahead = new RelativeAhead();
             Behind = new RelativeBehind();

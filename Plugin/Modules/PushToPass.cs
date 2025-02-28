@@ -31,16 +31,16 @@ namespace benofficial2.Plugin
         public float Cooldown { get; set; } = 0.0f;
         public float TotalCooldown { get; set; } = 0.0f;
 
-        private Track _trackModule = null;
-        private Car _carModule = null;
+        private TrackModule _trackModule = null;
+        private CarModule _carModule = null;
         private bool _wasActivated = false;
         private DateTime _activatedTime = DateTime.MinValue;
         private DateTime _deactivatedTime = DateTime.MinValue;
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
-            _trackModule = plugin.GetModule<Track>();
-            _carModule = plugin.GetModule<Car>();
+            _trackModule = plugin.GetModule<TrackModule>();
+            _carModule = plugin.GetModule<CarModule>();
 
             plugin.AttachDelegate(name: "PushToPass.Enabled", valueProvider: () => Enabled);
             plugin.AttachDelegate(name: "PushToPass.Activated", valueProvider: () => Activated);

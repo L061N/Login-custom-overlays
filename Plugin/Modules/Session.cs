@@ -23,7 +23,7 @@ using System.Runtime;
 
 namespace benofficial2.Plugin
 {
-    public class Session : IPluginModule
+    public class SessionModule : IPluginModule
     {
         private string _lastSessionTypeName = string.Empty;
         private double _lastSessionTime = 0;

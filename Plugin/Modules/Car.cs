@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace benofficial2.Plugin
 {
-    public class Car : IPluginModule
+    public class CarModule : IPluginModule
     {
         private const string CarInfoUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/CarInfo.json";
 

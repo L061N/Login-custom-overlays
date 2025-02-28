@@ -135,8 +135,8 @@ namespace benofficial2.Plugin
     public class Standings : IPluginModule
     {
         private DriverModule _driverModule = null;
-        private Car _carModule = null;
-        private Session _sessionModule = null;
+        private CarModule _carModule = null;
+        private SessionModule _sessionModule = null;
 
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
@@ -156,8 +156,8 @@ namespace benofficial2.Plugin
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _driverModule = plugin.GetModule<DriverModule>();
-            _carModule = plugin.GetModule<Car>();
-            _sessionModule = plugin.GetModule<Session>();
+            _carModule = plugin.GetModule<CarModule>();
+            _sessionModule = plugin.GetModule<SessionModule>();
 
             Settings = plugin.ReadCommonSettings<StandingsSettings>("StandingsSettings", () => new StandingsSettings());
             plugin.AttachDelegate(name: $"Standings.PlayerCarClassIdx", valueProvider: () => PlayerCarClassIdx);

@@ -157,9 +157,9 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class RejoinHelper : IPluginModule
+    public class RejoinHelperModule : IPluginModule
     {
-        private Session _sessionModule = null;
+        private SessionModule _sessionModule = null;
 
         public RejoinHelperSettings Settings { get; set; }
         public bool Visible { get; set; } = false;
@@ -173,7 +173,7 @@ namespace benofficial2.Plugin
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
-            _sessionModule = plugin.GetModule<Session>();
+            _sessionModule = plugin.GetModule<SessionModule>();
 
             Settings = plugin.ReadCommonSettings<RejoinHelperSettings>("RejoinHelperSettings", () => new RejoinHelperSettings());
             plugin.AttachDelegate(name: "RejoinHelper.Enabled", valueProvider: () => Settings.Enabled);

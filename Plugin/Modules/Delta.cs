@@ -47,9 +47,9 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class Delta : IPluginModule
+    public class DeltaModule : IPluginModule
     {
-        private Session _sessionModule = null;
+        private SessionModule _sessionModule = null;
 
         public float Speed { get; internal set; } = 0.0f;
 
@@ -57,7 +57,7 @@ namespace benofficial2.Plugin
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
-            _sessionModule = plugin.GetModule<Session>();
+            _sessionModule = plugin.GetModule<SessionModule>();
 
             Settings = plugin.ReadCommonSettings<DeltaSettings>("DeltaSettings", () => new DeltaSettings());
             plugin.AttachDelegate(name: "Delta.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);

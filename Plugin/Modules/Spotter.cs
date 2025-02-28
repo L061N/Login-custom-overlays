@@ -156,7 +156,7 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class Spotter : IPluginModule
+    public class SpotterModule : IPluginModule
     {
         public SpotterSettings Settings { get; set; }
 

@@ -205,7 +205,7 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class FuelCalc : IPluginModule
+    public class FuelCalcModule : IPluginModule
     {
         public FuelCalcSettings Settings { get; set; }
 

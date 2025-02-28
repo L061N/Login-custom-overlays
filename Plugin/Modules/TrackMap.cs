@@ -46,7 +46,7 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class TrackMap : IPluginModule
+    public class TrackMapModule : IPluginModule
     {
         public TrackMapSettings Settings { get; set; }
 

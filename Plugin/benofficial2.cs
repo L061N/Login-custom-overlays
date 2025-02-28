@@ -82,7 +82,7 @@ namespace benofficial2.Plugin
             }
 
             // Check for latest plugin version
-            if (GetModule<General>().Settings.CheckForUpdates)
+            if (GetModule<GeneralModule>().Settings.CheckForUpdates)
             {
                 Task.Run(() =>
                 {

@@ -46,7 +46,7 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class LaunchAssist : IPluginModule
+    public class LaunchAssistModule : IPluginModule
     {
         public LaunchAssistSettings Settings { get; set; }
 

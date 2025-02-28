@@ -47,16 +47,16 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class BlindSpotMonitor : IPluginModule
+    public class BlindSpotMonitorModule : IPluginModule
     {
-        private Spotter _spotterModule = null;
+        private SpotterModule _spotterModule = null;
 
         public BlindSpotMonitorSettings Settings { get; set; }
         public bool Visible { get; set; } = false;
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
-            _spotterModule = plugin.GetModule<Spotter>();
+            _spotterModule = plugin.GetModule<SpotterModule>();
 
             Settings = plugin.ReadCommonSettings<BlindSpotMonitorSettings>("BlindSpotMonitorSettings", () => new BlindSpotMonitorSettings());
             plugin.AttachDelegate(name: "BlindSpotMonitor.Enabled", valueProvider: () => Settings.Enabled);
