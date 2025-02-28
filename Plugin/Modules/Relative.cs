@@ -52,7 +52,7 @@ namespace benofficial2.Plugin
     public class RelativeRow
     {
         public bool RowVisible { get; set; } = false;
-        public int PositionInClass { get; set; } = 0;
+        public int LivePositionInClass { get; set; } = 0;
         public string ClassColor { get; set; } = string.Empty;
         public string ClassTextColor { get; set; } = string.Empty;
         public string Number { get; set; } = string.Empty;
@@ -120,7 +120,7 @@ namespace benofficial2.Plugin
             {
                 RelativeRow row = rows[rowIdx];
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.RowVisible", valueProvider: () => row.RowVisible);
-                plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.PositionInClass", valueProvider: () => row.PositionInClass);
+                plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.LivePositionInClass", valueProvider: () => row.LivePositionInClass);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.ClassColor", valueProvider: () => row.ClassColor);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.ClassTextColor", valueProvider: () => row.ClassTextColor);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.Number", valueProvider: () => row.Number);
@@ -162,14 +162,16 @@ namespace benofficial2.Plugin
                     continue;
                 }
 
+                Driver driver = null;
+                if (_driverModule.Drivers != null) _driverModule.Drivers.TryGetValue(opponent.CarNumber, out driver);
+
                 row.RowVisible = true;
-                row.PositionInClass = opponent.Position > 0 ? opponent.PositionInClass : 0;
+                row.LivePositionInClass = driver != null ? driver.LivePositionInClass : 0;
                 row.ClassColor = opponent.CarClassColor;
                 row.ClassTextColor = opponent.CarClassTextColor;
                 row.Number = opponent.CarNumber;
                 row.Name = opponent.Name;
-                try { row.OutLap = _driverModule.Drivers?[opponent.CarNumber]?.OutLap ?? false; }
-                catch { row.OutLap = false; }
+                row.OutLap = driver != null && driver.OutLap;
                 row.iRating = (int)(opponent.IRacing_IRating ?? 0);
                 (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
                 row.GapToPlayer = opponent.RelativeGapToPlayer ?? 0;
@@ -185,7 +187,7 @@ namespace benofficial2.Plugin
         public void BlankRow(RelativeRow row)
         {
             row.RowVisible = false;
-            row.PositionInClass = 0;
+            row.LivePositionInClass = 0;
             row.ClassColor = string.Empty;
             row.ClassTextColor = string.Empty;
             row.Number = string.Empty;

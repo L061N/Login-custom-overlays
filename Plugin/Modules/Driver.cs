@@ -39,7 +39,7 @@ namespace benofficial2.Plugin
         public DateTime InPitSince { get; set; } = DateTime.MinValue;
         public int QualPositionInClass { get; set; } = 0;
         public double QualFastestTime { get; set; } = 0;
-        
+        public int LivePositionInClass { get; set; } = 0;
     }
 
     public class DriverModule : IPluginModule
@@ -104,6 +104,8 @@ namespace benofficial2.Plugin
             {
                 Drivers = new Dictionary<string, Driver>();
             }
+
+            UpdateLivePositionInClass(ref data);
 
             // TODO enable this if we want to show qual result before race start.
             //UpdateQualResult(ref data);
@@ -249,6 +251,41 @@ namespace benofficial2.Plugin
                     RawDriverInfo driverInfo = new RawDriverInfo();
                     driverInfo.driverInfoIdx = i;
                     DriverInfos[carIdx] = driverInfo;
+                }
+            }
+        }
+
+        public void UpdateLivePositionInClass(ref GameData data)
+        {
+            for (int carClassIdx = 0; carClassIdx < data.NewData.OpponentsClassses.Count; carClassIdx++)
+            {
+                LeaderboardCarClassDescription opponentClass = data.NewData.OpponentsClassses[carClassIdx];
+                List<Opponent> opponents = new List<Opponent>(opponentClass.Opponents);
+
+                // In a race, get a live leaderboard by sorting on track position
+                if (_sessionModule.Race && !_sessionModule.RaceFinished)
+                {
+                    opponents = opponents.OrderByDescending(p => p.CurrentLapHighPrecision).ToList();
+                }
+
+                for (int i = 0; i < opponents.Count; i++)
+                {
+                    Opponent opponent = opponents[i];
+                    if (!Drivers.TryGetValue(opponent.CarNumber, out Driver driver))
+                    {
+                        driver = new Driver();
+                    }
+
+                    if (_sessionModule.Race)
+                    {
+                        driver.LivePositionInClass = i + 1;
+                    }
+                    else
+                    {
+                        driver.LivePositionInClass = opponent.Position > 0 ? i + 1 : 0;
+                    }
+                        
+                    Drivers[opponent.CarNumber] = driver;
                 }
             }
         }

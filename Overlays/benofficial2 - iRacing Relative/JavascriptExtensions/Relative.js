@@ -56,11 +56,11 @@ function getRelativePositionInClass(index)
     }
     else if (index == 0)
     {
-        posInClass = isnull($prop('benofficial2.Player.PositionInClass'), 0);
+        posInClass = isnull($prop('benofficial2.Player.LivePositionInClass'), 0);
     }
     else
     {
-        posInClass = getRelativeProp(index, 'PositionInClass');
+        posInClass = getRelativeProp(index, 'LivePositionInClass');
     }
     return posInClass > 0 ? posInClass : '';
 }
