@@ -57,6 +57,12 @@
                 
                 <styles:SHSection Title="STANDINGS OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Hide the standings leaderboard when the replay is playing (i.e. when out of the car)" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[Standings].Settings.HideInReplay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Hide in replay
+                        </styles:SHToggleCheckbox>
                         <StackPanel Orientation="Horizontal">
                             <ui:TitledSlider MinWidth="400" Title="Max Row Count" Maximum="25" Minimum="1" Value="{Binding Plugin.Modules[Standings].Settings.MaxRowsPlayerClass, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                              ToolTip="Maximum number of visible rows in the Standings leaderboard"/>

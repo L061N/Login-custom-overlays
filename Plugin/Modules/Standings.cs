@@ -27,6 +27,21 @@ namespace benofficial2.Plugin
 {
     public class StandingsSettings : INotifyPropertyChanged
     {
+        private bool _hideInReplay = true;
+
+        public bool HideInReplay
+        {
+            get { return _hideInReplay; }
+            set
+            {
+                if (_hideInReplay != value)
+                {
+                    _hideInReplay = value;
+                    OnPropertyChanged(nameof(HideInReplay));
+                }
+            }
+        }
+
         private int _leadFocusedRows = 3;
 
         public int LeadFocusedRows
@@ -161,6 +176,7 @@ namespace benofficial2.Plugin
 
             Settings = plugin.ReadCommonSettings<StandingsSettings>("StandingsSettings", () => new StandingsSettings());
             plugin.AttachDelegate(name: $"Standings.PlayerCarClassIdx", valueProvider: () => PlayerCarClassIdx);
+            plugin.AttachDelegate(name: $"Standings.HideInReplay", valueProvider: () => Settings.HideInReplay);
             plugin.AttachDelegate(name: $"Standings.LeadFocusedRows", valueProvider: () => Settings.LeadFocusedRows);
             plugin.AttachDelegate(name: "Standings.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
 
