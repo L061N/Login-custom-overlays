@@ -147,7 +147,7 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class Standings : IPluginModule
+    public class StandingsModule : IPluginModule
     {
         private DriverModule _driverModule = null;
         private CarModule _carModule = null;
@@ -163,7 +163,7 @@ namespace benofficial2.Plugin
 
         public int PlayerCarClassIdx { get; internal set; } = 0;
 
-        public Standings()
+        public StandingsModule()
         {
             CarClasses = new List<StandingCarClass>(Enumerable.Range(0, MaxCarClasses).Select(x => new StandingCarClass()));
         }
