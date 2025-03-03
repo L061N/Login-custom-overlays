@@ -267,36 +267,21 @@ function getRelativeTextColor(index)
 
     const red = '#FFFF6345';
     const blue = '#43B7EA';
+    const white = 'White';
 
     let deltaLap = playerLap - lap;
-    if (deltaLap < 0)
-    {
-        if (deltaLap < -1)
-        {
-            // Opponent is ahead by more than 1 lap
-            return red;
-        }
-        else if (index > 0)
-        {
-            // Opponent is behind and about to lap us
-            return red;
-        }
-    }
-    else if (deltaLap > 0)
-    {
-        if (deltaLap > 1)
-        {
-            // Opponent is behind by more than 1 lap
-            return blue;
-        }
-        else if (index < 0)
-        {
-            // Opponent is ahead and about to be lapped
-            return blue;
-        }
-    }
 
-    return 'White';
+    if (index < 0)
+    {
+        if (deltaLap < -0.75) return red;
+        if (deltaLap > 0.25) return blue;
+    }
+    else if (index > 0)
+    {
+        if (deltaLap < -0.25) return red;
+        if (deltaLap > 0.75) return blue;
+    }
+    return white;
 }
 
 function getClassSof(classIdx)

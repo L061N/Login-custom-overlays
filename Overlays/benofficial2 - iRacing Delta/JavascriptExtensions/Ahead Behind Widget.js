@@ -16,23 +16,18 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-function getDriverPositionInClass(relativeIdx)
+function getHeadToHeadProp(index, prop)
 {
-    // SimHub does not return a live position
-    //const pos = getopponentleaderboardposition_aheadbehind_playerclassonly(relativeIdx);
-    //return driverclassposition(pos);
-
-    const playerPos = isnull($prop('benofficial2.Player.LivePositionInClass'), 0);
-    if (playerPos <= 0) return 0;
-    return playerPos + relativeIdx;
+    if (index > 0)
+    {
+        return $prop('benofficial2.Delta.Behind.' + prop);
+    }
+    return $prop('benofficial2.Delta.Ahead.' + prop);
 }
 
 function getDriverLastLapDeltaToPlayer(relativeIdx)
 {
     const playerTime = $prop('DataCorePlugin.GameData.LastLapTime');
-
-    const pos = getopponentleaderboardposition_aheadbehind_playerclassonly(relativeIdx);
-    const driverTime = driverlastlap(pos);
-
+    const driverTime = getHeadToHeadProp(relativeIdx, 'LastLapTime');
     return computeDeltaTime(playerTime, driverTime);
 }

@@ -177,24 +177,6 @@ function getDeltaTimeColor(deltaTimeWithSign)
     return 0;
 }
 
-// TODO REMOVE (was an optim)
-function computeDeltaTimeColor(ourTime, theirTime)
-{
-    if (isInvalidTime(ourTime) || isInvalidTime(theirTime))
-    {
-        return 0;
-    }
-
-    var our = new Date(ourTime)
-    var their = new Date(theirTime);
-
-    if (our > their)
-    {
-        return -1;
-    }
-    return 1;
-}
-
 function formatLapTime(time, decimalCount)
 {
     decimalCount = Math.max(1, Math.min(3, decimalCount));

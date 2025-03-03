@@ -163,9 +163,12 @@ namespace benofficial2.Plugin
 
         public int PlayerCarClassIdx { get; internal set; } = 0;
 
+        public List<List<Opponent>> ClassLeaderboards { get; internal set; }
+
         public StandingsModule()
         {
             CarClasses = new List<StandingCarClass>(Enumerable.Range(0, MaxCarClasses).Select(x => new StandingCarClass()));
+            ClassLeaderboards = new List<List<Opponent>>(Enumerable.Range(0, MaxCarClasses).Select(x => new List<Opponent>()));
         }
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
@@ -236,6 +239,8 @@ namespace benofficial2.Plugin
                     {
                         opponents = opponents.OrderByDescending(p => p.CurrentLapHighPrecision).ToList();
                     }
+
+                    ClassLeaderboards[carClassIdx] = opponents;
 
                     carClass.Color = opponentClass.ClassColor;
                     carClass.TextColor = opponentClass.ClassTextColor;

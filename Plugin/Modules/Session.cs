@@ -115,7 +115,7 @@ namespace benofficial2.Plugin
                     // Checkered flag is not shown
                     RaceFinished = false;
                 }
-                else if (!_lastTrackPct.HasValue || _lastTrackPct.Value >= data.NewData.TrackPositionPercent)
+                else if (!_lastTrackPct.HasValue || _lastTrackPct.Value <= data.NewData.TrackPositionPercent)
                 {
                     // Heading toward the checkered flag
                     _lastTrackPct = data.NewData.TrackPositionPercent;
