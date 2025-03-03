@@ -246,60 +246,56 @@ function getRelativeGapToPlayer(index)
 
 function getRelativeTextColor(index)
 {
-    if (!isRace())
-    {
-        return 'White';
-    }
+    if (!isRace()) return 'White';
+    if (index == 0) return 'White';
 
-    let gap;
-    if (index == 0 || g_UseSimHubProp)
+    let lap;
+    if (g_UseSimHubProp)
     {
         const position = getopponentleaderboardposition_aheadbehind(index);
-        gap = driverrelativegaptoplayer(position);
+        lap = drivercurrentlaphighprecision(position);
     }
     else
     {
-        gap = getRelativeProp(index, 'GapToPlayerCombined');
+        lap = getRelativeProp(index, 'CurrentLapHighPrecision');
     }
 
-    let lapping = false;
-    let lapped = false;
+    const playerPosition = getopponentleaderboardposition_aheadbehind(0);
+    const playerLap = drivercurrentlaphighprecision(playerPosition);
 
-    if (String(gap).indexOf('lap') != -1)
+    if (playerLap <= 0 || lap <= 0) return 'White';
+
+    const red = '#FFFF6345';
+    const blue = '#43B7EA';
+
+    let deltaLap = playerLap - lap;
+    if (deltaLap < 0)
     {
-        if (String(gap).indexOf('+') != -1)
+        if (deltaLap < -1)
         {
-            lapping = true;
+            // Opponent is ahead by more than 1 lap
+            return red;
         }
-        else
+        else if (index > 0)
         {
-            lapped = true;
+            // Opponent is behind and about to lap us
+            return red;
         }
     }
-    else
+    else if (deltaLap > 0)
     {
-        if (String(gap).indexOf('-') != -1 && index > 0)
+        if (deltaLap > 1)
         {
-            // Car behind is ahead (they're about to lap us)
-            lapping = true;
+            // Opponent is behind by more than 1 lap
+            return blue;
         }
-        else if (String(gap).indexOf('+') != -1 && index < 0)
+        else if (index < 0)
         {
-            // Car ahead is behind (we're about to lap them)
-            lapped = true;
+            // Opponent is ahead and about to be lapped
+            return blue;
         }
     }
 
-    if (lapping)
-    {
-        // Red
-        return '#FFFF6345';
-    }
-    else if (lapped)
-    {
-        // Blue
-        return '#43B7EA';
-    }
     return 'White';
 }
 

@@ -63,6 +63,7 @@ namespace benofficial2.Plugin
         public double SafetyRating { get; set; } = 0;
         public double GapToPlayer { get; set; } = 0;
         public string GapToPlayerCombined { get; set; } = string.Empty;
+        public double CurrentLapHighPrecision { get; set; } = 0;
     }
 
     public class RelativeAhead
@@ -131,6 +132,7 @@ namespace benofficial2.Plugin
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.SafetyRating", valueProvider: () => row.SafetyRating);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.GapToPlayer", valueProvider: () => row.GapToPlayer);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.GapToPlayerCombined", valueProvider: () => row.GapToPlayerCombined);
+                plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.CurrentLapHighPrecision", valueProvider: () => row.CurrentLapHighPrecision);
             }
         }
 
@@ -176,6 +178,7 @@ namespace benofficial2.Plugin
                 (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
                 row.GapToPlayer = opponent.RelativeGapToPlayer ?? 0;
                 row.GapToPlayerCombined = opponent.GapToPlayerCombined;
+                row.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? 0;
             }
         }
 
@@ -198,6 +201,7 @@ namespace benofficial2.Plugin
             row.SafetyRating = 0;
             row.GapToPlayer = 0;
             row.GapToPlayerCombined = string.Empty;
+            row.CurrentLapHighPrecision = 0;
         }
         public bool IsValidRow(Opponent opponent)
         {
