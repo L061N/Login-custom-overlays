@@ -13,7 +13,7 @@
     }
   },
   "Version": 2,
-  "Id": "385bf65a-e9d5-47a9-af35-f0145757605d",
+  "Id": "5e005033-be55-4fa8-8ccf-b7ddb833e32d",
   "BaseHeight": 170,
   "BaseWidth": 305,
   "BackgroundColor": "#FF000000",
@@ -127,6 +127,9 @@
                       "IsTextItem": true,
                       "Font": "Roboto",
                       "FontWeight": "Bold",
+                      "TextPadding": {
+                        "PaddingBottom": 1
+                      },
                       "FontSize": 11.0,
                       "Text": "10.0k",
                       "TextColor": "#FF66A8FF",
@@ -406,6 +409,9 @@
                   "IsTextItem": true,
                   "Font": "Roboto",
                   "FontWeight": "Bold",
+                  "TextPadding": {
+                    "PaddingBottom": 1
+                  },
                   "FontSize": 11.0,
                   "Text": "10.0k",
                   "TextColor": "#FF66A8FF",
@@ -703,6 +709,9 @@
                       "IsTextItem": true,
                       "Font": "Roboto",
                       "FontWeight": "Bold",
+                      "TextPadding": {
+                        "PaddingBottom": 1
+                      },
                       "FontSize": 11.0,
                       "Text": "10.0k",
                       "TextColor": "#FF66A8FF",

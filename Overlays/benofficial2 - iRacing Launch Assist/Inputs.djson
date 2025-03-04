@@ -4,7 +4,7 @@
   },
   "DashboardDebugManager": {},
   "Version": 2,
-  "Id": "9bcfc297-5438-4fab-b201-2bf259b389b0",
+  "Id": "db365b0d-60d4-4eb0-a2d1-f7d854eebf3b",
   "BaseHeight": 350,
   "BaseWidth": 105,
   "BackgroundColor": "#FF000000",
@@ -361,7 +361,7 @@
           "Bindings": {
             "Visible": {
               "Formula": {
-                "Expression": "minimum( 5040,[SpeedKmh])<1"
+                "Expression": "minimum(5000, [SpeedKmh]) < 1"
               },
               "Mode": 2
             }
@@ -394,7 +394,7 @@
     "MetadataVersion": 2.0,
     "EnableOnDashboardMessaging": true,
     "PitScreensIndexs": [],
-    "SimHubVersion": "9.7.4",
+    "SimHubVersion": "9.7.5",
     "Width": 105.0,
     "Height": 350.0,
     "DashboardVersion": ""
