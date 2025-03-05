@@ -243,7 +243,7 @@ For help, report problems, and give feedback about the overlays, please hop-in m
 
 Thanks to **Wotever** for making [SimHub](https://www.simhubdash.com/download-2/). It is such a powerful and essential piece of sim-racing software. Consider [buying a license](https://www.simhubdash.com/get-a-license/) to support him.
 
-Thanks to **Romainrob** for making the excellent [iRacing Extra Properties](https://www.simhubdash.com/community-2/dashboard-templates/romainrobs-collection/) plugin and his collection of overlays which mines are built on. Consider [donating to him](https://www.paypal.com/paypalme/Romainrob8045) too.
+Thanks to **Romainrob** for making the excellent [iRacing Extra Properties](https://www.simhubdash.com/community-2/dashboard-templates/romainrobs-collection/) plugin and his collection of overlays which was a great inspiration.
 
 The overlays in this collection are made by **benofficial2**. 
 If you like them, consider following me on:
