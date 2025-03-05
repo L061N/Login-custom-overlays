@@ -1,14 +1,14 @@
 {
-    "plugin": "1.9",
-    "standings": "1.9",
-    "relative": "1.9",
-    "trackmap": "1.9",
-    "delta": "1.9",
-    "inputs": "1.9",
-    "dash": "1.9",
-    "setupcover": "1.9",
-    "twitchchat": "1.9",
-    "launchassist": "1.9",
-    "spotter": "1.9",
-    "fuelcalc": "1.9"
+    "plugin": "2.0",
+    "standings": "2.0",
+    "relative": "2.0",
+    "trackmap": "2.0",
+    "delta": "2.0",
+    "inputs": "2.0",
+    "dash": "2.0",
+    "setupcover": "2.0",
+    "twitchchat": "2.0",
+    "launchassist": "2.0",
+    "spotter": "2.0",
+    "fuelcalc": "2.0"
 }
