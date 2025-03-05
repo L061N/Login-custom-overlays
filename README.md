@@ -35,7 +35,7 @@ To see them in action, click the image above for a video demo.
 
 ### 2) Install benofficial2's Official Overlays
 
-[Download benofficial2's Official Overlays](https://github.com/fixfactory/bo2-official-overlays/releases) from the releases page and run the installer. You will be able to choose which overlays you wish to install. Comes with an uninstaller.
+[Download benofficial2's Official Overlays](https://github.com/fixfactory/bo2-official-overlays/releases) from the releases page and run the installer. You will be able to choose which overlays you wish to install. Comes with an uninstaller. If you are updating from an older version, simply run the installer to install over. Your layouts and configuration options will persist.
 
 ### 3) Launch SimHub and enable benofficial2 plugin
 
@@ -55,7 +55,7 @@ Also make sure you have not disabled the Dash Studio and Statistics plugins as t
   <img src="Images/Statistics-Plugin.png" width="500" />
 </p>
 
-*Note: as of version 2.0 the RSC plugins are no longer needed to run the overlays. They can be disabled to reduce CPU usage if you don't need them for anything else.*
+*Note: since version 2.0 the RSC plugins are no longer needed to run the overlays. They can be disabled to reduce CPU usage if you don't need them for anything else.*
 
 *Note: for the security-minded power-user, you can also install without running the installer by cloning this repo and copying all the folders from `\Overlays` and pasting them in this SimHub directory: `C:\Program Files (x86)\SimHub\DashTemplates`. Then compile the plugin in `\Plugin` with Visual Studio and copy `benofficial2.Plugin.dll` to `C:\Program Files (x86)\SimHub`.*
 
@@ -151,7 +151,7 @@ Gives you feedback on your pace. The **Delta Time** (center) and **Delta Speed**
 
 This delta bar can help you improve your lap times by giving you on-the-spot feedback in a corner. Because the **Delta Speed** field is big enough, you'll be able to see it change color while keeping your eyes on the track. So you'll know instantly if your mid-corner speed was faster/slower for example. You'll learn quickly what works and what doesn't.
 
-*Note: If the delta bar doesn't show immediately, it is because it doesn't have a clean reference lap to compare against yet. It will show up once you complete a full lap without incident.*
+*Note: if the delta bar doesn't show immediately, it is because it doesn't have a clean reference lap to compare against yet. It will show up once you complete a full lap without incident.*
 
 ## Inputs Telemetry
 
