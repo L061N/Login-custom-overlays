@@ -5,7 +5,7 @@
 
 With benofficial2's Official Overlays you get a simple collection of free overlays for [iRacing](https://www.iracing.com/). The overlays are made with [SimHub](https://www.simhubdash.com/download-2/), which means they are fully customizable, and don't require any other executable to run in the background.
 
-<a href="https://www.youtube.com/watch?v=pucGAwFpnjw">
+<a href="https://youtu.be/8q-s8u6F2xo?si=3FSmYuznnDwxdd9v&t=1344">
 <p align="center">
   <img src="Images/Overview-ERS-Green.png" width="1920"/>
 </p>
@@ -27,67 +27,82 @@ To see them in action, click the image above for a video demo.
 - **[Spotter](#spotter)**: shows orange bars when side-by-side with another car
 - **[Fuel Calculator](#fuel-calculator)**: when in garage, shows how much fuel is needed for the race
 
-## How to Get
+## How to Install
 
-Download and run the installer available from the [releases page](https://github.com/fixfactory/bo2-official-overlays/releases). You will be able to choose which overlays you wish to install. Comes with an uninstaller.
+### 1) Install SimHub if you don't have it already
 
-Alternatively, for the security-minded power-user, you can install without running any executable by cloning this repo and copying all the folders from `\Overlays` and pasting them in this SimHub directory: `C:\Program Files (x86)\SimHub\DashTemplates`. Then compile the plugin in `\Plugin` with Visual Studio and copy `benofficial2.Plugin.dll` to `C:\Program Files (x86)\SimHub`.
+[Download SimHub](https://www.simhubdash.com/download-2/) and install it if you don't have it already. It is needed to run the overlays.
 
-If you don't have them already, you must install these two:
-- [SimHub](https://www.simhubdash.com/download-2/): needed to run the overlays
-- [Romainrob's collection](https://www.simhubdash.com/community-2/dashboard-templates/romainrobs-collection/): needed for the excellent extra properties plugin
+### 2) Install benofficial2's Official Overlays
 
-When starting SimHub the next time, it will ask you to enable the newly installed plugins. Enable them and toggle "Show in Left Menu" to be able to configure the options.
+[Download benofficial2's Official Overlays](https://github.com/fixfactory/bo2-official-overlays/releases) from the releases page and run the installer. You will be able to choose which overlays you wish to install. Comes with an uninstaller.
+
+### 3) Launch SimHub and enable benofficial2 plugin
+
+When launching SimHub for the first time after installing the overlays, SimHub will ask if you want to enable the benofficial2 plugin. **Enable** it and toggle **Show in left main menu** to be able to configure the overlay options.
+
+<p align="center">
+  <img src="Images/benofficial2-Plugin.png" width="500" />
+</p>
+
+Also make sure you have not disabled the Dash Studio and Statistics plugins as they are needed to run the overlays. You can see which plugins are enabled by clicking **Add/remove features** in SimHub's left main menu.
+
+<p align="center">
+  <img src="Images/DashStudio-Plugin.png" width="500" />
+</p>
+
+<p align="center">
+  <img src="Images/Statistics-Plugin.png" width="500" />
+</p>
+
+*Note: as of version 2.0 the RSC plugins are no longer needed to run the overlays. They can be disabled to reduce CPU usage if you don't need them for anything else.*
+
+*Note: for the security-minded power-user, you can also install without running the installer by cloning this repo and copying all the folders from `\Overlays` and pasting them in this SimHub directory: `C:\Program Files (x86)\SimHub\DashTemplates`. Then compile the plugin in `\Plugin` with Visual Studio and copy `benofficial2.Plugin.dll` to `C:\Program Files (x86)\SimHub`.*
 
 ## How to Use
 
-### Create an overlay layout in SimHub
+### 1) Create an overlay layout in SimHub
 
-Once installed, the overlays will show up in *SimHub* in the *Dash Studio* menu under the *Overlays* tab. From there, create a *New overlay layout* and add the overlays you want to it. You'll be able to adjust the position and size of every overlay. Make sure to toggle *Visible* **ON** and *Hidden* **OFF**. Also toggle the *AUTO* load button so they load everytime you run SimHub. The overlays will then become visible on their own when in-car.
+Once installed, the overlays will show up in **SimHub** in the **Dash Studio** menu under the **Overlays** tab. From there, create a **New overlay layout** and add the overlays you want to use. You'll be able to adjust the screen position and size for each overlay. Then **Save layout**.
+
+<p align="center">
+  <img src="Images/Overlay-Layout.png" width="400"/>
+</p>
+
+Make sure to toggle **Visible** **ON** and **Hidden** **OFF**. Also toggle the **AUTO** load button so they conveniently load everytime you run SimHub. Now overlays will become visible on their own when in-car.
 
 <p align="center">
   <img src="Images/SimHub-Layout.png" width="506" height="269" />
 </p>
 
-If you need help setting up your overlay layout in SimHub, don't hesitate to get help on the [official SimHub Discord server](https://discord.com/invite/nBBMuX7).
+### 2) Important iRacing Configuration
 
-### Important iRacing Configuration
+1) In the iRacing UI (the launcher), go to **Settings** (bottom left corner) and navigate to **Options** > **Network**. Make sure to select the highest **Connection Speed**.
 
-1) In-game, set the **Max Cars** setting to **63** in *iRacing Graphic Settings* and restart the game.
+2) Set the **Max Cars** setting to **63** in iRacing in-game **Graphic Settings** and restart the game.
 
-2) In the iRacing UI (the launcher), go to **My Account** (top right corner) and navigate to the **Connection** tab. Make sure to select the highest **Connection Type**.
+This is to ensure that iRacing sends the complete telemetry data for every car in the session so the overlays work properly.
 
-This is to ensure that iRacing has the telemetry data of every car in the session so the overlays work properly.
+### 3) Configure overlay options
 
-### SimHub iRacing Extras Configuration
+From SimHub's **Left main menu**, select **benofficial2** to access the overlay configuration options. Various options can be changed there to change the look and behavior of the overlays.
 
-For the overlays to work property, configure the following settings in the **iRacing Extras** menu in **SimHub** (this is Romainrob's plugin):
-- **Live position update** = On
-- **Standings Maximum rows** = 8 (supports up to 25)
-- **Standings Lead focused rows** = 3 (supports up to 8)
-- **Standings iRating format** = 1.3k
-- **Standings Default class** = Player class
-- **Standings Default focus** = Player
-- **Relatives Default class** = Multiclass
+<p align="center">
+  <img src="Images/Standings-Options.png" width="600"/>
+</p>
 
-This is because my overlays don't support every setting (yet).
+### 4) Optional setup in OBS
 
-### Setup in OBS
-
-For streaming, get the web source url by selecting *Copy OBS browser address to clipboard* from the *More* menu.
+For streaming, get the web source url by selecting **Copy OBS browser address to clipboard** from the **More** menu on an overlay in the overlay list.
 
 For a two-PC streaming setup, replace **127.0.0.1** by the **IP Address** of your **Gaming PC**.
 
 ## Standings Box
 
-Shows the **Leaderboard** for the current session. Can show up to 25 drivers (personally I just show 8 for simplicity). It shows the driver **Name**, **Rating**, **Tire Compound**, **In-pit Status**, **Best Lap Time** (practice and qual only), **Gap to Leader**, and **Last Pitstop Lap** (race only).
+Shows the live **Leaderboard** for the player's car class. Can show up to 25 drivers and have **Lead-Focused** rows (configurable in plugin options). The driver's **iRating** is shown with their **License Class** color. The **Tire Compound** indicator also serves as an **On-Track** indicator. In a race, the **Gap to Leader** and **Last Pit Stop Lap** are shown. In practice and qualification, the **Best Lap Time** is shown. For streamers, the large header makes it clear to your viewers if you're in a race or practice session.
 
 <p align="center">
   <img src="Images/Standings-Pit.png" width="450"/>
-</p>
-
-<p align="center">
-  <img src="Images/Standings-Soft.png" width="450"/>
 </p>
 
 <p align="center">
@@ -96,10 +111,10 @@ Shows the **Leaderboard** for the current session. Can show up to 25 drivers (pe
 
 ## Relative Box
 
-Showing the nearby drivers **Ahead & Behind** you on-track. This includes cars from every class, cars that are a lap down (blue) or a lap ahead (red). The **Out** indicator shows when a car is on an out-lap. The last column shows your **Gap** in seconds to that car. The temperature is the **Track Temperature**.
+Shows the nearby drivers **Ahead & Behind** on-track. This includes cars from every car class. In blue are cars that are a lap down and in red are those a lap ahead. The **Out Lap Indicator** shows when a car is on an out-lap. The last column shows the **Gap** in seconds to that car. The header shows the **Strength of Field** and **Incident Count**. The temperature is the **Track Temperature** and the time is your computer's **Local Time**.
 
 <p align="center">
-  <img src="Images/Relative-Blue.png" width="350"/>
+  <img src="Images/Relative-Out.png" width="350"/>
 </p>
 
 <p align="center">
@@ -108,19 +123,19 @@ Showing the nearby drivers **Ahead & Behind** you on-track. This includes cars f
 
 ## Track Map
 
-Showing car positions on a map. Supports multi-class colors.
+Shows car positions on a map. Supports multi-class colors.
 
 <p align="center">
-  <img src="Images/Map-Spa.png" width="200"/>
+  <img src="Images/Map.png" width="250"/>
 </p>
 
 <p align="center">
-  <img src="Images/Map-Zolder.png" width="200"/>
+  <img src="Images/Map-Multi.png" width="150"/>
 </p>
 
 ## Delta Bar
 
-Giving you feedback on your pace. The **Delta Time** (center) and **Delta Speed** (right) are relative to your session's best lap. In qualifying, they are relative to your all-time best lap. On the left, in a race, you get **Gap** and **Interval** information about your nearest competitor ahead and behind. Useful to know if your are improving or not relative to them.
+Gives you feedback on your pace. The **Delta Time** (center) and **Delta Speed** (right) are relative to your session's best clean lap. In qualifying, they are relative to your all-time best lap. On the left, in a race, you get **Gap** and last lap **Interval** information about your nearest competitor ahead and behind. Useful to know if your are improving relative to them.
 
 <p align="center">
   <img src="Images/Delta-Best.png" width="400"/>
@@ -134,27 +149,21 @@ Giving you feedback on your pace. The **Delta Time** (center) and **Delta Speed*
   <img src="Images/Delta-Red.png" width="400"/>
 </p>
 
-This delta bar can help you improve your lap time by giving you on-the-spot feedback in a corner. Because the **Delta Speed** field is big enough, you'll be able to see it change color while keeping your eyes on the track. So you'll know instantly if your mid-corner speed was faster/slower for example. You'll learn quickly what works and what doesn't.
+This delta bar can help you improve your lap times by giving you on-the-spot feedback in a corner. Because the **Delta Speed** field is big enough, you'll be able to see it change color while keeping your eyes on the track. So you'll know instantly if your mid-corner speed was faster/slower for example. You'll learn quickly what works and what doesn't.
+
+*Note: If the delta bar doesn't show immediately, it is because it doesn't have a clean reference lap to compare against yet. It will show up once you complete a full lap without incident.*
 
 ## Inputs Telemetry
 
-Showing the current **Gear**, **Speed** and a graph of pedal inputs over time. This is useful to understand bad habits.
+Shows the current **Gear**, **Speed** and a graph of **Pedal Input Traces** over time. This is useful to understand bad habits. This overlay is modular meaning you can hide parts you don't need as well as adjusting the width of the traces (see configuration options in benofficial2 plugin).
 
 <p align="center">
-  <img src="Images/Inputs-Gas.png" width="250"/>
-</p>
-
-<p align="center">
-  <img src="Images/Inputs-Brake.png" width="250"/>
-</p>
-
-<p align="center">
-  <img src="Images/Inputs-Crash.png" width="250"/>
+  <img src="Images/Inputs.png" width="600"/>
 </p>
 
 ## Dash Overlay
 
-Useful when the in-game steering wheel is not visible in your FOV. This overlay is showing various in-car settings and statuses. The green boxes typically show statuses about "going faster" such as **DRS**, **ERS**, **P2P**, **OT** (Super Formula), and **Fuel Mix**. 
+Useful when the in-game steering wheel is not visible in your FOV. This overlay shows various in-car settings and statuses. The green boxes typically show statuses about "going faster" such as **DRS**, **ERS**, **P2P**, **OT** (Super Formula), and **Fuel Mix**. 
 
 <p align="center">
   <img src="Images/Dash-ERS-Green.png" width="350"/>
@@ -170,8 +179,6 @@ The yellow boxes are for **Fuel** and **Laps Remaining Estimate**. A **Pit Indic
   <img src="Images/Dash-Pit.png" width="350"/>
 </p>
 
-All those boxes are customizable per-car by editting the javascript files in the overlay.
-
 ## Setup Cover
 
 For streamers, shows an animation that hides your car setup values when entering the garage.
@@ -186,7 +193,9 @@ For streamers, shows your chat on-screen so you can keep up with chat. Powered b
 
 ## Launch Assist
 
-Showing precise pedal input bars with values to help you consistently hold the same value each start. There's some randomness to the clutch bitepoint in iRacing, so make sure to experiment to find a safe value.
+When stopped, this overlay shows precise pedal input bars to help you consistently hold a desired value. For example with the F1 W13, you set your clutch bitepoint to ~60% and hold 50% throttle. At 52% you might spin out, so this overlay helps you be consistent.
+
+There's some randomness to the clutch bitepoint in iRacing, so make sure to experiment to find a safe value.
 
 <p align="center">
   <img src="Images/Launch-Assist.png" width="80"/>
@@ -207,8 +216,6 @@ Also comes with a **Rejoin Helper** that will show up when stopped or off-track,
 </p>
 
 Designed to be placed over the virtual mirror, but can be placed wherever you want it to be.
-
-See `Config.js` in the overlay folder to configure the behavior and look.
 
 ## Fuel Calculator
 
