@@ -286,6 +286,11 @@ namespace benofficial2.Plugin
                     }
                         
                     Drivers[opponent.CarNumber] = driver;
+
+                    if (opponent.IsPlayer)
+                    {
+                        PlayerLivePositionInClass = driver.LivePositionInClass;
+                    }
                 }
             }
         }

@@ -291,27 +291,20 @@ namespace benofficial2.Plugin
                             BlankRow(row);
                             continue;
                         }
-                        
+
+                        Driver driver = null;
+                        if (_driverModule.Drivers != null) _driverModule.Drivers.TryGetValue(opponent.CarNumber, out driver);
+
                         row.RowVisible = true;
                         row.IsPlayer = opponent.IsPlayer;
                         row.PlayerID = opponent.Id;
                         row.Connected = opponent.IsConnected;
-
-                        if (_sessionModule.Race)
-                        {
-                            row.LivePositionInClass = actualDriverIdx + 1;
-                        }
-                        else
-                        {
-                            row.LivePositionInClass = opponent.Position > 0 ? actualDriverIdx + 1 : 0;
-                        }
-
+                        row.LivePositionInClass = driver != null ? driver.LivePositionInClass : 0;
                         row.Number = opponent.CarNumber;
                         row.Name = opponent.Name;
                         row.InPitLane = opponent.IsCarInPitLane;
                         row.OutLap = opponent.IsOutLap;
-                        try { row.EnterPitLap = _driverModule.Drivers?[opponent.CarNumber]?.EnterPitLap ?? 0; }
-                        catch { row.EnterPitLap = 0; }
+                        row.EnterPitLap = driver != null ? driver.EnterPitLap : 0;
                         row.iRating = (int)(opponent.IRacing_IRating ?? 0);
                         (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
                         row.CurrentLap = opponent.CurrentLap ?? 0;
@@ -320,11 +313,6 @@ namespace benofficial2.Plugin
                         (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, opponent);
                         row.BestLapTime = opponent.BestLapTime;
                         visibleRowCount++;
-
-                        if (row.IsPlayer)
-                        {
-                            _driverModule.PlayerLivePositionInClass = row.LivePositionInClass;
-                        }
                     }
                 }
                 else
