@@ -116,6 +116,7 @@ namespace benofficial2.Plugin
                 if (!Drivers.TryGetValue(opponent.CarNumber, out Driver driver))
                 {
                     driver = new Driver();
+                    Drivers[opponent.CarNumber] = driver;
                 }
 
                 // Evaluate the lap when they entered the pit lane
@@ -159,8 +160,6 @@ namespace benofficial2.Plugin
                     driver.OutLap = driver.ExitPitLap >= opponent.CurrentLap;
                     driver.InPitSince = DateTime.MinValue;
                 }
-
-                Drivers[opponent.CarNumber] = driver;
 
                 if (opponent.IsPlayer)
                 {
@@ -221,11 +220,11 @@ namespace benofficial2.Plugin
                 if (!Drivers.TryGetValue(carNumber, out Driver driver))
                 {
                     driver = new Driver();
+                    Drivers[carNumber] = driver;
                 }
 
                 driver.QualPositionInClass = positionInClass;
                 driver.QualFastestTime = fastestTime;
-                Drivers[carNumber] = driver;
             }
         }
 
@@ -274,6 +273,7 @@ namespace benofficial2.Plugin
                     if (!Drivers.TryGetValue(opponent.CarNumber, out Driver driver))
                     {
                         driver = new Driver();
+                        Drivers[opponent.CarNumber] = driver;
                     }
 
                     if (_sessionModule.Race)
@@ -285,8 +285,6 @@ namespace benofficial2.Plugin
                         driver.LivePositionInClass = opponent.Position > 0 ? i + 1 : 0;
                     }
                         
-                    Drivers[opponent.CarNumber] = driver;
-
                     if (opponent.IsPlayer)
                     {
                         PlayerLivePositionInClass = driver.LivePositionInClass;
