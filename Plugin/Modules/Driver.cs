@@ -385,7 +385,14 @@ namespace benofficial2.Plugin
 
                     if (_sessionModule.Race)
                     {
-                        driver.LivePositionInClass = i + 1;
+                        if (!_sessionModule.RaceStarted)
+                        {
+                            driver.LivePositionInClass = driver.QualPositionInClass;
+                        }
+                        else
+                        {
+                            driver.LivePositionInClass = i + 1;
+                        }
                     }
                     else
                     {
