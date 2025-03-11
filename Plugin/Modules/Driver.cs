@@ -24,6 +24,8 @@ using System.Linq;
 
 namespace benofficial2.Plugin
 {
+    using OpponentsWithDrivers = List<(Opponent, Driver)>;
+
     public class RawDriverInfo
     {
         // Index in the raw table AllSessionData["DriverInfo"]["Drivers"]
@@ -40,6 +42,16 @@ namespace benofficial2.Plugin
         public int QualPositionInClass { get; set; } = 0;
         public double QualFastestTime { get; set; } = 0;
         public int LivePositionInClass { get; set; } = 0;
+        public double LastCurrentLapHighPrecision { get; set; } = -1;
+        public double CurrentLapHighPrecision { get; set; } = -1;
+        public bool Towing { get; set; } = false;
+        public DateTime TowingEndTime { get; set; } = DateTime.MinValue;
+    }
+
+    public class ClassLeaderboard
+    {
+        public LeaderboardCarClassDescription CarClassDescription { get; set; } = null;
+        public OpponentsWithDrivers Drivers { get; set; } = new OpponentsWithDrivers();
     }
 
     public class DriverModule : IPluginModule
@@ -53,7 +65,7 @@ namespace benofficial2.Plugin
         public const int MaxDrivers = 64;
 
         // Key is car number
-        public Dictionary<string, Driver> Drivers { get; private set; } = null;
+        public Dictionary<string, Driver> Drivers { get; private set; } = new Dictionary<string, Driver>();
 
         // Key is carIdx
         public Dictionary<int, RawDriverInfo> DriverInfos { get; private set; } = null;
@@ -63,10 +75,7 @@ namespace benofficial2.Plugin
         public int PlayerPositionInClass { get; internal set; } = 0;
         public int PlayerLivePositionInClass { get; internal set; } = 0;
 
-        public DriverModule()
-        {
-
-        }
+        public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
@@ -91,24 +100,15 @@ namespace benofficial2.Plugin
             try { sessionTime = (double)raw.Telemetry["SessionTime"]; } catch { }
             if (sessionTime == 0 || sessionTime < _lastSessionTime)
             {
-                Drivers = null;
+                Drivers = new Dictionary<string, Driver>();
                 PlayerLivePositionInClass = 0;
+                LiveClassLeaderboards = new List<ClassLeaderboard>();
                 _lastSessionTime = sessionTime;
                 return;
             }
 
+            double deltaTime = sessionTime - _lastSessionTime;
             _lastSessionTime = sessionTime;
-
-            // Initialize
-            if (Drivers == null)
-            {
-                Drivers = new Dictionary<string, Driver>();
-            }
-
-            UpdateLivePositionInClass(ref data);
-
-            // TODO enable this if we want to show qual result before race start.
-            //UpdateQualResult(ref data);
 
             for (int i = 0; i < data.NewData.Opponents.Count; i++)
             {
@@ -161,6 +161,63 @@ namespace benofficial2.Plugin
                     driver.InPitSince = DateTime.MinValue;
                 }
 
+                if (_sessionModule.Race)
+                {
+                    double playerCarTowTime = 0;
+                    try { playerCarTowTime = (double)raw.Telemetry["PlayerCarTowTime"]; } catch { }
+                    
+                    if (!driver.Towing)
+                    {
+                        // Check for a jump in continuity, this means the driver teleported (towed) back to the pit.
+                        if (driver.LastCurrentLapHighPrecision >= 0 && opponent.CurrentLapHighPrecision.HasValue)
+                        {
+                            // Use avg speed because in SimHub we can step forward in time in a recorded replay.
+                            double avgSpeedKph = ComputeAvgSpeedKph(data.NewData.TrackLength, driver.LastCurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value, deltaTime);
+                            bool teleportingToPit = avgSpeedKph > 500 && opponent.IsCarInPit;
+                            bool playerTowing = opponent.IsPlayer && playerCarTowTime > 0;
+                            if (playerTowing || teleportingToPit)
+                            {
+                                driver.Towing = true;
+
+                                (double towLength, TimeSpan towTime) = ComputeTowLengthAndTime(data.NewData.TrackLength, driver.LastCurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value);
+                                if (opponent.IsPlayer)
+                                {
+                                    driver.TowingEndTime = DateTime.Now + TimeSpan.FromSeconds(playerCarTowTime);
+                                }
+                                else
+                                {
+                                    driver.TowingEndTime = DateTime.Now + towTime;
+                                }
+
+                                // Keep the last known on-track position for the towing driver.
+                                // Because otherwise they will be shown as first in class when towing forward.
+                                driver.CurrentLapHighPrecision = driver.LastCurrentLapHighPrecision;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // iRacing doesn't provide a tow time for other drivers, so we have to estimate it.
+                        // Consider towing done if the car starts moving forward.
+                        double smallDistancePct = 0.05 / data.NewData.TrackLength; // 0.05m is roughly the distance you cover at 10km/h in 16ms.
+                        bool movingForward = opponent.CurrentLapHighPrecision > driver.LastCurrentLapHighPrecision + smallDistancePct;
+                        bool towEnded = !opponent.IsPlayer && DateTime.Now > driver.TowingEndTime;
+                        bool playerNotTowing = opponent.IsPlayer && playerCarTowTime <= 0;
+                        if (playerNotTowing || towEnded || movingForward)
+                        {
+                            driver.Towing = false;
+                            driver.TowingEndTime = DateTime.MinValue;
+                        }
+                    }
+
+                    if (!driver.Towing)
+                    {
+                        driver.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? -1;
+                    }
+
+                    driver.LastCurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? -1;
+                }
+
                 if (opponent.IsPlayer)
                 {
                     PlayerOutLap = driver.OutLap;
@@ -168,15 +225,40 @@ namespace benofficial2.Plugin
                     PlayerPositionInClass = opponent.Position > 0 ? opponent.PositionInClass : 0;
                 }
             }
+
+            UpdateQualResult(ref data);
+            UpdateLivePositionInClass(ref data);
         }
 
         public void End(PluginManager pluginManager, benofficial2 plugin)
         {
 
         }
-        public static string FormatIRating(int iRating)
+
+        private double ComputeAvgSpeedKph(double trackLength, double fromPos, double toPos, double deltaTime)
         {
-            return ((double)iRating / 1000.0).ToString("0.0") + "k";
+            double deltaPos = Math.Abs(toPos - fromPos);
+            double length = deltaPos * trackLength;
+            return (length / 1000) / (deltaTime / 3600);
+        }
+
+        private (double, TimeSpan) ComputeTowLengthAndTime(double trackLength, double fromPos, double toPos)
+        {
+            double deltaPos;
+            if (toPos < fromPos)
+            {
+                // Must drive around the track
+                deltaPos = 1.0 - fromPos + toPos;
+            }
+            else
+            {
+                deltaPos = toPos - fromPos;
+            }
+                
+            double length = deltaPos * trackLength;
+            const double towSpeedMs = 30;
+            const double towTimeFixed = 50;
+            return (length, TimeSpan.FromSeconds(length / towSpeedMs + towTimeFixed));
         }
 
         public static (string license, double rating) ParseLicenseString(string licenseString)
@@ -184,7 +266,8 @@ namespace benofficial2.Plugin
             var parts = licenseString.Split(' ');
             return (parts[0], double.Parse(parts[1]));
         }
-        public void UpdateQualResult(ref GameData data)
+
+        private void UpdateQualResult(ref GameData data)
         {
             // Only needed before the race start to show qual position
             if (!(_sessionModule.Race && !_sessionModule.RaceStarted)) return;
@@ -228,7 +311,7 @@ namespace benofficial2.Plugin
             }
         }
 
-        public void UpdateRawDriverInfo(ref GameData data)
+        private void UpdateRawDriverInfo(ref GameData data)
         {
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
@@ -254,19 +337,17 @@ namespace benofficial2.Plugin
             }
         }
 
-        public void UpdateLivePositionInClass(ref GameData data)
+        private void UpdateLivePositionInClass(ref GameData data)
         {
+            LiveClassLeaderboards = new List<ClassLeaderboard>();
+
             for (int carClassIdx = 0; carClassIdx < data.NewData.OpponentsClassses.Count; carClassIdx++)
             {
-                LeaderboardCarClassDescription opponentClass = data.NewData.OpponentsClassses[carClassIdx];
-                List<Opponent> opponents = new List<Opponent>(opponentClass.Opponents);
+                ClassLeaderboard leaderboard = new ClassLeaderboard();
+                LiveClassLeaderboards.Add(leaderboard);
 
-                // In a race, get a live leaderboard by sorting on track position
-                if (_sessionModule.Race && !_sessionModule.RaceFinished)
-                {
-                    opponents = opponents.OrderByDescending(p => p.CurrentLapHighPrecision).ToList();
-                }
-
+                leaderboard.CarClassDescription = data.NewData.OpponentsClassses[carClassIdx];
+                List<Opponent> opponents = leaderboard.CarClassDescription.Opponents;
                 for (int i = 0; i < opponents.Count; i++)
                 {
                     Opponent opponent = opponents[i];
@@ -276,6 +357,32 @@ namespace benofficial2.Plugin
                         Drivers[opponent.CarNumber] = driver;
                     }
 
+                    leaderboard.Drivers.Add((opponent, driver));
+                }
+
+                if (_sessionModule.Race)
+                {
+                    if (!_sessionModule.RaceStarted)
+                    {
+                        // Before the start keep the leaderboard sorted by qual position
+                        leaderboard.Drivers = leaderboard.Drivers.OrderBy(p => p.Item2.QualPositionInClass).ToList();
+                    }
+                    else if (!_sessionModule.RaceFinished)
+                    {
+                        // During the race sort on position on track for a live leaderboard
+                        leaderboard.Drivers = leaderboard.Drivers.OrderByDescending(p => p.Item2.CurrentLapHighPrecision).ToList();
+                    }
+                    else
+                    {
+                        // After the race don't sort to show the official race result
+                    }
+                }
+
+                for (int i = 0; i < leaderboard.Drivers.Count; i++)
+                {
+                    Opponent opponent = leaderboard.Drivers[i].Item1;
+                    Driver driver = leaderboard.Drivers[i].Item2;
+
                     if (_sessionModule.Race)
                     {
                         driver.LivePositionInClass = i + 1;
@@ -284,7 +391,7 @@ namespace benofficial2.Plugin
                     {
                         driver.LivePositionInClass = opponent.Position > 0 ? i + 1 : 0;
                     }
-                        
+
                     if (opponent.IsPlayer)
                     {
                         PlayerLivePositionInClass = driver.LivePositionInClass;

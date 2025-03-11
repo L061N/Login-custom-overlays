@@ -25,7 +25,7 @@
     }
   },
   "Version": 2,
-  "Id": "5dd863d5-5f0c-47e4-95e7-c7ed45b0e04b",
+  "Id": "037aa8d6-4f7a-40cd-8490-535207b1e50c",
   "BaseHeight": 530,
   "BaseWidth": 363,
   "BackgroundColor": "#FF000000",
@@ -155,7 +155,7 @@
                       "Height": 20.0,
                       "Left": 332.0,
                       "Top": 25.0,
-                      "Visible": true,
+                      "Visible": false,
                       "Width": 31.0,
                       "Name": "Pit",
                       "RenderingSkip": 0,
@@ -165,7 +165,45 @@
                           "Formula": {
                             "JSExt": 1,
                             "Interpreter": 1,
-                            "Expression": "const classIdx = isnull($prop('benofficial2.Standings.PlayerCarClassIdx'), 0);\r\nconst rowIdx = repeatindex() - 1;\r\nreturn isnull(getStandingsProp(classIdx, rowIdx, 'InPitLane'), false);"
+                            "Expression": "const classIdx = isnull($prop('benofficial2.Standings.PlayerCarClassIdx'), 0);\r\nconst rowIdx = repeatindex() - 1;\r\nconst towing = isnull(getStandingsProp(classIdx, rowIdx, 'Towing'), false);\r\nconst inPitLane = isnull(getStandingsProp(classIdx, rowIdx, 'InPitLane'), false);\r\nreturn inPitLane && !towing;"
+                          },
+                          "Mode": 2
+                        },
+                        "Top": {
+                          "Formula": {
+                            "JSExt": 1,
+                            "Interpreter": 1,
+                            "Expression": "const classIdx = isnull($prop('benofficial2.Standings.PlayerCarClassIdx'), 0);\r\nconst rowIdx = repeatindex() - 1;\r\nreturn rowTop(classIdx, rowIdx);"
+                          },
+                          "Mode": 2
+                        }
+                      }
+                    },
+                    {
+                      "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+                      "IsTextItem": true,
+                      "Font": "Roboto",
+                      "FontWeight": "Bold",
+                      "FontSize": 13.0,
+                      "Text": "TOW",
+                      "TextColor": "#FF000000",
+                      "HorizontalAlignment": 1,
+                      "VerticalAlignment": 1,
+                      "BackgroundColor": "#BEFF6345",
+                      "Height": 20.0,
+                      "Left": 332.0,
+                      "Top": 25.0,
+                      "Visible": true,
+                      "Width": 31.0,
+                      "Name": "Tow",
+                      "RenderingSkip": 0,
+                      "MinimumRefreshIntervalMS": 0.0,
+                      "Bindings": {
+                        "Visible": {
+                          "Formula": {
+                            "JSExt": 1,
+                            "Interpreter": 1,
+                            "Expression": "const classIdx = isnull($prop('benofficial2.Standings.PlayerCarClassIdx'), 0);\r\nconst rowIdx = repeatindex() - 1;\r\nreturn isnull(getStandingsProp(classIdx, rowIdx, 'Towing'), false);"
                           },
                           "Mode": 2
                         },
@@ -864,7 +902,7 @@
                 "JSExt": 1,
                 "Interpreter": 1,
                 "Expression": "return checkVersion(g_VersionName, g_VersionNumber);",
-                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'standings'\r\nconst g_VersionNumber = '2.0'"
+                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'standings'\r\nconst g_VersionNumber = '2.1'"
               },
               "Mode": 2
             }
@@ -897,7 +935,7 @@
     "MetadataVersion": 2.0,
     "EnableOnDashboardMessaging": true,
     "PitScreensIndexs": [],
-    "SimHubVersion": "9.7.4",
+    "SimHubVersion": "9.7.5",
     "Title": "benofficial2 - iRacing Standings",
     "Author": "twitch.tv/benofficial2",
     "Width": 363.0,

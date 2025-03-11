@@ -24,6 +24,8 @@ using System.ComponentModel;
 
 namespace benofficial2.Plugin
 {
+    using OpponentsWithDrivers = List<(Opponent, Driver)>;
+
     public class DeltaSettings : INotifyPropertyChanged
     {
         private int _backgroundOpacity = 60;
@@ -129,23 +131,23 @@ namespace benofficial2.Plugin
 
         public void UpdateHeadToHead(ref GameData data, HeadToHeadRow row, int relativeIdx)
         {
-            if (_standingsModule.PlayerCarClassIdx < 0 || _standingsModule.PlayerCarClassIdx >= _standingsModule.ClassLeaderboards.Count)
+            if (_standingsModule.PlayerCarClassIdx < 0 || _standingsModule.PlayerCarClassIdx >= _driverModule.LiveClassLeaderboards.Count)
             {
                 BlankRow(row);
                 return;
             }
 
-            List<Opponent> opponents = _standingsModule.ClassLeaderboards[_standingsModule.PlayerCarClassIdx];
+            OpponentsWithDrivers opponentsWithDrivers = _driverModule.LiveClassLeaderboards[_standingsModule.PlayerCarClassIdx].Drivers;
 
             int livePositionInClass = _driverModule.PlayerLivePositionInClass + relativeIdx;
             int opponentIdx = livePositionInClass - 1;
-            if (opponentIdx < 0 || opponentIdx >= opponents.Count)
+            if (opponentIdx < 0 || opponentIdx >= opponentsWithDrivers.Count)
             {
                 BlankRow(row);
                 return;
             }
 
-            Opponent opponent = opponents[opponentIdx];
+            Opponent opponent = opponentsWithDrivers[opponentIdx].Item1;
             row.Visible = opponent.Position > 0;
             row.LivePositionInClass = livePositionInClass;
             row.Name = opponent.Name;
