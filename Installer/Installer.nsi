@@ -76,37 +76,37 @@ ShowUninstDetails show
 InstallDirRegKey HKCU "SOFTWARE\SimHub" InstallDirectory
 
 ; Installer Sections
-Section "iRacing Dash" SEC_FOLDER1
+Section "Dash" SEC_FOLDER1
   SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Dash"
   File /r "..\Overlays\benofficial2 - iRacing Dash\*.*"
 SectionEnd
 
-Section "iRacing Delta" SEC_FOLDER2
+Section "Delta" SEC_FOLDER2
   SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Delta"
   File /r "..\Overlays\benofficial2 - iRacing Delta\*.*"
 SectionEnd
 
-Section "iRacing Inputs" SEC_FOLDER3
+Section "Inputs" SEC_FOLDER3
   SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Inputs"
   File /r "..\Overlays\benofficial2 - iRacing Inputs\*.*"
 SectionEnd
 
-Section "iRacing Relative" SEC_FOLDER4
+Section "Relative" SEC_FOLDER4
   SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Relative"
   File /r "..\Overlays\benofficial2 - iRacing Relative\*.*"
 SectionEnd
 
-Section "iRacing Standings" SEC_FOLDER5
+Section "Standings" SEC_FOLDER5
   SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Standings"
   File /r "..\Overlays\benofficial2 - iRacing Standings\*.*"
 SectionEnd
 
-Section "iRacing Track Map" SEC_FOLDER6
+Section "Track Map" SEC_FOLDER6
   SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Track Map"
   File /r "..\Overlays\benofficial2 - iRacing Track Map\*.*"
 SectionEnd
 
-Section "iRacing Setup Cover" SEC_FOLDER7
+Section "Setup Cover" SEC_FOLDER7
   SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Setup Cover"
   File /r "..\Overlays\benofficial2 - iRacing Setup Cover\*.*"
 SectionEnd
@@ -116,19 +116,24 @@ Section "Twitch Chat" SEC_FOLDER8
   File /r "..\Overlays\benofficial2 - Twitch Chat\*.*"
 SectionEnd
 
-Section "iRacing Launch Assist" SEC_FOLDER9
+Section "Launch Assist" SEC_FOLDER9
   SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Launch Assist"
   File /r "..\Overlays\benofficial2 - iRacing Launch Assist\*.*"
 SectionEnd
 
-Section "iRacing Spotter" SEC_FOLDER10
+Section "Spotter" SEC_FOLDER10
   SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Spotter"
   File /r "..\Overlays\benofficial2 - iRacing Spotter\*.*"
 SectionEnd
 
-Section "iRacing Fuel Calculator" SEC_FOLDER11
+Section "Fuel Calculator" SEC_FOLDER11
   SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Fuel Calculator"
   File /r "..\Overlays\benofficial2 - iRacing Fuel Calculator\*.*"
+SectionEnd
+
+Section "Wind" SEC_FOLDER12
+  SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Wind"
+  File /r "..\Overlays\benofficial2 - iRacing Wind\*.*"
 SectionEnd
 
 Section "Plugin" SEC_PLUGIN
@@ -161,6 +166,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER9} "Install iRacing Launch Assist SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER10} "Install iRacing Spotter SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER11} "Install iRacing Fuel Calculator SimHub overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER12} "Install iRacing Wind SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PLUGIN} "Install necessary files such as the plugin, license and uninstaller"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
@@ -177,6 +183,7 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Launch Assist"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Spotter"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Fuel Calculator"
+  RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Wind"
       
   ; Remove the uninstaller itself
   Delete "$INSTDIR\bo2-official-overlays-uninstall.exe"
