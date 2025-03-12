@@ -169,7 +169,8 @@ namespace benofficial2.Plugin
                     if (!driver.Towing)
                     {
                         // Check for a jump in continuity, this means the driver teleported (towed) back to the pit.
-                        if (driver.LastCurrentLapHighPrecision >= 0 && opponent.CurrentLapHighPrecision.HasValue)
+                        if (driver.LastCurrentLapHighPrecision >= 0 && 
+                            opponent.CurrentLapHighPrecision.HasValue && opponent.CurrentLapHighPrecision.Value >= 0)
                         {
                             // Use avg speed because in SimHub we can step forward in time in a recorded replay.
                             double avgSpeedKph = ComputeAvgSpeedKph(data.NewData.TrackLength, driver.LastCurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value, deltaTime);
@@ -201,18 +202,26 @@ namespace benofficial2.Plugin
                         // Consider towing done if the car starts moving forward.
                         double smallDistancePct = 0.05 / data.NewData.TrackLength; // 0.05m is roughly the distance you cover at 10km/h in 16ms.
                         bool movingForward = opponent.CurrentLapHighPrecision > driver.LastCurrentLapHighPrecision + smallDistancePct;
+                        bool done = opponent.CurrentLapHighPrecision < 0;
                         bool towEnded = !opponent.IsPlayer && DateTime.Now > driver.TowingEndTime;
                         bool playerNotTowing = opponent.IsPlayer && playerCarTowTime <= 0;
-                        if (playerNotTowing || towEnded || movingForward)
+                        if (playerNotTowing || towEnded || movingForward || done)
                         {
                             driver.Towing = false;
                             driver.TowingEndTime = DateTime.MinValue;
                         }
                     }
 
+                    // Pause updating the current lap if the driver is towing, so they stay at their last "on-track" position in the live standings.
+                    // Otherwide they would leapfrog the leaders as they teleport in the pit.
                     if (!driver.Towing)
                     {
-                        driver.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? -1;
+                        // Stop updating the current lap if the driver is done (-1), so they stay at their last known position in the live standings.
+                        // Happens at the end of the race when they get out of the car.
+                        if (opponent.CurrentLapHighPrecision.HasValue && opponent.CurrentLapHighPrecision.Value >= 0)
+                        {
+                            driver.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision.Value;
+                        }
                     }
 
                     driver.LastCurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? -1;
