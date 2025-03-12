@@ -148,6 +148,13 @@ namespace benofficial2.Plugin
             }
 
             Opponent opponent = opponentsWithDrivers[opponentIdx].Item1;
+
+            if (!opponent.IsConnected)
+            {
+                BlankRow(row);
+                return;
+            }
+
             row.Visible = opponent.Position > 0;
             row.LivePositionInClass = livePositionInClass;
             row.Name = opponent.Name;
