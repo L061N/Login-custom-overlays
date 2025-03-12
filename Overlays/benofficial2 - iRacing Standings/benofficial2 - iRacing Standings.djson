@@ -25,7 +25,7 @@
     }
   },
   "Version": 2,
-  "Id": "037aa8d6-4f7a-40cd-8490-535207b1e50c",
+  "Id": "34c9bda2-89e0-4998-b0c8-a96a004d4b40",
   "BaseHeight": 530,
   "BaseWidth": 363,
   "BackgroundColor": "#FF000000",
@@ -277,7 +277,7 @@
                       "Font": "Roboto",
                       "FontWeight": "Bold",
                       "FontSize": 14.0,
-                      "Text": "22.8",
+                      "Text": "222.8",
                       "TextColor": "#FFFFFFFF",
                       "HorizontalAlignment": 2,
                       "VerticalAlignment": 1,
@@ -286,10 +286,10 @@
                       "SpecialCharsWidth": 3.0,
                       "BackgroundColor": "#00FFFFFF",
                       "Height": 20.0,
-                      "Left": 272.0,
+                      "Left": 267.0,
                       "Top": 25.0,
                       "Visible": true,
-                      "Width": 30.0,
+                      "Width": 35.0,
                       "Name": "GapToLeader",
                       "RenderingSkip": 0,
                       "MinimumRefreshIntervalMS": 0.0,
@@ -535,7 +535,7 @@
                           "Formula": {
                             "JSExt": 1,
                             "Interpreter": 1,
-                            "Expression": "// When not using the LapsSincePit\r\n//return 211;\r\n\r\nif (isRace())\r\n{\r\n\treturn 314;\r\n}\r\nreturn 341;"
+                            "Expression": "if (isRace())\r\n{\r\n\treturn 314;\r\n}\r\nreturn 341;"
                           },
                           "Mode": 2
                         },
