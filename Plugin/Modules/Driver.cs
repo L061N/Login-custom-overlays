@@ -63,8 +63,9 @@ namespace benofficial2.Plugin
         // Key is car number
         public Dictionary<string, Driver> Drivers { get; private set; } = new Dictionary<string, Driver>();
 
+        // Dictionary to cache the driverInfo index for each carIdx. Because they might not always match.
         // Key is carIdx, value is index in the raw table AllSessionData["DriverInfo"]["Drivers"]
-        public Dictionary<int, int> DriverInfoIndexes { get; private set; } = null;
+        public Dictionary<int, int> DriverInfoIndexes { get; private set; } = new Dictionary<int, int>();
 
         public bool PlayerOutLap { get; internal set; } = false;
         public string PlayerNumber { get; internal set; } = "";
@@ -98,6 +99,7 @@ namespace benofficial2.Plugin
             if (sessionTime == 0 || sessionTime < _lastSessionTime)
             {
                 Drivers = new Dictionary<string, Driver>();
+                DriverInfoIndexes = new Dictionary<int, int>();
                 PlayerOutLap = false;
                 PlayerNumber = "";
                 PlayerPositionInClass = 0;
@@ -333,11 +335,7 @@ namespace benofficial2.Plugin
         {
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
-
-            // Create a dictionary to cache the driverInfo index for each carIdx.
-            // Because they will not always match; they can be different when server slots
-            // are reclaimed by another driver.
-            DriverInfoIndexes = new Dictionary<int, int>();
+            
             int driverCount = 0;
             try { driverCount = (int)raw.AllSessionData["DriverInfo"]["Drivers"].Count; } catch { }
 
