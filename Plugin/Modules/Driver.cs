@@ -164,7 +164,7 @@ namespace benofficial2.Plugin
                     driver.InPitSince = DateTime.MinValue;
                 }
 
-                if (_sessionModule.Race && _sessionModule.RaceStarted)
+                if (_sessionModule.Race)
                 {
                     double playerCarTowTime = 0;
                     try { playerCarTowTime = (double)raw.Telemetry["PlayerCarTowTime"]; } catch { }
@@ -172,8 +172,8 @@ namespace benofficial2.Plugin
                     if (!driver.Towing)
                     {
                         // Check for a jump in continuity, this means the driver teleported (towed) back to the pit.
-                        if (driver.CurrentLapHighPrecision >= 0 && 
-                            opponent.CurrentLapHighPrecision.HasValue && opponent.CurrentLapHighPrecision.Value >= 0)
+                        if (driver.CurrentLapHighPrecision > -1 && 
+                            opponent.CurrentLapHighPrecision.HasValue && opponent.CurrentLapHighPrecision.Value > -1)
                         {
                             // Use avg speed because in SimHub we can step forward in time in a recorded replay.
                             double avgSpeedKph = ComputeAvgSpeedKph(data.NewData.TrackLength, driver.CurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value, deltaTime);
@@ -203,11 +203,11 @@ namespace benofficial2.Plugin
                         double smallDistancePct = 0.05 / data.NewData.TrackLength; // 0.05m is roughly the distance you cover at 10km/h in 16ms.
 
                         bool movingForward = opponent.CurrentLapHighPrecision.HasValue &&
-                            opponent.CurrentLapHighPrecision.Value >= 0 &&
-                            driver.LastCurrentLapHighPrecision >= 0 &&
+                            opponent.CurrentLapHighPrecision.Value > -1 &&
+                            driver.LastCurrentLapHighPrecision > -1 &&
                             opponent.CurrentLapHighPrecision > driver.LastCurrentLapHighPrecision + smallDistancePct;
 
-                        bool done = opponent.CurrentLapHighPrecision < 0;
+                        bool done = opponent.CurrentLapHighPrecision == -1;
                         bool towEnded = !opponent.IsPlayer && DateTime.Now > driver.TowingEndTime;
                         bool playerNotTowing = opponent.IsPlayer && playerCarTowTime <= 0;
                         if (playerNotTowing || towEnded || movingForward || done)
@@ -223,7 +223,7 @@ namespace benofficial2.Plugin
                     {
                         // Stop updating the current lap if the driver is done (-1), so they stay at their last known position in the live standings.
                         // Happens at the end of the race when they get out of the car.
-                        if (opponent.CurrentLapHighPrecision.HasValue && opponent.CurrentLapHighPrecision.Value >= 0)
+                        if (opponent.CurrentLapHighPrecision.HasValue && opponent.CurrentLapHighPrecision.Value > -1)
                         {
                             driver.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision.Value;
                         }
