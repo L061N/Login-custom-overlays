@@ -26,14 +26,9 @@ namespace benofficial2.Plugin
 {
     using OpponentsWithDrivers = List<(Opponent, Driver)>;
 
-    public class RawDriverInfo
-    {
-        // Index in the raw table AllSessionData["DriverInfo"]["Drivers"]
-        public int driverInfoIdx = 0;
-    }
-
     public class Driver
     {
+        public int CarIdx { get; set; } = -1;
         public int EnterPitLapUnconfirmed { get; set; } = -1;
         public int EnterPitLap { get; set; } = -1;
         public int ExitPitLap { get; set; } = -1;
@@ -46,6 +41,7 @@ namespace benofficial2.Plugin
         public double CurrentLapHighPrecision { get; set; } = -1;
         public bool Towing { get; set; } = false;
         public DateTime TowingEndTime { get; set; } = DateTime.MinValue;
+        public bool FinishedRace { get; set; } = false;
     }
 
     public class ClassLeaderboard
@@ -67,13 +63,14 @@ namespace benofficial2.Plugin
         // Key is car number
         public Dictionary<string, Driver> Drivers { get; private set; } = new Dictionary<string, Driver>();
 
-        // Key is carIdx
-        public Dictionary<int, RawDriverInfo> DriverInfos { get; private set; } = null;
+        // Key is carIdx, value is index in the raw table AllSessionData["DriverInfo"]["Drivers"]
+        public Dictionary<int, int> DriverInfoIndexes { get; private set; } = null;
 
         public bool PlayerOutLap { get; internal set; } = false;
         public string PlayerNumber { get; internal set; } = "";
         public int PlayerPositionInClass { get; internal set; } = 0;
         public int PlayerLivePositionInClass { get; internal set; } = 0;
+        public bool PlayerHadWhiteFlag { get; internal set; } = false;
 
         public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
 
@@ -101,7 +98,11 @@ namespace benofficial2.Plugin
             if (sessionTime == 0 || sessionTime < _lastSessionTime)
             {
                 Drivers = new Dictionary<string, Driver>();
+                PlayerOutLap = false;
+                PlayerNumber = "";
+                PlayerPositionInClass = 0;
                 PlayerLivePositionInClass = 0;
+                PlayerHadWhiteFlag = false;
                 LiveClassLeaderboards = new List<ClassLeaderboard>();
                 _lastSessionTime = sessionTime;
                 return;
@@ -109,6 +110,8 @@ namespace benofficial2.Plugin
 
             double deltaTime = sessionTime - _lastSessionTime;
             _lastSessionTime = sessionTime;
+
+            UpdateRawDriverInfo(ref data);
 
             for (int i = 0; i < data.NewData.Opponents.Count; i++)
             {
@@ -161,47 +164,49 @@ namespace benofficial2.Plugin
                     driver.InPitSince = DateTime.MinValue;
                 }
 
-                if (_sessionModule.Race)
+                if (_sessionModule.Race && _sessionModule.RaceStarted)
                 {
                     double playerCarTowTime = 0;
                     try { playerCarTowTime = (double)raw.Telemetry["PlayerCarTowTime"]; } catch { }
-                    
+
                     if (!driver.Towing)
                     {
                         // Check for a jump in continuity, this means the driver teleported (towed) back to the pit.
-                        if (driver.LastCurrentLapHighPrecision >= 0 && 
+                        if (driver.CurrentLapHighPrecision >= 0 && 
                             opponent.CurrentLapHighPrecision.HasValue && opponent.CurrentLapHighPrecision.Value >= 0)
                         {
                             // Use avg speed because in SimHub we can step forward in time in a recorded replay.
-                            double avgSpeedKph = ComputeAvgSpeedKph(data.NewData.TrackLength, driver.LastCurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value, deltaTime);
+                            double avgSpeedKph = ComputeAvgSpeedKph(data.NewData.TrackLength, driver.CurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value, deltaTime);
                             bool teleportingToPit = avgSpeedKph > 500 && opponent.IsCarInPit;
                             bool playerTowing = opponent.IsPlayer && playerCarTowTime > 0;
+
                             if (playerTowing || teleportingToPit)
                             {
                                 driver.Towing = true;
 
-                                (double towLength, TimeSpan towTime) = ComputeTowLengthAndTime(data.NewData.TrackLength, driver.LastCurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value);
                                 if (opponent.IsPlayer)
                                 {
                                     driver.TowingEndTime = DateTime.Now + TimeSpan.FromSeconds(playerCarTowTime);
                                 }
                                 else
                                 {
+                                    (double towLength, TimeSpan towTime) = ComputeTowLengthAndTime(data.NewData.TrackLength, driver.CurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value);
                                     driver.TowingEndTime = DateTime.Now + towTime;
                                 }
-
-                                // Keep the last known on-track position for the towing driver.
-                                // Because otherwise they will be shown as first in class when towing forward.
-                                driver.CurrentLapHighPrecision = driver.LastCurrentLapHighPrecision;
                             }
                         }
                     }
                     else
                     {
                         // iRacing doesn't provide a tow time for other drivers, so we have to estimate it.
-                        // Consider towing done if the car starts moving forward.
+                        // Consider towing done if the car starts moving forward from a valid position
                         double smallDistancePct = 0.05 / data.NewData.TrackLength; // 0.05m is roughly the distance you cover at 10km/h in 16ms.
-                        bool movingForward = opponent.CurrentLapHighPrecision > driver.LastCurrentLapHighPrecision + smallDistancePct;
+
+                        bool movingForward = opponent.CurrentLapHighPrecision.HasValue &&
+                            opponent.CurrentLapHighPrecision.Value >= 0 &&
+                            driver.LastCurrentLapHighPrecision >= 0 &&
+                            opponent.CurrentLapHighPrecision > driver.LastCurrentLapHighPrecision + smallDistancePct;
+
                         bool done = opponent.CurrentLapHighPrecision < 0;
                         bool towEnded = !opponent.IsPlayer && DateTime.Now > driver.TowingEndTime;
                         bool playerNotTowing = opponent.IsPlayer && playerCarTowTime <= 0;
@@ -232,6 +237,11 @@ namespace benofficial2.Plugin
                     PlayerOutLap = driver.OutLap;
                     PlayerNumber = opponent.CarNumber;
                     PlayerPositionInClass = opponent.Position > 0 ? opponent.PositionInClass : 0;
+
+                    if (_sessionModule.Race)
+                    {
+                        PlayerHadWhiteFlag = PlayerHadWhiteFlag || data.NewData.Flag_White == 1;
+                    }
                 }
             }
 
@@ -246,6 +256,7 @@ namespace benofficial2.Plugin
 
         private double ComputeAvgSpeedKph(double trackLength, double fromPos, double toPos, double deltaTime)
         {
+            if (deltaTime <= 0) return 0;
             double deltaPos = Math.Abs(toPos - fromPos);
             double length = deltaPos * trackLength;
             return (length / 1000) / (deltaTime / 3600);
@@ -284,8 +295,6 @@ namespace benofficial2.Plugin
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
 
-            UpdateRawDriverInfo(ref data);
-
             int resultCount = 0;
             try { resultCount = (int)raw.AllSessionData["QualifyResultsInfo"]["Results"].Count; } catch { }
 
@@ -300,13 +309,13 @@ namespace benofficial2.Plugin
                 double fastestTime = 0;
                 try { fastestTime = double.Parse(raw.AllSessionData["QualifyResultsInfo"]["Results"][i]["FastestTime"]); } catch { }
 
-                if (!DriverInfos.TryGetValue(carIdx, out RawDriverInfo driverInfo))
+                if (!DriverInfoIndexes.TryGetValue(carIdx, out int driverInfoIdx))
                 {
                     continue;
                 }
 
                 string carNumber = string.Empty;
-                try { carNumber = raw.AllSessionData["DriverInfo"]["Drivers"][driverInfo.driverInfoIdx]["CarNumber"]; } catch { }
+                try { carNumber = raw.AllSessionData["DriverInfo"]["Drivers"][driverInfoIdx]["CarNumber"]; } catch { }
                 if (carNumber == string.Empty) continue;
 
                 if (!Drivers.TryGetValue(carNumber, out Driver driver))
@@ -328,7 +337,7 @@ namespace benofficial2.Plugin
             // Create a dictionary to cache the driverInfo index for each carIdx.
             // Because they will not always match; they can be different when server slots
             // are reclaimed by another driver.
-            DriverInfos = new Dictionary<int, RawDriverInfo>();
+            DriverInfoIndexes = new Dictionary<int, int>();
             int driverCount = 0;
             try { driverCount = (int)raw.AllSessionData["DriverInfo"]["Drivers"].Count; } catch { }
 
@@ -336,12 +345,20 @@ namespace benofficial2.Plugin
             {
                 int carIdx = -1;
                 try { carIdx = int.Parse(raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarIdx"]); } catch { }
-                
-                if (carIdx >= 0)
+
+                string carNumber = string.Empty;
+                try { carNumber = raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarNumber"]; } catch { }
+
+                if (carIdx >= 0 && carNumber.Length > 0)
                 {
-                    RawDriverInfo driverInfo = new RawDriverInfo();
-                    driverInfo.driverInfoIdx = i;
-                    DriverInfos[carIdx] = driverInfo;
+                    if (!Drivers.TryGetValue(carNumber, out Driver driver))
+                    {
+                        driver = new Driver();
+                        Drivers[carNumber] = driver;
+                    }
+
+                    driver.CarIdx = carIdx;
+                    DriverInfoIndexes[carIdx] = i;
                 }
             }
         }
