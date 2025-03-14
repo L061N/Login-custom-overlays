@@ -115,6 +115,13 @@
                                 IsChecked="{Binding Plugin.Modules[TelemetryModule].Settings.HandbrakeTraceVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 Handbrake Trace
                             </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show guide lines on the trace chart" 
+                                HorizontalAlignment="Left" Margin="10,0,4,4"
+                                IsChecked="{Binding Plugin.Modules[TelemetryModule].Settings.GuideLinesVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show Guide Lines
+                            </styles:SHToggleCheckbox>
                         </StackPanel>
 
                         <ui:TitledSlider Title="Traces Width" Maximum="500" Minimum="100" Value="{Binding Plugin.Modules[TelemetryModule].Settings.TracesWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

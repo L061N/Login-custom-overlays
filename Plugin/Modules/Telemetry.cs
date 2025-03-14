@@ -84,6 +84,21 @@ namespace benofficial2.Plugin
             }
         }
 
+        private bool _guideLinesVisible = true;
+
+        public bool GuideLinesVisible
+        {
+            get { return _guideLinesVisible; }
+            set
+            {
+                if (_guideLinesVisible != value)
+                {
+                    _guideLinesVisible = value;
+                    OnPropertyChanged(nameof(GuideLinesVisible));
+                }
+            }
+        }
+
         private bool _pedalsVisible = true;
 
         public bool PedalsVisible
@@ -177,6 +192,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Telemetry.TracesWidth", valueProvider: () => Settings.TracesWidth);
             plugin.AttachDelegate(name: "Telemetry.HandbrakeTraceVisible", valueProvider: () => Settings.HandbrakeTraceVisible);
             plugin.AttachDelegate(name: "Telemetry.SteeringTraceVisible", valueProvider: () => Settings.SteeringTraceVisible);
+            plugin.AttachDelegate(name: "Telemetry.GuideLinesVisible", valueProvider: () => Settings.GuideLinesVisible);
             plugin.AttachDelegate(name: "Telemetry.PedalsVisible", valueProvider: () => Settings.PedalsVisible);
             plugin.AttachDelegate(name: "Telemetry.PedalsLeft", valueProvider: () => PedalsLeft);
             plugin.AttachDelegate(name: "Telemetry.SteeringVisible", valueProvider: () => Settings.SteeringVisible);
