@@ -26,6 +26,7 @@ To see them in action, click the image above for a video demo.
 - **[Launch Assist](#launch-assist)**: shows precise pedal inputs to nail a perfect start
 - **[Spotter](#spotter)**: shows orange bars when side-by-side with another car
 - **[Fuel Calculator](#fuel-calculator)**: when in garage, shows how much fuel is needed for the race
+- **[Wind](#wind)**: show the speed & direction of wind relative to the player car rotation
 
 ## How to Install
 
@@ -232,6 +233,14 @@ A blinking **Fuel Warning** lights up when you're about to grid with an under-fu
 </p>
 
 *Beta Warning: use at your own risk. I might have missed an edge case but so far so good in my tests. Please report any issue or feedback in my [Discord](https://discord.gg/s2834nmdYx).*
+
+## Wind
+
+Shows the speed & direction of wind relative to the player car rotation. Useful to understand the impact of wind on straight line speed and cornering grip.
+
+<p align="center">
+  <img src="Images/Wind.png" width="150"/>
+</p>
 
 ## Help & Feedback
 
