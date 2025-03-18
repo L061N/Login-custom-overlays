@@ -39,6 +39,7 @@ namespace benofficial2.Plugin
         public bool RaceStarted { get; internal set; } = false;
         public bool RaceFinished { get; internal set; } = false;
         public double RaceTimer { get; internal set; } = 0;
+        public bool Oval { get; internal set; } = false;
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
@@ -50,6 +51,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Session.RaceStarted", valueProvider: () => RaceStarted);
             plugin.AttachDelegate(name: "Session.RaceFinished", valueProvider: () => RaceFinished);
             plugin.AttachDelegate(name: "Session.RaceTimer", valueProvider: () => RaceTimer);
+            plugin.AttachDelegate(name: "Session.Oval", valueProvider: () => Oval);
         }
 
         public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -67,6 +69,10 @@ namespace benofficial2.Plugin
                     data.NewData.SessionTypeName.IndexOf("Testing") != -1;
 
                 Offline = data.NewData.SessionTypeName.IndexOf("Offline") != -1;
+
+                string category = string.Empty;
+                try { category = raw.AllSessionData["WeekendInfo"]["Category"]; } catch { }
+                Oval = category == "Oval" || category == "DirtOval";
 
                 _lastSessionTypeName = data.NewData.SessionTypeName;
             }

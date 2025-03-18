@@ -393,8 +393,12 @@ namespace benofficial2.Plugin
                     }
                     else if (!_sessionModule.RaceFinished)
                     {
-                        // During the race sort on position on track for a live leaderboard
-                        leaderboard.Drivers = leaderboard.Drivers.OrderByDescending(p => p.Item2.CurrentLapHighPrecision).ToList();
+                        // During the race sort on position on track for a live leaderboard.
+                        // Except for ovals under caution, show the official position.
+                        if (!(_sessionModule.Oval && data.NewData.Flag_Yellow == 1))
+                        {
+                            leaderboard.Drivers = leaderboard.Drivers.OrderByDescending(p => p.Item2.CurrentLapHighPrecision).ToList();
+                        }
                     }
                     else
                     {
