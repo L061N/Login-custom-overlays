@@ -8,7 +8,7 @@ namespace benofficial2.Plugin
 {
     public class VersionChecker
     {
-        public const string CurrentVersion = "2.1";
+        public const string CurrentVersion = "2.2";
         private const string VersionUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Versions.json";
         private const string DownloadPageUrl = "https://github.com/fixfactory/bo2-official-overlays/releases";
 
