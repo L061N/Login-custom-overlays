@@ -54,6 +54,21 @@ namespace benofficial2.Plugin
             }
         }
 
+        private int _tracesSpeed = 75;
+
+        public int TracesSpeed
+        {
+            get { return _tracesSpeed; }
+            set
+            {
+                if (_tracesSpeed != value)
+                {
+                    _tracesSpeed = value;
+                    OnPropertyChanged(nameof(TracesSpeed));
+                }
+            }
+        }
+
         private bool _handbrakeTraceVisible = true;
 
         public bool HandbrakeTraceVisible
@@ -190,6 +205,7 @@ namespace benofficial2.Plugin
             Settings = plugin.ReadCommonSettings<TelemetrySettings>("TelemetrySettings", () => new TelemetrySettings());
             plugin.AttachDelegate(name: "Telemetry.TracesVisible", valueProvider: () => Settings.TracesVisible);
             plugin.AttachDelegate(name: "Telemetry.TracesWidth", valueProvider: () => Settings.TracesWidth);
+            plugin.AttachDelegate(name: "Telemetry.TracesSpeed", valueProvider: () => Settings.TracesSpeed);
             plugin.AttachDelegate(name: "Telemetry.HandbrakeTraceVisible", valueProvider: () => Settings.HandbrakeTraceVisible);
             plugin.AttachDelegate(name: "Telemetry.SteeringTraceVisible", valueProvider: () => Settings.SteeringTraceVisible);
             plugin.AttachDelegate(name: "Telemetry.GuideLinesVisible", valueProvider: () => Settings.GuideLinesVisible);

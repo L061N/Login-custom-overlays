@@ -124,7 +124,10 @@
                             </styles:SHToggleCheckbox>
                         </StackPanel>
 
-                        <ui:TitledSlider Title="Traces Width" Maximum="500" Minimum="100" Value="{Binding Plugin.Modules[TelemetryModule].Settings.TracesWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider MinWidth="400" Title="Traces Width" Maximum="500" Minimum="100" Value="{Binding Plugin.Modules[TelemetryModule].Settings.TracesWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="How wide the trace chart is" />
+                            <ui:TitledSlider MinWidth="400" Title="Traces Speed" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TelemetryModule].Settings.TracesSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="How fast the trace chart is scrolling" />
+                        </StackPanel>
 
                         <styles:SHToggleCheckbox 
                             ToolTip="Show a bar graph for each pedal input" 
