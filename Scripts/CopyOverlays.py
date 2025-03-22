@@ -19,7 +19,8 @@ overlays_to_copy = [
     "benofficial2 - iRacing Spotter",
     "benofficial2 - iRacing Fuel Calculator",
     "benofficial2 - Twitch Chat",
-    "benofficial2 - iRacing Wind"]
+    "benofficial2 - iRacing Wind",
+    "benofficial2 - iRacing Multi-Class Standings"]
 
 def copy_overlays_from_simhub():
     for overlay_name in overlays_to_copy:
