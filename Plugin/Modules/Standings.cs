@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Drawing;
 
 namespace benofficial2.Plugin
 {
@@ -141,6 +142,7 @@ namespace benofficial2.Plugin
     {
         public const int MaxRows = 64;
         public string Name { get; set; } = string.Empty;
+        public float NameSize { get; set; } = 0;
         public int VisibleRowCount { get; set; } = 0;
         public List<StandingRow> Rows { get; internal set; }
         public bool LeadFocusedDividerVisible { get; set; } = false;
@@ -194,6 +196,7 @@ namespace benofficial2.Plugin
             {
                 StandingCarClass carClass = CarClasses[carClassIdx];
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Name", valueProvider: () => carClass.Name);
+                plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.NameSize", valueProvider: () => carClass.NameSize);
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.VisibleRowCount", valueProvider: () => carClass.VisibleRowCount);
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.LeadFocusedDividerVisible", valueProvider: () => carClass.LeadFocusedDividerVisible);
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Color", valueProvider: () => carClass.Color);
@@ -246,6 +249,7 @@ namespace benofficial2.Plugin
                     OpponentsWithDrivers opponentsWithDrivers = _driverModule.LiveClassLeaderboards[carClassIdx].Drivers;
 
                     carClass.Name = opponentClass.ClassName;
+                    carClass.NameSize = MeasureTextInPixels(carClass.Name);
                     carClass.Color = opponentClass.ClassColor;
                     carClass.TextColor = opponentClass.ClassTextColor;
                     carClass.Sof = CalculateSof(opponentsWithDrivers);
@@ -316,7 +320,17 @@ namespace benofficial2.Plugin
                         row.GapToClassLeader = opponent.GaptoClassLeader ?? 0;
                         (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, opponent);
                         row.BestLapTime = opponent.BestLapTime;
-                        row.LastLapTime = opponent.LastLapTime;
+
+                        if (opponent.IsPlayer)
+                        {
+                            // Last lap time is "estimated" in the opponent data, so used the value from the game data for the player.
+                            row.LastLapTime = data.NewData.LastLapTime;
+                        }
+                        else
+                        {
+                            row.LastLapTime = opponent.LastLapTime;
+                        }
+
                         visibleRowCount++;
                     }
 
@@ -502,6 +516,21 @@ namespace benofficial2.Plugin
                 totalSof += opponentsWithDrivers[opponentIdx].Item1.IRacing_IRating ?? 0;
             }
             return (int)(totalSof / opponentsWithDrivers.Count);
+        }
+
+        public float MeasureTextInPixels(string text)
+        {
+            SizeF textSize;
+            Font font = new Font("Roboto", 16);
+
+            using (Bitmap bitmap = new Bitmap(1, 1))
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            {
+                textSize = graphics.MeasureString(text, font);
+            }
+
+            font.Dispose();
+            return textSize.Width;
         }
     }
 }
