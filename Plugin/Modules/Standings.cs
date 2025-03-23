@@ -458,7 +458,9 @@ namespace benofficial2.Plugin
             row.LivePositionInClass = 0;
             row.Number = string.Empty;
             row.Name = string.Empty;
+            row.CarName = string.Empty;
             row.InPitLane = false;
+            row.Towing = false;
             row.OutLap = false;
             row.EnterPitLap = 0;
             row.iRating = 0;
@@ -470,6 +472,7 @@ namespace benofficial2.Plugin
             row.TireCompound = string.Empty;
             row.TireCompoundVisible = false;
             row.BestLapTime = TimeSpan.Zero;
+            row.LastLapTime = TimeSpan.Zero;
         }
 
         public int FindPlayerCarClassIdx(ref GameData data)
