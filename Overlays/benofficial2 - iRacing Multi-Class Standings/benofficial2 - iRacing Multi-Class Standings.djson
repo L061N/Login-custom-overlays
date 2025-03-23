@@ -5,7 +5,7 @@
   "DashboardDebugManager": {
     "WindowPositionSettings": {
       "IsFullScreen": false,
-      "Position": "1995,352,600,735",
+      "Position": "1985,10,600,859",
       "TopMost": false,
       "AllowTransparency": true,
       "CloseOnMonitorLoss": false,
@@ -13,7 +13,7 @@
     }
   },
   "Version": 2,
-  "Id": "43f71e6a-ad20-4bac-821c-263b6134ce02",
+  "Id": "2b7bf408-3341-4863-bd5d-2bd8c7617df5",
   "BaseHeight": 695,
   "BaseWidth": 486,
   "BackgroundColor": "#FF000000",
@@ -105,14 +105,18 @@
                 }
               ],
               "Visible": true,
-              "Name": "Class Standings",
+              "Name": "Class Standings Repeat",
               "RenderingSkip": 0,
               "MinimumRefreshIntervalMS": 0.0
             },
             {
-              "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.Layer, SimHub.Plugins",
-              "Group": false,
-              "Repetitions": 0,
+              "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.GroupItem, SimHub.Plugins",
+              "ChildsPositioning": 0,
+              "ChildsPositioningAlignment": 0,
+              "GroupPadding": {},
+              "ChildsMargin": {},
+              "ChildAlignmentHorizontal": 0,
+              "ChildAlignmentVertical": 0,
               "Childrens": [
                 {
                   "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
@@ -131,50 +135,6 @@
                   "Name": "Background",
                   "RenderingSkip": 0,
                   "MinimumRefreshIntervalMS": 0.0
-                },
-                {
-                  "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-                  "IsTextItem": true,
-                  "Font": "Roboto",
-                  "FontWeight": "Bold",
-                  "TextPadding": {
-                    "PaddingRight": 3
-                  },
-                  "FontSize": 18.0,
-                  "Text": "00:00:00",
-                  "TextColor": "#FFFFFFFF",
-                  "HorizontalAlignment": 2,
-                  "VerticalAlignment": 1,
-                  "UseMonospacedText": true,
-                  "CharWidth": 11.0,
-                  "SpecialCharsWidth": 6.0,
-                  "BackgroundColor": "#00FFFFFF",
-                  "Height": 23.0,
-                  "Left": 0.0,
-                  "Top": -1.0,
-                  "Visible": true,
-                  "Width": 363.0,
-                  "Name": "Time Left",
-                  "RenderingSkip": 0,
-                  "MinimumRefreshIntervalMS": 0.0,
-                  "Bindings": {
-                    "Text": {
-                      "Formula": {
-                        "JSExt": 1,
-                        "Interpreter": 1,
-                        "Expression": "const sessionTimeRemain = $prop('DataCorePlugin.GameRawData.Telemetry.SessionTimeRemain');\r\nreturn formatSecondsToTimecode(sessionTimeRemain);"
-                      },
-                      "Mode": 2
-                    },
-                    "Visible": {
-                      "Formula": {
-                        "JSExt": 1,
-                        "Interpreter": 1,
-                        "Expression": "const totalLaps = parseInt($prop('DataCorePlugin.GameData.TotalLaps'));\r\nconst sessionLapsRemain = parseInt($prop('DataCorePlugin.GameRawData.Telemetry.SessionLapsRemain'));\r\nconst sessionTimeRemain = $prop('DataCorePlugin.GameRawData.Telemetry.SessionTimeRemain');\r\n\r\nif (totalLaps <= 0)\r\n{\r\n\treturn true;\r\n}\r\nelse if (sessionLapsRemain > 20000 && sessionLapsRemain != 604800)\r\n{\r\n\treturn true;\r\n}\r\nelse if (isQual())\r\n{\r\n\treturn true;\r\n}\r\nelse if (sessionTimeRemain <= 0)\r\n{\r\n\treturn false;\r\n}\r\n\r\nreturn true;"
-                      },
-                      "Mode": 2
-                    }
-                  }
                 },
                 {
                   "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
@@ -212,6 +172,50 @@
                   "Font": "Roboto",
                   "FontWeight": "Bold",
                   "TextPadding": {
+                    "PaddingRight": 3
+                  },
+                  "FontSize": 18.0,
+                  "Text": "00:00:00",
+                  "TextColor": "#FFFFFFFF",
+                  "HorizontalAlignment": 2,
+                  "VerticalAlignment": 1,
+                  "UseMonospacedText": true,
+                  "CharWidth": 11.0,
+                  "SpecialCharsWidth": 6.0,
+                  "BackgroundColor": "#00FFFFFF",
+                  "Height": 23.0,
+                  "Left": 0.0,
+                  "Top": 0.0,
+                  "Visible": true,
+                  "Width": 363.0,
+                  "Name": "Time Left",
+                  "RenderingSkip": 0,
+                  "MinimumRefreshIntervalMS": 0.0,
+                  "Bindings": {
+                    "Text": {
+                      "Formula": {
+                        "JSExt": 1,
+                        "Interpreter": 1,
+                        "Expression": "const sessionTimeRemain = $prop('DataCorePlugin.GameRawData.Telemetry.SessionTimeRemain');\r\nreturn formatSecondsToTimecode(sessionTimeRemain);"
+                      },
+                      "Mode": 2
+                    },
+                    "Visible": {
+                      "Formula": {
+                        "JSExt": 1,
+                        "Interpreter": 1,
+                        "Expression": "const totalLaps = parseInt($prop('DataCorePlugin.GameData.TotalLaps'));\r\nconst sessionLapsRemain = parseInt($prop('DataCorePlugin.GameRawData.Telemetry.SessionLapsRemain'));\r\nconst sessionTimeRemain = $prop('DataCorePlugin.GameRawData.Telemetry.SessionTimeRemain');\r\n\r\nif (totalLaps <= 0)\r\n{\r\n\treturn true;\r\n}\r\nelse if (sessionLapsRemain > 20000 && sessionLapsRemain != 604800)\r\n{\r\n\treturn true;\r\n}\r\nelse if (isQual())\r\n{\r\n\treturn true;\r\n}\r\nelse if (sessionTimeRemain <= 0)\r\n{\r\n\treturn false;\r\n}\r\n\r\nreturn true;"
+                      },
+                      "Mode": 2
+                    }
+                  }
+                },
+                {
+                  "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+                  "IsTextItem": true,
+                  "Font": "Roboto",
+                  "FontWeight": "Bold",
+                  "TextPadding": {
                     "PaddingLeft": 3
                   },
                   "FontSize": 18.0,
@@ -238,7 +242,12 @@
                   }
                 }
               ],
+              "BackgroundColor": "#00FFFFFF",
+              "Height": 23.0,
+              "Left": 0.0,
+              "Top": 0.0,
               "Visible": true,
+              "Width": 363.0,
               "Name": "Header",
               "RenderingSkip": 0,
               "MinimumRefreshIntervalMS": 0.0
@@ -246,8 +255,8 @@
           ],
           "Visible": true,
           "Name": "Visible",
-          "RenderingSkip": 0,
-          "MinimumRefreshIntervalMS": 0.0,
+          "RenderingSkip": 100,
+          "MinimumRefreshIntervalMS": 1000.0,
           "Bindings": {
             "Visible": {
               "Formula": {

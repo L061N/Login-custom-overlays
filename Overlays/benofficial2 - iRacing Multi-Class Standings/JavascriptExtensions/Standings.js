@@ -40,17 +40,6 @@ function isLeadFocusedRow(classIdx, rowIdx)
     return isDividerVisible(classIdx) && (rowIdx < leadFocusedRows);
 }
 
-function rowTop(classIdx, rowIdx)
-{
-    let gap = 0;
-    const leadFocusedRows = $prop('benofficial2.Standings.LeadFocusedRows');
-    if (isDividerVisible(classIdx) && rowIdx >= leadFocusedRows)
-    {
-        gap = 3;
-    }
-    return 25.5 + gap;
-}
-
 function getTireCompound(classIdx, rowIdx)
 {
     const compound = isnull(getStandingsProp(classIdx, rowIdx, 'TireCompound'), '');
