@@ -80,7 +80,7 @@
     }
   },
   "Version": 2,
-  "Id": "ae38c7f0-1a15-41bf-ab80-fb56660bcfd7",
+  "Id": "2bcad791-51af-4d94-9f2c-787a544233cb",
   "BaseHeight": 505,
   "BaseWidth": 490,
   "BackgroundColor": "#FF000000",
@@ -141,7 +141,7 @@
                           "Formula": {
                             "JSExt": 1,
                             "Interpreter": 1,
-                            "Expression": "const classIdx = isnull($prop('benofficial2.Standings.PlayerCarClassIdx'), 0);\r\nconst rowIdx = repeatindex() - 1;\r\nreturn rowTop(classIdx, rowIdx);"
+                            "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nreturn rowTop(classIdx, rowIdx);"
                           },
                           "Mode": 2
                         },
@@ -825,7 +825,7 @@
                           "Formula": {
                             "JSExt": 1,
                             "Interpreter": 1,
-                            "Expression": "const classIdx = isnull($prop('benofficial2.Standings.PlayerCarClassIdx'), 0);\r\nconst rowIdx = repeatindex() - 1;\r\nconst pos = isnull(getStandingsProp(classIdx, rowIdx, 'LivePositionInClass'), 0);\r\n\r\nif (pos > 0)\r\n{\r\n\treturn pos;\r\n}\r\nreturn '';"
+                            "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nconst pos = isnull(getStandingsProp(classIdx, rowIdx, 'LivePositionInClass'), 0);\r\n\r\nif (pos > 0)\r\n{\r\n\treturn pos;\r\n}\r\nreturn '';"
                           },
                           "Mode": 2
                         },
