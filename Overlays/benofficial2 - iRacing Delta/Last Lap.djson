@@ -16,7 +16,7 @@
   },
   "DashboardDebugManager": {},
   "Version": 2,
-  "Id": "23dfddef-a8bf-4130-aa34-bf058d7e01c7",
+  "Id": "780725fb-5486-4166-a9e4-194eb4c2733b",
   "BaseHeight": 38,
   "BaseWidth": 276,
   "BackgroundColor": "#FF000000",
@@ -194,7 +194,7 @@
                   "Bindings": {
                     "Text": {
                       "Formula": {
-                        "JSExt": 3,
+                        "JSExt": 1,
                         "Interpreter": 1,
                         "Expression": "if (showTimerDelta())\r\n{\r\n\tvar lastLapTime = $prop('DataCorePlugin.GameData.LastLapTime');\r\n\treturn formatLapTime(lastLapTime, 3);\r\n}\r\n\r\nvar currentLapTime = $prop('DataCorePlugin.GameData.CurrentLapTime');\r\nreturn formatLapTime(currentLapTime, 3);"
                       },
@@ -345,7 +345,7 @@
     "MetadataVersion": 2.0,
     "EnableOnDashboardMessaging": true,
     "PitScreensIndexs": [],
-    "SimHubVersion": "9.7.4",
+    "SimHubVersion": "9.7.5",
     "Width": 276.0,
     "Height": 38.0,
     "DashboardVersion": ""
