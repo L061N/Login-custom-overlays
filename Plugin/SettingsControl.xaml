@@ -127,7 +127,7 @@
                         </StackPanel>
                         
                         <StackPanel Orientation="Horizontal">
-                            <ui:TitledSlider MinWidth="400" Title="Max Row Count (Other Classes)*" Maximum="3" Minimum="1" Value="{Binding Plugin.Modules[StandingsModule].Settings.MaxRowsOtherClasses, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            <ui:TitledSlider MinWidth="400" Title="Max Row Count (Other Classes)*" Maximum="5" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.MaxRowsOtherClasses, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Maximum number of visible rows in the Standings leaderboard for other classes"/>
                         </StackPanel>
                         

@@ -80,9 +80,9 @@
     }
   },
   "Version": 2,
-  "Id": "2bcad791-51af-4d94-9f2c-787a544233cb",
-  "BaseHeight": 505,
-  "BaseWidth": 490,
+  "Id": "31e88d73-0848-401d-aa10-463380742c74",
+  "BaseHeight": 525,
+  "BaseWidth": 486,
   "BackgroundColor": "#FF000000",
   "Screens": [
     {
@@ -114,7 +114,7 @@
             {
               "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.Layer, SimHub.Plugins",
               "Group": false,
-              "Repetitions": 23,
+              "Repetitions": 24,
               "PrepareRepetitions": true,
               "RepeatTopOffset": 20.0,
               "Childrens": [
@@ -924,7 +924,7 @@
                   "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
                   "IsRectangleItem": true,
                   "BackgroundColor": "#FFFFFFFF",
-                  "Height": 16.0,
+                  "Height": 18.0,
                   "Left": 0.0,
                   "Top": 0.0,
                   "Visible": true,
@@ -970,7 +970,7 @@
                   },
                   "Height": 16.0,
                   "Left": 0.0,
-                  "Top": 3.0,
+                  "Top": 4.0,
                   "Visible": true,
                   "Width": 486.0,
                   "Name": "Line",
@@ -1077,11 +1077,11 @@
                       "Image": "SOF",
                       "AutoSize": false,
                       "BackgroundColor": "#00FFFFFF",
-                      "Height": 12.0,
-                      "Left": 0.0,
-                      "Top": 1.5,
+                      "Height": 11.0,
+                      "Left": 2.0,
+                      "Top": 2.5,
                       "Visible": true,
-                      "Width": 17.0,
+                      "Width": 16.0,
                       "Name": "Icon",
                       "RenderingSkip": 0,
                       "MinimumRefreshIntervalMS": 0.0
@@ -1269,8 +1269,8 @@
     "EnableOnDashboardMessaging": true,
     "PitScreensIndexs": [],
     "SimHubVersion": "9.7.5",
-    "Width": 490.0,
-    "Height": 505.0,
+    "Width": 486.0,
+    "Height": 525.0,
     "DashboardVersion": ""
   },
   "ShowOnScreenControls": true,
