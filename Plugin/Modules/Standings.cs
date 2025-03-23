@@ -75,7 +75,7 @@ namespace benofficial2.Plugin
             }
         }
 
-        private int _maxRowsPlayerClass = 8;
+        private int _maxRowsPlayerClass = 10;
 
         public int MaxRowsPlayerClass
         {
@@ -86,6 +86,81 @@ namespace benofficial2.Plugin
                 {
                     _maxRowsPlayerClass = value;
                     OnPropertyChanged(nameof(MaxRowsPlayerClass));
+                }
+            }
+        }
+
+        private bool _gapVisibleInRace = true;
+
+        public bool GapVisibleInRace
+        {
+            get { return _gapVisibleInRace; }
+            set
+            {
+                if (_gapVisibleInRace != value)
+                {
+                    _gapVisibleInRace = value;
+                    OnPropertyChanged(nameof(GapVisibleInRace));
+                }
+            }
+        }
+
+        private bool _bestVisibleInRace = true;
+
+        public bool BestVisibleInRace
+        {
+            get { return _bestVisibleInRace; }
+            set
+            {
+                if (_bestVisibleInRace != value)
+                {
+                    _bestVisibleInRace = value;
+                    OnPropertyChanged(nameof(BestVisibleInRace));
+                }
+            }
+        }
+
+        private bool _lastVisibleInRace = true;
+
+        public bool LastVisibleInRace
+        {
+            get { return _lastVisibleInRace; }
+            set
+            {
+                if (_lastVisibleInRace != value)
+                {
+                    _lastVisibleInRace = value;
+                    OnPropertyChanged(nameof(LastVisibleInRace));
+                }
+            }
+        }
+
+        private bool _bestVisible = true;
+
+        public bool BestVisible
+        {
+            get { return _bestVisible; }
+            set
+            {
+                if (_bestVisible != value)
+                {
+                    _bestVisible = value;
+                    OnPropertyChanged(nameof(BestVisible));
+                }
+            }
+        }
+
+        private bool _lastVisible = true;
+
+        public bool LastVisible
+        {
+            get { return _lastVisible; }
+            set
+            {
+                if (_lastVisible != value)
+                {
+                    _lastVisible = value;
+                    OnPropertyChanged(nameof(LastVisible));
                 }
             }
         }
@@ -171,6 +246,9 @@ namespace benofficial2.Plugin
         public List<StandingCarClass> CarClasses { get; internal set; }
         public int VisibleClassCount { get; internal set; } = 0;
         public int PlayerCarClassIdx { get; internal set; } = 0;
+        public bool GapVisible { get; internal set; } = true;
+        public bool BestVisible { get; internal set; } = true;
+        public bool LastVisible { get; internal set; } = true;
 
         public StandingsModule()
         {
@@ -190,6 +268,9 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.LeadFocusedRows", valueProvider: () => Settings.LeadFocusedRows);
             plugin.AttachDelegate(name: $"Standings.MaxRowsPlayerClass", valueProvider: () => Settings.MaxRowsPlayerClass);
             plugin.AttachDelegate(name: $"Standings.MaxRowsOtherClasses", valueProvider: () => Settings.MaxRowsOtherClasses);
+            plugin.AttachDelegate(name: $"Standings.GapVisible", valueProvider: () => GapVisible);
+            plugin.AttachDelegate(name: $"Standings.BestVisible", valueProvider: () => BestVisible);
+            plugin.AttachDelegate(name: $"Standings.LastVisible", valueProvider: () => LastVisible);
             plugin.AttachDelegate(name: "Standings.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
 
             for (int carClassIdx = 0; carClassIdx < _maxCarClasses; carClassIdx++)
@@ -238,6 +319,19 @@ namespace benofficial2.Plugin
             _lastUpdateTime = DateTime.Now;
 
             PlayerCarClassIdx = FindPlayerCarClassIdx(ref data);
+
+            if (_sessionModule.Race)
+            {
+                GapVisible = Settings.GapVisibleInRace;
+                BestVisible = Settings.BestVisibleInRace;
+                LastVisible = Settings.LastVisibleInRace;
+            }
+            else
+            {
+                GapVisible = false;
+                BestVisible = Settings.BestVisible;
+                LastVisible = Settings.LastVisible;
+            }
 
             int visibleClassCount = 0;
             for (int carClassIdx = 0; carClassIdx < _maxCarClasses; carClassIdx++)

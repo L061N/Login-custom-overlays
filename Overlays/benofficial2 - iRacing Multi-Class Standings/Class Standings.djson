@@ -33,6 +33,39 @@
           "Expression": "const defaultWidth = 105;\r\nconst classIdx = $prop('variable.ClassIdx');\r\nconst textSize = isnull(getStandingsClassProp(classIdx, 'NameSize'), 0);\r\nif (textSize <= 0) return defaultWidth;\r\n\r\n// textSize is in pixel, convert to desired size in SimHub units\r\nreturn textSize * 0.54 + 4;"
         },
         "EvaluateBeforeScreenRoles": false
+      },
+      {
+        "VariableName": "GapOffset",
+        "EvaluateOnlyOnce": false,
+        "OverrideWithParentDashboardVariableWhenAvailable": true,
+        "ValueExpression": {
+          "JSExt": 0,
+          "Interpreter": 1,
+          "Expression": "const visible = isnull($prop('benofficial2.Standings.GapVisible'), true);\r\nif (visible) return 0;\r\n\r\nreturn -(35 + 2); // width + padding"
+        },
+        "EvaluateBeforeScreenRoles": false
+      },
+      {
+        "VariableName": "BestOffset",
+        "EvaluateOnlyOnce": false,
+        "OverrideWithParentDashboardVariableWhenAvailable": true,
+        "ValueExpression": {
+          "JSExt": 0,
+          "Interpreter": 1,
+          "Expression": "const visible = isnull($prop('benofficial2.Standings.BestVisible'), true);\r\nif (visible) return 0;\r\n\r\nreturn -(65 + 2); // width + padding"
+        },
+        "EvaluateBeforeScreenRoles": false
+      },
+      {
+        "VariableName": "LastOffset",
+        "EvaluateOnlyOnce": false,
+        "OverrideWithParentDashboardVariableWhenAvailable": true,
+        "ValueExpression": {
+          "JSExt": 0,
+          "Interpreter": 1,
+          "Expression": "const visible = isnull($prop('benofficial2.Standings.LastVisible'), true);\r\nif (visible) return 0;\r\n\r\nreturn -(65 + 2); // width + padding"
+        },
+        "EvaluateBeforeScreenRoles": false
       }
     ]
   },
@@ -47,7 +80,7 @@
     }
   },
   "Version": 2,
-  "Id": "d4db432d-a1aa-406a-8d3e-9959e89e8b07",
+  "Id": "ae38c7f0-1a15-41bf-ab80-fb56660bcfd7",
   "BaseHeight": 505,
   "BaseWidth": 490,
   "BackgroundColor": "#FF000000",
@@ -119,40 +152,130 @@
                             "Expression": "return isnull($prop('benofficial2.Standings.BackgroundOpacity'), 60);"
                           },
                           "Mode": 2
+                        },
+                        "Width": {
+                          "Formula": {
+                            "JSExt": 0,
+                            "Interpreter": 1,
+                            "Expression": "return 486 + $prop('variable.GapOffset') + $prop('variable.BestOffset') + $prop('variable.LastOffset');"
+                          },
+                          "Mode": 2
                         }
                       }
                     },
                     {
-                      "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-                      "IsTextItem": true,
-                      "Font": "Roboto",
-                      "FontWeight": "Bold",
-                      "FontSize": 14.0,
-                      "Text": "L500",
-                      "TextColor": "#FFFFD100",
-                      "HorizontalAlignment": 1,
-                      "VerticalAlignment": 1,
-                      "UseMonospacedText": true,
-                      "CharWidth": 8.0,
-                      "SpecialCharsWidth": 3.0,
+                      "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.GroupItem, SimHub.Plugins",
+                      "ChildsPositioning": 0,
+                      "ChildsPositioningAlignment": 0,
+                      "GroupPadding": {},
+                      "ChildsMargin": {},
+                      "ChildAlignmentHorizontal": 0,
+                      "ChildAlignmentVertical": 0,
+                      "Childrens": [
+                        {
+                          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+                          "IsTextItem": true,
+                          "Font": "Roboto",
+                          "FontWeight": "Bold",
+                          "FontSize": 14.0,
+                          "Text": "L500",
+                          "TextColor": "#FFFFD100",
+                          "HorizontalAlignment": 1,
+                          "VerticalAlignment": 1,
+                          "UseMonospacedText": true,
+                          "CharWidth": 8.0,
+                          "SpecialCharsWidth": 3.0,
+                          "BackgroundColor": "#00FFFFFF",
+                          "Height": 20.0,
+                          "Left": 0.0,
+                          "Top": 0.0,
+                          "Visible": true,
+                          "Width": 31.0,
+                          "Name": "Pit Lap",
+                          "RenderingSkip": 0,
+                          "MinimumRefreshIntervalMS": 0.0,
+                          "Bindings": {
+                            "Text": {
+                              "Formula": {
+                                "JSExt": 1,
+                                "Interpreter": 1,
+                                "Expression": "if (!isRaceStarted())\r\n{\r\n\treturn '';\r\n}\r\n\r\nconst classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nconst tireCompoundVisible = getTireCompoundVisible(classIdx, rowIdx);\r\nif (!tireCompoundVisible)\r\n{\r\n\treturn '';\r\n}\r\n\r\nconst inPitLane = isnull(getStandingsProp(classIdx, rowIdx, 'InPitLane'), false);\r\nif (inPitLane)\r\n{\r\n\treturn '';\r\n}\r\n\r\nconst enterPitLap = isnull(getStandingsProp(classIdx, rowIdx, 'EnterPitLap'), -1);\r\nif (enterPitLap <= 0)\r\n{\r\n\treturn '';\r\n}\r\n\r\nreturn 'L' + enterPitLap;"
+                              },
+                              "Mode": 2
+                            }
+                          }
+                        },
+                        {
+                          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+                          "IsTextItem": true,
+                          "Font": "Roboto",
+                          "FontWeight": "Bold",
+                          "FontSize": 14.0,
+                          "Text": "PIT",
+                          "TextColor": "#FF000000",
+                          "HorizontalAlignment": 1,
+                          "VerticalAlignment": 1,
+                          "BackgroundColor": "#BEFFD100",
+                          "Height": 20.0,
+                          "Left": 0.0,
+                          "Top": 0.0,
+                          "Visible": true,
+                          "Width": 31.0,
+                          "Name": "Pit",
+                          "RenderingSkip": 0,
+                          "MinimumRefreshIntervalMS": 0.0,
+                          "Bindings": {
+                            "Visible": {
+                              "Formula": {
+                                "JSExt": 1,
+                                "Interpreter": 1,
+                                "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nconst towing = isnull(getStandingsProp(classIdx, rowIdx, 'Towing'), false);\r\nconst inPitLane = isnull(getStandingsProp(classIdx, rowIdx, 'InPitLane'), false);\r\nreturn inPitLane && !towing;"
+                              },
+                              "Mode": 2
+                            }
+                          }
+                        },
+                        {
+                          "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+                          "IsTextItem": true,
+                          "Font": "Roboto",
+                          "FontWeight": "Bold",
+                          "FontSize": 13.0,
+                          "Text": "TOW",
+                          "TextColor": "#FF000000",
+                          "HorizontalAlignment": 1,
+                          "VerticalAlignment": 1,
+                          "BackgroundColor": "#BEFF6345",
+                          "Height": 20.0,
+                          "Left": 0.0,
+                          "Top": 0.0,
+                          "Visible": true,
+                          "Width": 31.0,
+                          "Name": "Tow",
+                          "RenderingSkip": 0,
+                          "MinimumRefreshIntervalMS": 0.0,
+                          "Bindings": {
+                            "Visible": {
+                              "Formula": {
+                                "JSExt": 1,
+                                "Interpreter": 1,
+                                "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nreturn isnull(getStandingsProp(classIdx, rowIdx, 'Towing'), false);"
+                              },
+                              "Mode": 2
+                            }
+                          }
+                        }
+                      ],
                       "BackgroundColor": "#00FFFFFF",
                       "Height": 20.0,
                       "Left": 455.0,
                       "Top": 25.0,
                       "Visible": true,
                       "Width": 31.0,
-                      "Name": "PitLap",
+                      "Name": "Pit Status",
                       "RenderingSkip": 0,
                       "MinimumRefreshIntervalMS": 0.0,
                       "Bindings": {
-                        "Text": {
-                          "Formula": {
-                            "JSExt": 1,
-                            "Interpreter": 1,
-                            "Expression": "if (!isRaceStarted())\r\n{\r\n\treturn '';\r\n}\r\n\r\nconst classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nconst tireCompoundVisible = getTireCompoundVisible(classIdx, rowIdx);\r\nif (!tireCompoundVisible)\r\n{\r\n\treturn '';\r\n}\r\n\r\nconst inPitLane = isnull(getStandingsProp(classIdx, rowIdx, 'InPitLane'), false);\r\nif (inPitLane)\r\n{\r\n\treturn '';\r\n}\r\n\r\nconst enterPitLap = isnull(getStandingsProp(classIdx, rowIdx, 'EnterPitLap'), -1);\r\nif (enterPitLap <= 0)\r\n{\r\n\treturn '';\r\n}\r\n\r\nreturn 'L' + enterPitLap;"
-                          },
-                          "Mode": 2
-                        },
                         "Top": {
                           "Formula": {
                             "JSExt": 1,
@@ -160,80 +283,12 @@
                             "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nreturn rowTop(classIdx, rowIdx);"
                           },
                           "Mode": 2
-                        }
-                      }
-                    },
-                    {
-                      "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-                      "IsTextItem": true,
-                      "Font": "Roboto",
-                      "FontWeight": "Bold",
-                      "FontSize": 14.0,
-                      "Text": "PIT",
-                      "TextColor": "#FF000000",
-                      "HorizontalAlignment": 1,
-                      "VerticalAlignment": 1,
-                      "BackgroundColor": "#BEFFD100",
-                      "Height": 20.0,
-                      "Left": 455.0,
-                      "Top": 25.0,
-                      "Visible": true,
-                      "Width": 31.0,
-                      "Name": "Pit",
-                      "RenderingSkip": 0,
-                      "MinimumRefreshIntervalMS": 0.0,
-                      "Bindings": {
-                        "Visible": {
-                          "Formula": {
-                            "JSExt": 1,
-                            "Interpreter": 1,
-                            "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nconst towing = isnull(getStandingsProp(classIdx, rowIdx, 'Towing'), false);\r\nconst inPitLane = isnull(getStandingsProp(classIdx, rowIdx, 'InPitLane'), false);\r\nreturn inPitLane && !towing;"
-                          },
-                          "Mode": 2
                         },
-                        "Top": {
+                        "Left": {
                           "Formula": {
-                            "JSExt": 1,
+                            "JSExt": 0,
                             "Interpreter": 1,
-                            "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nreturn rowTop(classIdx, rowIdx);"
-                          },
-                          "Mode": 2
-                        }
-                      }
-                    },
-                    {
-                      "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
-                      "IsTextItem": true,
-                      "Font": "Roboto",
-                      "FontWeight": "Bold",
-                      "FontSize": 13.0,
-                      "Text": "TOW",
-                      "TextColor": "#FF000000",
-                      "HorizontalAlignment": 1,
-                      "VerticalAlignment": 1,
-                      "BackgroundColor": "#BEFF6345",
-                      "Height": 20.0,
-                      "Left": 455.0,
-                      "Top": 25.0,
-                      "Visible": true,
-                      "Width": 31.0,
-                      "Name": "Tow",
-                      "RenderingSkip": 0,
-                      "MinimumRefreshIntervalMS": 0.0,
-                      "Bindings": {
-                        "Visible": {
-                          "Formula": {
-                            "JSExt": 1,
-                            "Interpreter": 1,
-                            "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nreturn isnull(getStandingsProp(classIdx, rowIdx, 'Towing'), false);"
-                          },
-                          "Mode": 2
-                        },
-                        "Top": {
-                          "Formula": {
-                            "JSExt": 1,
-                            "Interpreter": 1,
-                            "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nreturn rowTop(classIdx, rowIdx);"
+                            "Expression": "return 455 + $prop('variable.GapOffset') + $prop('variable.BestOffset') + $prop('variable.LastOffset');"
                           },
                           "Mode": 2
                         }
@@ -254,7 +309,7 @@
                       "SpecialCharsWidth": 4.0,
                       "BackgroundColor": "#00FFFFFF",
                       "Height": 20.0,
-                      "Left": 369.0,
+                      "Left": 370.0,
                       "Top": 25.0,
                       "Visible": true,
                       "Width": 65.0,
@@ -283,6 +338,22 @@
                             "JSExt": 1,
                             "Interpreter": 1,
                             "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nreturn rowTop(classIdx, rowIdx);"
+                          },
+                          "Mode": 2
+                        },
+                        "Visible": {
+                          "Formula": {
+                            "JSExt": 0,
+                            "Interpreter": 1,
+                            "Expression": "return isnull($prop('benofficial2.Standings.LastVisible'), true);"
+                          },
+                          "Mode": 2
+                        },
+                        "Left": {
+                          "Formula": {
+                            "JSExt": 0,
+                            "Interpreter": 1,
+                            "Expression": "return 370 + $prop('variable.GapOffset') + $prop('variable.BestOffset');"
                           },
                           "Mode": 2
                         }
@@ -334,6 +405,22 @@
                             "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nreturn rowTop(classIdx, rowIdx);"
                           },
                           "Mode": 2
+                        },
+                        "Visible": {
+                          "Formula": {
+                            "JSExt": 0,
+                            "Interpreter": 1,
+                            "Expression": "return isnull($prop('benofficial2.Standings.BestVisible'), true);"
+                          },
+                          "Mode": 2
+                        },
+                        "Left": {
+                          "Formula": {
+                            "JSExt": 0,
+                            "Interpreter": 1,
+                            "Expression": "return 303 + $prop('variable.GapOffset');"
+                          },
+                          "Mode": 2
                         }
                       }
                     },
@@ -381,6 +468,14 @@
                             "JSExt": 1,
                             "Interpreter": 1,
                             "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nreturn rowTop(classIdx, rowIdx);"
+                          },
+                          "Mode": 2
+                        },
+                        "Visible": {
+                          "Formula": {
+                            "JSExt": 0,
+                            "Interpreter": 1,
+                            "Expression": "return isnull($prop('benofficial2.Standings.GapVisible'), true);"
                           },
                           "Mode": 2
                         }
@@ -590,6 +685,14 @@
                             "JSExt": 1,
                             "Interpreter": 1,
                             "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\n\r\nconst visible = isnull(getStandingsProp(classIdx, rowIdx, 'TireCompoundVisible'), false);\r\nif (!visible) return false;\r\n\r\n// Hide before the race start\r\nif (isRace()) return isRaceStarted();\r\n\r\n// Hide when disconnected (also applies when out of car in pit)\r\nconst connected = getStandingsProp(classIdx, rowIdx, 'Connected');\r\nreturn connected;"
+                          },
+                          "Mode": 2
+                        },
+                        "Left": {
+                          "Formula": {
+                            "JSExt": 0,
+                            "Interpreter": 1,
+                            "Expression": "return 437 + $prop('variable.GapOffset') + $prop('variable.BestOffset') + $prop('variable.LastOffset');"
                           },
                           "Mode": 2
                         }
@@ -806,6 +909,14 @@
                         "Expression": "return 'Black';\r\nconst classIdx = $prop('variable.ClassIdx');\r\nconst color = getClassColor(classIdx);\r\nif (color == '#FFFFFF') return 'Black';\r\nreturn color;"
                       },
                       "Mode": 2
+                    },
+                    "Width": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return 486 + $prop('variable.GapOffset') + $prop('variable.BestOffset') + $prop('variable.LastOffset');"
+                      },
+                      "Mode": 2
                     }
                   }
                 },
@@ -864,7 +975,17 @@
                   "Width": 486.0,
                   "Name": "Line",
                   "RenderingSkip": 0,
-                  "MinimumRefreshIntervalMS": 0.0
+                  "MinimumRefreshIntervalMS": 0.0,
+                  "Bindings": {
+                    "Width": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return 486 + $prop('variable.GapOffset') + $prop('variable.BestOffset') + $prop('variable.LastOffset');"
+                      },
+                      "Mode": 2
+                    }
+                  }
                 },
                 {
                   "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
@@ -998,13 +1119,23 @@
                   "VerticalAlignment": 1,
                   "BackgroundColor": "#00FFFFFF",
                   "Height": 20.0,
-                  "Left": 265.0,
+                  "Left": 266.0,
                   "Top": -3.0,
                   "Visible": true,
                   "Width": 35.0,
                   "Name": "Gap",
                   "RenderingSkip": 0,
-                  "MinimumRefreshIntervalMS": 0.0
+                  "MinimumRefreshIntervalMS": 0.0,
+                  "Bindings": {
+                    "Visible": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return isnull($prop('benofficial2.Standings.GapVisible'), true);"
+                      },
+                      "Mode": 2
+                    }
+                  }
                 },
                 {
                   "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
@@ -1018,13 +1149,31 @@
                   "VerticalAlignment": 1,
                   "BackgroundColor": "#00FFFFFF",
                   "Height": 20.0,
-                  "Left": 302.0,
+                  "Left": 303.0,
                   "Top": -3.0,
                   "Visible": true,
                   "Width": 65.0,
                   "Name": "Best",
                   "RenderingSkip": 0,
-                  "MinimumRefreshIntervalMS": 0.0
+                  "MinimumRefreshIntervalMS": 0.0,
+                  "Bindings": {
+                    "Visible": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return isnull($prop('benofficial2.Standings.BestVisible'), true);"
+                      },
+                      "Mode": 2
+                    },
+                    "Left": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return 303 + $prop('variable.GapOffset');"
+                      },
+                      "Mode": 2
+                    }
+                  }
                 },
                 {
                   "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
@@ -1038,13 +1187,31 @@
                   "VerticalAlignment": 1,
                   "BackgroundColor": "#00FFFFFF",
                   "Height": 20.0,
-                  "Left": 369.0,
+                  "Left": 370.0,
                   "Top": -3.0,
                   "Visible": true,
                   "Width": 65.0,
                   "Name": "Last",
                   "RenderingSkip": 0,
-                  "MinimumRefreshIntervalMS": 0.0
+                  "MinimumRefreshIntervalMS": 0.0,
+                  "Bindings": {
+                    "Visible": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return isnull($prop('benofficial2.Standings.LastVisible'), true);"
+                      },
+                      "Mode": 2
+                    },
+                    "Left": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return 370 + $prop('variable.GapOffset') + $prop('variable.BestOffset');"
+                      },
+                      "Mode": 2
+                    }
+                  }
                 }
               ],
               "BackgroundColor": "#00FFFFFF",

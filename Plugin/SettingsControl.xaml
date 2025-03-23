@@ -63,14 +63,77 @@
                             IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.HideInReplay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Hide in replay
                         </styles:SHToggleCheckbox>
-                        <StackPanel Orientation="Horizontal">
-                            <ui:TitledSlider MinWidth="400" Title="Max Row Count" Maximum="25" Minimum="1" Value="{Binding Plugin.Modules[StandingsModule].Settings.MaxRowsPlayerClass, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                             ToolTip="Maximum number of visible rows in the Standings leaderboard"/>
 
-                            <ui:TitledSlider MinWidth="400" Title="Lead Focused Rows" Maximum="10" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.LeadFocusedRows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Columns to show in race*" Margin="0,0,40,0"/>
+                                
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Driver's gap to the race leader in seconds or laps" 
+                                HorizontalAlignment="Left" Margin="0,0,4,4"
+                                IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.GapVisibleInRace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Gap to Leader
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Driver's best lap time in the session" 
+                                HorizontalAlignment="Left" Margin="0,0,4,4"
+                                IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.BestVisibleInRace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Best Lap Time
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Driver's last lap time" 
+                                HorizontalAlignment="Left" Margin="0,0,4,4"
+                                IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.LastVisibleInRace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Last Lap Time
+                            </styles:SHToggleCheckbox>
+
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Columns to show not in race*" Margin="0,0,20,10"/>
+
+                            <styles:SHToggleCheckbox 
+                                IsEnabled="False"
+                                ToolTip="Driver's gap to the race leader in seconds or laps" 
+                                HorizontalAlignment="Left" Margin="0,0,4,4"
+                                IsChecked="False">
+                                Gap to Leader
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                IsEnabled="False"
+                                ToolTip="Driver's best lap time in the session" 
+                                HorizontalAlignment="Left" Margin="0,0,4,4"
+                                IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.BestVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Best Lap Time
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Driver's last lap time" 
+                                HorizontalAlignment="Left" Margin="0,0,4,4"
+                                IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.LastVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Last Lap Time
+                            </styles:SHToggleCheckbox>
+
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider MinWidth="400" Title="Max Row Count (Player Class)" Maximum="25" Minimum="1" Value="{Binding Plugin.Modules[StandingsModule].Settings.MaxRowsPlayerClass, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             ToolTip="Maximum number of visible rows in the Standings leaderboard for the player's class"/>
+
+                            <ui:TitledSlider MinWidth="400" Title="Lead Focused Rows (Player Class)" Maximum="10" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.LeadFocusedRows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                              ToolTip="Number of leader rows to always show when there are too many rows, 0 to disable"/>
                         </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider MinWidth="400" Title="Max Row Count (Other Classes)*" Maximum="3" Minimum="1" Value="{Binding Plugin.Modules[StandingsModule].Settings.MaxRowsOtherClasses, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            ToolTip="Maximum number of visible rows in the Standings leaderboard for other classes"/>
+                        </StackPanel>
+                        
                         <ui:TitledSlider Width="800" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <Label Content="* Note: Some options marked with a star (*) only apply to the Multi-Class Standings overlay" Margin="0,0,0,0"/>
                     </StackPanel>
                 </styles:SHSection>
 
