@@ -224,6 +224,7 @@ namespace benofficial2.Plugin
         public string Color { get; set; } = string.Empty;
         public string TextColor { get; set; } = string.Empty;
         public int Sof { get; set; } = 0;
+        public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
 
         public StandingCarClass()
         {
@@ -283,6 +284,7 @@ namespace benofficial2.Plugin
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Color", valueProvider: () => carClass.Color);
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.TextColor", valueProvider: () => carClass.TextColor);
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Sof", valueProvider: () => carClass.Sof);
+                plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.BestLapTime", valueProvider: () => carClass.BestLapTime);
 
                 for (int rowIdx = 0; rowIdx < StandingCarClass.MaxRows; rowIdx++)
                 {
@@ -334,6 +336,7 @@ namespace benofficial2.Plugin
             }
 
             int visibleClassCount = 0;
+
             for (int carClassIdx = 0; carClassIdx < _maxCarClasses; carClassIdx++)
             {
                 StandingCarClass carClass = CarClasses[carClassIdx];
@@ -341,6 +344,8 @@ namespace benofficial2.Plugin
                 {
                     LeaderboardCarClassDescription opponentClass = _driverModule.LiveClassLeaderboards[carClassIdx].CarClassDescription;
                     OpponentsWithDrivers opponentsWithDrivers = _driverModule.LiveClassLeaderboards[carClassIdx].Drivers;
+
+                    TimeSpan bestLapTime = TimeSpan.MaxValue;
 
                     carClass.Name = opponentClass.ClassName;
                     carClass.NameSize = MeasureTextInPixels(carClass.Name);
@@ -415,6 +420,11 @@ namespace benofficial2.Plugin
                         (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, opponent);
                         row.BestLapTime = opponent.BestLapTime;
 
+                        if (opponent.BestLapTime > TimeSpan.Zero && opponent.BestLapTime < bestLapTime)
+                        {
+                            bestLapTime = opponent.BestLapTime;
+                        }
+
                         if (opponent.IsPlayer)
                         {
                             // Last lap time is "estimated" in the opponent data, so used the value from the game data for the player.
@@ -429,15 +439,12 @@ namespace benofficial2.Plugin
                     }
 
                     carClass.VisibleRowCount = visibleRowCount;
+                    carClass.BestLapTime = bestLapTime;
                     visibleClassCount++;
                 }
                 else
                 {
-                    for (int driverIdx = 0; driverIdx < StandingCarClass.MaxRows; driverIdx++)
-                    {
-                        StandingRow driver = carClass.Rows[driverIdx];
-                        BlankRow(driver);
-                    }
+                    BlankCarClass(carClass);
                 }
             }
 
@@ -447,6 +454,24 @@ namespace benofficial2.Plugin
         public void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("StandingsSettings", Settings);
+        }
+
+        public void BlankCarClass(StandingCarClass carClass)
+        {
+            carClass.Name = string.Empty;
+            carClass.NameSize = 0;
+            carClass.VisibleRowCount = 0;
+            carClass.LeadFocusedDividerVisible = false;
+            carClass.Color = string.Empty;
+            carClass.TextColor = string.Empty;
+            carClass.Sof = 0;
+            carClass.BestLapTime = TimeSpan.Zero;
+
+            for (int driverIdx = 0; driverIdx < StandingCarClass.MaxRows; driverIdx++)
+            {
+                StandingRow driver = carClass.Rows[driverIdx];
+                BlankRow(driver);
+            }
         }
 
         public void BlankRow(StandingRow row)
