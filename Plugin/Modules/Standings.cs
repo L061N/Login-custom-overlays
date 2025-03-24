@@ -90,6 +90,36 @@ namespace benofficial2.Plugin
             }
         }
 
+        private bool _carLogoVisible = true;
+
+        public bool CarLogoVisible
+        {
+            get { return _carLogoVisible; }
+            set
+            {
+                if (_carLogoVisible != value)
+                {
+                    _carLogoVisible = value;
+                    OnPropertyChanged(nameof(CarLogoVisible));
+                }
+            }
+        }
+
+        private bool _carLogoVisibleInRace = true;
+
+        public bool CarLogoVisibleInRace
+        {
+            get { return _carLogoVisibleInRace; }
+            set
+            {
+                if (_carLogoVisibleInRace != value)
+                {
+                    _carLogoVisibleInRace = value;
+                    OnPropertyChanged(nameof(CarLogoVisibleInRace));
+                }
+            }
+        }
+
         private bool _gapVisibleInRace = true;
 
         public bool GapVisibleInRace
@@ -249,6 +279,7 @@ namespace benofficial2.Plugin
         public List<StandingCarClass> CarClasses { get; internal set; }
         public int VisibleClassCount { get; internal set; } = 0;
         public int PlayerCarClassIdx { get; internal set; } = 0;
+        public bool CarLogoVisible { get; internal set; } = true;
         public bool GapVisible { get; internal set; } = true;
         public bool BestVisible { get; internal set; } = true;
         public bool LastVisible { get; internal set; } = true;
@@ -271,6 +302,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.LeadFocusedRows", valueProvider: () => Settings.LeadFocusedRows);
             plugin.AttachDelegate(name: $"Standings.MaxRowsPlayerClass", valueProvider: () => Settings.MaxRowsPlayerClass);
             plugin.AttachDelegate(name: $"Standings.MaxRowsOtherClasses", valueProvider: () => Settings.MaxRowsOtherClasses);
+            plugin.AttachDelegate(name: $"Standings.CarLogoVisible", valueProvider: () => CarLogoVisible);
             plugin.AttachDelegate(name: $"Standings.GapVisible", valueProvider: () => GapVisible);
             plugin.AttachDelegate(name: $"Standings.BestVisible", valueProvider: () => BestVisible);
             plugin.AttachDelegate(name: $"Standings.LastVisible", valueProvider: () => LastVisible);
@@ -328,12 +360,14 @@ namespace benofficial2.Plugin
 
             if (_sessionModule.Race)
             {
+                CarLogoVisible = Settings.CarLogoVisibleInRace;
                 GapVisible = Settings.GapVisibleInRace;
                 BestVisible = Settings.BestVisibleInRace;
                 LastVisible = Settings.LastVisibleInRace;
             }
             else
             {
+                CarLogoVisible = Settings.CarLogoVisible;
                 GapVisible = false;
                 BestVisible = Settings.BestVisible;
                 LastVisible = Settings.LastVisible;

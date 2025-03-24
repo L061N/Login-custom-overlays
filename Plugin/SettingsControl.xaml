@@ -66,7 +66,14 @@
 
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Columns to show in race*" Margin="0,0,40,0"/>
-                                
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Car brand logo when available" 
+                                HorizontalAlignment="Left" Margin="0,0,4,4"
+                                IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.CarLogoVisibleInRace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Car Logo
+                            </styles:SHToggleCheckbox>
+                            
                             <styles:SHToggleCheckbox 
                                 ToolTip="Driver's gap to the race leader in seconds or laps" 
                                 HorizontalAlignment="Left" Margin="0,0,4,4"
@@ -92,6 +99,13 @@
 
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Columns to show not in race*" Margin="0,0,20,10"/>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Car brand logo when available" 
+                                HorizontalAlignment="Left" Margin="0,0,4,4"
+                                IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.CarLogoVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Car Logo
+                            </styles:SHToggleCheckbox>
 
                             <styles:SHToggleCheckbox 
                                 IsEnabled="False"

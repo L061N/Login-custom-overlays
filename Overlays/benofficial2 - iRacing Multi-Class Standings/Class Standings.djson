@@ -80,7 +80,7 @@
     }
   },
   "Version": 2,
-  "Id": "974c1598-1506-4784-a729-6f414cd7a01f",
+  "Id": "73b58a82-a2ec-43bb-bea0-5025b58756ea",
   "BaseHeight": 525,
   "BaseWidth": 486,
   "BackgroundColor": "#FF000000",
@@ -686,7 +686,7 @@
                           "Formula": {
                             "JSExt": 1,
                             "Interpreter": 1,
-                            "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nconst brand = isnull(getStandingsProp(classIdx, rowIdx, 'CarBrand'), '');\r\nconst width = 160;\r\nif (brand == '') return width;\r\nreturn width - 30;"
+                            "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nconst brand = isnull(getStandingsProp(classIdx, rowIdx, 'CarBrand'), '');\r\nconst logoVisible = isnull($prop('benofficial2.Standings.CarLogoVisible'), true);\r\nconst width = 160;\r\nif (brand == '' || !logoVisible) return width;\r\nreturn width - 30;"
                           },
                           "Mode": 2
                         }
@@ -798,6 +798,14 @@
                             "JSExt": 1,
                             "Interpreter": 1,
                             "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nconst brand = isnull(getStandingsProp(classIdx, rowIdx, 'CarBrand'), '');\r\nif (brand == '') return '';\r\n\r\nreturn 'library:benofficial2\\\\CarLogos\\\\' + brand + '.png';"
+                          },
+                          "Mode": 2
+                        },
+                        "Visible": {
+                          "Formula": {
+                            "JSExt": 0,
+                            "Interpreter": 1,
+                            "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst logoVisible = isnull($prop('benofficial2.Standings.CarLogoVisible'), true);\r\nreturn logoVisible;"
                           },
                           "Mode": 2
                         }
