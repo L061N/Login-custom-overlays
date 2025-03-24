@@ -3,11 +3,15 @@
   {
     "Toyota": 
     {
-        "tokens": ["toyota", "corolla", "camry", "supra"]
+        "tokens": ["toyota", "corolla", "camry", "supra", "superformulalights"]
     },
     "Honda": 
     {
-        "tokens": ["honda", "civic", "accord", "acura"]
+        "tokens": ["honda", "civic", "accord"]
+    },
+    "Acura": 
+    {
+        "tokens": ["acura"]
     },
     "Ford": 
     {
@@ -112,6 +116,10 @@
     "Buick": 
     {
         "tokens": ["buick"]
+    },
+    "SkipBarber": 
+    {
+        "tokens": ["rt2000"]
     }
   }
 }
