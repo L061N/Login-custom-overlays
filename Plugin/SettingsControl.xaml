@@ -20,7 +20,7 @@
     <ScrollViewer>
         <Grid Height="3214">
             <StackPanel VerticalAlignment="Top">
-                <styles:SHSection Title="BENOFFICIAL2 PLUGIN" ShowSeparator="True" VerticalAlignment="Top">
+                <styles:SHSection Title="{Binding Plugin.PluginName}" ShowSeparator="True" VerticalAlignment="Top">
                     <StackPanel>
                         <styles:SHSubSection Title="What is this plugin?">
                             <Label HorizontalAlignment="Left" VerticalAlignment="Top">

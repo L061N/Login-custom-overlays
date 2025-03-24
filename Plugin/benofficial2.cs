@@ -32,6 +32,7 @@ namespace benofficial2.Plugin
     {
         public Dictionary<string, IPluginModule> Modules { get; private set; }
 
+        public string PluginName { get; internal set; } = "";
         public bool PluginRunning { get; internal set; } = false;
         public bool iRacingRunning { get; internal set; } = false;
 
@@ -67,6 +68,7 @@ namespace benofficial2.Plugin
         /// <param name="pluginManager"></param>
         public void Init(PluginManager pluginManager)
         {
+            PluginName = $"BENOFFICIAL2 PLUGIN {VersionChecker.CurrentVersion}";
             SimHub.Logging.Current.Info($"Starting benofficial2 plugin version {VersionChecker.CurrentVersion}");
 
             this.AttachDelegate(name: "PluginRunning", valueProvider: () => PluginRunning);
