@@ -27,6 +27,21 @@ namespace benofficial2.Plugin
 {
     public class RelativeSettings : INotifyPropertyChanged
     {
+        private bool _headerVisible = true;
+
+        public bool HeaderVisible
+        {
+            get { return _headerVisible; }
+            set
+            {
+                if (_headerVisible != value)
+                {
+                    _headerVisible = value;
+                    OnPropertyChanged(nameof(HeaderVisible));
+                }
+            }
+        }
+
         private int _backgroundOpacity = 60;
 
         public int BackgroundOpacity
@@ -109,6 +124,7 @@ namespace benofficial2.Plugin
             _driverModule = plugin.GetModule<DriverModule>();
 
             Settings = plugin.ReadCommonSettings<RelativeSettings>("RelativeSettings", () => new RelativeSettings());
+            plugin.AttachDelegate(name: "Relative.HeaderVisible", valueProvider: () => Settings.HeaderVisible);
             plugin.AttachDelegate(name: "Relative.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
 
             InitRelative(plugin, "Ahead", Ahead.Rows, RelativeAhead.MaxRows);

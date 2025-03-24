@@ -45,6 +45,36 @@ namespace benofficial2.Plugin
             }
         }
 
+        private bool _headerVisible = true;
+
+        public bool HeaderVisible
+        {
+            get { return _headerVisible; }
+            set
+            {
+                if (_headerVisible != value)
+                {
+                    _headerVisible = value;
+                    OnPropertyChanged(nameof(HeaderVisible));
+                }
+            }
+        }
+
+        private bool _carClassHeaderVisible = true;
+
+        public bool CarClassHeaderVisible
+        {
+            get { return _carClassHeaderVisible; }
+            set
+            {
+                if (_carClassHeaderVisible != value)
+                {
+                    _carClassHeaderVisible = value;
+                    OnPropertyChanged(nameof(CarClassHeaderVisible));
+                }
+            }
+        }
+
         private int _leadFocusedRows = 3;
 
         public int LeadFocusedRows
@@ -296,6 +326,8 @@ namespace benofficial2.Plugin
             _sessionModule = plugin.GetModule<SessionModule>();
 
             Settings = plugin.ReadCommonSettings<StandingsSettings>("StandingsSettings", () => new StandingsSettings());
+            plugin.AttachDelegate(name: $"Standings.HeaderVisible", valueProvider: () => Settings.HeaderVisible);
+            plugin.AttachDelegate(name: $"Standings.CarClassHeaderVisible", valueProvider: () => Settings.CarClassHeaderVisible);
             plugin.AttachDelegate(name: $"Standings.VisibleClassCount", valueProvider: () => VisibleClassCount);
             plugin.AttachDelegate(name: $"Standings.PlayerCarClassIdx", valueProvider: () => PlayerCarClassIdx);
             plugin.AttachDelegate(name: $"Standings.HideInReplay", valueProvider: () => Settings.HideInReplay);

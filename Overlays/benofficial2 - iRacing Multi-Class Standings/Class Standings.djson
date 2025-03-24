@@ -80,7 +80,7 @@
     }
   },
   "Version": 2,
-  "Id": "73b58a82-a2ec-43bb-bea0-5025b58756ea",
+  "Id": "5912072e-8349-4718-ad7c-845e3a029a4d",
   "BaseHeight": 525,
   "BaseWidth": 486,
   "BackgroundColor": "#FF000000",
@@ -826,7 +826,7 @@
                       "Formula": {
                         "JSExt": 0,
                         "Interpreter": 1,
-                        "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\n\r\nconst dividerVisible = isnull($prop('benofficial2.Standings.Class' + format(classIdx, '00') + '.LeadFocusedDividerVisible'), false);\r\n\r\nconst top = 25.5;\r\nconst leadFocusedRows = $prop('benofficial2.Standings.LeadFocusedRows');\r\nif (dividerVisible && rowIdx >= leadFocusedRows)\r\n{\r\n\t// Add a gap as a divider\r\n    return top + 3;\r\n}\r\nreturn top;"
+                        "Expression": "let top = 7.5;\r\nconst classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\n\r\nconst dividerVisible = isnull($prop('benofficial2.Standings.Class' + format(classIdx, '00') + '.LeadFocusedDividerVisible'), false);\r\n\r\nconst headerVisible = isnull($prop('benofficial2.Standings.CarClassHeaderVisible'), true);\r\nconst headerHeight = 18;\r\nif (headerVisible) top += headerHeight;\r\n\r\nconst leadFocusedRows = $prop('benofficial2.Standings.LeadFocusedRows');\r\nif (dividerVisible && rowIdx >= leadFocusedRows)\r\n{\r\n\t// Add a gap as a divider\r\n    return top + 3;\r\n}\r\nreturn top;"
                       },
                       "Mode": 2
                     },
@@ -1273,7 +1273,17 @@
               "Width": 486.0,
               "Name": "Header",
               "RenderingSkip": 0,
-              "MinimumRefreshIntervalMS": 0.0
+              "MinimumRefreshIntervalMS": 0.0,
+              "Bindings": {
+                "Visible": {
+                  "Formula": {
+                    "JSExt": 0,
+                    "Interpreter": 1,
+                    "Expression": "return isnull($prop('benofficial2.Standings.CarClassHeaderVisible'), true);"
+                  },
+                  "Mode": 2
+                }
+              }
             }
           ],
           "Visible": true,
