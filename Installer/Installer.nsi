@@ -136,6 +136,11 @@ Section "Wind" SEC_FOLDER12
   File /r "..\Overlays\benofficial2 - iRacing Wind\*.*"
 SectionEnd
 
+Section "Multi-Class Standings" SEC_FOLDER13
+  SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Multi-Class Standings"
+  File /r "..\Overlays\benofficial2 - iRacing Multi-Class Standings\*.*"
+SectionEnd
+
 Section "Plugin" SEC_PLUGIN
   SectionIn RO
   WriteUninstaller "$INSTDIR\bo2-official-overlays-uninstall.exe"
@@ -143,6 +148,9 @@ Section "Plugin" SEC_PLUGIN
   SetOutPath "$INSTDIR"
   File /oname=bo2-official-overlays-license.txt "..\LICENSE"
   File "..\Plugin\bin\Release\benofficial2.Plugin.dll"
+
+  SetOutPath "$INSTDIR\ImageLibrary\benofficial2\CarLogos"
+  File /r "..\Images\CarLogos\*.*"
 
   ; Register uninstaller
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bo2-official-overlays" \
@@ -167,6 +175,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER10} "Install iRacing Spotter SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER11} "Install iRacing Fuel Calculator SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER12} "Install iRacing Wind SimHub overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER13} "Install iRacing Multi-Class Standings SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PLUGIN} "Install necessary files such as the plugin, license and uninstaller"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
@@ -184,6 +193,8 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Spotter"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Fuel Calculator"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Wind"
+  RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Multi-Class Standings"
+  RMDir /r "$INSTDIR\ImageLibrary\benofficial2"
       
   ; Remove the uninstaller itself
   Delete "$INSTDIR\bo2-official-overlays-uninstall.exe"
