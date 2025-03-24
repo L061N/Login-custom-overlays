@@ -225,6 +225,7 @@ namespace benofficial2.Plugin
         public string Color { get; set; } = string.Empty;
         public string TextColor { get; set; } = string.Empty;
         public int Sof { get; set; } = 0;
+        public int DriverCount { get; set; } = 0;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
 
         public StandingCarClass()
@@ -285,6 +286,7 @@ namespace benofficial2.Plugin
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Color", valueProvider: () => carClass.Color);
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.TextColor", valueProvider: () => carClass.TextColor);
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Sof", valueProvider: () => carClass.Sof);
+                plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.DriverCount", valueProvider: () => carClass.DriverCount);
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.BestLapTime", valueProvider: () => carClass.BestLapTime);
 
                 for (int rowIdx = 0; rowIdx < StandingCarClass.MaxRows; rowIdx++)
@@ -354,6 +356,7 @@ namespace benofficial2.Plugin
                     carClass.Color = opponentClass.ClassColor;
                     carClass.TextColor = opponentClass.ClassTextColor;
                     carClass.Sof = CalculateSof(opponentsWithDrivers);
+                    carClass.DriverCount = opponentsWithDrivers.Count;
 
                     int skipRowCount = 0;
                     int maxRowCount;
@@ -468,6 +471,7 @@ namespace benofficial2.Plugin
             carClass.Color = string.Empty;
             carClass.TextColor = string.Empty;
             carClass.Sof = 0;
+            carClass.DriverCount = 0;
             carClass.BestLapTime = TimeSpan.Zero;
 
             for (int driverIdx = 0; driverIdx < StandingCarClass.MaxRows; driverIdx++)
