@@ -225,6 +225,21 @@ namespace benofficial2.Plugin
             }
         }
 
+        private int _headerOpacity = 90;
+
+        public int HeaderOpacity
+        {
+            get { return _headerOpacity; }
+            set
+            {
+                if (_headerOpacity != value)
+                {
+                    _headerOpacity = value;
+                    OnPropertyChanged(nameof(HeaderOpacity));
+                }
+            }
+        }
+
         private int _backgroundOpacity = 60;
 
         public int BackgroundOpacity
@@ -338,6 +353,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.GapVisible", valueProvider: () => GapVisible);
             plugin.AttachDelegate(name: $"Standings.BestVisible", valueProvider: () => BestVisible);
             plugin.AttachDelegate(name: $"Standings.LastVisible", valueProvider: () => LastVisible);
+            plugin.AttachDelegate(name: "Standings.HeaderOpacity", valueProvider: () => Settings.HeaderOpacity);
             plugin.AttachDelegate(name: "Standings.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
 
             for (int carClassIdx = 0; carClassIdx < _maxCarClasses; carClassIdx++)

@@ -158,8 +158,11 @@
                             <ui:TitledSlider MinWidth="400" Title="Max Row Count (Other Classes)*" Maximum="5" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.MaxRowsOtherClasses, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Maximum number of visible rows in the Standings leaderboard for other classes"/>
                         </StackPanel>
-                        
-                        <ui:TitledSlider Width="800" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <ui:TitledSlider Width="400" Title="Header Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.HeaderOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
 
                         <Label Content="* Note: Some options marked with a star (*) only apply to the Multi-Class Standings overlay" Margin="0,0,0,0"/>
                     </StackPanel>
@@ -174,7 +177,10 @@
                             Show header
                         </styles:SHToggleCheckbox>
 
-                        <ui:TitledSlider Width="800" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <ui:TitledSlider Width="400" Title="Header Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.HeaderOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
                     </StackPanel>
                 </styles:SHSection>
 

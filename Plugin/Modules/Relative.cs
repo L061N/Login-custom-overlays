@@ -42,6 +42,21 @@ namespace benofficial2.Plugin
             }
         }
 
+        private int _headerOpacity = 90;
+
+        public int HeaderOpacity
+        {
+            get { return _headerOpacity; }
+            set
+            {
+                if (_headerOpacity != value)
+                {
+                    _headerOpacity = value;
+                    OnPropertyChanged(nameof(HeaderOpacity));
+                }
+            }
+        }
+
         private int _backgroundOpacity = 60;
 
         public int BackgroundOpacity
@@ -125,6 +140,7 @@ namespace benofficial2.Plugin
 
             Settings = plugin.ReadCommonSettings<RelativeSettings>("RelativeSettings", () => new RelativeSettings());
             plugin.AttachDelegate(name: "Relative.HeaderVisible", valueProvider: () => Settings.HeaderVisible);
+            plugin.AttachDelegate(name: "Relative.HeaderOpacity", valueProvider: () => Settings.HeaderOpacity);
             plugin.AttachDelegate(name: "Relative.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
 
             InitRelative(plugin, "Ahead", Ahead.Rows, RelativeAhead.MaxRows);

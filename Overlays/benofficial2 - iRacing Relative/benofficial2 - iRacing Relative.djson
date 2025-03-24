@@ -13,7 +13,7 @@
     }
   },
   "Version": 2,
-  "Id": "494eb041-1c4e-476b-bb5e-0cd4a1cc367a",
+  "Id": "fa11d67a-ab9a-43cd-b414-9227d434ff4a",
   "BaseHeight": 170,
   "BaseWidth": 305,
   "BackgroundColor": "#FF000000",
@@ -978,7 +978,17 @@
                   "Width": 305.0,
                   "Name": "Background",
                   "RenderingSkip": 0,
-                  "MinimumRefreshIntervalMS": 0.0
+                  "MinimumRefreshIntervalMS": 0.0,
+                  "Bindings": {
+                    "Opacity": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return isnull($prop('benofficial2.Relative.HeaderOpacity'), 90);"
+                      },
+                      "Mode": 2
+                    }
+                  }
                 },
                 {
                   "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.BuiltIn.TimeText, SimHub.Plugins",

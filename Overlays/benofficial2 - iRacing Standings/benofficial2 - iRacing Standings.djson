@@ -25,7 +25,7 @@
     }
   },
   "Version": 2,
-  "Id": "5f3c9ae5-2be0-4dc8-a205-d852a249bea0",
+  "Id": "e005fe31-fd84-4e9c-988d-604fee81969c",
   "BaseHeight": 530,
   "BaseWidth": 363,
   "BackgroundColor": "#FF000000",
@@ -741,7 +741,17 @@
                   "Width": 363.0,
                   "Name": "Background",
                   "RenderingSkip": 0,
-                  "MinimumRefreshIntervalMS": 0.0
+                  "MinimumRefreshIntervalMS": 0.0,
+                  "Bindings": {
+                    "Opacity": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return isnull($prop('benofficial2.Standings.HeaderOpacity'), 90);"
+                      },
+                      "Mode": 2
+                    }
+                  }
                 },
                 {
                   "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
