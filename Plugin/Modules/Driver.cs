@@ -29,6 +29,7 @@ namespace benofficial2.Plugin
     public class Driver
     {
         public int CarIdx { get; set; } = -1;
+        public string CarId { get; set; } = "";
         public int EnterPitLapUnconfirmed { get; set; } = -1;
         public int EnterPitLap { get; set; } = -1;
         public int ExitPitLap { get; set; } = -1;
@@ -347,6 +348,9 @@ namespace benofficial2.Plugin
                 string carNumber = string.Empty;
                 try { carNumber = raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarNumber"]; } catch { }
 
+                string carPath = string.Empty;
+                try { carPath = raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarPath"]; } catch { }
+
                 if (carIdx >= 0 && carNumber.Length > 0)
                 {
                     if (!Drivers.TryGetValue(carNumber, out Driver driver))
@@ -356,6 +360,7 @@ namespace benofficial2.Plugin
                     }
 
                     driver.CarIdx = carIdx;
+                    driver.CarId = carPath;
                     DriverInfoIndexes[carIdx] = i;
                 }
             }

@@ -20,6 +20,8 @@ using GameReaderCommon;
 using Newtonsoft.Json.Linq;
 using SimHub.Plugins;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -27,12 +29,20 @@ namespace benofficial2.Plugin
 {
     public class CarModule : IPluginModule
     {
-        private const string CarInfoUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/CarInfo.json";
+        private const string _carInfoUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/CarInfo.json";
+
+        private const string _carBrandInfoUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/CarBrandInfo.json";
 
         private JObject _carInfoJson = null;
 
+        private JObject _carBrandInfoJson = null;
+
         private string _lastCarId = string.Empty;
 
+        // Key: Car ID, Value: Car Brand
+        private Dictionary<string, string> _carBrands = new Dictionary<string, string>();
+
+        public string Brand { get; set; } = string.Empty;
         public bool IsGT3 { get; set; } = false;
         public bool IsGT4 { get; set; } = false;
         public bool IsGTE { get; set; } = false;
@@ -74,6 +84,12 @@ namespace benofficial2.Plugin
                 LoadCarInfoAsync().Wait();
             });
 
+            Task.Run(() =>
+            {
+                LoadCarBrandInfoAsync().Wait();
+            });
+
+            plugin.AttachDelegate(name: "Car.Brand", valueProvider: () => Brand);
             plugin.AttachDelegate(name: "Car.IsGT3", valueProvider: () => IsGT3);
             plugin.AttachDelegate(name: "Car.IsGT4", valueProvider: () => IsGT4);
             plugin.AttachDelegate(name: "Car.IsGTE", valueProvider: () => IsGTE);
@@ -111,7 +127,7 @@ namespace benofficial2.Plugin
 
         public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            if (_carInfoJson == null) return;
+            if (_carInfoJson == null || _carBrandInfoJson == null) return;
             if (data.NewData.CarId == _lastCarId) return;
             _lastCarId = data.NewData.CarId;
             if (data.NewData.CarId.Length == 0) return;
@@ -119,6 +135,7 @@ namespace benofficial2.Plugin
             JToken car = _carInfoJson[data.NewData.CarId];
             if (car == null)
             {
+                Brand = string.Empty;
                 IsGT3 = false;
                 IsGT4 = false;
                 IsGTE = false;
@@ -155,6 +172,7 @@ namespace benofficial2.Plugin
                 return;
             }
 
+            Brand = GetCarBrand(data.NewData.CarId, data.NewData.CarModel);
             IsGT3 = car["isGT3"]?.Value<bool>() ?? false;
             IsGT4 = car["isGT4"]?.Value<bool>() ?? false;
             IsGTE = car["isGTE"]?.Value<bool>() ?? false;
@@ -194,20 +212,87 @@ namespace benofficial2.Plugin
         {
         }
 
-        public async Task LoadCarInfoAsync()
+        private async Task LoadCarInfoAsync()
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    string json = await client.GetStringAsync(CarInfoUrl);
+                    string json = await client.GetStringAsync(_carInfoUrl);
                     _carInfoJson = JObject.Parse(json);
                 }
             }
             catch (Exception ex)
             {
-                SimHub.Logging.Current.Error($"An error occurred while downloading {CarInfoUrl}\n{ex.Message}");
+                SimHub.Logging.Current.Error($"An error occurred while downloading {_carInfoUrl}\n{ex.Message}");
             }
+        }
+
+        private async Task LoadCarBrandInfoAsync()
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string json = await client.GetStringAsync(_carBrandInfoUrl);
+                    _carBrandInfoJson = JObject.Parse(json);
+                }
+            }
+            catch (Exception ex)
+            {
+                SimHub.Logging.Current.Error($"An error occurred while downloading {_carBrandInfoUrl}\n{ex.Message}");
+            }
+        }
+
+        public string GetCarBrand(string carId, string carName = "")
+        {
+            // Check if the car brand is already cached
+            if (_carBrands.ContainsKey(carId))
+            {
+                return _carBrands[carId];
+            }
+
+            // Check if the car brand is in the CarInfo JSON
+            // Using this method for exceptions that can't have a search token in CarBrandInfo (ex: name is too generic)
+            if (_carInfoJson != null)
+            {
+                JToken car = _carInfoJson[carId];
+                if (car != null)
+                {
+                    string brand = car["brand"]?.Value<string>();
+                    if (brand != null)
+                    {
+                        _carBrands[carId] = brand;
+                        return brand;
+                    }
+                }
+            }
+
+            // Check if the car brand is in the CarBrandInfo JSON
+            // This is inneficient, that's why we cache them in a run-time dictionary
+            if (_carBrandInfoJson["car_brands"] is JObject carBrands)
+            {
+                foreach (var brand in carBrands)
+                {
+                    if (brand.Value["tokens"] is JArray tokens)
+                    {
+                        // Check if either carId or carName CONTAINS any of the tokens
+                        if (tokens.Any(token => carId.IndexOf(token.ToString(), StringComparison.OrdinalIgnoreCase) >= 0))
+                        {
+                            _carBrands[carId] = brand.Key;
+                            return brand.Key;
+                        }
+
+                        if (tokens.Any(token => carName.IndexOf(token.ToString(), StringComparison.OrdinalIgnoreCase) >= 0))
+                        {
+                            _carBrands[carId] = brand.Key;
+                            return brand.Key;
+                        }
+                    }
+                }
+            }
+
+            return string.Empty;
         }
     }
 }

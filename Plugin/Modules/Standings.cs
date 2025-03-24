@@ -196,7 +196,8 @@ namespace benofficial2.Plugin
         public int LivePositionInClass { get; set; } = 0;
         public string Number { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
-        public string CarName { get; set; } = string.Empty;
+        public string CarId { get; set; } = string.Empty;
+        public string CarBrand { get; set; } = string.Empty;
         public bool InPitLane { get; set; } = false;
         public bool Towing { get; set; } = false;
         public bool OutLap { get; set; } = false;
@@ -296,7 +297,8 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LivePositionInClass", valueProvider: () => row.LivePositionInClass);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Number", valueProvider: () => row.Number);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Name", valueProvider: () => row.Name);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CarName", valueProvider: () => row.CarName);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CarId", valueProvider: () => row.CarId);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CarBrand", valueProvider: () => row.CarBrand);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.InPitLane", valueProvider: () => row.InPitLane);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Towing", valueProvider: () => row.Towing);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.OutLap", valueProvider: () => row.OutLap);
@@ -407,7 +409,8 @@ namespace benofficial2.Plugin
                         row.LivePositionInClass = driver.LivePositionInClass;
                         row.Number = opponent.CarNumber;
                         row.Name = opponent.Name;
-                        row.CarName = opponent.CarName;
+                        row.CarId = driver.CarId;
+                        row.CarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName);
                         row.InPitLane = opponent.IsCarInPitLane;
                         row.Towing = driver.Towing;
                         row.OutLap = opponent.IsOutLap;
@@ -483,7 +486,8 @@ namespace benofficial2.Plugin
             row.LivePositionInClass = 0;
             row.Number = string.Empty;
             row.Name = string.Empty;
-            row.CarName = string.Empty;
+            row.CarId = string.Empty;
+            row.CarBrand = string.Empty;
             row.InPitLane = false;
             row.Towing = false;
             row.OutLap = false;
