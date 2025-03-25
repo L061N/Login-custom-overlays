@@ -4,7 +4,7 @@
   },
   "DashboardDebugManager": {},
   "Version": 2,
-  "Id": "d2ed20f3-0e8f-4fc8-a21d-775cdb8ecc8f",
+  "Id": "f65f4ecd-9268-4943-91d5-3230213bc7c0",
   "BaseHeight": 35,
   "BaseWidth": 137,
   "BackgroundColor": "#FF000000",
@@ -47,7 +47,17 @@
               "Width": 137.0,
               "Name": "Background",
               "RenderingSkip": 0,
-              "MinimumRefreshIntervalMS": 0.0
+              "MinimumRefreshIntervalMS": 0.0,
+              "Bindings": {
+                "Opacity": {
+                  "Formula": {
+                    "JSExt": 0,
+                    "Interpreter": 1,
+                    "Expression": "return isnull($prop('benofficial2.Dash.BackgroundOpacity'), 60);"
+                  },
+                  "Mode": 2
+                }
+              }
             },
             {
               "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.RectangleItem, SimHub.Plugins",
@@ -194,7 +204,7 @@
     "MetadataVersion": 2.0,
     "EnableOnDashboardMessaging": true,
     "PitScreensIndexs": [],
-    "SimHubVersion": "9.7.2",
+    "SimHubVersion": "9.7.5",
     "Width": 137.0,
     "Height": 35.0,
     "DashboardVersion": ""
