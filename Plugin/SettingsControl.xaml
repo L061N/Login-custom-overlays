@@ -281,13 +281,13 @@
                         
                         <Label Content="Spotter Threshold" Margin="0,10,0,0"/>
 
-                        <TextBox Text="{Binding Plugin.Modules[SpotterModule].Settings.ThresholdString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                        <TextBox Text="{Binding Plugin.Modules[SpotterModule].Settings.DistanceThreshold.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
                                  ToolTip="Distance from another car at which the Spotter's orange bars will show. Also used for showing Blind Spot Monitor.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Plugin.Modules[SpotterModule].Settings.ThresholdValid}" Value="False">
+                                        <DataTrigger Binding="{Binding Plugin.Modules[SpotterModule].Settings.DistanceThreshold.Valid}" Value="False">
                                             <Setter Property="Background" Value="LightCoral"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -316,13 +316,13 @@
 
                         <Label Content="Rejoin Helper Min 'Clear' Gap (seconds)" Margin="0,10,0,0"/>
 
-                        <TextBox Text="{Binding Plugin.Modules[RejoinHelperModule].Settings.MinClearGapString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                        <TextBox Text="{Binding Plugin.Modules[RejoinHelperModule].Settings.MinimumClearGap.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
                                  ToolTip="Minimum gap in seconds at which the Rejoin Helper will show the 'Clear'.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Plugin.Modules[RejoinHelperModule].Settings.MinClearGapValid}" Value="False">
+                                        <DataTrigger Binding="{Binding Plugin.Modules[RejoinHelperModule].Settings.MinimumClearGap.Valid}" Value="False">
                                             <Setter Property="Background" Value="LightCoral"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -332,13 +332,13 @@
 
                         <Label Content="Rejoin Helper Min 'Care' Gap (seconds)" Margin="0,10,0,0"/>
 
-                        <TextBox Text="{Binding Plugin.Modules[RejoinHelperModule].Settings.MinCareGapString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                        <TextBox Text="{Binding Plugin.Modules[RejoinHelperModule].Settings.MinimumCareGap.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
                                  ToolTip="Minimum gap in seconds at which the Rejoin Helper will show the 'Care'.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Plugin.Modules[RejoinHelperModule].Settings.MinCareGapValid}" Value="False">
+                                        <DataTrigger Binding="{Binding Plugin.Modules[RejoinHelperModule].Settings.MinimumCareGap.Valid}" Value="False">
                                             <Setter Property="Background" Value="LightCoral"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -362,13 +362,13 @@
                     <StackPanel HorizontalAlignment="Left">
                         <Label Content="Fuel Reserve (liters)"/>
 
-                        <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.FuelReserveString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                        <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.FuelReserveLiters.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
                                  ToolTip="How much fuel to keep as a reserve in liters to avoid bogging down the engine.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Plugin.Modules[FuelCalcModule].Settings.FuelReserveValid}" Value="False">
+                                        <DataTrigger Binding="{Binding Plugin.Modules[FuelCalcModule].Settings.FuelReserveLiters.Valid}" Value="False">
                                             <Setter Property="Background" Value="LightCoral"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -378,13 +378,13 @@
 
                         <Label Content="Extra Consumption (%)" Margin="0,10,0,0"/>
 
-                        <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraConsumptionPctString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                        <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraConsumption.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
                                  ToolTip="Extra per-lap consumption in percentage. Can be negative. Use this to increase/decrease the estimated average consumption per lap.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraConsumptionPctValid}" Value="False">
+                                        <DataTrigger Binding="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraConsumption.Valid}" Value="False">
                                             <Setter Property="Background" Value="LightCoral"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -394,13 +394,13 @@
                         
                         <Label Content="Extra Lap(s)" Margin="0,10,0,0"/>
 
-                        <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraLapsString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                        <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLaps.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
                                  ToolTip="How many extra race laps of fuel to add as a safety. Can have decimals or be negative.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraLapsValid}" Value="False">
+                                        <DataTrigger Binding="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLaps.Valid}" Value="False">
                                             <Setter Property="Background" Value="LightCoral"/>
                                         </DataTrigger>
                                     </Style.Triggers>

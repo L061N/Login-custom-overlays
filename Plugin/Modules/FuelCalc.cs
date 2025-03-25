@@ -26,150 +26,15 @@ namespace benofficial2.Plugin
     public class FuelCalcSettings : ModuleSettings
     {
         public int BackgroundOpacity { get; set; } = 60;
-
-        private float _fuelReserve = 0.5f;
-        private string _fuelReserveString = "0.5";
-        private bool _fuelReserveValid = true;
-
-        public float FuelReserve
-        {
-            get { return _fuelReserve; }
-        }
-        public string FuelReserveString
-        {
-            get => _fuelReserveString;
-            set
-            {
-                if (_fuelReserveString != value)
-                {
-                    _fuelReserveString = value;
-
-                    // Convert to float when set
-                    if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
-                    {
-                        _fuelReserve = result;
-                        FuelReserveValid = true;
-                    }
-                    else
-                    {
-                        _fuelReserve = 0;
-                        FuelReserveValid = false;
-                    }
-
-                    OnPropertyChanged(nameof(FuelReserve));
-                    OnPropertyChanged(nameof(FuelReserveString));
-                }
-            }
-        }
-        public bool FuelReserveValid
-        {
-            get => _fuelReserveValid;
-            private set
-            {
-                if (_fuelReserveValid != value)
-                {
-                    _fuelReserveValid = value;
-                    OnPropertyChanged(nameof(FuelReserveValid));
-                }
-            }
-        }
-
-        private float _extralLaps = 0.0f;
-        private string _extraLapsString = "0";
-        private bool _extraLapsValid = true;
-
-        public float ExtraLaps
-        {
-            get { return _extralLaps; }
-        }
-
-        public string ExtraLapsString
-        {
-            get => _extraLapsString;
-            set
-            {
-                if (_extraLapsString != value)
-                {
-                    _extraLapsString = value;
-
-                    // Convert to float when set
-                    if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
-                    {
-                        _extralLaps = result;
-                        ExtraLapsValid = true;
-                    }
-                    else
-                    {
-                        _extralLaps = 0;
-                        ExtraLapsValid = false;
-                    }
-
-                    OnPropertyChanged(nameof(ExtraLaps));
-                    OnPropertyChanged(nameof(ExtraLapsString));
-                }
-            }
-        }
-        public bool ExtraLapsValid
-        {
-            get => _extraLapsValid;
-            private set
-            {
-                if (_extraLapsValid != value)
-                {
-                    _extraLapsValid = value;
-                    OnPropertyChanged(nameof(ExtraLapsValid));
-                }
-            }
-        }
-
-        private float _extraConsumptionPct = 1.0f;
-        private string _extraConsumptionPctString = "1.0";
-        private bool _extraConsumptionPctValid = true;
-
-        public float ExtraConsumptionPct
-        {
-            get { return _extraConsumptionPct; }
-        }
-
-        public string ExtraConsumptionPctString
-        {
-            get => _extraConsumptionPctString;
-            set
-            {
-                if (_extraConsumptionPctString != value)
-                {
-                    _extraConsumptionPctString = value;
-
-                    // Convert to float when set
-                    if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
-                    {
-                        _extraConsumptionPct = result;
-                        ExtraConsumptionPctValid = true;
-                    }
-                    else
-                    {
-                        _extraConsumptionPct = 0;
-                        ExtraConsumptionPctValid = false;
-                    }
-
-                    OnPropertyChanged(nameof(ExtraConsumptionPct));
-                    OnPropertyChanged(nameof(ExtraConsumptionPctString));
-                }
-            }
-        }
-        public bool ExtraConsumptionPctValid
-        {
-            get => _extraConsumptionPctValid;
-            private set
-            {
-                if (_extraConsumptionPctValid != value)
-                {
-                    _extraConsumptionPctValid = value;
-                    OnPropertyChanged(nameof(ExtraConsumptionPctValid));
-                }
-            }
-        }
+        public ModuleSettingFloat FuelReserveLiters { get; set; } = new ModuleSettingFloat(0.5f);
+        public ModuleSettingFloat ExtraRaceLaps { get; set; } = new ModuleSettingFloat(0.0f);
+        public ModuleSettingFloat ExtraConsumption { get; set; } = new ModuleSettingFloat(1.0f);
         public bool EnablePreRaceWarning { get; set; } = true;
+
+        // Legacy properties for backwards compatibility (saved pre 2.2)
+        public string FuelReserveString { get => FuelReserveLiters.ValueString; set => FuelReserveLiters.ValueString = value; }
+        public string ExtraLapsString { get => ExtraRaceLaps.ValueString; set => ExtraRaceLaps.ValueString = value; }
+        public string ExtraConsumptionPctString { get => ExtraConsumption.ValueString; set => ExtraConsumption.ValueString = value; }
     }
 
     public class FuelCalcModule : IPluginModule
@@ -180,9 +45,9 @@ namespace benofficial2.Plugin
         {
             Settings = plugin.ReadCommonSettings<FuelCalcSettings>("FuelCalcSettings", () => new FuelCalcSettings());
             plugin.AttachDelegate(name: "FuelCalc.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
-            plugin.AttachDelegate(name: "FuelCalc.FuelReserve", valueProvider: () => Settings.FuelReserve);
-            plugin.AttachDelegate(name: "FuelCalc.ExtraLaps", valueProvider: () => Settings.ExtraLaps);
-            plugin.AttachDelegate(name: "FuelCalc.ExtraConsumptionPct", valueProvider: () => Settings.ExtraConsumptionPct);
+            plugin.AttachDelegate(name: "FuelCalc.FuelReserve", valueProvider: () => Settings.FuelReserveLiters.Value);
+            plugin.AttachDelegate(name: "FuelCalc.ExtraLaps", valueProvider: () => Settings.ExtraRaceLaps.Value);
+            plugin.AttachDelegate(name: "FuelCalc.ExtraConsumptionPct", valueProvider: () => Settings.ExtraConsumption.Value);
             plugin.AttachDelegate(name: "FuelCalc.EnablePreRaceWarning", valueProvider: () => Settings.EnablePreRaceWarning);
         }
 

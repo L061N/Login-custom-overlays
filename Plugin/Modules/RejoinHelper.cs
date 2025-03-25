@@ -27,102 +27,13 @@ namespace benofficial2.Plugin
     public class RejoinHelperSettings : ModuleSettings
     {
         public bool Enabled { get; set; } = true;
-
-        private float _minClearGap = 3.5f;
-        private string _minClearGapString = "3.5";
-        private bool _minClearGapValid = true;
-
-        public float MinClearGap
-        {
-            get { return _minClearGap; }
-        }
-        public string MinClearGapString
-        {
-            get => _minClearGapString;
-            set
-            {
-                if (_minClearGapString != value)
-                {
-                    _minClearGapString = value;
-
-                    // Convert to float when set
-                    if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
-                    {
-                        _minClearGap = result;
-                        MinClearGapValid = true;
-                    }
-                    else
-                    {
-                        _minClearGap = 0;
-                        MinClearGapValid = false;
-                    }
-
-                    OnPropertyChanged(nameof(MinClearGap));
-                    OnPropertyChanged(nameof(MinClearGapString));
-                }
-            }
-        }
-        public bool MinClearGapValid
-        {
-            get => _minClearGapValid;
-            private set
-            {
-                if (_minClearGapValid != value)
-                {
-                    _minClearGapValid = value;
-                    OnPropertyChanged(nameof(MinClearGapValid));
-                }
-            }
-        }
-
-        private float _minCareGap = 1.5f;
-        private string _minCareGapString = "1.5";
-        private bool _minCareGapValid = true;
-
-        public float MinCareGap
-        {
-            get { return _minCareGap; }
-        }
-        public string MinCareGapString
-        {
-            get => _minCareGapString;
-            set
-            {
-                if (_minCareGapString != value)
-                {
-                    _minCareGapString = value;
-
-                    // Convert to float when set
-                    if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
-                    {
-                        _minCareGap = result;
-                        MinCareGapValid = true;
-                    }
-                    else
-                    {
-                        _minCareGap = 0;
-                        MinCareGapValid = false;
-                    }
-
-                    OnPropertyChanged(nameof(MinCareGap));
-                    OnPropertyChanged(nameof(MinCareGapString));
-                }
-            }
-        }
-        public bool MinCareGapValid
-        {
-            get => _minCareGapValid;
-            private set
-            {
-                if (_minCareGapValid != value)
-                {
-                    _minCareGapValid = value;
-                    OnPropertyChanged(nameof(MinCareGapValid));
-                }
-            }
-        }
-
+        public ModuleSettingFloat MinimumClearGap { get; set; } = new ModuleSettingFloat(3.5f);
+        public ModuleSettingFloat MinimumCareGap { get; set; } = new ModuleSettingFloat(1.5f);
         public int MinSpeed { get; set; } = 35;
+
+        // Legacy properties for backwards compatibility (saved pre 2.2)
+        public string MinClearGapString { get => MinimumClearGap.ValueString; set => MinimumClearGap.ValueString = value; }
+        public string MinCareGapString { get => MinimumCareGap.ValueString; set => MinimumCareGap.ValueString = value; }
     }
 
     public class RejoinHelperModule : IPluginModule
@@ -145,8 +56,8 @@ namespace benofficial2.Plugin
 
             Settings = plugin.ReadCommonSettings<RejoinHelperSettings>("RejoinHelperSettings", () => new RejoinHelperSettings());
             plugin.AttachDelegate(name: "RejoinHelper.Enabled", valueProvider: () => Settings.Enabled);
-            plugin.AttachDelegate(name: "RejoinHelper.MinClearGap", valueProvider: () => Settings.MinClearGap);
-            plugin.AttachDelegate(name: "RejoinHelper.MinCareGap", valueProvider: () => Settings.MinCareGap);
+            plugin.AttachDelegate(name: "RejoinHelper.MinClearGap", valueProvider: () => Settings.MinimumClearGap.Value);
+            plugin.AttachDelegate(name: "RejoinHelper.MinCareGap", valueProvider: () => Settings.MinimumCareGap.Value);
             plugin.AttachDelegate(name: "RejoinHelper.MinSpeed", valueProvider: () => Settings.MinSpeed);
             plugin.AttachDelegate(name: "RejoinHelper.Visible", valueProvider: () => Visible);
             plugin.AttachDelegate(name: "RejoinHelper.Gap", valueProvider: () => Gap);
@@ -192,21 +103,21 @@ namespace benofficial2.Plugin
                 }
                 else
                 {
-                    if (Gap >= Settings.MinClearGap)
+                    if (Gap >= Settings.MinimumClearGap.Value)
                     {
                         State = StateClear;
                         ColorPct = 100;
                     }
-                    else if (Gap >= Settings.MinCareGap)
+                    else if (Gap >= Settings.MinimumCareGap.Value)
                     {
                         State = StateCare;
-                        double ratio = (Gap - Settings.MinCareGap) / (Settings.MinClearGap - Settings.MinCareGap);
+                        double ratio = (Gap - Settings.MinimumCareGap.Value) / (Settings.MinimumClearGap.Value - Settings.MinimumCareGap.Value);
                         ColorPct = ((100 - 50) * ratio) + 50;
                     }
                     else
                     {
                         State = StateYield;
-                        double ratio = Gap / Settings.MinClearGap;
+                        double ratio = Gap / Settings.MinimumClearGap.Value;
                         ColorPct = 50 * ratio;
                     }
                 }

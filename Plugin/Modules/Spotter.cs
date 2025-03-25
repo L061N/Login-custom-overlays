@@ -28,58 +28,14 @@ namespace benofficial2.Plugin
     public class SpotterSettings : ModuleSettings
     {
         public bool Enabled { get; set; } = true;
-
-        private float _threshold = 5.5f;
-        private string _thresholdString = "5.5";
-        private bool _thresholdValid = true;
-
-        public float Threshold
-        {
-            get { return _threshold; }
-        }
-        public string ThresholdString
-        {
-            get => _thresholdString;
-            set
-            {
-                if (_thresholdString != value)
-                {
-                    _thresholdString = value;
-
-                    // Convert to float when set
-                    if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
-                    {
-                        _threshold = result;
-                        ThresholdValid = true;
-                    }
-                    else
-                    {
-                        _threshold = 0;
-                        ThresholdValid = false;
-                    }
-
-                    OnPropertyChanged(nameof(Threshold));
-                    OnPropertyChanged(nameof(ThresholdString));
-                }
-            }
-        }
-        public bool ThresholdValid
-        {
-            get => _thresholdValid;
-            private set
-            {
-                if (_thresholdValid != value)
-                {
-                    _thresholdValid = value;
-                    OnPropertyChanged(nameof(ThresholdValid));
-                }
-            }
-        }
-
+        public ModuleSettingFloat DistanceThreshold { get; set; } = new ModuleSettingFloat(5.5f);
         public int Height { get; set; } = 129;
         public int MinHeight { get; set; } = 15;
         public int Width { get; set; } = 12;
         public int Border { get; set; } = 3;
+
+        // Legacy properties for backwards compatibility (saved pre 2.2)
+        public string ThresholdString { get => DistanceThreshold.ValueString; set => DistanceThreshold.ValueString = value; }
     }
 
     public class SpotterModule : IPluginModule
@@ -93,7 +49,7 @@ namespace benofficial2.Plugin
         {
             Settings = plugin.ReadCommonSettings<SpotterSettings>("SpotterSettings", () => new SpotterSettings());
             plugin.AttachDelegate(name: "Spotter.Enabled", valueProvider: () => Settings.Enabled);
-            plugin.AttachDelegate(name: "Spotter.Threshold", valueProvider: () => Settings.Threshold);
+            plugin.AttachDelegate(name: "Spotter.Threshold", valueProvider: () => Settings.DistanceThreshold.Value);
             plugin.AttachDelegate(name: "Spotter.Height", valueProvider: () => Settings.Height);
             plugin.AttachDelegate(name: "Spotter.MinHeight", valueProvider: () => Settings.MinHeight);
             plugin.AttachDelegate(name: "Spotter.Width", valueProvider: () => Settings.Width);
@@ -112,12 +68,12 @@ namespace benofficial2.Plugin
         {
             (double dist0, double dist1) = GetNearestDistances(data.NewData.OpponentsAheadOnTrack);
             double overlap = 0;
-            if (dist0 < 0 && dist0 >= -Settings.Threshold)
+            if (dist0 < 0 && dist0 >= -Settings.DistanceThreshold.Value)
             {
                 overlap = dist0;
             }
 
-            if (dist1 < 0 && dist1 >= -Settings.Threshold)
+            if (dist1 < 0 && dist1 >= -Settings.DistanceThreshold.Value)
             {
                 overlap = Math.Min(overlap, dist1);
             }
@@ -129,12 +85,12 @@ namespace benofficial2.Plugin
         {
             (double dist0, double dist1) = GetNearestDistances(data.NewData.OpponentsBehindOnTrack);
             double overlap = 0;
-            if (dist0 > 0 && dist0 <= Settings.Threshold)
+            if (dist0 > 0 && dist0 <= Settings.DistanceThreshold.Value)
             {
                 overlap = dist0;
             }
 
-            if (dist1 > 0 && dist1 <= Settings.Threshold)
+            if (dist1 > 0 && dist1 <= Settings.DistanceThreshold.Value)
             {
                 overlap = Math.Max(overlap, dist1);
             }
