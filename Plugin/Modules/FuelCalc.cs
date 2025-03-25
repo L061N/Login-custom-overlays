@@ -23,22 +23,9 @@ using System.Globalization;
 
 namespace benofficial2.Plugin
 {
-    public class FuelCalcSettings : INotifyPropertyChanged
+    public class FuelCalcSettings : ModuleSettings
     {
-        private int _backgroundOpacity = 60;
-
-        public int BackgroundOpacity
-        {
-            get { return _backgroundOpacity; }
-            set
-            {
-                if (_backgroundOpacity != value)
-                {
-                    _backgroundOpacity = value;
-                    OnPropertyChanged(nameof(BackgroundOpacity));
-                }
-            }
-        }
+        public int BackgroundOpacity { get; set; } = 60;
 
         private float _fuelReserve = 0.5f;
         private string _fuelReserveString = "0.5";
@@ -182,27 +169,7 @@ namespace benofficial2.Plugin
                 }
             }
         }
-
-        private bool _enablePreRaceWarning = true;
-
-        public bool EnablePreRaceWarning
-        {
-            get { return _enablePreRaceWarning; }
-            set
-            {
-                if (_enablePreRaceWarning != value)
-                {
-                    _enablePreRaceWarning = value;
-                    OnPropertyChanged(nameof(EnablePreRaceWarning));
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public bool EnablePreRaceWarning { get; set; } = true;
     }
 
     public class FuelCalcModule : IPluginModule

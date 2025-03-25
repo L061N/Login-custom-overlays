@@ -22,43 +22,11 @@ using System.ComponentModel;
 
 namespace benofficial2.Plugin
 {
-    public class WindSettings : INotifyPropertyChanged
+    public class WindSettings : ModuleSettings
     {
-        private bool _rotateWithCar = true;
+        public bool RotateWithCar { get; set; } = true;
 
-        public bool RotateWithCar
-        {
-            get { return _rotateWithCar; }
-            set
-            {
-                if (_rotateWithCar != value)
-                {
-                    _rotateWithCar = value;
-                    OnPropertyChanged(nameof(RotateWithCar));
-                }
-            }
-        }
-
-        private int _backgroundOpacity = 0;
-
-        public int BackgroundOpacity
-        {
-            get { return _backgroundOpacity; }
-            set
-            {
-                if (_backgroundOpacity != value)
-                {
-                    _backgroundOpacity = value;
-                    OnPropertyChanged(nameof(BackgroundOpacity));
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public int BackgroundOpacity { get; set; } = 0;
     }
 
     public class WindModule : IPluginModule

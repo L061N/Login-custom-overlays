@@ -16,35 +16,29 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-using GameReaderCommon;
-using SimHub.Plugins;
+using System;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace benofficial2.Plugin
 {
-    public class TwitchChatSettings : ModuleSettings
+    public abstract class ModuleSettings : INotifyPropertyChanged
     {
-        public string URL { get; set; } = "";
-    }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-    public class TwitchChatModule : IPluginModule
-    {
-        public TwitchChatSettings Settings { get; set; }
-
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        internal void OnPropertyChanged(string propertyName)
         {
-            Settings = plugin.ReadCommonSettings<TwitchChatSettings>("TwitchChatSettings", () => new TwitchChatSettings());
-            plugin.AttachDelegate(name: "TwitchChat.URL", valueProvider: () => Settings.URL);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public void NotifyAllPropertiesChanged()
         {
-
-        }
-
-        public void End(PluginManager pluginManager, benofficial2 plugin)
-        {
-            plugin.SaveCommonSettings("TwitchChatSettings", Settings);
+            // Use reflection to get all public properties of the class
+            var properties = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var property in properties)
+            {
+                OnPropertyChanged(property.Name);
+            }
         }
     }
 }

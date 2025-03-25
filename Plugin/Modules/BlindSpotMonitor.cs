@@ -23,28 +23,9 @@ using System.ComponentModel;
 
 namespace benofficial2.Plugin
 {
-    public class BlindSpotMonitorSettings : INotifyPropertyChanged
+    public class BlindSpotMonitorSettings : ModuleSettings
     {
-        private bool _enabled = false;
-
-        public bool Enabled
-        {
-            get { return _enabled; }
-            set
-            {
-                if (_enabled != value)
-                {
-                    _enabled = value;
-                    OnPropertyChanged(nameof(Enabled));
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public bool Enabled { get; set; } = false;
     }
 
     public class BlindSpotMonitorModule : IPluginModule

@@ -25,58 +25,11 @@ using System.Linq;
 
 namespace benofficial2.Plugin
 {
-    public class RelativeSettings : INotifyPropertyChanged
+    public class RelativeSettings : ModuleSettings
     {
-        private bool _headerVisible = true;
-
-        public bool HeaderVisible
-        {
-            get { return _headerVisible; }
-            set
-            {
-                if (_headerVisible != value)
-                {
-                    _headerVisible = value;
-                    OnPropertyChanged(nameof(HeaderVisible));
-                }
-            }
-        }
-
-        private int _headerOpacity = 90;
-
-        public int HeaderOpacity
-        {
-            get { return _headerOpacity; }
-            set
-            {
-                if (_headerOpacity != value)
-                {
-                    _headerOpacity = value;
-                    OnPropertyChanged(nameof(HeaderOpacity));
-                }
-            }
-        }
-
-        private int _backgroundOpacity = 60;
-
-        public int BackgroundOpacity
-        {
-            get { return _backgroundOpacity; }
-            set
-            {
-                if (_backgroundOpacity != value)
-                {
-                    _backgroundOpacity = value;
-                    OnPropertyChanged(nameof(BackgroundOpacity));
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public bool HeaderVisible { get; set; } = true;
+        public int HeaderOpacity { get; set; } = 90;
+        public int BackgroundOpacity { get; set; } = 60;
     }
 
     public class RelativeRow

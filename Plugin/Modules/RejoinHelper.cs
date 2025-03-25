@@ -24,22 +24,9 @@ using System.Globalization;
 
 namespace benofficial2.Plugin
 {
-    public class RejoinHelperSettings : INotifyPropertyChanged
+    public class RejoinHelperSettings : ModuleSettings
     {
-        private bool _enabled = true;
-
-        public bool Enabled
-        {
-            get { return _enabled; }
-            set
-            {
-                if (_enabled != value)
-                {
-                    _enabled = value;
-                    OnPropertyChanged(nameof(Enabled));
-                }
-            }
-        }
+        public bool Enabled { get; set; } = true;
 
         private float _minClearGap = 3.5f;
         private string _minClearGapString = "3.5";
@@ -135,26 +122,7 @@ namespace benofficial2.Plugin
             }
         }
 
-        private int _minSpeed = 35;
-
-        public int MinSpeed
-        {
-            get { return _minSpeed; }
-            set
-            {
-                if (_minSpeed != value)
-                {
-                    _minSpeed = value;
-                    OnPropertyChanged(nameof(MinSpeed));
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public int MinSpeed { get; set; } = 35;
     }
 
     public class RejoinHelperModule : IPluginModule

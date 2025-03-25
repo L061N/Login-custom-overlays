@@ -26,28 +26,9 @@ namespace benofficial2.Plugin
 {
     using OpponentsWithDrivers = List<(Opponent, Driver)>;
 
-    public class DeltaSettings : INotifyPropertyChanged
+    public class DeltaSettings : ModuleSettings
     {
-        private int _backgroundOpacity = 60;
-
-        public int BackgroundOpacity
-        {
-            get { return _backgroundOpacity; }
-            set
-            {
-                if (_backgroundOpacity != value)
-                {
-                    _backgroundOpacity = value;
-                    OnPropertyChanged(nameof(BackgroundOpacity));
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public int BackgroundOpacity { get; set; } = 60;
     }
 
     public class HeadToHeadRow

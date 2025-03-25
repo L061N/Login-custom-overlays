@@ -22,163 +22,18 @@ using System.ComponentModel;
 
 namespace benofficial2.Plugin
 {
-    public class TelemetrySettings : INotifyPropertyChanged
+    public class TelemetrySettings : ModuleSettings
     {
-        private bool _tracesVisible = true;
-
-        public bool TracesVisible
-        {
-            get { return _tracesVisible; }
-            set
-            {
-                if (_tracesVisible != value)
-                {
-                    _tracesVisible = value;
-                    OnPropertyChanged(nameof(TracesVisible));
-                }
-            }
-        }
-
-        private int _tracesWidth = 500;
-
-        public int TracesWidth
-        {
-            get { return _tracesWidth; }
-            set
-            {
-                if (_tracesWidth != value)
-                {
-                    _tracesWidth = value;
-                    OnPropertyChanged(nameof(TracesWidth));
-                }
-            }
-        }
-
-        private int _tracesSpeed = 75;
-
-        public int TracesSpeed
-        {
-            get { return _tracesSpeed; }
-            set
-            {
-                if (_tracesSpeed != value)
-                {
-                    _tracesSpeed = value;
-                    OnPropertyChanged(nameof(TracesSpeed));
-                }
-            }
-        }
-
-        private bool _handbrakeTraceVisible = true;
-
-        public bool HandbrakeTraceVisible
-        {
-            get { return _handbrakeTraceVisible; }
-            set
-            {
-                if (_handbrakeTraceVisible != value)
-                {
-                    _handbrakeTraceVisible = value;
-                    OnPropertyChanged(nameof(HandbrakeTraceVisible));
-                }
-            }
-        }
-
-        private bool _steeringTraceVisible = true;
-
-        public bool SteeringTraceVisible
-        {
-            get { return _steeringTraceVisible; }
-            set
-            {
-                if (_steeringTraceVisible != value)
-                {
-                    _steeringTraceVisible = value;
-                    OnPropertyChanged(nameof(SteeringTraceVisible));
-                }
-            }
-        }
-
-        private bool _guideLinesVisible = true;
-
-        public bool GuideLinesVisible
-        {
-            get { return _guideLinesVisible; }
-            set
-            {
-                if (_guideLinesVisible != value)
-                {
-                    _guideLinesVisible = value;
-                    OnPropertyChanged(nameof(GuideLinesVisible));
-                }
-            }
-        }
-
-        private bool _pedalsVisible = true;
-
-        public bool PedalsVisible
-        {
-            get { return _pedalsVisible; }
-            set
-            {
-                if (_pedalsVisible != value)
-                {
-                    _pedalsVisible = value;
-                    OnPropertyChanged(nameof(PedalsVisible));
-                }
-            }
-        }
-
-        private bool _steeringVisible = true;
-
-        public bool SteeringVisible
-        {
-            get { return _steeringVisible; }
-            set
-            {
-                if (_steeringVisible != value)
-                {
-                    _steeringVisible = value;
-                    OnPropertyChanged(nameof(SteeringVisible));
-                }
-            }
-        }
-
-        private bool _gearAndSpeedVisible = true;
-
-        public bool GearAndSpeedVisible
-        {
-            get { return _gearAndSpeedVisible; }
-            set
-            {
-                if (_gearAndSpeedVisible != value)
-                {
-                    _gearAndSpeedVisible = value;
-                    OnPropertyChanged(nameof(GearAndSpeedVisible));
-                }
-            }
-        }
-
-        private int _backgroundOpacity = 60;
-
-        public int BackgroundOpacity
-        {
-            get { return _backgroundOpacity; }
-            set
-            {
-                if (_backgroundOpacity != value)
-                {
-                    _backgroundOpacity = value;
-                    OnPropertyChanged(nameof(BackgroundOpacity));
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public bool TracesVisible { get; set; } = true;
+        public int TracesWidth { get; set; } = 500;
+        public int TracesSpeed { get; set; } = 75;
+        public bool HandbrakeTraceVisible { get; set; } = true;
+        public bool SteeringTraceVisible { get; set; } = true;
+        public bool GuideLinesVisible { get; set; } = true;
+        public bool PedalsVisible { get; set; } = true;
+        public bool SteeringVisible { get; set; } = true;
+        public bool GearAndSpeedVisible { get; set; } = true;
+        public int BackgroundOpacity { get; set; } = 60;
     }
 
     public class TelemetryModule : IPluginModule

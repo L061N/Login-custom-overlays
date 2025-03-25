@@ -22,28 +22,9 @@ using System.ComponentModel;
 
 namespace benofficial2.Plugin
 {
-    public class GeneralSettings : INotifyPropertyChanged
+    public class GeneralSettings : ModuleSettings
     {
-        private bool _checkForUpdates = true;
-
-        public bool CheckForUpdates
-        {
-            get { return _checkForUpdates; }
-            set
-            {
-                if (_checkForUpdates != value)
-                {
-                    _checkForUpdates = value;
-                    OnPropertyChanged(nameof(CheckForUpdates));
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public bool CheckForUpdates { get; set; } = true;
     }
 
     public class GeneralModule : IPluginModule

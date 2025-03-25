@@ -25,22 +25,9 @@ using System.Globalization;
 
 namespace benofficial2.Plugin
 {
-    public class SpotterSettings : INotifyPropertyChanged
+    public class SpotterSettings : ModuleSettings
     {
-        private bool _enabled = true;
-
-        public bool Enabled
-        {
-            get { return _enabled; }
-            set
-            {
-                if (_enabled != value)
-                {
-                    _enabled = value;
-                    OnPropertyChanged(nameof(Enabled));
-                }
-            }
-        }
+        public bool Enabled { get; set; } = true;
 
         private float _threshold = 5.5f;
         private string _thresholdString = "5.5";
@@ -89,71 +76,10 @@ namespace benofficial2.Plugin
             }
         }
 
-        private int _height = 129;
-
-        public int Height
-        {
-            get { return _height; }
-            set
-            {
-                if (_height != value)
-                {
-                    _height = value;
-                    OnPropertyChanged(nameof(Height));
-                }
-            }
-        }
-
-        private int _minHeight = 15;
-
-        public int MinHeight
-        {
-            get { return _minHeight; }
-            set
-            {
-                if (_minHeight != value)
-                {
-                    _minHeight = value;
-                    OnPropertyChanged(nameof(MinHeight));
-                }
-            }
-        }
-
-        private int _width = 12;
-
-        public int Width
-        {
-            get { return _width; }
-            set
-            {
-                if (_width != value)
-                {
-                    _width = value;
-                    OnPropertyChanged(nameof(Width));
-                }
-            }
-        }
-
-        private int _border = 3;
-
-        public int Border
-        {
-            get { return _border; }
-            set
-            {
-                if (_border != value)
-                {
-                    _border = value;
-                    OnPropertyChanged(nameof(Border));
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public int Height { get; set; } = 129;
+        public int MinHeight { get; set; } = 15;
+        public int Width { get; set; } = 12;
+        public int Border { get; set; } = 3;
     }
 
     public class SpotterModule : IPluginModule
