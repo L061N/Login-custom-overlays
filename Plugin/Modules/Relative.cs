@@ -81,14 +81,8 @@ namespace benofficial2.Plugin
 
         public RelativeSettings Settings { get; set; }
 
-        public RelativeAhead Ahead;
-        public RelativeBehind Behind;
-
-        public RelativeModule()
-        {
-            Ahead = new RelativeAhead();
-            Behind = new RelativeBehind();
-        }
+        public RelativeAhead Ahead = new RelativeAhead();
+        public RelativeBehind Behind = new RelativeBehind();
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {

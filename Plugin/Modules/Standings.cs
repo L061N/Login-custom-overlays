@@ -76,7 +76,7 @@ namespace benofficial2.Plugin
 
     public class StandingCarClass
     {
-        public const int MaxRows = 64;
+        public const int MaxRows = 25;
         public string Name { get; set; } = string.Empty;
         public float NameSize { get; set; } = 0;
         public int VisibleRowCount { get; set; } = 0;
@@ -105,7 +105,7 @@ namespace benofficial2.Plugin
 
         public StandingsSettings Settings { get; set; }
 
-        public const int _maxCarClasses = 4;
+        public const int MaxCarClasses = 4;
         public List<StandingCarClass> CarClasses { get; internal set; }
         public int VisibleClassCount { get; internal set; } = 0;
         public int PlayerCarClassIdx { get; internal set; } = 0;
@@ -116,7 +116,7 @@ namespace benofficial2.Plugin
 
         public StandingsModule()
         {
-            CarClasses = new List<StandingCarClass>(Enumerable.Range(0, _maxCarClasses).Select(x => new StandingCarClass()));
+            CarClasses = new List<StandingCarClass>(Enumerable.Range(0, MaxCarClasses).Select(x => new StandingCarClass()));
         }
 
         public void Init(PluginManager pluginManager, benofficial2 plugin)
@@ -141,7 +141,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Standings.HeaderOpacity", valueProvider: () => Settings.HeaderOpacity);
             plugin.AttachDelegate(name: "Standings.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
 
-            for (int carClassIdx = 0; carClassIdx < _maxCarClasses; carClassIdx++)
+            for (int carClassIdx = 0; carClassIdx < MaxCarClasses; carClassIdx++)
             {
                 StandingCarClass carClass = CarClasses[carClassIdx];
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Name", valueProvider: () => carClass.Name);
@@ -208,7 +208,7 @@ namespace benofficial2.Plugin
 
             int visibleClassCount = 0;
 
-            for (int carClassIdx = 0; carClassIdx < _maxCarClasses; carClassIdx++)
+            for (int carClassIdx = 0; carClassIdx < MaxCarClasses; carClassIdx++)
             {
                 StandingCarClass carClass = CarClasses[carClassIdx];
                 if (carClassIdx < _driverModule.LiveClassLeaderboards.Count)
