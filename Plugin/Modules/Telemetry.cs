@@ -33,6 +33,7 @@ namespace benofficial2.Plugin
         public bool PedalsVisible { get; set; } = true;
         public bool SteeringVisible { get; set; } = true;
         public bool GearAndSpeedVisible { get; set; } = true;
+        public bool ShiftLightsVisible { get; set; } = true;
         public int BackgroundOpacity { get; set; } = 60;
     }
 
@@ -70,6 +71,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Telemetry.SteeringLeft", valueProvider: () => SteeringLeft);
             plugin.AttachDelegate(name: "Telemetry.GearAndSpeedVisible", valueProvider: () => Settings.GearAndSpeedVisible);
             plugin.AttachDelegate(name: "Telemetry.GearAndSpeedLeft", valueProvider: () => GearAndSpeedLeft);
+            plugin.AttachDelegate(name: "Telemetry.ShiftLightsVisible", valueProvider: () => Settings.ShiftLightsVisible);
             plugin.AttachDelegate(name: "Telemetry.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
             plugin.AttachDelegate(name: "Telemetry.BackgroundWidth", valueProvider: () => BackgroundWidth);
         }

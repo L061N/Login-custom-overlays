@@ -254,12 +254,21 @@
                             Show Steering Wheel
                         </styles:SHToggleCheckbox>
 
-                        <styles:SHToggleCheckbox 
-                            ToolTip="Show the current gear and speed" 
-                            HorizontalAlignment="Left" Margin="0,10,4,4"
-                            IsChecked="{Binding Plugin.Modules[TelemetryModule].Settings.GearAndSpeedVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            Show Gear and Speed
-                        </styles:SHToggleCheckbox>
+                        <StackPanel Orientation="Horizontal">
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show the current gear and speed" 
+                                HorizontalAlignment="Left" Margin="0,10,4,4"
+                                IsChecked="{Binding Plugin.Modules[TelemetryModule].Settings.GearAndSpeedVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show Gear and Speed
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show shift lights over the gear indicator" 
+                                HorizontalAlignment="Left" Margin="0,10,4,4"
+                                IsChecked="{Binding Plugin.Modules[TelemetryModule].Settings.ShiftLightsVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show Shift Lights
+                            </styles:SHToggleCheckbox>
+                        </StackPanel>
 
                         <ui:TitledSlider Width="800" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TelemetryModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
