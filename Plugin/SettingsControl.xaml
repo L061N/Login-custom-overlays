@@ -177,6 +177,13 @@
                             Show header
                         </styles:SHToggleCheckbox>
 
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show the car brand logo column when available" 
+                            HorizontalAlignment="Left" Margin="0,0,4,4"
+                            IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.CarLogoVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show car logo
+                        </styles:SHToggleCheckbox>
+
                         <StackPanel Orientation="Horizontal">
                             <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             <ui:TitledSlider Width="400" Title="Header Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.HeaderOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

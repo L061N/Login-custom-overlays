@@ -123,6 +123,18 @@ function getRelativeName(index)
     }
 }
 
+function getRelativeCarBrand(index)
+{
+    if (index == 0)
+    {
+        return $prop('benofficial2.Player.CarBrand');
+    }
+    else
+    {
+        return getRelativeProp(index, 'CarBrand');
+    }
+}
+
 function getRelativeIRating(index)
 {
     let iRating;

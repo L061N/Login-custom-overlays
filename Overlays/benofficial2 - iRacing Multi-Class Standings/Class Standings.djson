@@ -80,7 +80,7 @@
     }
   },
   "Version": 2,
-  "Id": "2c8be658-60de-42ce-b847-274ff461babd",
+  "Id": "e8640d00-87c4-4df5-8f1f-f4feaa641611",
   "BaseHeight": 525,
   "BaseWidth": 486,
   "BackgroundColor": "#FF000000",
@@ -813,7 +813,7 @@
                           "Formula": {
                             "JSExt": 0,
                             "Interpreter": 1,
-                            "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst logoVisible = isnull($prop('benofficial2.Standings.CarLogoVisible'), true);\r\nreturn logoVisible;"
+                            "Expression": "const logoVisible = isnull($prop('benofficial2.Standings.CarLogoVisible'), true);\r\nreturn logoVisible;"
                           },
                           "Mode": 2
                         }

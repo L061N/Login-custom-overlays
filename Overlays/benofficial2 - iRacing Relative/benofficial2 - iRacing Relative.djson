@@ -13,7 +13,7 @@
     }
   },
   "Version": 2,
-  "Id": "fa11d67a-ab9a-43cd-b414-9227d434ff4a",
+  "Id": "247b082c-5ec6-4fe1-a358-7e7350379430",
   "BaseHeight": 170,
   "BaseWidth": 305,
   "BackgroundColor": "#FF000000",
@@ -158,7 +158,7 @@
                         }
                       },
                       "Height": 16.0,
-                      "Left": 230.0,
+                      "Left": 228.0,
                       "Top": 107.0,
                       "Visible": true,
                       "Width": 33.0,
@@ -193,6 +193,38 @@
                       }
                     },
                     {
+                      "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.ImageItem, SimHub.Plugins",
+                      "Image": "library:benofficial2\\CarLogos\\Subaru.png",
+                      "AutoSize": false,
+                      "BackgroundColor": "#00FFFFFF",
+                      "Height": 14.0,
+                      "Left": 203.0,
+                      "Top": 108.0,
+                      "Visible": true,
+                      "Width": 24.0,
+                      "Name": "Car Logo",
+                      "RenderingSkip": 0,
+                      "MinimumRefreshIntervalMS": 0.0,
+                      "Bindings": {
+                        "Image": {
+                          "Formula": {
+                            "JSExt": 1,
+                            "Interpreter": 1,
+                            "Expression": "const index = repeatindex();\r\nconst brand = isnull(getRelativeCarBrand(index), '');\r\nif (brand == '') return '';\r\n\r\nreturn 'library:benofficial2\\\\CarLogos\\\\' + brand + '.png';"
+                          },
+                          "Mode": 2
+                        },
+                        "Visible": {
+                          "Formula": {
+                            "JSExt": 0,
+                            "Interpreter": 1,
+                            "Expression": "const logoVisible = isnull($prop('benofficial2.Relative.CarLogoVisible'), true);\r\nreturn logoVisible;"
+                          },
+                          "Mode": 2
+                        }
+                      }
+                    },
+                    {
                       "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
                       "IsTextItem": true,
                       "Font": "Roboto",
@@ -207,7 +239,7 @@
                       "Left": 65.0,
                       "Top": 105.0,
                       "Visible": true,
-                      "Width": 157.0,
+                      "Width": 158.0,
                       "Name": "DriverName",
                       "RenderingSkip": 0,
                       "MinimumRefreshIntervalMS": 0.0,
@@ -225,6 +257,14 @@
                             "JSExt": 1,
                             "Interpreter": 1,
                             "Expression": "return getRelativeTextColor(repeatindex());"
+                          },
+                          "Mode": 2
+                        },
+                        "Width": {
+                          "Formula": {
+                            "JSExt": 1,
+                            "Interpreter": 1,
+                            "Expression": "const index = repeatindex();\r\nconst brand = isnull(getRelativeProp(index, 'CarBrand'), '');\r\nconst logoVisible = isnull($prop('benofficial2.Relative.CarLogoVisible'), true);\r\nconst width = 158;\r\nif (brand == '' || !logoVisible) return width;\r\nreturn width - 24;"
                           },
                           "Mode": 2
                         }
@@ -256,7 +296,7 @@
                         "RadiusBottomRight": 4
                       },
                       "Height": 16.0,
-                      "Left": 199.0,
+                      "Left": 171.0,
                       "Top": 107.0,
                       "Visible": true,
                       "Width": 31.0,
@@ -269,6 +309,14 @@
                             "JSExt": 1,
                             "Interpreter": 1,
                             "Expression": "return getRelativeIsOutLap(repeatindex());"
+                          },
+                          "Mode": 2
+                        },
+                        "Left": {
+                          "Formula": {
+                            "JSExt": 1,
+                            "Interpreter": 1,
+                            "Expression": "const index = repeatindex();\r\nconst brand = isnull(getRelativeProp(index, 'CarBrand'), '');\r\nconst logoVisible = isnull($prop('benofficial2.Relative.CarLogoVisible'), true);\r\nconst left = 171;\r\nif (brand == '' || !logoVisible) return left;\r\nreturn left - 24;"
                           },
                           "Mode": 2
                         }
@@ -440,7 +488,7 @@
                     }
                   },
                   "Height": 16.0,
-                  "Left": 230.0,
+                  "Left": 228.0,
                   "Top": 87.0,
                   "Visible": true,
                   "Width": 33.0,
@@ -469,6 +517,38 @@
                         "JSExt": 1,
                         "Interpreter": 1,
                         "Expression": "return getRelativeLicenseTextColor(0);"
+                      },
+                      "Mode": 2
+                    }
+                  }
+                },
+                {
+                  "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.ImageItem, SimHub.Plugins",
+                  "Image": "library:benofficial2\\CarLogos\\Subaru.png",
+                  "AutoSize": false,
+                  "BackgroundColor": "#00FFFFFF",
+                  "Height": 14.0,
+                  "Left": 203.0,
+                  "Top": 88.0,
+                  "Visible": true,
+                  "Width": 24.0,
+                  "Name": "Car Logo",
+                  "RenderingSkip": 0,
+                  "MinimumRefreshIntervalMS": 0.0,
+                  "Bindings": {
+                    "Image": {
+                      "Formula": {
+                        "JSExt": 1,
+                        "Interpreter": 1,
+                        "Expression": "const index = 0;\r\nconst brand = isnull(getRelativeCarBrand(index), '');\r\nif (brand == '') return '';\r\n\r\nreturn 'library:benofficial2\\\\CarLogos\\\\' + brand + '.png';"
+                      },
+                      "Mode": 2
+                    },
+                    "Visible": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "const logoVisible = isnull($prop('benofficial2.Relative.CarLogoVisible'), true);\r\nreturn logoVisible;"
                       },
                       "Mode": 2
                     }
@@ -530,7 +610,7 @@
                     "RadiusBottomRight": 4
                   },
                   "Height": 16.0,
-                  "Left": 199.0,
+                  "Left": 171.0,
                   "Top": 87.0,
                   "Visible": true,
                   "Width": 31.0,
@@ -543,6 +623,14 @@
                         "JSExt": 1,
                         "Interpreter": 1,
                         "Expression": "return getRelativeIsOutLap(0);"
+                      },
+                      "Mode": 2
+                    },
+                    "Left": {
+                      "Formula": {
+                        "JSExt": 1,
+                        "Interpreter": 1,
+                        "Expression": "const index = 0;\r\nconst brand = isnull(getRelativeProp(index, 'CarBrand'), '');\r\nconst logoVisible = isnull($prop('benofficial2.Relative.CarLogoVisible'), true);\r\nconst left = 171;\r\nif (brand == '' || !logoVisible) return left;\r\nreturn left - 24;"
                       },
                       "Mode": 2
                     }
@@ -668,7 +756,7 @@
                       "Font": "Roboto",
                       "FontWeight": "Bold",
                       "FontSize": 14.0,
-                      "Text": "159.6",
+                      "Text": "259.6",
                       "TextColor": "#FFFFFFFF",
                       "HorizontalAlignment": 2,
                       "VerticalAlignment": 1,
@@ -740,7 +828,7 @@
                         }
                       },
                       "Height": 16.0,
-                      "Left": 230.0,
+                      "Left": 228.0,
                       "Top": 67.0,
                       "Visible": true,
                       "Width": 33.0,
@@ -775,6 +863,38 @@
                       }
                     },
                     {
+                      "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.ImageItem, SimHub.Plugins",
+                      "Image": "library:benofficial2\\CarLogos\\Subaru.png",
+                      "AutoSize": false,
+                      "BackgroundColor": "#00FFFFFF",
+                      "Height": 14.0,
+                      "Left": 203.0,
+                      "Top": 68.0,
+                      "Visible": true,
+                      "Width": 24.0,
+                      "Name": "Car Logo",
+                      "RenderingSkip": 0,
+                      "MinimumRefreshIntervalMS": 0.0,
+                      "Bindings": {
+                        "Image": {
+                          "Formula": {
+                            "JSExt": 1,
+                            "Interpreter": 1,
+                            "Expression": "const index = repeatindex() * -1;\r\nconst brand = isnull(getRelativeCarBrand(index), '');\r\nif (brand == '') return '';\r\n\r\nreturn 'library:benofficial2\\\\CarLogos\\\\' + brand + '.png';"
+                          },
+                          "Mode": 2
+                        },
+                        "Visible": {
+                          "Formula": {
+                            "JSExt": 0,
+                            "Interpreter": 1,
+                            "Expression": "const logoVisible = isnull($prop('benofficial2.Relative.CarLogoVisible'), true);\r\nreturn logoVisible;"
+                          },
+                          "Mode": 2
+                        }
+                      }
+                    },
+                    {
                       "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
                       "IsTextItem": true,
                       "Font": "Roboto",
@@ -789,7 +909,7 @@
                       "Left": 65.0,
                       "Top": 65.0,
                       "Visible": true,
-                      "Width": 157.0,
+                      "Width": 158.0,
                       "Name": "DriverName",
                       "RenderingSkip": 0,
                       "MinimumRefreshIntervalMS": 0.0,
@@ -807,6 +927,14 @@
                             "JSExt": 1,
                             "Interpreter": 1,
                             "Expression": "return getRelativeTextColor(repeatindex() * -1);"
+                          },
+                          "Mode": 2
+                        },
+                        "Width": {
+                          "Formula": {
+                            "JSExt": 1,
+                            "Interpreter": 1,
+                            "Expression": "const index = repeatindex() * -1;\r\nconst brand = isnull(getRelativeProp(index, 'CarBrand'), '');\r\nconst logoVisible = isnull($prop('benofficial2.Relative.CarLogoVisible'), true);\r\nconst width = 158;\r\nif (brand == '' || !logoVisible) return width;\r\nreturn width - 24;"
                           },
                           "Mode": 2
                         }
@@ -838,7 +966,7 @@
                         "RadiusBottomRight": 4
                       },
                       "Height": 16.0,
-                      "Left": 199.0,
+                      "Left": 171.0,
                       "Top": 67.0,
                       "Visible": true,
                       "Width": 31.0,
@@ -851,6 +979,14 @@
                             "JSExt": 1,
                             "Interpreter": 1,
                             "Expression": "return getRelativeIsOutLap(repeatindex() * -1);"
+                          },
+                          "Mode": 2
+                        },
+                        "Left": {
+                          "Formula": {
+                            "JSExt": 1,
+                            "Interpreter": 1,
+                            "Expression": "const index = repeatindex() * -1;\r\nconst brand = isnull(getRelativeProp(index, 'CarBrand'), '');\r\nconst logoVisible = isnull($prop('benofficial2.Relative.CarLogoVisible'), true);\r\nconst left = 171;\r\nif (brand == '' || !logoVisible) return left;\r\nreturn left - 24;"
                           },
                           "Mode": 2
                         }

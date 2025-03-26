@@ -29,6 +29,7 @@ namespace benofficial2.Plugin
     {
         public bool HeaderVisible { get; set; } = true;
         public int HeaderOpacity { get; set; } = 90;
+        public bool CarLogoVisible { get; set; } = true;
         public int BackgroundOpacity { get; set; } = 60;
     }
 
@@ -40,6 +41,7 @@ namespace benofficial2.Plugin
         public string ClassTextColor { get; set; } = string.Empty;
         public string Number { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
+        public string CarBrand { get; set; } = string.Empty;
         public bool OutLap { get; set; } = false;
         public int iRating { get; set; } = 0;
         public string License { get; set; } = string.Empty;
@@ -75,6 +77,7 @@ namespace benofficial2.Plugin
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
         private DriverModule _driverModule = null;
+        private CarModule _carModule = null;
 
         public RelativeSettings Settings { get; set; }
 
@@ -90,10 +93,12 @@ namespace benofficial2.Plugin
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _driverModule = plugin.GetModule<DriverModule>();
+            _carModule = plugin.GetModule<CarModule>();
 
             Settings = plugin.ReadCommonSettings<RelativeSettings>("RelativeSettings", () => new RelativeSettings());
             plugin.AttachDelegate(name: "Relative.HeaderVisible", valueProvider: () => Settings.HeaderVisible);
             plugin.AttachDelegate(name: "Relative.HeaderOpacity", valueProvider: () => Settings.HeaderOpacity);
+            plugin.AttachDelegate(name: "Relative.CarLogoVisible", valueProvider: () => Settings.CarLogoVisible);
             plugin.AttachDelegate(name: "Relative.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
 
             InitRelative(plugin, "Ahead", Ahead.Rows, RelativeAhead.MaxRows);
@@ -111,6 +116,7 @@ namespace benofficial2.Plugin
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.ClassTextColor", valueProvider: () => row.ClassTextColor);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.Number", valueProvider: () => row.Number);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.Name", valueProvider: () => row.Name);
+                plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.CarBrand", valueProvider: () => row.CarBrand);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.OutLap", valueProvider: () => row.OutLap);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.iRating", valueProvider: () => row.iRating);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.License", valueProvider: () => row.License);
@@ -158,6 +164,7 @@ namespace benofficial2.Plugin
                 row.ClassTextColor = opponent.CarClassTextColor;
                 row.Number = opponent.CarNumber;
                 row.Name = opponent.Name;
+                row.CarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName); ;
                 row.OutLap = driver != null && driver.OutLap;
                 row.iRating = (int)(opponent.IRacing_IRating ?? 0);
                 (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
@@ -180,6 +187,7 @@ namespace benofficial2.Plugin
             row.ClassTextColor = string.Empty;
             row.Number = string.Empty;
             row.Name = string.Empty;
+            row.CarBrand = string.Empty;
             row.OutLap = false;
             row.iRating = 0;
             row.License = string.Empty;

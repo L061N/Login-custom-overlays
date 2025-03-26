@@ -58,6 +58,7 @@ namespace benofficial2.Plugin
         private TimeSpan _minTimeInPit = TimeSpan.FromMilliseconds(2500);
         private double _lastSessionTime = 0;
         private SessionModule _sessionModule;
+        private CarModule _carModule = null;
 
         public const int MaxDrivers = 64;
 
@@ -70,6 +71,7 @@ namespace benofficial2.Plugin
 
         public bool PlayerOutLap { get; internal set; } = false;
         public string PlayerNumber { get; internal set; } = "";
+        public string PlayerCarBrand { get; internal set; } = "";
         public int PlayerPositionInClass { get; internal set; } = 0;
         public int PlayerLivePositionInClass { get; internal set; } = 0;
         public bool PlayerHadWhiteFlag { get; internal set; } = false;
@@ -79,9 +81,11 @@ namespace benofficial2.Plugin
         public void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _sessionModule = plugin.GetModule<SessionModule>();
+            _carModule = plugin.GetModule<CarModule>();
 
             plugin.AttachDelegate(name: "Player.OutLap", valueProvider: () => PlayerOutLap);
             plugin.AttachDelegate(name: "Player.Number", valueProvider: () => PlayerNumber);
+            plugin.AttachDelegate(name: "Player.CarBrand", valueProvider: () => PlayerCarBrand);
             plugin.AttachDelegate(name: "Player.PositionInClass", valueProvider: () => PlayerPositionInClass);
             plugin.AttachDelegate(name: "Player.LivePositionInClass", valueProvider: () => PlayerLivePositionInClass);
         }
@@ -103,6 +107,7 @@ namespace benofficial2.Plugin
                 DriverInfoIndexes = new Dictionary<int, int>();
                 PlayerOutLap = false;
                 PlayerNumber = "";
+                PlayerCarBrand = "";
                 PlayerPositionInClass = 0;
                 PlayerLivePositionInClass = 0;
                 PlayerHadWhiteFlag = false;
@@ -239,6 +244,7 @@ namespace benofficial2.Plugin
                 {
                     PlayerOutLap = driver.OutLap;
                     PlayerNumber = opponent.CarNumber;
+                    PlayerCarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName);
                     PlayerPositionInClass = opponent.Position > 0 ? opponent.PositionInClass : 0;
 
                     if (_sessionModule.Race)
