@@ -312,7 +312,7 @@ namespace benofficial2.Plugin
                     }
 
                     carClass.VisibleRowCount = visibleRowCount;
-                    carClass.BestLapTime = bestLapTime;
+                    carClass.BestLapTime = bestLapTime < TimeSpan.MaxValue ? bestLapTime : TimeSpan.Zero;
                     visibleClassCount++;
                 }
                 else
