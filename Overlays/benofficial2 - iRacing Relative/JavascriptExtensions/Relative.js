@@ -244,7 +244,11 @@ function getRelativeLicenseBackColor(index)
 function getRelativeGapToPlayer(index)
 {
     let gap;
-    if (index == 0 || g_UseSimHubProp)
+    if (index == 0)
+    {
+        return '';
+    }
+    else if (g_UseSimHubProp)
     {
         const position = getopponentleaderboardposition_aheadbehind(index);
         gap = driverrelativegaptoplayer(position);
@@ -258,8 +262,8 @@ function getRelativeGapToPlayer(index)
 
 function getRelativeTextColor(index)
 {
+    if (index == 0) return '#FFEBAE00';
     if (!isRace()) return 'White';
-    if (index == 0) return 'White';
 
     let lap;
     if (g_UseSimHubProp)

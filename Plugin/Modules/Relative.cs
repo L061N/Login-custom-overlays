@@ -149,23 +149,23 @@ namespace benofficial2.Plugin
                 }
 
                 Opponent opponent = opponents[rowIdx];
-                if (!IsValidRow(opponent))
+                Driver driver = null;
+                if (_driverModule.Drivers != null) _driverModule.Drivers.TryGetValue(opponent.CarNumber, out driver);
+
+                if (driver == null || !IsValidRow(opponent))
                 {
                     BlankRow(row);
                     continue;
                 }
 
-                Driver driver = null;
-                if (_driverModule.Drivers != null) _driverModule.Drivers.TryGetValue(opponent.CarNumber, out driver);
-
                 row.RowVisible = true;
-                row.LivePositionInClass = driver != null ? driver.LivePositionInClass : 0;
+                row.LivePositionInClass = driver.LivePositionInClass;
                 row.ClassColor = opponent.CarClassColor;
                 row.ClassTextColor = opponent.CarClassTextColor;
                 row.Number = opponent.CarNumber;
                 row.Name = opponent.Name;
                 row.CarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName); ;
-                row.OutLap = driver != null && driver.OutLap;
+                row.OutLap = driver.OutLap;
                 row.iRating = (int)(opponent.IRacing_IRating ?? 0);
                 (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
                 row.GapToPlayer = opponent.RelativeGapToPlayer ?? 0;
