@@ -25,7 +25,7 @@
     }
   },
   "Version": 2,
-  "Id": "385be806-884c-4abf-95ed-b5b6c9587b97",
+  "Id": "33bac2be-5b2b-4d65-afcf-249056e62d51",
   "BaseHeight": 128,
   "BaseWidth": 760,
   "BackgroundColor": "#FF000000",
@@ -1386,7 +1386,7 @@
                 "JSExt": 1,
                 "Interpreter": 1,
                 "Expression": "return checkVersion(g_VersionName, g_VersionNumber);",
-                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'inputs'\r\nconst g_VersionNumber = '2.2'"
+                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'inputs'\r\nconst g_VersionNumber = '3.0'"
               },
               "Mode": 2
             }

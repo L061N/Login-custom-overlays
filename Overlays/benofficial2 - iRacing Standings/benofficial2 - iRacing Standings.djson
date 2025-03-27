@@ -25,7 +25,7 @@
     }
   },
   "Version": 2,
-  "Id": "e005fe31-fd84-4e9c-988d-604fee81969c",
+  "Id": "01ca61c9-baf1-4f59-9563-23c4da1f488f",
   "BaseHeight": 530,
   "BaseWidth": 363,
   "BackgroundColor": "#FF000000",
@@ -922,7 +922,7 @@
                 "JSExt": 1,
                 "Interpreter": 1,
                 "Expression": "return checkVersion(g_VersionName, g_VersionNumber);",
-                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'standings'\r\nconst g_VersionNumber = '2.2'"
+                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'standings'\r\nconst g_VersionNumber = '3.0'"
               },
               "Mode": 2
             }

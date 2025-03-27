@@ -13,7 +13,7 @@
     }
   },
   "Version": 2,
-  "Id": "8e55f8a8-dc2e-496b-979b-3d5407376c2f",
+  "Id": "377c7775-cf2c-4cff-97df-42d650be7407",
   "BaseHeight": 230,
   "BaseWidth": 582,
   "BackgroundColor": "#FF000000",
@@ -362,7 +362,7 @@
                 "JSExt": 1,
                 "Interpreter": 1,
                 "Expression": "return checkVersion(g_VersionName, g_VersionNumber);",
-                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'dash'\r\nconst g_VersionNumber = '2.2'"
+                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'dash'\r\nconst g_VersionNumber = '3.0'"
               },
               "Mode": 2
             }
