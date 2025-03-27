@@ -293,19 +293,27 @@ namespace benofficial2.Plugin
                         (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, opponent);
                         row.BestLapTime = opponent.BestLapTime;
 
-                        if (opponent.BestLapTime > TimeSpan.Zero && opponent.BestLapTime < bestLapTime)
-                        {
-                            bestLapTime = opponent.BestLapTime;
-                        }
-
                         if (opponent.IsPlayer)
                         {
-                            // Last lap time is "estimated" in the opponent data, so used the value from the game data for the player.
+                            // Last lap time is "estimated" in the opponent data, so use the value from the game data for the player.
                             row.LastLapTime = data.NewData.LastLapTime;
                         }
                         else
                         {
                             row.LastLapTime = opponent.LastLapTime;
+                        }
+
+                        // Make sure the best lap time is always lower or equal to the last lap time.
+                        // Can happen when iRacing doesn't provide a valid best lap time, but SimHub computed the last lap time.
+                        if (row.LastLapTime > TimeSpan.Zero && (row.BestLapTime <= TimeSpan.Zero || row.LastLapTime < row.BestLapTime))
+                        {
+                            row.BestLapTime = row.LastLapTime;
+                        }
+
+                        // Determine the class best lap time
+                        if (row.BestLapTime > TimeSpan.Zero && row.BestLapTime < bestLapTime)
+                        {
+                            bestLapTime = row.BestLapTime;
                         }
 
                         visibleRowCount++;

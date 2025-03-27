@@ -80,7 +80,7 @@
     }
   },
   "Version": 2,
-  "Id": "670f4a26-6455-4b51-87a2-faf12d4a2217",
+  "Id": "497fd753-f77f-40a5-84b8-743bb34c164b",
   "BaseHeight": 525,
   "BaseWidth": 486,
   "BackgroundColor": "#FF000000",
@@ -475,7 +475,7 @@
                           "Formula": {
                             "JSExt": 1,
                             "Interpreter": 1,
-                            "Expression": "const color = 'Transparent';\r\nconst classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\n\r\nconst lastTime = isnull(getStandingsProp(classIdx, rowIdx, 'LastLapTime'), '');\r\nif (isInvalidTime(lastTime)) return color;\r\n\r\nconst classBestTime = isnull(getStandingsClassProp(classIdx, 'BestLapTime'), '');\r\nif (isInvalidTime(classBestTime)) return color;\r\n\r\nif (timespantoseconds(lastTime) <= timespantoseconds(classBestTime))\r\n{\r\n\t// Purple\r\n\treturn '#73E052CF';\r\n}\r\n\r\nconst bestTime = isnull(getStandingsProp(classIdx, rowIdx, 'BestLapTime'), '');\r\nif (isInvalidTime(bestTime)) return color;\r\n\r\nif (timespantoseconds(lastTime) <= timespantoseconds(bestTime))\r\n{\r\n\t// Green\r\n\treturn '#7352E052';\r\n}\r\n\r\nreturn color;"
+                            "Expression": "const color = 'Transparent';\r\nconst classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\n\r\nconst lastTime = isnull(getStandingsProp(classIdx, rowIdx, 'LastLapTime'), '');\r\nif (isInvalidTime(lastTime)) return color;\r\n\r\nconst classBestTime = isnull(getStandingsClassProp(classIdx, 'BestLapTime'), '');\r\nif (isInvalidTime(classBestTime)) return color;\r\n\r\nconst bestTime = isnull(getStandingsProp(classIdx, rowIdx, 'BestLapTime'), '');\r\nif (isInvalidTime(bestTime)) return color;\r\n\r\nif (timespantoseconds(lastTime) <= timespantoseconds(classBestTime))\r\n{\r\n\t// Purple\r\n\treturn '#73E052CF';\r\n}\r\n\r\nif (timespantoseconds(lastTime) <= timespantoseconds(bestTime))\r\n{\r\n\t// Green\r\n\treturn '#7352E052';\r\n}\r\n\r\nreturn color;"
                           },
                           "Mode": 2
                         }
