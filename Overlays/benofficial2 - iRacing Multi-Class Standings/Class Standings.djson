@@ -80,7 +80,7 @@
     }
   },
   "Version": 2,
-  "Id": "497fd753-f77f-40a5-84b8-743bb34c164b",
+  "Id": "058820e9-a173-41bf-b399-727200e54020",
   "BaseHeight": 525,
   "BaseWidth": 486,
   "BackgroundColor": "#FF000000",
@@ -781,7 +781,7 @@
                           "Formula": {
                             "JSExt": 1,
                             "Interpreter": 1,
-                            "Expression": "const classIdx = isnull($prop('benofficial2.Standings.PlayerCarClassIdx'), 0);\r\nconst rowIdx = repeatindex() - 1;\r\nif (getStandingsProp(classIdx, rowIdx, 'IsPlayer'))\r\n{\r\n\treturn $prop('variable.PlayerNameTextColor');\r\n}\r\nreturn 'White';"
+                            "Expression": "const classIdx = $prop('variable.ClassIdx');\r\nconst rowIdx = repeatindex() - 1;\r\nif (getStandingsProp(classIdx, rowIdx, 'IsPlayer'))\r\n{\r\n\treturn $prop('variable.PlayerNameTextColor');\r\n}\r\nreturn 'White';"
                           },
                           "Mode": 2
                         }
