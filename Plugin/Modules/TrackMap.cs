@@ -27,22 +27,22 @@ namespace benofficial2.Plugin
         public int BackgroundOpacity { get; set; } = 0;
     }
 
-    public class TrackMapModule : IPluginModule
+    public class TrackMapModule : PluginModuleBase
     {
         public TrackMapSettings Settings { get; set; }
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<TrackMapSettings>("TrackMapSettings", () => new TrackMapSettings());
             plugin.AttachDelegate(name: "TrackMap.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
 
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("TrackMapSettings", Settings);
         }

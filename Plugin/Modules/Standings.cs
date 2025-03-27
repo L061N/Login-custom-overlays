@@ -94,7 +94,7 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class StandingsModule : IPluginModule
+    public class StandingsModule : PluginModuleBase
     {
         private DriverModule _driverModule = null;
         private CarModule _carModule = null;
@@ -118,8 +118,8 @@ namespace benofficial2.Plugin
         {
             CarClasses = new List<StandingCarClass>(Enumerable.Range(0, MaxCarClasses).Select(x => new StandingCarClass()));
         }
-
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override int UpdatePriority => 80;
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _driverModule = plugin.GetModule<DriverModule>();
             _carModule = plugin.GetModule<CarModule>();
@@ -184,10 +184,10 @@ namespace benofficial2.Plugin
             }
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            if (DateTime.Now - _lastUpdateTime < _updateInterval) return;
-            _lastUpdateTime = DateTime.Now;
+            if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
+            _lastUpdateTime = data.FrameTime;
 
             PlayerCarClassIdx = FindPlayerCarClassIdx(ref data);
 
@@ -332,7 +332,7 @@ namespace benofficial2.Plugin
             VisibleClassCount = visibleClassCount;
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("StandingsSettings", Settings);
         }

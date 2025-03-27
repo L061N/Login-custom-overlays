@@ -36,7 +36,7 @@ namespace benofficial2.Plugin
         public string MinCareGapString { get => MinimumCareGap.ValueString; set => MinimumCareGap.ValueString = value; }
     }
 
-    public class RejoinHelperModule : IPluginModule
+    public class RejoinHelperModule : PluginModuleBase
     {
         private SessionModule _sessionModule = null;
 
@@ -50,7 +50,7 @@ namespace benofficial2.Plugin
         public const string StateCare = "Care";
         public const string StateYield = "Yield";
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _sessionModule = plugin.GetModule<SessionModule>();
 
@@ -65,7 +65,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "RejoinHelper.ColorPct", valueProvider: () => ColorPct);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
@@ -124,7 +124,7 @@ namespace benofficial2.Plugin
             }
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("RejoinHelperSettings", Settings);
         }

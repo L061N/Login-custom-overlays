@@ -72,7 +72,7 @@ namespace benofficial2.Plugin
         }
     }
 
-    public class RelativeModule : IPluginModule
+    public class RelativeModule : PluginModuleBase
     {
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
@@ -84,7 +84,7 @@ namespace benofficial2.Plugin
         public RelativeAhead Ahead = new RelativeAhead();
         public RelativeBehind Behind = new RelativeBehind();
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _driverModule = plugin.GetModule<DriverModule>();
             _carModule = plugin.GetModule<CarModule>();
@@ -121,10 +121,10 @@ namespace benofficial2.Plugin
             }
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            if (DateTime.Now - _lastUpdateTime < _updateInterval) return;
-            _lastUpdateTime = DateTime.Now;
+            if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
+            _lastUpdateTime = data.FrameTime;
 
             UpdateRelative(ref data, Ahead.Rows, RelativeAhead.MaxRows, data.NewData.OpponentsAheadOnTrack);
             UpdateRelative(ref data, Behind.Rows, RelativeBehind.MaxRows, data.NewData.OpponentsBehindOnTrack);
@@ -168,7 +168,7 @@ namespace benofficial2.Plugin
             }
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("RelativeSettings", Settings);
         }

@@ -37,7 +37,7 @@ namespace benofficial2.Plugin
         public int BackgroundOpacity { get; set; } = 60;
     }
 
-    public class TelemetryModule : IPluginModule
+    public class TelemetryModule : PluginModuleBase
     {
         private const int _tracesWidth = 500;
         private const int _tracesLeft = 17;
@@ -56,7 +56,7 @@ namespace benofficial2.Plugin
 
         public int BackgroundWidth { get; set; } = _backgroundWidth;
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<TelemetrySettings>("TelemetrySettings", () => new TelemetrySettings());
             plugin.AttachDelegate(name: "Telemetry.TracesVisible", valueProvider: () => Settings.TracesVisible);
@@ -76,7 +76,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Telemetry.BackgroundWidth", valueProvider: () => BackgroundWidth);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
             int tracesOffset = 0;
             if (!Settings.TracesVisible)
@@ -112,7 +112,7 @@ namespace benofficial2.Plugin
             BackgroundWidth = _backgroundWidth + tracesOffset + pedalsOffset + gearAndSpeedOffset + steeringOffset;
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("TelemetrySettings", Settings);
         }

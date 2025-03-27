@@ -22,7 +22,7 @@ using System;
 
 namespace benofficial2.Plugin
 {
-    public class PushToPass : IPluginModule
+    public class PushToPass : PluginModuleBase
     {
         public bool Enabled { get; set; } = false;
         public bool Activated { get; set; } = false;
@@ -37,7 +37,7 @@ namespace benofficial2.Plugin
         private DateTime _activatedTime = DateTime.MinValue;
         private DateTime _deactivatedTime = DateTime.MinValue;
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _trackModule = plugin.GetModule<TrackModule>();
             _carModule = plugin.GetModule<CarModule>();
@@ -50,7 +50,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "PushToPass.TotalCooldown", valueProvider: () => TotalCooldown);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
@@ -148,7 +148,7 @@ namespace benofficial2.Plugin
             }
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
 
         }

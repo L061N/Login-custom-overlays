@@ -23,7 +23,7 @@ using System.Runtime;
 
 namespace benofficial2.Plugin
 {
-    public class SessionModule : IPluginModule
+    public class SessionModule : PluginModuleBase
     {
         private string _lastSessionTypeName = string.Empty;
         private double _lastSessionTime = 0;
@@ -41,7 +41,9 @@ namespace benofficial2.Plugin
         public double RaceTimer { get; internal set; } = 0;
         public bool Oval { get; internal set; } = false;
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override int UpdatePriority => 10;
+
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.AttachDelegate(name: "Session.Race", valueProvider: () => Race);
             plugin.AttachDelegate(name: "Session.Qual", valueProvider: () => Qual);
@@ -54,7 +56,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Session.Oval", valueProvider: () => Oval);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
@@ -156,7 +158,7 @@ namespace benofficial2.Plugin
             }
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
         }
     }

@@ -29,23 +29,23 @@ namespace benofficial2.Plugin
         public int BackgroundOpacity { get; set; } = 0;
     }
 
-    public class WindModule : IPluginModule
+    public class WindModule : PluginModuleBase
     {
         public WindSettings Settings { get; set; }
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<WindSettings>("GeneralSettings", () => new WindSettings());
             plugin.AttachDelegate(name: "Wind.RotateWithCar", valueProvider: () => Settings.RotateWithCar);
             plugin.AttachDelegate(name: "Wind.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
 
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("GeneralSettings", Settings);
         }

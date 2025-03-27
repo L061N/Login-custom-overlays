@@ -22,6 +22,7 @@ using System;
 using System.Windows.Media;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace benofficial2.Plugin
 {
@@ -30,7 +31,8 @@ namespace benofficial2.Plugin
     [PluginName("benofficial2 Plugin")]
     public class benofficial2 : IPlugin, IDataPlugin, IWPFSettingsV2
     {
-        public Dictionary<string, IPluginModule> Modules { get; private set; }
+        private List<PluginModuleBase> _sortedModules;
+        public Dictionary<string, PluginModuleBase> Modules { get; private set; }
 
         public string PluginName { get; internal set; } = "";
         public bool PluginRunning { get; internal set; } = false;
@@ -77,8 +79,11 @@ namespace benofficial2.Plugin
             // Create all the modules
             Modules = PluginModuleFactory.CreateAllPluginModules();
 
+            // Sort modules by update priority
+            _sortedModules = Modules.Values.OrderBy(m => m.UpdatePriority).ToList();
+
             // Init each module
-            foreach (var module in Modules.Values)
+            foreach (var module in _sortedModules)
             {
                 module.Init(pluginManager, this);
             }
@@ -112,7 +117,7 @@ namespace benofficial2.Plugin
             if (data.OldData == null || data.NewData == null) return;
 
             // Update each module
-            foreach (var module in Modules.Values)
+            foreach (var module in _sortedModules)
             {
                 module.DataUpdate(pluginManager, this, ref data);
             }
@@ -126,7 +131,7 @@ namespace benofficial2.Plugin
         public void End(PluginManager pluginManager)
         {
             // End each module
-            foreach (var module in Modules.Values)
+            foreach (var module in _sortedModules)
             {
                 module.End(pluginManager, this);
             }
@@ -134,7 +139,7 @@ namespace benofficial2.Plugin
             PluginRunning = false;
         }
 
-        public T GetModule<T>() where T : class, IPluginModule
+        public T GetModule<T>() where T : PluginModuleBase
         {
             var key = typeof(T).Name;
             if (Modules.TryGetValue(key, out var module))

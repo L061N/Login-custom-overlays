@@ -51,7 +51,7 @@ namespace benofficial2.Plugin
         public OpponentsWithDrivers Drivers { get; set; } = new OpponentsWithDrivers();
     }
 
-    public class DriverModule : IPluginModule
+    public class DriverModule : PluginModuleBase
     {
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
@@ -77,8 +77,8 @@ namespace benofficial2.Plugin
         public bool PlayerHadWhiteFlag { get; internal set; } = false;
 
         public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
-
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override int UpdatePriority => 30;
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _sessionModule = plugin.GetModule<SessionModule>();
             _carModule = plugin.GetModule<CarModule>();
@@ -90,10 +90,10 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.LivePositionInClass", valueProvider: () => PlayerLivePositionInClass);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            if (DateTime.Now - _lastUpdateTime < _updateInterval) return;
-            _lastUpdateTime = DateTime.Now;
+            if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
+            _lastUpdateTime = data.FrameTime;
 
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
@@ -258,7 +258,7 @@ namespace benofficial2.Plugin
             UpdateLivePositionInClass(ref data);
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
 
         }

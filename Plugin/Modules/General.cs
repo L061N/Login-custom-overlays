@@ -27,22 +27,22 @@ namespace benofficial2.Plugin
         public bool CheckForUpdates { get; set; } = true;
     }
 
-    public class GeneralModule : IPluginModule
+    public class GeneralModule : PluginModuleBase
     {
         public GeneralSettings Settings { get; set; }
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<GeneralSettings>("GeneralSettings", () => new GeneralSettings());
             plugin.AttachDelegate(name: "CheckForUpdates", valueProvider: () => Settings.CheckForUpdates);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
 
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("GeneralSettings", Settings);
         }

@@ -27,22 +27,22 @@ namespace benofficial2.Plugin
         public string URL { get; set; } = "";
     }
 
-    public class TwitchChatModule : IPluginModule
+    public class TwitchChatModule : PluginModuleBase
     {
         public TwitchChatSettings Settings { get; set; }
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<TwitchChatSettings>("TwitchChatSettings", () => new TwitchChatSettings());
             plugin.AttachDelegate(name: "TwitchChat.URL", valueProvider: () => Settings.URL);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
 
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("TwitchChatSettings", Settings);
         }

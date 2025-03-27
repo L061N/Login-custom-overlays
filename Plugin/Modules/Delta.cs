@@ -40,7 +40,7 @@ namespace benofficial2.Plugin
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
     }
 
-    public class DeltaModule : IPluginModule
+    public class DeltaModule : PluginModuleBase
     {
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
@@ -55,7 +55,7 @@ namespace benofficial2.Plugin
         public HeadToHeadRow HeadToHeadRowAhead { get; internal set; }
         public HeadToHeadRow HeadToHeadRowBehind { get; internal set; }
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _sessionModule = plugin.GetModule<SessionModule>();
             _standingsModule = plugin.GetModule<StandingsModule>();
@@ -81,7 +81,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Delta.{aheadBehind}.LastLapTime", valueProvider: () => row.LastLapTime);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
@@ -103,8 +103,8 @@ namespace benofficial2.Plugin
 
             Speed = Math.Min((float)data.NewData.SpeedLocal, (float)data.NewData.SpeedLocal * -delta);
 
-            if (DateTime.Now - _lastUpdateTime < _updateInterval) return;
-            _lastUpdateTime = DateTime.Now;
+            if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
+            _lastUpdateTime = data.FrameTime;
 
             UpdateHeadToHead(ref data, HeadToHeadRowAhead, -1);
             UpdateHeadToHead(ref data, HeadToHeadRowBehind, 1);
@@ -143,7 +143,7 @@ namespace benofficial2.Plugin
             row.LastLapTime = opponent.LastLapTime;
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("DeltaSettings", Settings);
         }

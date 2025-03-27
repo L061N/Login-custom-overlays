@@ -25,28 +25,29 @@ using System.Reflection;
 
 namespace benofficial2.Plugin
 {
-    public interface IPluginModule
+    public abstract class PluginModuleBase
     {
-        void Init(PluginManager pluginManager, benofficial2 plugin);
-        void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data);
-        void End(PluginManager pluginManager, benofficial2 plugin);
+        public virtual int UpdatePriority => 100;
+        public abstract void Init(PluginManager pluginManager, benofficial2 plugin);
+        public abstract void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data);
+        public abstract void End(PluginManager pluginManager, benofficial2 plugin);
     }
 
     public static class PluginModuleFactory
     {
-        public static Dictionary<string, IPluginModule> CreateAllPluginModules()
+        public static Dictionary<string, PluginModuleBase> CreateAllPluginModules()
         {
             // Get all types that implement IPluginModule
             var moduleTypes = Assembly.GetExecutingAssembly()
                                       .GetTypes()
-                                      .Where(t => typeof(IPluginModule).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+                                      .Where(t => typeof(PluginModuleBase).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
                                       .ToList();
 
             // Instantiate each module type
-            var modules = new Dictionary<string, IPluginModule>();
+            var modules = new Dictionary<string, PluginModuleBase>();
             foreach (var type in moduleTypes)
             {
-                var instance = Activator.CreateInstance(type) as IPluginModule;
+                var instance = Activator.CreateInstance(type) as PluginModuleBase;
                 if (instance != null)
                 {
                     modules[type.Name] = instance;

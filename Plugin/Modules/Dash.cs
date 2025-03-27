@@ -27,22 +27,22 @@ namespace benofficial2.Plugin
         public int BackgroundOpacity { get; set; } = 60;
     }
 
-    public class DashModule : IPluginModule
+    public class DashModule : PluginModuleBase
     {
         public DashSettings Settings { get; set; }
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<DashSettings>("DashSettings", () => new DashSettings());
             plugin.AttachDelegate(name: "Dash.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
 
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("DashSettings", Settings);
         }

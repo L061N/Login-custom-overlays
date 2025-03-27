@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace benofficial2.Plugin
 {
-    public class CarModule : IPluginModule
+    public class CarModule : PluginModuleBase
     {
         private const string _carInfoUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/CarInfo.json";
 
@@ -76,8 +76,8 @@ namespace benofficial2.Plugin
         public bool HasFineBrakeBias { get; set; } = false;
         public bool HasBrakeBiasMigration { get; set; } = false;
         public bool HasDryTireCompounds { get; set; } = false;
-
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override int UpdatePriority => 20;
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Task.Run(() =>
             {
@@ -125,7 +125,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Car.HasDryTireCompounds", valueProvider: () => HasDryTireCompounds);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
             if (_carInfoJson == null || _carBrandInfoJson == null) return;
             if (data.NewData.CarId == _lastCarId) return;
@@ -208,7 +208,7 @@ namespace benofficial2.Plugin
             HasDryTireCompounds = car["hasDryTireCompounds"]?.Value<bool>() ?? false;
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
         }
 

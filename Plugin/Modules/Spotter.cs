@@ -38,14 +38,14 @@ namespace benofficial2.Plugin
         public string ThresholdString { get => DistanceThreshold.ValueString; set => DistanceThreshold.ValueString = value; }
     }
 
-    public class SpotterModule : IPluginModule
+    public class SpotterModule : PluginModuleBase
     {
         public SpotterSettings Settings { get; set; }
 
         public double OverlapAhead { get; internal set; } = 0;
         public double OverlapBehind { get; internal set; } = 0;
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<SpotterSettings>("SpotterSettings", () => new SpotterSettings());
             plugin.AttachDelegate(name: "Spotter.Enabled", valueProvider: () => Settings.Enabled);
@@ -58,7 +58,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Spotter.OverlapBehind", valueProvider: () => OverlapBehind);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
             UpdateOverlapAhead(ref data);
             UpdateOverlapBehind(ref data);
@@ -98,7 +98,7 @@ namespace benofficial2.Plugin
             OverlapBehind = overlap;
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("SpotterSettings", Settings);
         }

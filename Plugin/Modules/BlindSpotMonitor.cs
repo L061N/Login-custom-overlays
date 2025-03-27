@@ -28,14 +28,14 @@ namespace benofficial2.Plugin
         public bool Enabled { get; set; } = false;
     }
 
-    public class BlindSpotMonitorModule : IPluginModule
+    public class BlindSpotMonitorModule : PluginModuleBase
     {
         private SpotterModule _spotterModule = null;
 
         public BlindSpotMonitorSettings Settings { get; set; }
         public bool Visible { get; set; } = false;
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _spotterModule = plugin.GetModule<SpotterModule>();
 
@@ -44,7 +44,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "BlindSpotMonitor.Visible", valueProvider: () => Visible);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
             if (!Settings.Enabled)
             {
@@ -56,7 +56,7 @@ namespace benofficial2.Plugin
             }
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("BlindSpotMonitorSettings", Settings);
         }

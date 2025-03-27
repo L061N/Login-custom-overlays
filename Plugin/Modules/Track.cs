@@ -26,21 +26,18 @@ using System.Threading.Tasks;
 
 namespace benofficial2.Plugin
 {
-    public class TrackModule : IPluginModule
+    public class TrackModule : PluginModuleBase
     {
         private const string TrackInfoUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/TrackInfo.json";
-
         private JObject _trackInfoJson = null;
-
         private string _lastTrackId = string.Empty;
 
         public int PushToPassCooldown { get; set; } = 0;
-
         public float QualStartTrackPct { get; set; } = 0.0f;
-
         public float RaceStartTrackPct { get; set; } = 0.0f;
+        public override int UpdatePriority => 20;
 
-        public void Init(PluginManager pluginManager, benofficial2 plugin)
+        public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Task.Run(() =>
             {
@@ -51,7 +48,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Track.RaceStartTrackPct", valueProvider: () => RaceStartTrackPct);
         }
 
-        public void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
+        public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
             if (_trackInfoJson == null) return;
             if (data.NewData.TrackId == _lastTrackId) return;
@@ -80,7 +77,7 @@ namespace benofficial2.Plugin
             RaceStartTrackPct = track?["raceStartTrackPct"]?.Value<float>() ?? 0.0f;
         }
 
-        public void End(PluginManager pluginManager, benofficial2 plugin)
+        public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
         }
 
