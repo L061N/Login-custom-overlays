@@ -130,6 +130,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Modules\PushToPass.cs" />
+    <Compile Include="RemoteJsonFile.cs" />
     <Compile Include="SettingsControl.xaml.cs">
       <DependentUpon>SettingsControl.xaml</DependentUpon>
     </Compile>
