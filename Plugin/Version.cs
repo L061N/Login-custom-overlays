@@ -1,4 +1,22 @@
-﻿using System;
+﻿/*
+    benofficial2's Official Overlays
+    Copyright (C) 2025 benofficial2
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -8,17 +26,18 @@ namespace benofficial2.Plugin
 {
     public class VersionChecker
     {
-        public const string CurrentVersion = "3.0";
-        private const string VersionUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Versions.json";
-        private const string DownloadPageUrl = "https://github.com/fixfactory/bo2-official-overlays/releases";
+        private const string _versionUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Versions.json";
+        private const string _downloadPageUrl = "https://github.com/fixfactory/bo2-official-overlays/releases";
 
+        public const string CurrentVersion = "3.0";
+        
         public async Task CheckForUpdateAsync()
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    string json = await client.GetStringAsync(VersionUrl);
+                    string json = await client.GetStringAsync(_versionUrl);
                     JObject jsonObject = JObject.Parse(json);
 
                     string latestVersion = jsonObject["plugin"]?.ToString();
@@ -34,7 +53,7 @@ namespace benofficial2.Plugin
 
                         if (result == DialogResult.Yes)
                         {
-                            System.Diagnostics.Process.Start(DownloadPageUrl);
+                            System.Diagnostics.Process.Start(_downloadPageUrl);
                         }
                     }
                 }
