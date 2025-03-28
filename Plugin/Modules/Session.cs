@@ -26,11 +26,12 @@ namespace benofficial2.Plugin
     public class SessionModule : PluginModuleBase
     {
         private string _lastSessionTypeName = string.Empty;
-        private double _lastSessionTime = 0;
+        private double _lastSessionTime = double.MaxValue;
         private bool _raceFinishedForPlayer = false;
         private double? _lastTrackPct = null;
         private DateTime _raceStartedTime = DateTime.MinValue;
 
+        public double SessionTime { get; internal set; } = 0;
         public bool Race { get; internal set; } = false;
         public bool Qual { get; internal set; } = false;
         public bool Practice { get; internal set; } = false;
@@ -61,7 +62,11 @@ namespace benofficial2.Plugin
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
 
-            if (data.NewData.SessionTypeName != _lastSessionTypeName)
+            try { SessionTime = (double)raw.Telemetry["SessionTime"]; } catch { SessionTime = 0; }
+            bool sessionChanged = (SessionTime == 0 || SessionTime < _lastSessionTime);
+            _lastSessionTime = SessionTime;
+
+            if (sessionChanged || data.NewData.SessionTypeName != _lastSessionTypeName)
             {
                 Race = data.NewData.SessionTypeName.IndexOf("Race") != -1;
                 Qual = data.NewData.SessionTypeName.IndexOf("Qual") != -1;
@@ -99,20 +104,15 @@ namespace benofficial2.Plugin
             RaceStarted = Race && sessionState >= 4;
 
             // Determine if race finished for the player
-            double sessionTime = 0;
-            try { sessionTime = (double)raw.Telemetry["SessionTime"]; } catch { }
-            if (!Race || sessionTime == 0 || sessionTime < _lastSessionTime)
+            if (!Race || sessionChanged)
             {
                 // Reset when changing/restarting session
-                _lastSessionTime = sessionTime;
                 _lastTrackPct = null;
                 _raceFinishedForPlayer = false;
                 RaceFinished = false;
             }
             else
             {
-                _lastSessionTime = sessionTime;
-
                 if (_raceFinishedForPlayer)
                 {
                     // Race finished

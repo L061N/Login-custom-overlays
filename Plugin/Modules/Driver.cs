@@ -53,10 +53,10 @@ namespace benofficial2.Plugin
 
     public class DriverModule : PluginModuleBase
     {
+        private double _lastSessionTime = double.MaxValue;
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
         private TimeSpan _minTimeInPit = TimeSpan.FromMilliseconds(2500);
-        private double _lastSessionTime = 0;
         private SessionModule _sessionModule;
         private CarModule _carModule = null;
 
@@ -98,10 +98,12 @@ namespace benofficial2.Plugin
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
 
+            bool sessionChanged = (_sessionModule.SessionTime == 0 || _sessionModule.SessionTime < _lastSessionTime);
+            double deltaTime = Math.Max(_sessionModule.SessionTime - _lastSessionTime, 0);
+            _lastSessionTime = _sessionModule.SessionTime;
+
             // Reset when changing/restarting session
-            double sessionTime = 0;
-            try { sessionTime = (double)raw.Telemetry["SessionTime"]; } catch { }
-            if (sessionTime == 0 || sessionTime < _lastSessionTime)
+            if (sessionChanged)
             {
                 Drivers = new Dictionary<string, Driver>();
                 DriverInfoIndexes = new Dictionary<int, int>();
@@ -112,12 +114,7 @@ namespace benofficial2.Plugin
                 PlayerLivePositionInClass = 0;
                 PlayerHadWhiteFlag = false;
                 LiveClassLeaderboards = new List<ClassLeaderboard>();
-                _lastSessionTime = sessionTime;
-                return;
             }
-
-            double deltaTime = sessionTime - _lastSessionTime;
-            _lastSessionTime = sessionTime;
 
             UpdateRawDriverInfo(ref data);
 
