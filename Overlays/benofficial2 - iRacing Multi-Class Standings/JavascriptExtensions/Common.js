@@ -73,7 +73,7 @@ function isOffline()
 
 function isInvalidTime(time)
 {
-    return time == null || time == '00:00:00' || time == '00:00.000' || time == '00:00.0000000';
+    return time == null || time == '' || time == '00:00:00' || time == '00:00.000' || time == '00:00.0000000';
 }
 
 function formatSecondsToTimecode(totalSeconds) 
