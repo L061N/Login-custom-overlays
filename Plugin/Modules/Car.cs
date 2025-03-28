@@ -22,20 +22,14 @@ using SimHub.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace benofficial2.Plugin
 {
     public class CarModule : PluginModuleBase
     {
-        private const string _carInfoUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/CarInfo.json";
-
-        private const string _carBrandInfoUrl = "https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/CarBrandInfo.json";
-
-        private JObject _carInfoJson = null;
-
-        private JObject _carBrandInfoJson = null;
+        private RemoteJsonFile _carInfo = new RemoteJsonFile("https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/CarInfo.json");
+        private RemoteJsonFile _carBrandInfo = new RemoteJsonFile("https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/CarBrandInfo.json");
+        private RemoteJsonFile _carClassInfo = new RemoteJsonFile("https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/CarClassInfo.json");
 
         private string _lastCarId = string.Empty;
 
@@ -79,15 +73,9 @@ namespace benofficial2.Plugin
         public override int UpdatePriority => 20;
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
-            Task.Run(() =>
-            {
-                LoadCarInfoAsync().Wait();
-            });
-
-            Task.Run(() =>
-            {
-                LoadCarBrandInfoAsync().Wait();
-            });
+            _carInfo.LoadAsync();
+            _carBrandInfo.LoadAsync();
+            _carClassInfo.LoadAsync();
 
             plugin.AttachDelegate(name: "Car.Brand", valueProvider: () => Brand);
             plugin.AttachDelegate(name: "Car.IsGT3", valueProvider: () => IsGT3);
@@ -127,12 +115,12 @@ namespace benofficial2.Plugin
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            if (_carInfoJson == null || _carBrandInfoJson == null) return;
+            if (_carInfo.Json == null || _carBrandInfo.Json == null) return;
             if (data.NewData.CarId == _lastCarId) return;
             _lastCarId = data.NewData.CarId;
             if (data.NewData.CarId.Length == 0) return;
 
-            JToken car = _carInfoJson[data.NewData.CarId];
+            JToken car = _carInfo.Json[data.NewData.CarId];
             if (car == null)
             {
                 Brand = string.Empty;
@@ -212,38 +200,6 @@ namespace benofficial2.Plugin
         {
         }
 
-        private async Task LoadCarInfoAsync()
-        {
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    string json = await client.GetStringAsync(_carInfoUrl);
-                    _carInfoJson = JObject.Parse(json);
-                }
-            }
-            catch (Exception ex)
-            {
-                SimHub.Logging.Current.Error($"An error occurred while downloading {_carInfoUrl}\n{ex.Message}");
-            }
-        }
-
-        private async Task LoadCarBrandInfoAsync()
-        {
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    string json = await client.GetStringAsync(_carBrandInfoUrl);
-                    _carBrandInfoJson = JObject.Parse(json);
-                }
-            }
-            catch (Exception ex)
-            {
-                SimHub.Logging.Current.Error($"An error occurred while downloading {_carBrandInfoUrl}\n{ex.Message}");
-            }
-        }
-
         public string GetCarBrand(string carId, string carName = "")
         {
             // Check if the car brand is already cached
@@ -254,9 +210,9 @@ namespace benofficial2.Plugin
 
             // Check if the car brand is in the CarInfo JSON
             // Using this method for exceptions that can't have a search token in CarBrandInfo (ex: name is too generic)
-            if (_carInfoJson != null)
+            if (_carInfo.Json != null)
             {
-                JToken car = _carInfoJson[carId];
+                JToken car = _carInfo.Json[carId];
                 if (car != null)
                 {
                     string brand = car["brand"]?.Value<string>();
@@ -270,7 +226,7 @@ namespace benofficial2.Plugin
 
             // Check if the car brand is in the CarBrandInfo JSON
             // This is inneficient, that's why we cache them in a run-time dictionary
-            if (_carBrandInfoJson["car_brands"] is JObject carBrands)
+            if (_carBrandInfo.Json["car_brands"] is JObject carBrands)
             {
                 foreach (var brand in carBrands)
                 {
@@ -293,6 +249,23 @@ namespace benofficial2.Plugin
             }
 
             return string.Empty;
+        }
+
+        public string GetCarClassName(string classId)
+        {
+            // Check if the class name is in the CarClassInfo JSON
+            if (_carClassInfo.Json != null && classId != null)
+            {
+                if (_carClassInfo.Json["car_classes"] is JObject carClasses)
+                {
+                    JToken carClass = carClasses[classId];
+                    if (carClass != null)
+                    {
+                        return carClass["name"]?.Value<string>() ?? classId;
+                    }
+                }
+            }
+            return classId;
         }
     }
 }

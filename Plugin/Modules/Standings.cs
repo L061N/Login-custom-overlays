@@ -100,6 +100,7 @@ namespace benofficial2.Plugin
         private CarModule _carModule = null;
         private SessionModule _sessionModule = null;
 
+        private double _lastSessionTime = double.MaxValue;
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
 
@@ -189,6 +190,9 @@ namespace benofficial2.Plugin
             if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
             _lastUpdateTime = data.FrameTime;
 
+            bool sessionChanged = (_sessionModule.SessionTime == 0 || _sessionModule.SessionTime < _lastSessionTime);
+            _lastSessionTime = _sessionModule.SessionTime;
+
             PlayerCarClassIdx = FindPlayerCarClassIdx(ref data);
 
             if (_sessionModule.Race)
@@ -218,10 +222,15 @@ namespace benofficial2.Plugin
 
                     TimeSpan bestLapTime = TimeSpan.MaxValue;
 
-                    carClass.Name = opponentClass.ClassName;
-                    carClass.NameSize = MeasureTextInPixels(carClass.Name);
-                    carClass.Color = opponentClass.ClassColor;
-                    carClass.TextColor = opponentClass.ClassTextColor;
+                    // TODO: Need more testing before enabling this optim
+                    //if (sessionChanged)
+                    {
+                        carClass.Name = _carModule.GetCarClassName(opponentClass.ClassName);
+                        carClass.NameSize = MeasureTextInPixels(carClass.Name);
+                        carClass.Color = opponentClass.ClassColor;
+                        carClass.TextColor = opponentClass.ClassTextColor;
+                    }
+                    
                     carClass.Sof = CalculateSof(opponentsWithDrivers);
                     carClass.DriverCount = opponentsWithDrivers.Count;
 
