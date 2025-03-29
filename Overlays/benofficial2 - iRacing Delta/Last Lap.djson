@@ -16,7 +16,7 @@
   },
   "DashboardDebugManager": {},
   "Version": 2,
-  "Id": "780725fb-5486-4166-a9e4-194eb4c2733b",
+  "Id": "1c93e1bf-c874-4d82-b0eb-a4199b1c678a",
   "BaseHeight": 38,
   "BaseWidth": 276,
   "BackgroundColor": "#FF000000",
@@ -85,6 +85,14 @@
                       "StartColorValue": -1.0,
                       "EndColorValue": 1.0,
                       "Mode": 4
+                    },
+                    "Opacity": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return isnull($prop('benofficial2.Delta.ColoredBackgroundOpacity'), 100);"
+                      },
+                      "Mode": 2
                     }
                   }
                 },
@@ -238,7 +246,17 @@
                   "Width": 65.0,
                   "Name": "Best Background",
                   "RenderingSkip": 0,
-                  "MinimumRefreshIntervalMS": 0.0
+                  "MinimumRefreshIntervalMS": 0.0,
+                  "Bindings": {
+                    "Opacity": {
+                      "Formula": {
+                        "JSExt": 0,
+                        "Interpreter": 1,
+                        "Expression": "return isnull($prop('benofficial2.Delta.ColoredBackgroundOpacity'), 100);"
+                      },
+                      "Mode": 2
+                    }
+                  }
                 },
                 {
                   "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",

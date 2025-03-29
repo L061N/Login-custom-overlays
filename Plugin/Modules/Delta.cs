@@ -29,6 +29,7 @@ namespace benofficial2.Plugin
     public class DeltaSettings : ModuleSettings
     {
         public int BackgroundOpacity { get; set; } = 60;
+        public int ColoredBackgroundOpacity { get; set; } = 90;
     }
 
     public class HeadToHeadRow
@@ -66,6 +67,7 @@ namespace benofficial2.Plugin
 
             Settings = plugin.ReadCommonSettings<DeltaSettings>("DeltaSettings", () => new DeltaSettings());
             plugin.AttachDelegate(name: "Delta.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
+            plugin.AttachDelegate(name: "Delta.ColoredBackgroundOpacity", valueProvider: () => Settings.ColoredBackgroundOpacity);
             plugin.AttachDelegate(name: "Delta.Speed", valueProvider: () => Speed);
 
             InitHeadToHead(plugin, "Ahead", HeadToHeadRowAhead);

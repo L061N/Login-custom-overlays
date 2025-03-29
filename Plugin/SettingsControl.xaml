@@ -79,7 +79,7 @@
                         </styles:SHToggleCheckbox>
 
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="Columns to show in race*" Margin="0,0,40,0"/>
+                            <Label Content="Columns to show in race*" Margin="0,0,0,0" Width="180"/>
 
                             <styles:SHToggleCheckbox 
                                 ToolTip="Car brand logo when available" 
@@ -112,7 +112,7 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="Columns to show not-in-race*" Margin="0,0,20,10"/>
+                            <Label Content="Columns to show not-in-race*" Margin="0,0,00,10" Width="180"/>
 
                             <styles:SHToggleCheckbox 
                                 ToolTip="Car brand logo when available" 
@@ -199,7 +199,10 @@
 
                 <styles:SHSection Title="DELTA OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
-                        <ui:TitledSlider Width="800" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[DeltaModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[DeltaModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <ui:TitledSlider Width="400" Title="Colored Background Opacity (%)" Maximum="100" Minimum="40" Value="{Binding Plugin.Modules[DeltaModule].Settings.ColoredBackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Background opacity of colored elements such as the speed delta" />
+                        </StackPanel>
                     </StackPanel>
                 </styles:SHSection>
 
