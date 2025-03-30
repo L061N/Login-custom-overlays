@@ -45,7 +45,7 @@ namespace benofficial2.Plugin
         private DriverModule _driverModule = null;
 
         private DateTime _lastUpdateTime = DateTime.MinValue;
-        private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(2000);
+        private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(1000);
 
         public FuelCalcSettings Settings { get; set; }
         public bool Visible { get; internal set; } = true;
