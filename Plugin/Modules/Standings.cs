@@ -225,7 +225,15 @@ namespace benofficial2.Plugin
                     // TODO: Need more testing before enabling this optim
                     //if (sessionChanged)
                     {
-                        carClass.Name = _carModule.GetCarClassName(opponentClass.ClassName);
+                        if (opponentClass.ClassName == "Hosted All Cars" && opponentClass.CarModels.Count == 1)
+                        {
+                            carClass.Name = opponentClass.CarModels[0];
+                        }
+                        else
+                        {
+                            carClass.Name = _carModule.GetCarClassName(opponentClass.ClassName);
+                        }
+
                         carClass.NameSize = MeasureTextInPixels(carClass.Name);
                         carClass.Color = opponentClass.ClassColor;
                         carClass.TextColor = opponentClass.ClassTextColor;
