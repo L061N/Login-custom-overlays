@@ -112,61 +112,6 @@ function getBestLapTime()
     return convertToTimestamp(fastestTime);
 }
 
-function getBestLapTimeInClass()
-{
-    if (g_DebugBestLapTime != "") 
-    {
-        return g_DebugBestLapTime;
-    }
-
-    if (!isGameIRacing() || !isGameRunning() || NewRawData() == null)
-    {
-        return "00:00.000";
-    }
-
-    // Return the player's best lap time in the current session
-    if (g_UsePlayersFastestTime)
-    {
-        let bestLapTime = $prop('BestLapTime');
-        if (!isInvalidTime(bestLapTime))
-        {
-            return String(bestLapTime).slice(3, -4);
-        }
-    }
-
-    // Get the player's class
-    const data = NewRawData().AllSessionData;
-    const playerCarIdx = data["DriverInfo"]["DriverCarIdx"];
-    const playerClassId = data["DriverInfo"]["Drivers"][playerCarIdx]["CarClassID"];
-
-    // Try to find the fastest time of any session
-    const numSession = data["SessionInfo"]["Sessions"].length;
-    let fastestTime = 0;
-    for (let sessionIdx = 0; sessionIdx < numSession; sessionIdx++)
-    {
-        const session = data["SessionInfo"]["Sessions"][sessionIdx];
-        if (session["ResultsPositions"] != null)
-        {
-            const posCount = session["ResultsPositions"].length;
-            for (let posIdx = 0; posIdx < posCount; posIdx++)
-            {
-                // Must be in same class as player
-                const carIdx = session["ResultsPositions"][posIdx]["CarIdx"];
-                if (playerClassId == data["DriverInfo"]["Drivers"][carIdx]["CarClassID"])
-                {
-                    const timeSecs = Number(session["ResultsPositions"][posIdx]["FastestTime"]);
-                    if (timeSecs > 0 && (timeSecs < fastestTime || fastestTime == 0))
-                    {
-                        fastestTime = timeSecs;
-                    }
-                }
-            }
-        }
-    }
-
-    return convertToTimestamp(fastestTime);
-}
-
 function getFuelInfo(sessionIdx)
 {
     let info = {
@@ -216,8 +161,7 @@ function getFuelInfo(sessionIdx)
         return info;
     }
 
-    const bestLapTime = new Date("00:" + $prop('variable.bestLapTime'));
-    const bestLapTimeSecs = bestLapTime.getMinutes() * 60 + bestLapTime.getSeconds() + bestLapTime.getMilliseconds() / 1000;
+    const bestLapTimeSecs = timespantoseconds($prop('benofficial2.FuelCalc.BestLapTime'));
 
     let minTimeForLaps = -1;
     if (info.sessionLaps > 0 && bestLapTimeSecs > 0)
