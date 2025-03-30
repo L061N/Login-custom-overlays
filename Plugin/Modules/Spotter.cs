@@ -34,7 +34,7 @@ namespace benofficial2.Plugin
         public int Width { get; set; } = 12;
         public int Border { get; set; } = 3;
 
-        // Legacy properties for backwards compatibility (saved pre 2.2)
+        // Legacy properties for backwards compatibility (saved pre 3.0)
         public string ThresholdString { get => DistanceThreshold.ValueString; set => DistanceThreshold.ValueString = value; }
     }
 

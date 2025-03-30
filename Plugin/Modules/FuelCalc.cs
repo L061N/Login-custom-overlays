@@ -34,7 +34,7 @@ namespace benofficial2.Plugin
         public ModuleSettingFloat ExtraConsumption { get; set; } = new ModuleSettingFloat(1.0f);
         public bool EnablePreRaceWarning { get; set; } = true;
 
-        // Legacy properties for backwards compatibility (saved pre 2.2)
+        // Legacy properties for backwards compatibility (saved pre 3.0)
         public string FuelReserveString { get => FuelReserveLiters.ValueString; set => FuelReserveLiters.ValueString = value; }
         public string ExtraLapsString { get => ExtraRaceLaps.ValueString; set => ExtraRaceLaps.ValueString = value; }
         public string ExtraConsumptionPctString { get => ExtraConsumption.ValueString; set => ExtraConsumption.ValueString = value; }

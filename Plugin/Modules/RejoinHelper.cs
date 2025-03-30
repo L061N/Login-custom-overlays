@@ -31,7 +31,7 @@ namespace benofficial2.Plugin
         public ModuleSettingFloat MinimumCareGap { get; set; } = new ModuleSettingFloat(1.5f);
         public int MinSpeed { get; set; } = 35;
 
-        // Legacy properties for backwards compatibility (saved pre 2.2)
+        // Legacy properties for backwards compatibility (saved pre 3.0)
         public string MinClearGapString { get => MinimumClearGap.ValueString; set => MinimumClearGap.ValueString = value; }
         public string MinCareGapString { get => MinimumCareGap.ValueString; set => MinimumCareGap.ValueString = value; }
     }
