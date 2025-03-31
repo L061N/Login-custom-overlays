@@ -18,8 +18,12 @@
 
 <UserControl x:Class="benofficial2.Plugin.SettingsControl" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:converter="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:iconpacks="clr-namespace:MahApps.Metro.IconPacks;assembly=MahApps.Metro.IconPacks.Material" xmlns:local="clr-namespace:benofficial2.Plugin" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:styles="clr-namespace:SimHub.Plugins.Styles;assembly=SimHub.Plugins" xmlns:ui="clr-namespace:SimHub.Plugins.UI;assembly=SimHub.Plugins" mc:Ignorable="d">
     <ScrollViewer>
-        <Grid Height="3214">
-            <StackPanel VerticalAlignment="Top">
+        <Grid Height="3414">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="44*"/>
+                <ColumnDefinition Width="377*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel VerticalAlignment="Top" Grid.ColumnSpan="2">
                 <styles:SHSection Title="{Binding Plugin.PluginName}" ShowSeparator="True" VerticalAlignment="Top">
                     <StackPanel>
                         <styles:SHSubSection Title="What is this plugin?">
@@ -54,7 +58,7 @@
                         </styles:SHToggleCheckbox>
                     </StackPanel>
                 </styles:SHSection>
-                
+
                 <styles:SHSection Title="STANDINGS OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
                         <styles:SHToggleCheckbox 
@@ -70,7 +74,7 @@
                             IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.HeaderVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Show header
                         </styles:SHToggleCheckbox>
-                        
+
                         <styles:SHToggleCheckbox 
                             ToolTip="Show the car class header with class information" 
                             HorizontalAlignment="Left" Margin="0,0,4,8"
@@ -87,7 +91,7 @@
                                 IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.CarLogoVisibleInRace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 Car Logo
                             </styles:SHToggleCheckbox>
-                            
+
                             <styles:SHToggleCheckbox 
                                 ToolTip="Driver's gap to the race leader in seconds or laps" 
                                 HorizontalAlignment="Left" Margin="0,0,4,4"
@@ -153,7 +157,7 @@
                             <ui:TitledSlider MinWidth="400" Title="Lead Focused Rows (Player Class)" Maximum="10" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.LeadFocusedRows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                              ToolTip="Number of leader rows to always show when there are too many rows, 0 to disable"/>
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Horizontal">
                             <ui:TitledSlider MinWidth="400" Title="Max Row Count (Other Classes)*" Maximum="5" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.MaxRowsOtherClasses, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Maximum number of visible rows in the Standings leaderboard for other classes"/>
@@ -297,7 +301,7 @@
                             IsChecked="{Binding Plugin.Modules[SpotterModule].Settings.Enabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Enable Spotter
                         </styles:SHToggleCheckbox>
-                        
+
                         <Label Content="Spotter Threshold" Margin="0,10,0,0"/>
 
                         <TextBox Text="{Binding Plugin.Modules[SpotterModule].Settings.DistanceThreshold.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
@@ -410,7 +414,7 @@
                                 </Style>
                             </TextBox.Style>
                         </TextBox>
-                        
+
                         <Label Content="Extra Lap(s)" Margin="0,10,0,0"/>
 
                         <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLaps.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
