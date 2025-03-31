@@ -5,7 +5,7 @@
 
 With benofficial2's Official Overlays you get a simple collection of free overlays for [iRacing](https://www.iracing.com/). The overlays are made with [SimHub](https://www.simhubdash.com/download-2/), which means they are fully customizable, and don't require any other executable to run in the background.
 
-<a href="https://youtu.be/8q-s8u6F2xo?si=3FSmYuznnDwxdd9v&t=1344">
+<a href="https://youtu.be/Bj29vDSf8bw?si=UCBgdk9UT7WfN2Eg&t=143">
 <p align="center">
   <img src="Images/Overview-LMP3.png" width="1920"/>
 </p>
