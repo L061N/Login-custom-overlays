@@ -7,7 +7,7 @@ With benofficial2's Official Overlays you get a simple collection of free overla
 
 <a href="https://youtu.be/8q-s8u6F2xo?si=3FSmYuznnDwxdd9v&t=1344">
 <p align="center">
-  <img src="Images/Overview-ERS-Green.png" width="1920"/>
+  <img src="Images/Overview-LMP3.png" width="1920"/>
 </p>
 </a>
 
@@ -15,8 +15,9 @@ To see them in action, click the image above for a video demo.
 
 ### Included in the collection
 
-- **[Standings Box](#standings-box)**: shows the live leaderboard
-- **[Relative Box](#relative-box)**: shows drivers ahead / behind on track
+- **[Multi-Class Standings](#multi-class-standings)**: shows the live leaderboard in up to 4 car classes
+- **[Standings](#standings)**: shows the live leaderboard in the player's car class
+- **[Relative](#relative)**: shows drivers ahead / behind on track
 - **[Track Map](#track-map)**: shows cars on a map
 - **[Delta Bar](#delta-bar)**: gives you feedback on your pace with time and speed deltas
 - **[Inputs Telemetry](#inputs-telemetry)**: shows pedal inputs and a graph
@@ -98,7 +99,15 @@ For streaming, get the web source url by selecting **Copy OBS browser address to
 
 For a two-PC streaming setup, replace **127.0.0.1** by the **IP Address** of your **Gaming PC**.
 
-## Standings Box
+## Multi-Class Standings
+
+Shows the live **Leaderboard** for up to 4 car classes. Optional columns: **Car Logo**, **Gap**, **Best Lap Time**, **Last Lap Time**. See the **benofficial2 plugin** page (in the left menu) for all options.
+
+<p align="center">
+  <img src="Images/Multi-Class-Standings-LMP3.png" width="450"/>
+</p>
+
+## Standings
 
 Shows the live **Leaderboard** for the player's car class. Can show up to 25 drivers and have **Lead-Focused** rows (configurable in plugin options). The driver's **iRating** is shown with their **License Class** color. The **Tire Compound** indicator also serves as an **On-Track** indicator. In a race, the **Gap to Leader** and **Last Pit Stop Lap** are shown. In practice and qualification, the **Best Lap Time** is shown. For streamers, the large header makes it clear to your viewers if you're in a race or practice session.
 
@@ -110,16 +119,12 @@ Shows the live **Leaderboard** for the player's car class. Can show up to 25 dri
   <img src="Images/Standings-Wet.png" width="450"/>
 </p>
 
-## Relative Box
+## Relative
 
 Shows the nearby drivers **Ahead & Behind** on-track. This includes cars from every car class. In blue are cars that are a lap down and in red are those a lap ahead. The **Out Lap Indicator** shows when a car is on an out-lap. The last column shows the **Gap** in seconds to that car. The header shows the **Strength of Field** and **Incident Count**. The temperature is the **Track Temperature** and the time is your computer's **Local Time**.
 
 <p align="center">
-  <img src="Images/Relative-Out.png" width="350"/>
-</p>
-
-<p align="center">
-  <img src="Images/Relative-Red.png" width="350"/>
+  <img src="Images/Relative-LMP3.png" width="350"/>
 </p>
 
 ## Track Map
