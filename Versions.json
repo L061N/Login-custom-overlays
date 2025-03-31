@@ -1,16 +1,17 @@
 {
-    "plugin": "2.1",
-    "standings": "2.1",
-    "relative": "2.0",
+    "plugin": "3.0",
+    "standings": "3.0",
+    "relative": "3.0",
     "trackmap": "2.0",
-    "delta": "2.1",
-    "inputs": "2.1",
-    "dash": "2.0",
+    "delta": "3.0",
+    "inputs": "3.0",
+    "dash": "3.0",
     "setupcover": "2.0",
     "twitchchat": "2.0",
     "launchassist": "2.0",
     "spotter": "2.0",
-    "fuelcalc": "2.0",
+    "fuelcalc": "3.0",
     "wind": "2.1",
-    "weather": "2.1"
+    "weather": "2.1",
+    "multiclassstandings": "3.0"
 }
