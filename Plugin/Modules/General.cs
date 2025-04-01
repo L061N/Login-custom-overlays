@@ -33,7 +33,8 @@ namespace benofficial2.Plugin
 
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
-            Settings = plugin.ReadCommonSettings<GeneralSettings>("GeneralSettings", () => new GeneralSettings());
+            // There was an issue with loading settings stored pre-3.0, so we need to specify a new settings key
+            Settings = plugin.ReadCommonSettings<GeneralSettings>("GeneralSettings_3.1", () => new GeneralSettings());
             plugin.AttachDelegate(name: "CheckForUpdates", valueProvider: () => Settings.CheckForUpdates);
         }
 
@@ -44,7 +45,7 @@ namespace benofficial2.Plugin
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
-            plugin.SaveCommonSettings("GeneralSettings", Settings);
+            plugin.SaveCommonSettings("GeneralSettings_3.1", Settings);
         }
     }
 }
