@@ -45,7 +45,7 @@ namespace benofficial2.Plugin
                     if (!string.IsNullOrEmpty(latestVersion) && IsNewerVersion(latestVersion, CurrentVersion))
                     {
                         DialogResult result = MessageBox.Show(
-                            $"A new version {latestVersion} for benofficial2 plugin is available. Do you want to visit the download page?",
+                            $"A new version {latestVersion} for benofficial2 plugin is available.\nDo you want to visit the download page?",
                             "Update Available",
                             MessageBoxButtons.YesNo,
                             MessageBoxIcon.Information

@@ -19,6 +19,7 @@
 using SimHub.Plugins.Styles;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -63,6 +64,18 @@ namespace benofficial2.Plugin
                 FileName = "https://github.com/fixfactory/bo2-official-overlays",
                 UseShellExecute = true // Ensures it opens in the default browser
             });
+        }
+        
+        private void CheckForUpdates_Checked(object sender, RoutedEventArgs e)
+        {
+            if (IsLoaded)
+            {
+                Task.Run(() =>
+                {
+                    VersionChecker versionChecker = new VersionChecker();
+                    versionChecker.CheckForUpdateAsync().Wait();
+                });
+            }
         }
 
         private void ChatIs_Click(object sender, RoutedEventArgs e)

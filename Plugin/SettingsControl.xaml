@@ -53,7 +53,8 @@
                         <styles:SHToggleCheckbox 
                             ToolTip="Check if a new version of the plugin is available when starting SimHub." 
                             HorizontalAlignment="Left" Margin="0,0,4,4"
-                            IsChecked="{Binding Plugin.Modules[GeneralModule].Settings.CheckForUpdates, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            IsChecked="{Binding Plugin.Modules[GeneralModule].Settings.CheckForUpdates, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Checked="CheckForUpdates_Checked">
                             Check for updates
                         </styles:SHToggleCheckbox>
                     </StackPanel>
