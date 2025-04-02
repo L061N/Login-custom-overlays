@@ -97,23 +97,3 @@ function formatSecondsToTimecode(totalSeconds)
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
 }
-
-// Parses a timecode string in the format "00:00.0000000" and converts it to "0:00.000"
-function formatTimecode(timecode) 
-{
-    // Extract minutes, seconds, and milliseconds using regex
-    const match = String(timecode).match(/(\d{2}):(\d{2})\.(\d{3})/);
-    
-    if (!match) 
-    {
-        return "";
-    }
-    
-    let minutes = parseInt(match[1], 10);
-    let seconds = parseInt(match[2], 10);
-    let milliseconds = match[3];
-    
-    // Convert to the desired format "0:00.000"
-    return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds}`;
-}
-

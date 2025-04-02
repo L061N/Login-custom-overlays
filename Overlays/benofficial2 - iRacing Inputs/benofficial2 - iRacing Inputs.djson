@@ -25,7 +25,7 @@
     }
   },
   "Version": 2,
-  "Id": "33bac2be-5b2b-4d65-afcf-249056e62d51",
+  "Id": "36921351-0905-421c-9969-e3bb61a86b75",
   "BaseHeight": 128,
   "BaseWidth": 760,
   "BackgroundColor": "#FF000000",
@@ -1436,7 +1436,7 @@
     "Category": "RSC",
     "Title": "benofficial2 - iRacing Inputs",
     "Description": "",
-    "Author": "twitch.tv/benofficial2, Romainrob ",
+    "Author": "twitch.tv/benofficial2",
     "Width": 760.0,
     "Height": 128.0,
     "DashboardVersion": ""

@@ -13,7 +13,7 @@
     }
   },
   "Version": 2,
-  "Id": "b95a6eb2-39d0-448a-9551-c17a3b6bfbe8",
+  "Id": "b8a57c04-b405-4e3a-b088-daf33ba2eecc",
   "BaseHeight": 695,
   "BaseWidth": 486,
   "BackgroundColor": "#FF000000",
@@ -76,7 +76,7 @@
                   "FreezePageChanges": false,
                   "EnableScreenRolesAndActivation": true,
                   "BackgroundColor": "#00FFFFFF",
-                  "Height": 525.0,
+                  "Height": 529.0,
                   "Left": 0.0,
                   "Top": 30.0,
                   "Visible": true,
@@ -319,7 +319,7 @@
                 "JSExt": 1,
                 "Interpreter": 1,
                 "Expression": "return checkVersion(g_VersionName, g_VersionNumber);",
-                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'multiclassstandings'\r\nconst g_VersionNumber = '3.0'"
+                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'multiclassstandings'\r\nconst g_VersionNumber = '3.1'"
               },
               "Mode": 2
             }

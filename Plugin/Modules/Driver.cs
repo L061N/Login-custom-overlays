@@ -20,6 +20,7 @@ using GameReaderCommon;
 using SimHub.Plugins;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace benofficial2.Plugin
@@ -43,6 +44,8 @@ namespace benofficial2.Plugin
         public bool Towing { get; set; } = false;
         public DateTime TowingEndTime { get; set; } = DateTime.MinValue;
         public bool FinishedRace { get; set; } = false;
+        public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
+        public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
     }
 
     public class ClassLeaderboard
@@ -341,18 +344,24 @@ namespace benofficial2.Plugin
             if (raw == null) return;
             
             int driverCount = 0;
-            try { driverCount = (int)raw.AllSessionData["DriverInfo"]["Drivers"].Count; } catch { }
+            try { driverCount = (int)raw.AllSessionData["DriverInfo"]["Drivers"].Count; } catch { Debug.Assert(false); }
 
             for (int i = 0; i < driverCount; i++)
             {
                 int carIdx = -1;
-                try { carIdx = int.Parse(raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarIdx"]); } catch { }
+                try { carIdx = int.Parse(raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarIdx"]); } catch { Debug.Assert(false); }
 
                 string carNumber = string.Empty;
-                try { carNumber = raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarNumber"]; } catch { }
+                try { carNumber = raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarNumber"]; } catch { Debug.Assert(false); }
 
                 string carPath = string.Empty;
-                try { carPath = raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarPath"]; } catch { }
+                try { carPath = raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarPath"]; } catch { Debug.Assert(false); }
+
+                double lastLapTime = 0;
+                try { lastLapTime = Math.Max(0, (double)raw.Telemetry["CarIdxLastLapTime"][carIdx]); } catch { Debug.Assert(false); }
+
+                double bestLapTime = 0;
+                try { bestLapTime = Math.Max(0, (double)raw.Telemetry["CarIdxBestLapTime"][carIdx]); } catch { Debug.Assert(false); }
 
                 if (carIdx >= 0 && carNumber.Length > 0)
                 {
@@ -364,6 +373,8 @@ namespace benofficial2.Plugin
 
                     driver.CarIdx = carIdx;
                     driver.CarId = carPath;
+                    driver.LastLapTime = TimeSpan.FromSeconds(lastLapTime);
+                    driver.BestLapTime = TimeSpan.FromSeconds(bestLapTime);
                     DriverInfoIndexes[carIdx] = i;
                 }
             }

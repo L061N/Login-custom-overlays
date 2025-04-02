@@ -25,7 +25,7 @@
     }
   },
   "Version": 2,
-  "Id": "01ca61c9-baf1-4f59-9563-23c4da1f488f",
+  "Id": "9ec0f11c-0396-4c61-8a26-922a0e9b1603",
   "BaseHeight": 530,
   "BaseWidth": 363,
   "BackgroundColor": "#FF000000",
@@ -241,7 +241,7 @@
                           "Formula": {
                             "JSExt": 1,
                             "Interpreter": 1,
-                            "Expression": "const classIdx = isnull($prop('benofficial2.Standings.PlayerCarClassIdx'), 0);\r\nconst rowIdx = repeatindex() - 1;\r\nconst time = isnull(getStandingsProp(classIdx, rowIdx, 'BestLapTime'), '');\r\nif (isInvalidTime(time))\r\n{\r\n\treturn '';\r\n}\r\nreturn formatTimecode(time);"
+                            "Expression": "const classIdx = isnull($prop('benofficial2.Standings.PlayerCarClassIdx'), 0);\r\nconst rowIdx = repeatindex() - 1;\r\nconst time = isnull(getStandingsProp(classIdx, rowIdx, 'BestLapTime'), '');\r\nif (isInvalidTime(time))\r\n{\r\n\treturn '';\r\n}\r\nreturn toshorttime(time, 3, false, true);"
                           },
                           "Mode": 2
                         },
@@ -922,7 +922,7 @@
                 "JSExt": 1,
                 "Interpreter": 1,
                 "Expression": "return checkVersion(g_VersionName, g_VersionNumber);",
-                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'standings'\r\nconst g_VersionNumber = '3.0'"
+                "PreExpression": "// Download new version at https://github.com/fixfactory/bo2-official-overlays\r\nconst g_VersionName = 'standings'\r\nconst g_VersionNumber = '3.1'"
               },
               "Mode": 2
             }
