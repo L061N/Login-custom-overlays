@@ -18,6 +18,7 @@
 
 using GameReaderCommon;
 using SimHub.Plugins;
+using SimHub.Plugins.OutputPlugins.GraphicalDash.Models.BuiltIn;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -120,6 +121,11 @@ namespace benofficial2.Plugin
             }
 
             UpdateRawDriverInfo(ref data);
+
+            // Update lap times for all drivers based on the session results.
+            // Do this after first trying to get the times from telemetry. 
+            // Because lap times will be invalid in telemetry after the driver diconnected or exited the car.
+            UpdateLapTimesFromSessionResults(ref data);
 
             for (int i = 0; i < data.NewData.Opponents.Count; i++)
             {
@@ -450,6 +456,56 @@ namespace benofficial2.Plugin
                     {
                         PlayerLivePositionInClass = driver.LivePositionInClass;
                     }
+                }
+            }
+        }
+
+        private void UpdateLapTimesFromSessionResults(ref GameData data)
+        {
+            dynamic raw = data.NewData.GetRawDataObject();
+            if (raw == null) return;
+
+            // It can happen that CurrentSessionNum is missing on SessionInfo. We can't tell which session to use in that case.
+            int sessionInfoCount = -1;
+            try { sessionInfoCount = raw.AllSessionData["SessionInfo"].Count; } catch { Debug.Assert(false); }
+            if (sessionInfoCount <= 1) return;
+
+            int sessionIdx = -1;
+            try { sessionIdx = int.Parse(raw.AllSessionData["SessionInfo"]["CurrentSessionNum"]); } catch { Debug.Assert(false); }
+            if (sessionIdx < 0) return;
+
+            List<object> positions = null;
+            try { positions = raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"]; } catch { Debug.Assert(false); }
+            if (positions == null) return;
+
+            for (int posIdx = 0; posIdx < positions.Count; posIdx++)
+            {
+                int carIdx = -1;
+                try { carIdx = int.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["CarIdx"]); } catch { Debug.Assert(false); }
+                if (carIdx < 0) continue;
+
+                if (!DriverInfoIndexes.TryGetValue(carIdx, out int driverInfoIdx)) continue;
+                
+                string carNumber = string.Empty;
+                try { carNumber = raw.AllSessionData["DriverInfo"]["Drivers"][driverInfoIdx]["CarNumber"]; } catch { }
+                if (carNumber == string.Empty) continue;
+
+                if (!Drivers.TryGetValue(carNumber, out Driver driver)) continue;
+
+                double bestLapTime = 0;
+                try { bestLapTime = double.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["FastestTime"]); } catch { Debug.Assert(false); }
+
+                if (driver.BestLapTime == TimeSpan.Zero && bestLapTime > 0)
+                {
+                    driver.BestLapTime = TimeSpan.FromSeconds(bestLapTime);
+                }
+
+                double lastLapTime = 0;
+                try { lastLapTime = double.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["LastTime"]); } catch { Debug.Assert(false); }
+
+                if (driver.LastLapTime == TimeSpan.Zero && lastLapTime > 0)
+                {
+                    driver.LastLapTime = TimeSpan.FromSeconds(lastLapTime);
                 }
             }
         }
