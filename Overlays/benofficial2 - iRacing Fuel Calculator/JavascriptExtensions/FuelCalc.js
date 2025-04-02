@@ -70,48 +70,6 @@ function getFuelNeeded(sessionIdx)
     return (info.fuelNeeded * setupFuelInfo.convert).toFixed(1) + ' ' + setupFuelInfo.unit + ' ' + stops;
 }
 
-function getBestLapTime()
-{
-    if (g_DebugBestLapTime != "") 
-    {
-        return g_DebugBestLapTime;
-    }
-
-    if (!isGameIRacing() || !isGameRunning() || NewRawData() == null)
-    {
-        return "00:00.000";
-    }
-
-    // Return the player's best lap time in the current session.
-    if (g_UsePlayersFastestTime)
-    {
-        let bestLapTime = $prop('BestLapTime');
-        if (!isInvalidTime(bestLapTime))
-        {
-            return String(bestLapTime).slice(3, -4);
-        }
-    }
-
-    // Try to find the fastest time of any session.
-    const numSession = NewRawData().AllSessionData["SessionInfo"]["Sessions"].length;
-    let fastestTime = 0;
-    for (let sessionIdx = 0; sessionIdx < numSession; sessionIdx++)
-    {
-        const session = NewRawData().AllSessionData["SessionInfo"]["Sessions"][sessionIdx];
-        const lapNum = session["ResultsFastestLap"].length;
-        if (lapNum >= 0)
-        {
-            const timeSecs = Number(session["ResultsFastestLap"][0]["FastestTime"]);
-            if (timeSecs > 0 && (timeSecs < fastestTime || fastestTime == 0))
-            {
-                fastestTime = timeSecs;
-            }
-        }
-    }
-
-    return convertToTimestamp(fastestTime);
-}
-
 function getFuelInfo(sessionIdx)
 {
     let info = {
