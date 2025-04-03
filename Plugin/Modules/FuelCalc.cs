@@ -120,13 +120,13 @@ namespace benofficial2.Plugin
                     int carIdx = -1;
                     try { carIdx = int.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["CarIdx"]); } catch { Debug.Assert(false); }
 
-                    if (!_driverModule.DriverInfoIndexes.TryGetValue(carIdx, out int driverInfoIdx))
+                    if (!_driverModule.DriversByCarIdx.TryGetValue(carIdx, out Driver driver))
                     {
                         continue;
                     }
 
                     string classId = string.Empty;
-                    try { classId = raw.AllSessionData["DriverInfo"]["Drivers"][driverInfoIdx]["CarClassID"]; } catch { Debug.Assert(false); }
+                    try { classId = raw.AllSessionData["DriverInfo"]["Drivers"][driver.DriverInfoIdx]["CarClassID"]; } catch { Debug.Assert(false); }
 
                     // Must be in same class as player
                     if (playerClassId == null || playerClassId == classId)

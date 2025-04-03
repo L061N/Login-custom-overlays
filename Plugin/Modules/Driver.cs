@@ -30,6 +30,8 @@ namespace benofficial2.Plugin
 
     public class Driver
     {
+        // Index in the array AllSessionData["DriverInfo"]["Drivers"]
+        public int DriverInfoIdx { get; set; } = -1;
         public int CarIdx { get; set; } = -1;
         public string CarId { get; set; } = "";
         public int EnterPitLapUnconfirmed { get; set; } = -1;
@@ -69,9 +71,8 @@ namespace benofficial2.Plugin
         // Key is car number
         public Dictionary<string, Driver> Drivers { get; private set; } = new Dictionary<string, Driver>();
 
-        // Dictionary to cache the driverInfo index for each carIdx. Because they might not always match.
-        // Key is carIdx, value is index in the raw table AllSessionData["DriverInfo"]["Drivers"]
-        public Dictionary<int, int> DriverInfoIndexes { get; private set; } = new Dictionary<int, int>();
+        // Key is CarIdx
+        public Dictionary<int, Driver> DriversByCarIdx { get; private set; } = new Dictionary<int, Driver>();
 
         public bool PlayerOutLap { get; internal set; } = false;
         public string PlayerNumber { get; internal set; } = "";
@@ -110,7 +111,7 @@ namespace benofficial2.Plugin
             if (sessionChanged)
             {
                 Drivers = new Dictionary<string, Driver>();
-                DriverInfoIndexes = new Dictionary<int, int>();
+                DriversByCarIdx = new Dictionary<int, Driver>();
                 PlayerOutLap = false;
                 PlayerNumber = "";
                 PlayerCarBrand = "";
@@ -120,7 +121,7 @@ namespace benofficial2.Plugin
                 LiveClassLeaderboards = new List<ClassLeaderboard>();
             }
 
-            UpdateRawDriverInfo(ref data);
+            UpdateDrivers(ref data);
 
             // Update lap times for all drivers based on the session results.
             // Do this after first trying to get the times from telemetry. 
@@ -132,8 +133,8 @@ namespace benofficial2.Plugin
                 Opponent opponent = data.NewData.Opponents[i];
                 if (!Drivers.TryGetValue(opponent.CarNumber, out Driver driver))
                 {
-                    driver = new Driver();
-                    Drivers[opponent.CarNumber] = driver;
+                    Debug.Assert(false);
+                    continue;
                 }
 
                 // Evaluate the lap when they entered the pit lane
@@ -318,33 +319,24 @@ namespace benofficial2.Plugin
                 int carIdx = 0;
                 try { carIdx = int.Parse(raw.AllSessionData["QualifyResultsInfo"]["Results"][i]["CarIdx"]); } catch { }
 
+                if (!DriversByCarIdx.TryGetValue(carIdx, out Driver driver))
+                {
+                    Debug.Assert(false);
+                    continue;
+                }
+
                 int positionInClass = 0;
                 try { positionInClass = int.Parse(raw.AllSessionData["QualifyResultsInfo"]["Results"][i]["ClassPosition"]) + 1; } catch { }
 
                 double fastestTime = 0;
                 try { fastestTime = double.Parse(raw.AllSessionData["QualifyResultsInfo"]["Results"][i]["FastestTime"]); } catch { }
 
-                if (!DriverInfoIndexes.TryGetValue(carIdx, out int driverInfoIdx))
-                {
-                    continue;
-                }
-
-                string carNumber = string.Empty;
-                try { carNumber = raw.AllSessionData["DriverInfo"]["Drivers"][driverInfoIdx]["CarNumber"]; } catch { }
-                if (carNumber == string.Empty) continue;
-
-                if (!Drivers.TryGetValue(carNumber, out Driver driver))
-                {
-                    driver = new Driver();
-                    Drivers[carNumber] = driver;
-                }
-
                 driver.QualPositionInClass = positionInClass;
                 driver.QualFastestTime = fastestTime;
             }
         }
 
-        private void UpdateRawDriverInfo(ref GameData data)
+        private void UpdateDrivers(ref GameData data)
         {
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
@@ -375,13 +367,14 @@ namespace benofficial2.Plugin
                     {
                         driver = new Driver();
                         Drivers[carNumber] = driver;
+                        DriversByCarIdx[carIdx] = driver;
                     }
 
+                    driver.DriverInfoIdx = i;
                     driver.CarIdx = carIdx;
                     driver.CarId = carPath;
                     driver.LastLapTime = TimeSpan.FromSeconds(lastLapTime);
                     driver.BestLapTime = TimeSpan.FromSeconds(bestLapTime);
-                    DriverInfoIndexes[carIdx] = i;
                 }
             }
         }
@@ -402,8 +395,8 @@ namespace benofficial2.Plugin
                     Opponent opponent = opponents[i];
                     if (!Drivers.TryGetValue(opponent.CarNumber, out Driver driver))
                     {
-                        driver = new Driver();
-                        Drivers[opponent.CarNumber] = driver;
+                        Debug.Assert(false);
+                        continue;
                     }
 
                     leaderboard.Drivers.Add((opponent, driver));
@@ -484,13 +477,11 @@ namespace benofficial2.Plugin
                 try { carIdx = int.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["CarIdx"]); } catch { Debug.Assert(false); }
                 if (carIdx < 0) continue;
 
-                if (!DriverInfoIndexes.TryGetValue(carIdx, out int driverInfoIdx)) continue;
-                
-                string carNumber = string.Empty;
-                try { carNumber = raw.AllSessionData["DriverInfo"]["Drivers"][driverInfoIdx]["CarNumber"]; } catch { }
-                if (carNumber == string.Empty) continue;
-
-                if (!Drivers.TryGetValue(carNumber, out Driver driver)) continue;
+                if (!DriversByCarIdx.TryGetValue(carIdx, out Driver driver))
+                {
+                    Debug.Assert(false);
+                    continue;
+                }
 
                 double bestLapTime = 0;
                 try { bestLapTime = double.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["FastestTime"]); } catch { Debug.Assert(false); }
