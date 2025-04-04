@@ -18,7 +18,6 @@
 
 using GameReaderCommon;
 using SimHub.Plugins;
-using SimHub.Plugins.OutputPlugins.GraphicalDash.Models.BuiltIn;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -374,7 +373,12 @@ namespace benofficial2.Plugin
                     driver.CarIdx = carIdx;
                     driver.CarId = carPath;
                     driver.LastLapTime = TimeSpan.FromSeconds(lastLapTime);
-                    driver.BestLapTime = TimeSpan.FromSeconds(bestLapTime);
+
+                    // Don't replace a valid best lap time with an invalid one
+                    if (bestLapTime > 0)
+                    {
+                        driver.BestLapTime = TimeSpan.FromSeconds(bestLapTime);
+                    }
                 }
             }
         }
