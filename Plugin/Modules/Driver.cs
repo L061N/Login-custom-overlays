@@ -58,12 +58,12 @@ namespace benofficial2.Plugin
 
     public class DriverModule : PluginModuleBase
     {
-        private double _lastSessionTime = double.MaxValue;
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
         private TimeSpan _minTimeInPit = TimeSpan.FromMilliseconds(2500);
         private SessionModule _sessionModule;
         private CarModule _carModule = null;
+        private SessionState _sessionState = new SessionState();
 
         public const int MaxDrivers = 64;
 
@@ -102,12 +102,10 @@ namespace benofficial2.Plugin
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
 
-            bool sessionChanged = (_sessionModule.SessionTime == 0 || _sessionModule.SessionTime < _lastSessionTime);
-            double deltaTime = Math.Max(_sessionModule.SessionTime - _lastSessionTime, 0);
-            _lastSessionTime = _sessionModule.SessionTime;
+            _sessionState.Update(ref data);
 
             // Reset when changing/restarting session
-            if (sessionChanged)
+            if (_sessionState.SessionChanged)
             {
                 Drivers = new Dictionary<string, Driver>();
                 DriversByCarIdx = new Dictionary<int, Driver>();
@@ -190,7 +188,7 @@ namespace benofficial2.Plugin
                             opponent.CurrentLapHighPrecision.HasValue && opponent.CurrentLapHighPrecision.Value > -1)
                         {
                             // Use avg speed because in SimHub we can step forward in time in a recorded replay.
-                            double avgSpeedKph = ComputeAvgSpeedKph(data.NewData.TrackLength, driver.CurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value, deltaTime);
+                            double avgSpeedKph = ComputeAvgSpeedKph(data.NewData.TrackLength, driver.CurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value, _sessionState.DeltaTime);
                             bool teleportingToPit = avgSpeedKph > 500 && opponent.IsCarInPit;
                             bool playerTowing = opponent.IsPlayer && playerCarTowTime > 0;
 
@@ -269,12 +267,12 @@ namespace benofficial2.Plugin
 
         }
 
-        private double ComputeAvgSpeedKph(double trackLength, double fromPos, double toPos, double deltaTime)
+        private double ComputeAvgSpeedKph(double trackLength, double fromPos, double toPos, TimeSpan deltaTime)
         {
-            if (deltaTime <= 0) return 0;
+            if (deltaTime <= TimeSpan.Zero) return 0;
             double deltaPos = Math.Abs(toPos - fromPos);
             double length = deltaPos * trackLength;
-            return (length / 1000) / (deltaTime / 3600);
+            return (length / 1000) / (deltaTime.TotalSeconds / 3600);
         }
 
         private (double, TimeSpan) ComputeTowLengthAndTime(double trackLength, double fromPos, double toPos)
@@ -379,6 +377,10 @@ namespace benofficial2.Plugin
                     {
                         driver.BestLapTime = TimeSpan.FromSeconds(bestLapTime);
                     }
+                }
+                else
+                {
+                    Debug.Assert(false);
                 }
             }
         }

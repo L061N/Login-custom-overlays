@@ -19,19 +19,48 @@
 using GameReaderCommon;
 using SimHub.Plugins;
 using System;
-using System.Runtime;
+using System.Diagnostics;
 
 namespace benofficial2.Plugin
 {
+    public class SessionState
+    {
+        private double _lastSessionTime = double.MaxValue;
+        private Guid _lastSessionId = Guid.Empty;
+
+        public TimeSpan SessionTime { get; private set; } = TimeSpan.Zero;
+        public TimeSpan DeltaTime { get; private set; } = TimeSpan.Zero;
+        public bool SessionChanged { get; private set; } = true;
+        
+        public void Update(ref GameData data)
+        {
+            dynamic raw = data.NewData.GetRawDataObject();
+            if (raw == null) return;
+
+            double sessionTime = 0;
+            try { sessionTime = (double)raw.Telemetry["SessionTime"]; } catch { Debug.Assert(false); }
+
+            SessionTime = TimeSpan.FromSeconds(sessionTime);
+            DeltaTime = TimeSpan.FromSeconds(Math.Max(sessionTime - _lastSessionTime, 0));
+
+            // Also consider the session changed when time flows backward.
+            // Because many checks are based on time flowing forward and would break otherwise.
+            // Only happens when manually moving the time backwards in a SimHub replay.
+            SessionChanged = (sessionTime < _lastSessionTime || data.SessionId != _lastSessionId);
+            
+            _lastSessionTime = sessionTime;
+            _lastSessionId = data.SessionId;
+        }
+    }
+
     public class SessionModule : PluginModuleBase
     {
         private string _lastSessionTypeName = string.Empty;
-        private double _lastSessionTime = double.MaxValue;
         private bool _raceFinishedForPlayer = false;
         private double? _lastTrackPct = null;
         private DateTime _raceStartedTime = DateTime.MinValue;
 
-        public double SessionTime { get; internal set; } = 0;
+        public SessionState State { get; internal set; } = new SessionState();
         public bool Race { get; internal set; } = false;
         public bool Qual { get; internal set; } = false;
         public bool Practice { get; internal set; } = false;
@@ -62,11 +91,9 @@ namespace benofficial2.Plugin
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
 
-            try { SessionTime = (double)raw.Telemetry["SessionTime"]; } catch { SessionTime = 0; }
-            bool sessionChanged = (SessionTime == 0 || SessionTime < _lastSessionTime);
-            _lastSessionTime = SessionTime;
+            State.Update(ref data);
 
-            if (sessionChanged || data.NewData.SessionTypeName != _lastSessionTypeName)
+            if (State.SessionChanged || data.NewData.SessionTypeName != _lastSessionTypeName)
             {
                 Race = data.NewData.SessionTypeName.IndexOf("Race") != -1;
                 Qual = data.NewData.SessionTypeName.IndexOf("Qual") != -1;
@@ -104,7 +131,7 @@ namespace benofficial2.Plugin
             RaceStarted = Race && sessionState >= 4;
 
             // Determine if race finished for the player
-            if (!Race || sessionChanged)
+            if (!Race || State.SessionChanged)
             {
                 // Reset when changing/restarting session
                 _lastTrackPct = null;
