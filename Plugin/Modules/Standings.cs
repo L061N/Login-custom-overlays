@@ -300,7 +300,7 @@ namespace benofficial2.Plugin
                         row.CarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName);
                         row.InPitLane = opponent.IsCarInPitLane;
                         row.Towing = driver.Towing;
-                        row.OutLap = opponent.IsOutLap;
+                        row.OutLap = driver.OutLap;
                         row.EnterPitLap = driver.EnterPitLap;
                         row.iRating = (int)(opponent.IRacing_IRating ?? 0);
                         (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
