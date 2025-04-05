@@ -225,8 +225,10 @@ namespace benofficial2.Plugin
                     // TODO: Need more testing before enabling this optim
                     //if (sessionChanged)
                     {
-                        if (opponentClass.ClassName == "Hosted All Cars" && opponentClass.CarModels.Count == 1)
+                        if ((opponentClass.ClassName == null || opponentClass.ClassName.Length == 0 || opponentClass.ClassName == "Hosted All Cars")                            
+                            && opponentClass.CarModels.Count == 1)
                         {
+                            // Fallback to the car model name when we don't have a class name and there's only 1 car model.
                             carClass.Name = opponentClass.CarModels[0];
                         }
                         else
