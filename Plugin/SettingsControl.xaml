@@ -27,35 +27,50 @@
                 <styles:SHSection Title="{Binding Plugin.PluginName}" ShowSeparator="True" VerticalAlignment="Top">
                     <StackPanel>
                         <styles:SHSubSection Title="What is this plugin?">
-                            <Label HorizontalAlignment="Left" VerticalAlignment="Top">
-                                <Label.Content>
-                                    <TextBlock Text="This plugin is part of benofficial2's Official Overlay Collection for iRacing. It adds new SimHub data properties that are needed for the overlays to work properly. Also in this page you can configure various options to change the look of the overlays." 
-                                               Width="780" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                </Label.Content>
-                            </Label>
+                            <StackPanel>
+                                <Label HorizontalAlignment="Left" VerticalAlignment="Top">
+                                    <Label.Content>
+                                        <TextBlock Text="This plugin is part of benofficial2's Official Overlay Collection for iRacing. It adds new SimHub data properties that are needed for the overlays to work properly. Also in this page, you can configure various options to change the look of the overlays." 
+                                                   Width="780" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    </Label.Content>
+                                </Label>
+
+                                <Label HorizontalAlignment="Left" VerticalAlignment="Top">
+                                    <Label.Content>
+                                        <TextBlock Text="If you enjoy this plugin, please consider following me on Twitch with the link below. Thank you for your support!" 
+                                                   Width="780" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    </Label.Content>
+                                </Label>
+
+                                <styles:SHLinkButton HorizontalAlignment="Left" Click="TwitchLink_Click" Content="Follow benofficial2 on Twitch.tv" Margin="5,10,1,1"/>
+                            </StackPanel>
                         </styles:SHSubSection>
 
                         <styles:SHSubSection Title="How to get the latest version?">
-                            <Label HorizontalAlignment="Left" VerticalAlignment="Top">
-                                <Label.Content>
-                                    <TextBlock Text="To update the plugin, click the link below then download and run the installer available from the releases page. Additional information is available on that page."
-                                               Width="780" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                </Label.Content>
-                            </Label>
-                        </styles:SHSubSection>
+                            <StackPanel>
+                                <Label HorizontalAlignment="Left" VerticalAlignment="Top">
+                                    <Label.Content>
+                                        <TextBlock Text="To update the plugin, click the link below then download the installer available from the 'Releases' page. Additional installation instructions as well as other useful information are available on that page."
+                                                   Width="780" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    </Label.Content>
+                                </Label>
 
-                        <styles:SHLinkButton HorizontalAlignment="Left" Click="GitHubLink_Click" Content="Visit benofficial2 plugin page on GitHub" Margin="20,10,1,1"/>
+                                <styles:SHLinkButton HorizontalAlignment="Left" Click="GitHubLink_Click" Content="Visit the benofficial2 plugin page on GitHub" Margin="5,10,1,1"/>
+                            </StackPanel>
+                        </styles:SHSubSection>
 
                         <styles:SHSubSection Title="How to get help or give feedback?">
-                            <Label HorizontalAlignment="Left" VerticalAlignment="Top">
-                                <Label.Content>
-                                    <TextBlock Text="To report bugs, please use the GitHub link above and navigate to the 'Issues' tab where you can file a bug report. For help and feedback, please join the Discord server with the link below."
-                                               Width="780" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                </Label.Content>
-                            </Label>
-                        </styles:SHSubSection>
+                            <StackPanel>
+                                <Label HorizontalAlignment="Left" VerticalAlignment="Top">
+                                    <Label.Content>
+                                        <TextBlock Text="To report bugs, please use the GitHub link above and navigate to the 'Issues' tab where you can file a bug report. For help and feedback, please join the Discord server with the link below."
+                                                   Width="780" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    </Label.Content>
+                                </Label>
 
-                        <styles:SHLinkButton HorizontalAlignment="Left" Click="DiscordLink_Click" Content="Join Ben's official Discord server" Margin="20,10,1,1"/>
+                                <styles:SHLinkButton HorizontalAlignment="Left" Click="DiscordLink_Click" Content="Join Ben's official Discord server" Margin="5,10,1,1"/>
+                            </StackPanel>
+                        </styles:SHSubSection>
                     </StackPanel>
                 </styles:SHSection>
 

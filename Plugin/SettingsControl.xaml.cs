@@ -75,6 +75,15 @@ namespace benofficial2.Plugin
             });
         }
 
+        private void TwitchLink_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://www.twitch.tv/benofficial2",
+                UseShellExecute = true // Ensures it opens in the default browser
+            });
+        }
+
         private void CheckForUpdates_Click(object sender, RoutedEventArgs e)
         {
             if (CheckForUpdates.IsChecked == true)
