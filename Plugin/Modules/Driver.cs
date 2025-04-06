@@ -79,6 +79,7 @@ namespace benofficial2.Plugin
         public int PlayerPositionInClass { get; internal set; } = 0;
         public int PlayerLivePositionInClass { get; internal set; } = 0;
         public bool PlayerHadWhiteFlag { get; internal set; } = false;
+        public TimeSpan PlayerLastLapTime { get; internal set; } = TimeSpan.Zero;
 
         public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
         public override int UpdatePriority => 30;
@@ -92,6 +93,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.CarBrand", valueProvider: () => PlayerCarBrand);
             plugin.AttachDelegate(name: "Player.PositionInClass", valueProvider: () => PlayerPositionInClass);
             plugin.AttachDelegate(name: "Player.LivePositionInClass", valueProvider: () => PlayerLivePositionInClass);
+            plugin.AttachDelegate(name: "Player.LastLapTime", valueProvider: () => PlayerLastLapTime);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -116,6 +118,7 @@ namespace benofficial2.Plugin
                 PlayerLivePositionInClass = 0;
                 PlayerHadWhiteFlag = false;
                 LiveClassLeaderboards = new List<ClassLeaderboard>();
+                PlayerLastLapTime = TimeSpan.Zero;
             }
 
             UpdateDrivers(ref data);
@@ -250,6 +253,7 @@ namespace benofficial2.Plugin
                     PlayerNumber = opponent.CarNumber;
                     PlayerCarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName);
                     PlayerPositionInClass = opponent.Position > 0 ? opponent.PositionInClass : 0;
+                    PlayerLastLapTime = driver.LastLapTime;
 
                     if (_sessionModule.Race)
                     {
