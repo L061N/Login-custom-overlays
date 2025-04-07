@@ -16,7 +16,7 @@
   },
   "DashboardDebugManager": {},
   "Version": 2,
-  "Id": "f6d45373-9709-4a33-a796-a7fd8fc708c5",
+  "Id": "48d35928-a82f-47b0-8f33-5db215727a39",
   "BaseHeight": 20,
   "BaseWidth": 305,
   "BackgroundColor": "#FF000000",
@@ -63,6 +63,19 @@
                 "Expression": "return isnull($prop('benofficial2.Relative.BackgroundOpacity'), 60);"
               },
               "Mode": 2
+            },
+            "BackgroundColor": {
+              "Formula": {
+                "Expression": "abs(repeatindex()) % 2"
+              },
+              "StartColor": "#FF000000",
+              "EnableMiddleColor": false,
+              "MiddleColor": "#FF000000",
+              "MiddleColorValue": 1.0,
+              "EndColor": "#FF808080",
+              "StartColorValue": 0.0,
+              "EndColorValue": 1.0,
+              "Mode": 4
             }
           }
         },
@@ -269,6 +282,66 @@
               "TextPadding": {
                 "PaddingBottom": 1
               },
+              "FontSize": 14.0,
+              "Text": " ",
+              "TextColor": "#FFFFA500",
+              "HorizontalAlignment": 1,
+              "VerticalAlignment": 1,
+              "BackgroundColor": "#00FFFFFF",
+              "BorderStyle": {
+                "BorderColor": "#FF000000",
+                "BorderTop": 1,
+                "BorderBottom": 1,
+                "BorderLeft": 1,
+                "BorderRight": 1,
+                "RadiusTopLeft": 4,
+                "RadiusTopRight": 4,
+                "RadiusBottomLeft": 4,
+                "RadiusBottomRight": 4
+              },
+              "Height": 16.0,
+              "Left": 171.0,
+              "Top": 2.0,
+              "Visible": true,
+              "Width": 31.0,
+              "Name": "Stint",
+              "RenderingSkip": 0,
+              "MinimumRefreshIntervalMS": 0.0,
+              "Bindings": {
+                "Visible": {
+                  "Formula": {
+                    "JSExt": 1,
+                    "Interpreter": 1,
+                    "Expression": "const index = $prop('variable.relativeIdx');\r\nreturn !getRelativeIsOutLap(index);"
+                  },
+                  "Mode": 2
+                },
+                "Left": {
+                  "Formula": {
+                    "JSExt": 1,
+                    "Interpreter": 1,
+                    "Expression": "const index = $prop('variable.relativeIdx');\r\nconst brand = isnull(getRelativeCarBrand(index), '');\r\nconst logoVisible = isnull($prop('benofficial2.Relative.CarLogoVisible'), true);\r\nconst left = 171;\r\nif (brand == '' || !logoVisible) return left + 24;\r\nreturn left;"
+                  },
+                  "Mode": 2
+                },
+                "Text": {
+                  "Formula": {
+                    "JSExt": 1,
+                    "Interpreter": 1,
+                    "Expression": "const rowIdx = repeatindex() - 1;\r\nconst CurrentLap = isnull(getRelativeProp(rowIdx, 'CurrentLap'), 1);\r\nconst enterPitLap = isnull(getRelativeProp(rowIdx, 'EnterPitLap'), -1);\r\nconst CurrentStint = CurrentLap - enterPitLap;\r\nif (enterPitLap <= 0)\r\n{\r\n\treturn '';\r\n}\r\nreturn 'S' + CurrentStint;"
+                  },
+                  "Mode": 2
+                }
+              }
+            },
+            {
+              "$type": "SimHub.Plugins.OutputPlugins.GraphicalDash.Models.TextItem, SimHub.Plugins",
+              "IsTextItem": true,
+              "Font": "Roboto",
+              "FontWeight": "Bold",
+              "TextPadding": {
+                "PaddingBottom": 1
+              },
               "FontSize": 11.0,
               "Text": "OUT",
               "TextColor": "#FF000000",
@@ -435,7 +508,7 @@
     "MetadataVersion": 2.0,
     "EnableOnDashboardMessaging": true,
     "PitScreensIndexs": [],
-    "SimHubVersion": "9.7.5",
+    "SimHubVersion": "9.7.11",
     "Width": 305.0,
     "Height": 20.0,
     "DashboardVersion": ""
