@@ -25,6 +25,8 @@ namespace benofficial2.Plugin
     public class GeneralSettings : ModuleSettings
     {
         public bool CheckForUpdates { get; set; } = true;
+
+        public bool ClockFormat { get; set; } = false;
     }
 
     public class GeneralModule : PluginModuleBase
@@ -36,6 +38,7 @@ namespace benofficial2.Plugin
             // There was an issue with loading settings stored pre-3.0, so we need to specify a new settings key
             Settings = plugin.ReadCommonSettings<GeneralSettings>("GeneralSettings_3.1", () => new GeneralSettings());
             plugin.AttachDelegate(name: "CheckForUpdates", valueProvider: () => Settings.CheckForUpdates);
+            plugin.AttachDelegate(name: "ClockFormat", valueProvider: () => Settings.ClockFormat);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
