@@ -41,10 +41,12 @@ namespace benofficial2.Plugin
         public bool GapVisibleInRace { get; set; } = true;
         public bool BestVisibleInRace { get; set; } = true;
         public bool LastVisibleInRace { get; set; } = true;
+        public bool StintVisibleInRace { get; set; } = false;
         public bool BestVisible { get; set; } = true;
         public bool LastVisible { get; set; } = true;
         public int HeaderOpacity { get; set; } = 90;
         public int BackgroundOpacity { get; set; } = 7;
+        
     }
 
     public class StandingRow
@@ -113,6 +115,7 @@ namespace benofficial2.Plugin
         public bool GapVisible { get; internal set; } = true;
         public bool BestVisible { get; internal set; } = true;
         public bool LastVisible { get; internal set; } = true;
+        public bool StintVisible { get; internal set; } = true;
 
         public StandingsModule()
         {
@@ -138,6 +141,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.GapVisible", valueProvider: () => GapVisible);
             plugin.AttachDelegate(name: $"Standings.BestVisible", valueProvider: () => BestVisible);
             plugin.AttachDelegate(name: $"Standings.LastVisible", valueProvider: () => LastVisible);
+            plugin.AttachDelegate(name: $"Standings.StintVisible", valueProvider: () => StintVisible);
             plugin.AttachDelegate(name: "Standings.HeaderOpacity", valueProvider: () => Settings.HeaderOpacity);
             plugin.AttachDelegate(name: "Standings.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
 
@@ -197,6 +201,7 @@ namespace benofficial2.Plugin
                 GapVisible = Settings.GapVisibleInRace;
                 BestVisible = Settings.BestVisibleInRace;
                 LastVisible = Settings.LastVisibleInRace;
+                StintVisible = Settings.StintVisibleInRace;
             }
             else
             {
@@ -204,6 +209,8 @@ namespace benofficial2.Plugin
                 GapVisible = false;
                 BestVisible = Settings.BestVisible;
                 LastVisible = Settings.LastVisible;
+                LastVisible = Settings.LastVisible;
+                StintVisible = true;
             }
 
             int visibleClassCount = 0;

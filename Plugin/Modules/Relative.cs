@@ -28,6 +28,7 @@ namespace benofficial2.Plugin
 {
     public class RelativeSettings : ModuleSettings
     {
+        public int RelativeRows { get; set; } = 3;
         public bool HeaderVisible { get; set; } = true;
         public int HeaderOpacity { get; set; } = 90;
         public bool CarLogoVisible { get; set; } = true;
@@ -55,7 +56,7 @@ namespace benofficial2.Plugin
 
     public class RelativeAhead
     {
-        public const int MaxRows = 3;
+        public const int MaxRows = 5;
         public List<RelativeRow> Rows { get; internal set; }
 
         public RelativeAhead()
@@ -64,8 +65,8 @@ namespace benofficial2.Plugin
         }
     }
     public class RelativeBehind
-    {
-        public const int MaxRows = 3;
+    {    
+        public const int MaxRows = 5;
         public List<RelativeRow> Rows { get; internal set; }
 
         public RelativeBehind()
@@ -76,6 +77,7 @@ namespace benofficial2.Plugin
 
     public class RelativeModule : PluginModuleBase
     {
+
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
         private DriverModule _driverModule = null;
@@ -92,6 +94,7 @@ namespace benofficial2.Plugin
             _carModule = plugin.GetModule<CarModule>();
 
             Settings = plugin.ReadCommonSettings<RelativeSettings>("RelativeSettings", () => new RelativeSettings());
+            plugin.AttachDelegate(name: "Relative.RelativeRows", valueProvider: () => Settings.RelativeRows);
             plugin.AttachDelegate(name: "Relative.HeaderVisible", valueProvider: () => Settings.HeaderVisible);
             plugin.AttachDelegate(name: "Relative.HeaderOpacity", valueProvider: () => Settings.HeaderOpacity);
             plugin.AttachDelegate(name: "Relative.CarLogoVisible", valueProvider: () => Settings.CarLogoVisible);
