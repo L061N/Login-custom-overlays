@@ -79,10 +79,17 @@
                         <styles:SHToggleCheckbox 
                             Name="CheckForUpdates"
                             ToolTip="Check if a new version of the plugin is available when starting SimHub." 
-                            HorizontalAlignment="Left" Margin="0,0,4,4"
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[GeneralModule].Settings.CheckForUpdates, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Click="CheckForUpdates_Click">
                             Check for updates
+                        </styles:SHToggleCheckbox>
+
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Display the clock time in a 24-hour format. Ex: 14:30 instead of 2:30 PM" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[GeneralModule].Settings.ClockFormat24h, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            24-hour clock format
                         </styles:SHToggleCheckbox>
                     </StackPanel>
                 </styles:SHSection>
