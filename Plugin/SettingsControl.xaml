@@ -18,7 +18,7 @@
 
 <UserControl x:Class="benofficial2.Plugin.SettingsControl" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:converter="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:iconpacks="clr-namespace:MahApps.Metro.IconPacks;assembly=MahApps.Metro.IconPacks.Material" xmlns:local="clr-namespace:benofficial2.Plugin" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:styles="clr-namespace:SimHub.Plugins.Styles;assembly=SimHub.Plugins" xmlns:ui="clr-namespace:SimHub.Plugins.UI;assembly=SimHub.Plugins" mc:Ignorable="d">
     <ScrollViewer>
-        <Grid Height="3514">
+        <Grid Height="3614">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="44*"/>
                 <ColumnDefinition Width="377*"/>
@@ -218,10 +218,13 @@
 
                         <styles:SHToggleCheckbox 
                             ToolTip="Show the car brand logo column when available" 
-                            HorizontalAlignment="Left" Margin="0,0,4,4"
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.CarLogoVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Show car logo
                         </styles:SHToggleCheckbox>
+
+                        <ui:TitledSlider HorizontalAlignment="Left" Width="400" Title="Max Row Count (Ahead and Behind)" Maximum="5" Minimum="1" Value="{Binding Plugin.Modules[RelativeModule].Settings.MaxRows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            ToolTip="Maximum number of visible rows ahead and behind the player"/>
 
                         <StackPanel Orientation="Horizontal">
                             <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
