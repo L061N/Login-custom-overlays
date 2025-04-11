@@ -97,6 +97,17 @@ function getTireCompoundVisible(classIdx, rowIdx)
     return connected && !inPit;
 }
 
+function getLapTimingVisible(classIdx, rowIdx)
+{
+    if (isRace() || isQual())
+    {
+        // Wait until driver completed 1 lap before showing lap timing (best / last lap)
+        const lap = isnull(getStandingsProp(classIdx, rowIdx, 'CurrentLap'), 0);
+        if(lap == 0 || lap == 1) return false;
+    }
+    return true;
+}
+
 function getLicenseColor(classIdx, rowIdx)
 {
     const license = isnull(getStandingsProp(classIdx, rowIdx, 'License'), 'R');
