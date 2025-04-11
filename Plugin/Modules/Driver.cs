@@ -374,13 +374,8 @@ namespace benofficial2.Plugin
                     driver.DriverInfoIdx = i;
                     driver.CarIdx = carIdx;
                     driver.CarId = carPath;
-                    driver.LastLapTime = TimeSpan.FromSeconds(lastLapTime);
-
-                    // Don't replace a valid best lap time with an invalid one
-                    if (bestLapTime > 0)
-                    {
-                        driver.BestLapTime = TimeSpan.FromSeconds(bestLapTime);
-                    }
+                    driver.LastLapTime = lastLapTime > 0 ? TimeSpan.FromSeconds(lastLapTime) : TimeSpan.Zero;
+                    driver.BestLapTime = bestLapTime > 0 ? TimeSpan.FromSeconds(bestLapTime) : TimeSpan.Zero;
                 }
                 else
                 {
