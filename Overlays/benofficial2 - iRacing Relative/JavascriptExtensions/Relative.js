@@ -262,9 +262,14 @@ function getRelativeGapToPlayer(index)
 
 function getRelativeTextColor(index)
 {
-    const highlight = isnull($prop('benofficial2.Relative.HighlightPlayerRow'), false)
-    if (!highlight && index == 0) return '#FFEBAE00';
     if (!isRace()) return 'White';
+
+    if (index == 0)
+    {
+        const highlight = isnull($prop('benofficial2.Relative.HighlightPlayerRow'), false)
+        if (highlight) return 'White'
+        return '#FFEBAE00'
+    }
 
     let lap;
     if (g_UseSimHubProp)
