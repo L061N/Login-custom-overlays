@@ -32,6 +32,7 @@ namespace benofficial2.Plugin
         public bool HeaderVisible { get; set; } = true;
         public int HeaderOpacity { get; set; } = 90;
         public bool CarLogoVisible { get; set; } = true;
+        public int AlternateRowBackgroundColor { get; set; } = 5;
         public int BackgroundOpacity { get; set; } = 60;
     }
 
@@ -97,6 +98,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Relative.HeaderVisible", valueProvider: () => Settings.HeaderVisible);
             plugin.AttachDelegate(name: "Relative.HeaderOpacity", valueProvider: () => Settings.HeaderOpacity);
             plugin.AttachDelegate(name: "Relative.CarLogoVisible", valueProvider: () => Settings.CarLogoVisible);
+            plugin.AttachDelegate(name: "Relative.AlternateRowBackgroundColor", valueProvider: () => Settings.AlternateRowBackgroundColor);
             plugin.AttachDelegate(name: "Relative.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
 
             InitRelative(plugin, "Ahead", Ahead.Rows, RelativeAhead.MaxRows);

@@ -43,6 +43,7 @@ namespace benofficial2.Plugin
         public bool LastVisibleInRace { get; set; } = true;
         public bool BestVisible { get; set; } = true;
         public bool LastVisible { get; set; } = true;
+        public int AlternateRowBackgroundColor { get; set; } = 5;
         public int HeaderOpacity { get; set; } = 90;
         public int BackgroundOpacity { get; set; } = 7;
     }
@@ -138,6 +139,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.GapVisible", valueProvider: () => GapVisible);
             plugin.AttachDelegate(name: $"Standings.BestVisible", valueProvider: () => BestVisible);
             plugin.AttachDelegate(name: $"Standings.LastVisible", valueProvider: () => LastVisible);
+            plugin.AttachDelegate(name: "Standings.AlternateRowBackgroundColor", valueProvider: () => Settings.AlternateRowBackgroundColor);
             plugin.AttachDelegate(name: "Standings.HeaderOpacity", valueProvider: () => Settings.HeaderOpacity);
             plugin.AttachDelegate(name: "Standings.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
 

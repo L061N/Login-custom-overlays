@@ -196,6 +196,9 @@
                         <StackPanel Orientation="Horizontal">
                             <ui:TitledSlider MinWidth="400" Title="Max Row Count (Other Classes)*" Maximum="5" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.MaxRowsOtherClasses, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Maximum number of visible rows in the Standings leaderboard for other classes"/>
+
+                            <ui:TitledSlider MinWidth="400" Title="Alternate row background color (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.AlternateRowBackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            ToolTip="Use a different background color to make alternate rows easier to read. 100% for maximum contrast, 0% to disable."/>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
@@ -223,8 +226,13 @@
                             Show car logo
                         </styles:SHToggleCheckbox>
 
-                        <ui:TitledSlider HorizontalAlignment="Left" Width="400" Title="Max Row Count (Ahead and Behind)" Maximum="5" Minimum="1" Value="{Binding Plugin.Modules[RelativeModule].Settings.MaxRows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            ToolTip="Maximum number of visible rows ahead and behind the player"/>
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider HorizontalAlignment="Left" Width="400" Title="Max Row Count (Ahead and Behind)" Maximum="5" Minimum="1" Value="{Binding Plugin.Modules[RelativeModule].Settings.MaxRows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="Maximum number of visible rows ahead and behind the player"/>
+
+                            <ui:TitledSlider MinWidth="400" Width="400" Title="Alternate row background color (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.AlternateRowBackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="Use a different background color to make alternate rows easier to read. 100% for maximum contrast, 0% to disable."/>
+                        </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
