@@ -257,7 +257,7 @@ function getRelativeGapToPlayer(index)
     {
         gap = getRelativeProp(index, 'GapToPlayer');
     }
-    return Math.abs(gap).toFixed(1);
+    return Math.min(999.9, Math.abs(gap).toFixed(1));
 }
 
 function getRelativeTextColor(index)
