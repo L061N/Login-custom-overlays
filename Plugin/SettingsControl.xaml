@@ -117,6 +117,13 @@
                             Show car class header*
                         </styles:SHToggleCheckbox>
 
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Highlight the player row with a bright background color" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.HighlightPlayerRow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Highlight player row
+                        </styles:SHToggleCheckbox>
+
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Columns to show in race*" Margin="0,0,0,0" Width="180"/>
 
@@ -224,6 +231,13 @@
                             HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.CarLogoVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Show car logo
+                        </styles:SHToggleCheckbox>
+
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Highlight the player row with a bright background color" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.HighlightPlayerRow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Highlight player row
                         </styles:SHToggleCheckbox>
 
                         <StackPanel Orientation="Horizontal">

@@ -262,7 +262,8 @@ function getRelativeGapToPlayer(index)
 
 function getRelativeTextColor(index)
 {
-    if (index == 0) return '#FFEBAE00';
+    const highlight = isnull($prop('benofficial2.Relative.HighlightPlayerRow'), false)
+    if (!highlight && index == 0) return '#FFEBAE00';
     if (!isRace()) return 'White';
 
     let lap;
