@@ -257,6 +257,11 @@
 
                 <styles:SHSection Title="TRACK MAP OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Dot Radius (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TrackMapModule].Settings.DotRadius, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Radius size of the car dots on the map" />
+                            <ui:TitledSlider Width="400" Title="Font Size (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TrackMapModule].Settings.FontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Font size on the car dots on the map" />
+                        </StackPanel>
+                        
                         <ui:TitledSlider Width="800" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TrackMapModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </styles:SHSection>

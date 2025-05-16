@@ -24,6 +24,8 @@ namespace benofficial2.Plugin
 {
     public class TrackMapSettings : ModuleSettings
     {
+        public int DotRadius { get; set; } = 40;
+        public int FontSize { get; set; } = 40;
         public int BackgroundOpacity { get; set; } = 0;
     }
 
@@ -34,6 +36,8 @@ namespace benofficial2.Plugin
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<TrackMapSettings>("TrackMapSettings", () => new TrackMapSettings());
+            plugin.AttachDelegate(name: "TrackMap.DotRadius", valueProvider: () => Settings.DotRadius);
+            plugin.AttachDelegate(name: "TrackMap.FontSize", valueProvider: () => Settings.FontSize);
             plugin.AttachDelegate(name: "TrackMap.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
         }
 
