@@ -28,6 +28,7 @@ namespace benofficial2.Plugin
 {
     public class RelativeSettings : ModuleSettings
     {
+        public int Width { get; set; } = 34;
         public int MaxRows { get; set; } = 3;
         public bool HeaderVisible { get; set; } = true;
         public int HeaderOpacity { get; set; } = 90;
@@ -95,6 +96,7 @@ namespace benofficial2.Plugin
             _carModule = plugin.GetModule<CarModule>();
 
             Settings = plugin.ReadCommonSettings<RelativeSettings>("RelativeSettings", () => new RelativeSettings());
+            plugin.AttachDelegate(name: "Relative.Width", valueProvider: () => Settings.Width);
             plugin.AttachDelegate(name: "Relative.MaxRows", valueProvider: () => Settings.MaxRows);
             plugin.AttachDelegate(name: "Relative.HeaderVisible", valueProvider: () => Settings.HeaderVisible);
             plugin.AttachDelegate(name: "Relative.HeaderOpacity", valueProvider: () => Settings.HeaderOpacity);
