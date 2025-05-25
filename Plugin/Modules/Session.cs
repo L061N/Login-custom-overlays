@@ -69,6 +69,7 @@ namespace benofficial2.Plugin
         public bool RaceStarted { get; internal set; } = false;
         public bool RaceFinished { get; internal set; } = false;
         public double RaceTimer { get; internal set; } = 0;
+        public bool JoinedRaceInProgress { get; internal set; } = false;
         public bool Oval { get; internal set; } = false;
 
         public override int UpdatePriority => 10;
@@ -93,7 +94,8 @@ namespace benofficial2.Plugin
 
             State.Update(ref data);
 
-            if (State.SessionChanged || data.NewData.SessionTypeName != _lastSessionTypeName)
+            bool sessionChanged = State.SessionChanged || data.NewData.SessionTypeName != _lastSessionTypeName;
+            if (sessionChanged)
             {
                 Race = data.NewData.SessionTypeName.IndexOf("Race") != -1;
                 Qual = data.NewData.SessionTypeName.IndexOf("Qual") != -1;
@@ -129,6 +131,20 @@ namespace benofficial2.Plugin
             int sessionState = 0;
             try { sessionState = (int)raw.Telemetry["SessionState"]; } catch { }
             RaceStarted = Race && sessionState >= 4;
+
+            // Determine if we joined a race session in progress.
+            // This will also be true when stepping backwards in a SimHub replay.
+            if (RaceStarted)
+            {
+                if (sessionChanged)
+                {
+                    JoinedRaceInProgress = true;
+                }
+            }
+            else
+            {
+                JoinedRaceInProgress = false;
+            }
 
             // Determine if race finished for the player
             if (!Race || State.SessionChanged)

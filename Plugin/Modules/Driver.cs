@@ -38,6 +38,7 @@ namespace benofficial2.Plugin
         public int ExitPitLap { get; set; } = -1;
         public bool OutLap { get; set; } = false;
         public DateTime InPitSince { get; set; } = DateTime.MinValue;
+        public int StintLap { get; set; } = 0;
         public int QualPositionInClass { get; set; } = 0;
         public double QualFastestTime { get; set; } = 0;
         public int LivePositionInClass { get; set; } = 0;
@@ -156,6 +157,7 @@ namespace benofficial2.Plugin
 
                     driver.OutLap = false;
                     driver.ExitPitLap = -1;
+                    driver.StintLap = 0;
                 }
                 else
                 {
@@ -177,6 +179,16 @@ namespace benofficial2.Plugin
 
                     driver.OutLap = driver.ExitPitLap >= opponent.CurrentLap;
                     driver.InPitSince = DateTime.MinValue;
+
+                    if (driver.ExitPitLap >= 0)
+                    {
+                        driver.StintLap = (opponent.CurrentLap ?? 0) - driver.ExitPitLap;
+                    }
+                    else if (_sessionModule.Race && !_sessionModule.JoinedRaceInProgress)
+                    {
+                        // When we join a race session in progress, we cannot know when the driver exited the pit, so StintLap should stay 0.
+                        driver.StintLap = (opponent.CurrentLap ?? 0) - 1;
+                    }
                 }
 
                 if (_sessionModule.Race)

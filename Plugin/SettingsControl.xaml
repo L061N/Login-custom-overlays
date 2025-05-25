@@ -124,6 +124,13 @@
                             Highlight player row
                         </styles:SHToggleCheckbox>
 
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show the lap when the driver pitted instead of Stint Lap in a race" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.ShowPitLapInRace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show Pit Lap instead of Stint Lap in race
+                        </styles:SHToggleCheckbox>
+
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Columns to show in race*" Margin="0,0,0,0" Width="180"/>
 

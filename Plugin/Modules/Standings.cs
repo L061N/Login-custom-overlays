@@ -43,6 +43,7 @@ namespace benofficial2.Plugin
         public bool LastVisibleInRace { get; set; } = true;
         public bool BestVisible { get; set; } = true;
         public bool LastVisible { get; set; } = true;
+        public bool ShowPitLapInRace { get; set; } = false;
         public int AlternateRowBackgroundColor { get; set; } = 5;
         public bool HighlightPlayerRow { get; set; } = true;
         public int HeaderOpacity { get; set; } = 90;
@@ -68,6 +69,7 @@ namespace benofficial2.Plugin
         public string License {  get; set; } = string.Empty;
         public double SafetyRating { get; set; } = 0;
         public int CurrentLap {  get; set; } = 0;
+        public int StintLap { get; set; } = 0;
         public int LapsToClassLeader { get; set; } = 0;
         public double GapToClassLeader { get; set; } = 0;
         public string TireCompound {  get; set; } = string.Empty;
@@ -142,6 +144,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.GapVisible", valueProvider: () => GapVisible);
             plugin.AttachDelegate(name: $"Standings.BestVisible", valueProvider: () => BestVisible);
             plugin.AttachDelegate(name: $"Standings.LastVisible", valueProvider: () => LastVisible);
+            plugin.AttachDelegate(name: $"Standings.ShowPitLapInRace", valueProvider: () => Settings.ShowPitLapInRace);
             plugin.AttachDelegate(name: "Standings.AlternateRowBackgroundColor", valueProvider: () => Settings.AlternateRowBackgroundColor);
             plugin.AttachDelegate(name: "Standings.HighlightPlayerRow", valueProvider: () => Settings.HighlightPlayerRow);
             plugin.AttachDelegate(name: "Standings.HeaderOpacity", valueProvider: () => Settings.HeaderOpacity);
@@ -180,6 +183,7 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.License", valueProvider: () => row.License);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.SafetyRating", valueProvider: () => row.SafetyRating);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CurrentLap", valueProvider: () => row.CurrentLap);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.StintLap", valueProvider: () => row.StintLap);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LapsToClassLeader", valueProvider: () => row.LapsToClassLeader);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.GapToClassLeader", valueProvider: () => row.GapToClassLeader);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompound", valueProvider: () => row.TireCompound);
@@ -306,6 +310,7 @@ namespace benofficial2.Plugin
                         row.iRating = (int)(opponent.IRacing_IRating ?? 0);
                         (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
                         row.CurrentLap = opponent.CurrentLap ?? 0;
+                        row.StintLap = driver.StintLap;
                         row.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;
                         row.GapToClassLeader = opponent.GaptoClassLeader ?? 0;
                         (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, opponent);
@@ -385,6 +390,7 @@ namespace benofficial2.Plugin
             row.License = string.Empty;
             row.SafetyRating = 0;
             row.CurrentLap = 0;
+            row.StintLap = 0;
             row.LapsToClassLeader = 0;
             row.GapToClassLeader = 0;
             row.TireCompound = string.Empty;
