@@ -182,12 +182,12 @@ namespace benofficial2.Plugin
 
                     if (driver.ExitPitLap >= 0)
                     {
-                        driver.StintLap = (opponent.CurrentLap ?? 0) - driver.ExitPitLap;
+                        driver.StintLap = (opponent.CurrentLap ?? 0) - driver.ExitPitLap + 1;
                     }
                     else if (_sessionModule.Race && !_sessionModule.JoinedRaceInProgress)
                     {
                         // When we join a race session in progress, we cannot know when the driver exited the pit, so StintLap should stay 0.
-                        driver.StintLap = (opponent.CurrentLap ?? 0) - 1;
+                        driver.StintLap = opponent.CurrentLap ?? 0;
                     }
                 }
 
