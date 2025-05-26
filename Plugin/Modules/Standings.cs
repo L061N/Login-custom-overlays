@@ -76,6 +76,7 @@ namespace benofficial2.Plugin
         public bool TireCompoundVisible { get; set; } = false;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
+        public int JokerLapsComplete { get; set; } = 0;
     }
 
     public class StandingCarClass
@@ -190,6 +191,7 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompoundVisible", valueProvider: () => row.TireCompoundVisible);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.BestLapTime", valueProvider: () => row.BestLapTime);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LastLapTime", valueProvider: () => row.LastLapTime);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.JokerLapsComplete", valueProvider: () => row.JokerLapsComplete);
                 }
             }
         }
@@ -316,6 +318,7 @@ namespace benofficial2.Plugin
                         (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, opponent);
                         row.BestLapTime = driver.BestLapTime;
                         row.LastLapTime = driver.LastLapTime;
+                        row.JokerLapsComplete = driver.JokerLapsComplete;
 
                         // Make sure we have a best lap time for the first lap of a race
                         // iRacing often doesn't provide a valid best lap time for lap 1
@@ -397,6 +400,7 @@ namespace benofficial2.Plugin
             row.TireCompoundVisible = false;
             row.BestLapTime = TimeSpan.Zero;
             row.LastLapTime = TimeSpan.Zero;
+            row.JokerLapsComplete = 0;
         }
 
         public int FindPlayerCarClassIdx(ref GameData data)

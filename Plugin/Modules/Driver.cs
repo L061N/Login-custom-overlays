@@ -49,6 +49,7 @@ namespace benofficial2.Plugin
         public bool FinishedRace { get; set; } = false;
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
+        public int JokerLapsComplete { get; set; } = 0;
     }
 
     public class ClassLeaderboard
@@ -515,6 +516,10 @@ namespace benofficial2.Plugin
                 {
                     driver.LastLapTime = TimeSpan.FromSeconds(lastLapTime);
                 }
+
+                int jokerLapsComplete = 0;
+                try { jokerLapsComplete = int.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["JokerLapsComplete"]); } catch { Debug.Assert(false); }
+                driver.JokerLapsComplete = jokerLapsComplete;
             }
         }
     }
