@@ -102,27 +102,33 @@
     "bmwm8gte": {
         "isGTE": true,
         "hasTC": true,
-        "hasTC2": true
+        "hasTC2": true,
+        "hasFuelMix": true
     },
     "porsche991rsr": {
         "isGTE": true,
         "hasTC": true,
-        "hasTC2": true
+        "hasTC2": true,
+        "hasFuelMix": true
     },
     "ferrari488gte": {
         "isGTE": true,
         "hasTC": true,
-        "hasTC2": true
+        "hasTC2": true,
+        "hasFuelMix": true,
+        "hasThrottleShaping": true
     },
     "c8rvettegte": {
         "isGTE": true,
         "hasTC": true,
-        "hasTC2": true
+        "hasTC2": true,
+        "hasFuelMix": true
     },
     "fordgt2017": {
         "isGTE": true,
         "hasTC": true,
-        "hasTC2": true
+        "hasTC2": true,
+        "hasFuelMix": true
     },
     "cadillacvseriesrgtp": {
         "isGTP": true,
