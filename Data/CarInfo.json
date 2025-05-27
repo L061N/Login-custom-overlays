@@ -235,7 +235,8 @@
     },
     "ligierjsp320": {
         "isLMP3": true,
-        "hasThrottleShaping": true
+        "hasThrottleShaping": true,
+        "hasTC": true
     },
     "toyotagr86": {
         "hasTC": true,
