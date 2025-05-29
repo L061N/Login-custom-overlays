@@ -110,6 +110,18 @@ function getRelativeIsOutLap(index)
     }
 }
 
+function getRelativeSessionFlags(index)
+{
+    if (index == 0)
+    {
+        return isnull($prop('DataCorePlugin.GameRawData.Telemetry.SessionFlags'), 0);
+    }
+    else
+    {
+        return getRelativeProp(index, 'SessionFlags');
+    }
+}
+
 function getRelativeName(index)
 {
     if (index == 0 || g_UseSimHubProp)

@@ -56,6 +56,7 @@ namespace benofficial2.Plugin
         public string GapToPlayerCombined { get; set; } = string.Empty;
         public double CurrentLapHighPrecision { get; set; } = 0;
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
+        public int SessionFlags { get; set; } = 0;
     }
 
     public class RelativeAhead
@@ -131,6 +132,7 @@ namespace benofficial2.Plugin
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.GapToPlayerCombined", valueProvider: () => row.GapToPlayerCombined);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.CurrentLapHighPrecision", valueProvider: () => row.CurrentLapHighPrecision);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.LastLapTime", valueProvider: () => row.LastLapTime);
+                plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.SessionFlags", valueProvider: () => row.SessionFlags);
             }
         }
 
@@ -179,6 +181,7 @@ namespace benofficial2.Plugin
                 row.GapToPlayerCombined = opponent.GapToPlayerCombined;
                 row.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? 0;
                 row.LastLapTime = driver.LastLapTime;
+                row.SessionFlags = driver.SessionFlags;
             }
         }
 
@@ -204,6 +207,7 @@ namespace benofficial2.Plugin
             row.GapToPlayerCombined = string.Empty;
             row.CurrentLapHighPrecision = 0;
             row.LastLapTime = TimeSpan.Zero;
+            row.SessionFlags = 0;
         }
         public bool IsValidRow(Opponent opponent)
         {
