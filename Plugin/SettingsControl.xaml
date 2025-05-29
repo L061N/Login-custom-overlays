@@ -285,8 +285,10 @@
                             <ui:TitledSlider Width="400" Title="Dot Radius (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TrackMapModule].Settings.DotRadius, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Radius size of the car dots on the map" />
                             <ui:TitledSlider Width="400" Title="Font Size (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TrackMapModule].Settings.FontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Font size on the car dots on the map" />
                         </StackPanel>
-                        
-                        <ui:TitledSlider Width="800" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TrackMapModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TrackMapModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
                     </StackPanel>
                 </styles:SHSection>
 
@@ -366,19 +368,25 @@
                             </styles:SHToggleCheckbox>
                         </StackPanel>
 
-                        <ui:TitledSlider Width="800" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TelemetryModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TelemetryModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>       
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="DASH OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
-                        <ui:TitledSlider Width="800" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[DashModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[DashModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
                     </StackPanel>
                 </styles:SHSection>
 
                 <styles:SHSection Title="LAUNCH ASSIST OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
-                        <ui:TitledSlider Width="800" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[LaunchAssistModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[LaunchAssistModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
                     </StackPanel>
                 </styles:SHSection>
 
@@ -407,17 +415,21 @@
                             </TextBox.Style>
                         </TextBox>
 
-                        <ui:TitledSlider Width="800" Title="Spotter Bar Height" Maximum="129" Minimum="50" Value="{Binding Plugin.Modules[SpotterModule].Settings.Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
-                                         ToolTip="Height of the Spotter's orange bars"/>
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Spotter Bar Height" Maximum="129" Minimum="50" Value="{Binding Plugin.Modules[SpotterModule].Settings.Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
+                                             ToolTip="Height of the Spotter's orange bars"/>
 
-                        <ui:TitledSlider Width="800" Title="Spotter Bar Min Height" Maximum="25" Minimum="0" Value="{Binding Plugin.Modules[SpotterModule].Settings.MinHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
-                                         ToolTip="Minimum height of the spotter's orange bar so it's easier to notice (0 to disable)"/>
+                            <ui:TitledSlider Width="400" Title="Spotter Bar Min Height" Maximum="25" Minimum="0" Value="{Binding Plugin.Modules[SpotterModule].Settings.MinHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
+                                             ToolTip="Minimum height of the spotter's orange bar so it's easier to notice (0 to disable)"/>
+                        </StackPanel>
 
-                        <ui:TitledSlider Width="800" Title="Spotter Bar Width" Maximum="30" Minimum="10" Value="{Binding Plugin.Modules[SpotterModule].Settings.Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
-                                         ToolTip="Width of the Spotter's orange bars"/>
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Spotter Bar Width" Maximum="30" Minimum="10" Value="{Binding Plugin.Modules[SpotterModule].Settings.Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
+                                             ToolTip="Width of the Spotter's orange bars"/>
 
-                        <ui:TitledSlider Width="800" Title="Spotter Bar Border" Maximum="3" Minimum="0" Value="{Binding Plugin.Modules[SpotterModule].Settings.Border, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
-                                         ToolTip="Thickness of the Spotter's border"/>
+                            <ui:TitledSlider Width="400" Title="Spotter Bar Border" Maximum="3" Minimum="0" Value="{Binding Plugin.Modules[SpotterModule].Settings.Border, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
+                                             ToolTip="Thickness of the Spotter's border"/>
+                        </StackPanel>
 
                         <styles:SHToggleCheckbox 
                             ToolTip="Enable the Rejoin Helper that shows the gap with the next incomming car." 
@@ -458,8 +470,10 @@
                             </TextBox.Style>
                         </TextBox>
 
-                        <ui:TitledSlider Title="Rejoin Helper Min Speed (Km/h)" Maximum="60" Minimum="0" Value="{Binding Plugin.Modules[RejoinHelperModule].Settings.MinSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
-                                         ToolTip="Speed in Km/h below which the Rejoin Helper will trigger."/>
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Rejoin Helper Min Speed (Km/h)" Maximum="60" Minimum="0" Value="{Binding Plugin.Modules[RejoinHelperModule].Settings.MinSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
+                                             ToolTip="Speed in Km/h below which the Rejoin Helper will trigger."/>
+                        </StackPanel>
 
                         <styles:SHToggleCheckbox 
                             ToolTip="Enable the Blind Spot Monitor that shows a yellow warning sign when cars overlap (iRacing does not specify left/right)." 
@@ -527,7 +541,9 @@
                             Enable Pre-Race Fuel Warning
                         </styles:SHToggleCheckbox>
 
-                        <ui:TitledSlider Width="800" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[FuelCalcModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[FuelCalcModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" />
+                        </StackPanel>
                     </StackPanel>
                 </styles:SHSection>
 
@@ -565,7 +581,10 @@
                             IsChecked="{Binding Plugin.Modules[WindModule].Settings.RotateWithCar, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Rotate with car
                         </styles:SHToggleCheckbox>
-                        <ui:TitledSlider Width="800" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[WindModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[WindModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
                     </StackPanel>
                 </styles:SHSection>
             </StackPanel>
