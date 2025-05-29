@@ -239,6 +239,13 @@
                         </styles:SHToggleCheckbox>
 
                         <styles:SHToggleCheckbox 
+                            ToolTip="Show the footer with additional session information" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.FooterVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show footer
+                        </styles:SHToggleCheckbox>
+
+                        <styles:SHToggleCheckbox 
                             ToolTip="Show the car brand logo column when available" 
                             HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.CarLogoVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">

@@ -32,6 +32,7 @@ namespace benofficial2.Plugin
         public int MaxRows { get; set; } = 3;
         public bool HeaderVisible { get; set; } = true;
         public int HeaderOpacity { get; set; } = 90;
+        public bool FooterVisible { get; set; } = false;
         public bool CarLogoVisible { get; set; } = true;
         public int AlternateRowBackgroundColor { get; set; } = 5;
         public bool HighlightPlayerRow { get; set; } = true;
@@ -100,6 +101,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Relative.MaxRows", valueProvider: () => Settings.MaxRows);
             plugin.AttachDelegate(name: "Relative.HeaderVisible", valueProvider: () => Settings.HeaderVisible);
             plugin.AttachDelegate(name: "Relative.HeaderOpacity", valueProvider: () => Settings.HeaderOpacity);
+            plugin.AttachDelegate(name: "Relative.FooterVisible", valueProvider: () => Settings.FooterVisible);
             plugin.AttachDelegate(name: "Relative.CarLogoVisible", valueProvider: () => Settings.CarLogoVisible);
             plugin.AttachDelegate(name: "Relative.AlternateRowBackgroundColor", valueProvider: () => Settings.AlternateRowBackgroundColor);
             plugin.AttachDelegate(name: "Relative.HighlightPlayerRow", valueProvider: () => Settings.HighlightPlayerRow);
