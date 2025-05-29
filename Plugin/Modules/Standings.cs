@@ -116,6 +116,7 @@ namespace benofficial2.Plugin
         public List<StandingCarClass> CarClasses { get; internal set; }
         public int VisibleClassCount { get; internal set; } = 0;
         public int TotalDriverCount { get; internal set; } = 0;
+        public int TotalSoF { get; internal set; } = 0;
         public int PlayerCarClassIdx { get; internal set; } = 0;
         public bool CarLogoVisible { get; internal set; } = true;
         public bool GapVisible { get; internal set; } = true;
@@ -140,6 +141,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.CarClassHeaderVisible", valueProvider: () => Settings.CarClassHeaderVisible);
             plugin.AttachDelegate(name: $"Standings.VisibleClassCount", valueProvider: () => VisibleClassCount);
             plugin.AttachDelegate(name: $"Standings.TotalDriverCount", valueProvider: () => TotalDriverCount);
+            plugin.AttachDelegate(name: $"Standings.TotalSoF", valueProvider: () => TotalSoF);
             plugin.AttachDelegate(name: $"Standings.PlayerCarClassIdx", valueProvider: () => PlayerCarClassIdx);
             plugin.AttachDelegate(name: $"Standings.HideInReplay", valueProvider: () => Settings.HideInReplay);
             plugin.AttachDelegate(name: $"Standings.LeadFocusedRows", valueProvider: () => Settings.LeadFocusedRows);
@@ -352,6 +354,7 @@ namespace benofficial2.Plugin
 
             VisibleClassCount = visibleClassCount;
             TotalDriverCount = data.NewData.OpponentsCount;
+            TotalSoF = CalculateTotalSof(data.NewData.Opponents);
         }
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)
@@ -545,6 +548,17 @@ namespace benofficial2.Plugin
                 totalSof += opponentsWithDrivers[opponentIdx].Item1.IRacing_IRating ?? 0;
             }
             return (int)(totalSof / opponentsWithDrivers.Count);
+        }
+
+        public int CalculateTotalSof(List<Opponent> opponents)
+        {
+            if (opponents.Count <= 0) return 0;
+            double totalSof = 0;
+            for (int opponentIdx = 0; opponentIdx < opponents.Count; opponentIdx++)
+            {
+                totalSof += opponents[opponentIdx].IRacing_IRating ?? 0;
+            }
+            return (int)(totalSof / opponents.Count);
         }
 
         public float MeasureTextInPixels(string text)
