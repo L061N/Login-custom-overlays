@@ -112,6 +112,7 @@
     <Compile Include="Modules\FuelCalc.cs" />
     <Compile Include="Modules\General.cs" />
     <Compile Include="Modules\LaunchAssist.cs" />
+    <Compile Include="Modules\Precipitation.cs" />
     <Compile Include="Modules\RejoinHelper.cs" />
     <Compile Include="Modules\Relative.cs" />
     <Compile Include="Modules\Session.cs" />
@@ -120,6 +121,7 @@
     <Compile Include="Modules\Telemetry.cs" />
     <Compile Include="Modules\Track.cs" />
     <Compile Include="Modules\TrackMap.cs" />
+    <Compile Include="Modules\TrackWetness.cs" />
     <Compile Include="Modules\TwitchChat.cs" />
     <Compile Include="Modules\Wind.cs" />
     <Compile Include="PluginModuleFactory.cs" />
