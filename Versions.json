@@ -13,5 +13,7 @@
     "fuelcalc": "3.0",
     "wind": "2.1",
     "weather": "2.1",
-    "multiclassstandings": "3.2"
+    "multiclassstandings": "3.2",
+    "precipitation": "3.3",
+    "trackwetness": "3.3"
 }
