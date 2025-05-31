@@ -24,7 +24,7 @@ function getFuelCalcSessionProp(sessionIdx, prop)
 function getSessionDetails(sessionIdx)
 {
     const sessionTypeName = getFuelCalcSessionProp(sessionIdx, 'TypeName')
-    if (sessionTypeName == "Invalid")
+    if (sessionTypeName == "")
     {
         return ''
     }
