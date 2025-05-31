@@ -71,6 +71,9 @@ namespace benofficial2.Plugin
         public double RaceTimer { get; internal set; } = 0;
         public bool JoinedRaceInProgress { get; internal set; } = false;
         public bool Oval { get; internal set; } = false;
+        public bool StandingStart { get; internal set; } = false;
+        public bool ShortParadeLap { get; internal set; } = false;
+        public double MaxFuelPct { get; internal set; } = 1.0;
 
         public override int UpdatePriority => 10;
 
@@ -85,6 +88,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Session.RaceFinished", valueProvider: () => RaceFinished);
             plugin.AttachDelegate(name: "Session.RaceTimer", valueProvider: () => RaceTimer);
             plugin.AttachDelegate(name: "Session.Oval", valueProvider: () => Oval);
+            plugin.AttachDelegate(name: "Session.StandingStart", valueProvider: () => StandingStart);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -107,8 +111,18 @@ namespace benofficial2.Plugin
                 Offline = data.NewData.SessionTypeName.IndexOf("Offline") != -1;
 
                 string category = string.Empty;
-                try { category = raw.AllSessionData["WeekendInfo"]["Category"]; } catch { }
+                try { category = raw.AllSessionData["WeekendInfo"]["Category"]; } catch { Debug.Assert(false);  }
                 Oval = category == "Oval" || category == "DirtOval";
+
+                int standingStart = 0;
+                try { standingStart = int.Parse(raw.AllSessionData["WeekendInfo"]["WeekendOptions"]["StandingStart"]); } catch { Debug.Assert(false); }
+                StandingStart = standingStart == 1;
+
+                int shortParadeLap = 0;
+                try { shortParadeLap = int.Parse(raw.AllSessionData["WeekendInfo"]["WeekendOptions"]["ShortParadeLap"]); } catch { Debug.Assert(false); }
+                ShortParadeLap = shortParadeLap == 1;
+
+                try { MaxFuelPct = double.Parse(raw.AllSessionData["DriverInfo"]["DriverCarMaxFuelPct"]); } catch { Debug.Assert(false); }
 
                 _lastSessionTypeName = data.NewData.SessionTypeName;
             }
