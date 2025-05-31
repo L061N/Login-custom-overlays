@@ -378,7 +378,14 @@ namespace benofficial2.Plugin
                 try { bestLapTime = Math.Max(0, (double)raw.Telemetry["CarIdxBestLapTime"][carIdx]); } catch { Debug.Assert(false); }
 
                 int sessionFlags = 0;
-                try { sessionFlags = int.Parse(raw.Telemetry["CarIdxSessionFlags"][carIdx]); } catch { Debug.Assert(false); }
+                try
+                {
+                    if (raw.Telemetry["CarIdxSessionFlags"] is List<object> sessionFlagsList)
+                    {
+                        sessionFlags = int.Parse(raw.Telemetry["CarIdxSessionFlags"][carIdx]);
+                    }                    
+                } 
+                catch { Debug.Assert(false); }
 
                 if (carIdx >= 0 && carNumber.Length > 0)
                 {
