@@ -431,6 +431,11 @@
                                              ToolTip="Thickness of the Spotter's border"/>
                         </StackPanel>
 
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Spotter Bar Spacing (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[SpotterModule].Settings.Spacing, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" 
+                                ToolTip="Distance between the Spotter's orange bars"/>
+                        </StackPanel>
+
                         <styles:SHToggleCheckbox 
                             ToolTip="Enable the Rejoin Helper that shows the gap with the next incomming car." 
                             HorizontalAlignment="Left" Margin="0,10,4,4"
