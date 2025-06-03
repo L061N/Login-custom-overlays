@@ -37,7 +37,7 @@ namespace benofficial2.Plugin
 
             try
             {
-                if (raw.Telemetry is IDictionary<object, object> telemetry)
+                if (raw.Telemetry is IDictionary<string, object> telemetry)
                 {
                     return TryGetValue<T>(telemetry, out result, path);
                 }
@@ -57,20 +57,26 @@ namespace benofficial2.Plugin
 
             foreach (var key in path)
             {
-                if (current is Dictionary<object, object> dict)
+                switch (current)
                 {
-                    if (!dict.TryGetValue(key, out current))
+                    case Dictionary<object, object> dictObj when dictObj.TryGetValue(key, out var valueObj):
+                        current = valueObj;
+                        break;
+
+                    case Dictionary<string, object> dictStr when key is string strKey && dictStr.TryGetValue(strKey, out var valueStr):
+                        current = valueStr;
+                        break;
+
+                    case List<object> list when key is int index && index >= 0 && index < list.Count:
+                        current = list[index];
+                        break;
+
+                    case Array array when key is int arrIndex && arrIndex >= 0 && arrIndex < array.Length:
+                        current = array.GetValue(arrIndex);
+                        break;
+
+                    default:
                         return false;
-                }
-                else if (current is List<object> list && key is int index)
-                {
-                    if (index < 0 || index >= list.Count)
-                        return false;
-                    current = list[index];
-                }
-                else
-                {
-                    return false;
                 }
             }
 

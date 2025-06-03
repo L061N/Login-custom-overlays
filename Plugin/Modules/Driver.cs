@@ -377,15 +377,7 @@ namespace benofficial2.Plugin
                 double bestLapTime = 0;
                 try { bestLapTime = Math.Max(0, (double)raw.Telemetry["CarIdxBestLapTime"][carIdx]); } catch { Debug.Assert(false); }
 
-                int sessionFlags = 0;
-                try
-                {
-                    if (raw.Telemetry["CarIdxSessionFlags"] is List<object> sessionFlagsList)
-                    {
-                        sessionFlags = int.Parse(raw.Telemetry["CarIdxSessionFlags"][carIdx]);
-                    }                    
-                } 
-                catch { Debug.Assert(false); }
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int sessionFlags, "CarIdxSessionFlags", carIdx);
 
                 if (carIdx >= 0 && carNumber.Length > 0)
                 {
