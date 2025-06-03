@@ -242,7 +242,7 @@
         "hasTC": true,
         "hasABS": true
     },
-    "trucks toyotatundra2022" {
+    "trucks toyotatundra2022": {
         "hasTwoPartBrakeBias": true
     }
 }
