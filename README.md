@@ -251,7 +251,9 @@ Shows the speed & direction of wind relative to the player car rotation. Useful 
 
 For general help with using SimHub, don't hesitate to get help on the [official SimHub Discord server](https://discord.com/invite/nBBMuX7).
 
-For help, report problems, and give feedback about the overlays, please hop-in my Discord server: [Ben's Official Server](https://discord.gg/s2834nmdYx).
+For bug reports and feature requests, please [open an issue on Git Hub](https://github.com/fixfactory/bo2-official-overlays/issues).
+
+For help with the overlays, give feedback, and get early access to beta versions, please hop-in my Discord server: [Ben's Official Server](https://discord.gg/s2834nmdYx).
 
 ## Credits & Thanks
 
