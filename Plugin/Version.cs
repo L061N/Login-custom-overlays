@@ -46,7 +46,7 @@ namespace benofficial2.Plugin
             {
                 if (IsBetaVersion)
                 {
-                    return $"{CurrentVersion} (beta {BetaVersion})";
+                    return $"{CurrentVersion} (beta{BetaVersion})";
                 }
                 return CurrentVersion;
             }
