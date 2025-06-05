@@ -197,6 +197,10 @@
         "hasErs": true,
         "hasDeployMode": true,
         "hasDeployModeType2": true,
+        "hasEntryDiff": true,
+        "hasExitDiff": true,
+        "hasFineBrakeBias": true,
+        "hasBrakeBiasMigration": true,
         "hasDryTireCompounds": true
     },
     "mercedesw13": {
@@ -205,6 +209,7 @@
         "hasDeployMode": true,
         "hasDeployModeType2": true,
         "hasEntryDiff": true,
+        "hasExitDiff": true,
         "hasFineBrakeBias": true,
         "hasBrakeBiasMigration": true,
         "hasDryTireCompounds": true
