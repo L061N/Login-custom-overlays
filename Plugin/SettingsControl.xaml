@@ -63,7 +63,7 @@
                             <StackPanel>
                                 <Label HorizontalAlignment="Left" VerticalAlignment="Top">
                                     <Label.Content>
-                                        <TextBlock Text="To report bugs, please use the GitHub link above and navigate to the 'Issues' tab where you can file a bug report. For help and feedback, please join the Discord server with the link below."
+                                        <TextBlock Text="To report bugs, please use the GitHub link above and navigate to the 'Issues' tab where you can file a bug report. For help, feedback and to get early access to beta versions, please join the Discord server with the link below."
                                                    Width="780" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                     </Label.Content>
                                 </Label>
