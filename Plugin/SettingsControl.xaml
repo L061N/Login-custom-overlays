@@ -130,10 +130,10 @@
                         </styles:SHToggleCheckbox>
 
                         <styles:SHToggleCheckbox 
-                            ToolTip="Show the lap when the driver pitted instead of Stint Lap in a race" 
+                            ToolTip="Show the lap number of the current stint instead of the lap number when the driver pitted" 
                             HorizontalAlignment="Left" Margin="0,0,4,8"
-                            IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.ShowPitLapInRace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            Show Pit Lap instead of Stint Lap in race
+                            IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.ShowStintLapInRace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show Stint Lap instead of Pit Lap in race
                         </styles:SHToggleCheckbox>
 
                         <StackPanel Orientation="Horizontal">
