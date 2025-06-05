@@ -21,12 +21,17 @@ using Newtonsoft.Json.Linq;
 using SimHub.Plugins;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace benofficial2.Plugin
 {
     public class CarModule : PluginModuleBase
     {
+        private DateTime _lastUpdateTime = DateTime.MinValue;
+        private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
+
         private RemoteJsonFile _carInfo = new RemoteJsonFile("https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/CarInfo.json");
         private RemoteJsonFile _carBrandInfo = new RemoteJsonFile("https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/CarBrandInfo.json");
         private RemoteJsonFile _carClassInfo = new RemoteJsonFile("https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Data/CarClassInfo.json");
@@ -70,6 +75,8 @@ namespace benofficial2.Plugin
         public bool HasFineBrakeBias { get; set; } = false;
         public bool HasBrakeBiasMigration { get; set; } = false;
         public bool HasDryTireCompounds { get; set; } = false;
+        public double TotalBrakeBias { get; set; } = 0.0;
+        public double TotalPeakBrakeBias { get; set; } = 0.0;
         public override int UpdatePriority => 20;
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
@@ -111,16 +118,122 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Car.HasFineBrakeBias", valueProvider: () => HasFineBrakeBias);
             plugin.AttachDelegate(name: "Car.HasBrakeBiasMigration", valueProvider: () => HasBrakeBiasMigration);
             plugin.AttachDelegate(name: "Car.HasDryTireCompounds", valueProvider: () => HasDryTireCompounds);
+            plugin.AttachDelegate(name: "Car.TotalBrakeBias", valueProvider: () => TotalBrakeBias);
+            plugin.AttachDelegate(name: "Car.TotalPeakBrakeBias", valueProvider: () => TotalPeakBrakeBias);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            if (_carInfo.Json == null || _carBrandInfo.Json == null) return;
-            if (data.NewData.CarId == _lastCarId) return;
-            _lastCarId = data.NewData.CarId;
-            if (data.NewData.CarId.Length == 0) return;
+            if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
+            _lastUpdateTime = data.FrameTime;
 
-            JToken car = _carInfo.Json[data.NewData.CarId];
+            if (data.NewData.CarId != _lastCarId)
+            {
+                _lastCarId = data.NewData.CarId;
+                UpdateFromJson(ref data);
+            }
+
+            UpdateBrakeBias(ref data);
+        }
+
+        public void UpdateBrakeBias(ref GameData data)
+        {
+            if (data.NewData.CarId.Length == 0)
+            {
+                TotalBrakeBias = 0.0;
+                TotalPeakBrakeBias = 0.0;
+                return;
+            }
+
+            RawDataHelper.TryGetTelemetryData<double>(ref data, out double telemetryBB, "dcBrakeBias");
+            RawDataHelper.TryGetTelemetryData<double>(ref data, out double telemetryFineBB, "dcBrakeBiasFine");
+            RawDataHelper.TryGetTelemetryData<double>(ref data, out double telemetryPeakBB, "dcPeakBrakeBias");
+
+            if (HasTwoPartBrakeBias)
+            {
+                TryGetSetupBrakeBias(ref data, out double setupBB);
+                TotalBrakeBias = Math.Round(telemetryBB, 2) + setupBB + telemetryFineBB;
+            }
+            else
+            {
+                TotalBrakeBias = Math.Round(telemetryBB, 1) + telemetryFineBB;
+            }
+
+            if (HasTwoPartPeakBrakeBias)
+            {
+                if (RawDataHelper.TryGetSessionData<string>(ref data, out string setupPeakBrakeBias, "CarSetup", "DriveBrake", "BrakeSystemConfig", "PeakBrakeBias"))
+                {
+                    TryParseBrakeBias(setupPeakBrakeBias, out double setupPeakBB);
+
+                    // iRacing returns an integer where 0=-2%, 5=0%, 9=2%
+                    // Tested with the McLaren MP430, but could be different for other cars.
+                    double deltaPeakBB = (telemetryPeakBB - 5) * 0.5;
+                    TotalPeakBrakeBias = setupPeakBB + deltaPeakBB;
+                }
+                else
+                {
+                    TotalPeakBrakeBias = 0.0;
+                }
+            }
+            else
+            {
+                if (telemetryPeakBB > 0.0)
+                {
+                    // iRacing returns an integer where 1=0%, 2=1%, etc.
+                    // Tested with the Mercedes W13, but could be different for other cars.
+                    double deltaPeakBB = telemetryPeakBB - 1.0; 
+                    TotalPeakBrakeBias = TotalBrakeBias + deltaPeakBB;
+                }
+                else
+                {
+                    TotalPeakBrakeBias = 0.0;
+                }
+            }            
+        }
+
+        public bool TryGetSetupBrakeBias(ref GameData data, out double brakeBias)
+        {
+            brakeBias = 0.0;
+
+            var paths = new List<object[]>
+            {
+                new object[] { "CarSetup", "Chassis", "Front", "BrakeBias" },
+                new object[] { "CarSetup", "Chassis", "Front", "FrontBrakeBias" },
+                new object[] { "CarSetup", "DriveBrake", "BrakeSystemConfig", "BaseBrakeBias" },
+                new object[] { "CarSetup", "Suspension", "Front", "BrakeBias" }
+            };
+
+            if (!RawDataHelper.TryGetFirstSessionData<string>(ref data, out string setupBB, paths))
+            {
+                return false;
+            }
+
+            return TryParseBrakeBias(setupBB, out brakeBias);
+        }
+
+        public bool TryParseBrakeBias(string brakeBiasString, out double brakeBias)
+        {
+            brakeBias = 0.0;
+            if (string.IsNullOrWhiteSpace(brakeBiasString)) return false;
+
+            // Matches the start of the string (^), skips optional whitespace (\s*), and captures a number that may contain a decimal point.
+            // Examples: "52.0% (BBAL)", "57.0% front"
+            var match = Regex.Match(brakeBiasString, @"^\s*(\d+(\.\d+)?)");
+            if (!match.Success) return false;
+
+            return double.TryParse(match.Groups[1].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out brakeBias);
+        }
+
+        public void UpdateFromJson(ref GameData data)
+        {
+            JToken car = null;
+            if (data.NewData.CarId.Length > 0 &&
+                _carInfo.Json != null && 
+                _carBrandInfo.Json != null)
+            {
+                car = _carInfo.Json[data.NewData.CarId];
+            }
+            
             if (car == null)
             {
                 Brand = string.Empty;

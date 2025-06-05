@@ -28,6 +28,29 @@ namespace benofficial2.Plugin
             return false;
         }
 
+        public static bool TryGetFirstSessionData<T>(ref GameData data, out T result, IEnumerable<object[]> paths)
+        {
+            result = default;
+            dynamic raw = data.NewData.GetRawDataObject();
+            if (raw == null)
+                return false;
+
+            try
+            {
+                if (raw.AllSessionData is IDictionary<object, object> allSessionData)
+                {
+                    result = default;
+                    foreach (var path in paths)
+                    {
+                        if (TryGetValue<T>(allSessionData, out result, path))
+                            return true;
+                    }
+                }
+            }
+            catch { Debug.Assert(false); }
+            return false;
+        }
+
         public static bool TryGetTelemetryData<T>(ref GameData data, out T result, params object[] path)
         {
             result = default;
