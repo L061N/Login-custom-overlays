@@ -245,5 +245,8 @@
     },
     "trucks toyotatundra2022": {
         "hasTwoPartBrakeBias": true
+    },
+    "stockcars2 chevy gen4cup": {
+        "hasTwoPartBrakeBias": true
     }
 }
