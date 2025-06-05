@@ -70,8 +70,8 @@ namespace benofficial2.Plugin
         /// <param name="pluginManager"></param>
         public void Init(PluginManager pluginManager)
         {
-            PluginName = $"BENOFFICIAL2 PLUGIN {VersionChecker.CurrentVersion}";
-            SimHub.Logging.Current.Info($"Starting benofficial2 plugin version {VersionChecker.CurrentVersion}");
+            PluginName = $"BENOFFICIAL2 PLUGIN {VersionChecker.FullVersion}";
+            SimHub.Logging.Current.Info($"Starting benofficial2 plugin version {VersionChecker.FullVersion}");
 
             this.AttachDelegate(name: "PluginRunning", valueProvider: () => PluginRunning);
             this.AttachDelegate(name: "iRacingRunning", valueProvider: () => iRacingRunning);

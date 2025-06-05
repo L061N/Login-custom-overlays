@@ -30,7 +30,28 @@ namespace benofficial2.Plugin
         private const string _downloadPageUrl = "https://github.com/fixfactory/bo2-official-overlays/releases";
 
         public const string CurrentVersion = "3.3";
+        public const string BetaVersion = "1";
         
+        static public bool IsBetaVersion
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(BetaVersion);
+            }
+        }
+
+        static public string FullVersion
+        {
+            get
+            {
+                if (IsBetaVersion)
+                {
+                    return $"{CurrentVersion} (beta {BetaVersion})";
+                }
+                return CurrentVersion;
+            }
+        }
+
         public async Task CheckForUpdateAsync()
         {
             try
@@ -68,6 +89,10 @@ namespace benofficial2.Plugin
         {
             Version latest = new Version(latestVersion);
             Version current = new Version(currentVersion);
+            if (IsBetaVersion)
+            {
+                return latest >= current;
+            }
             return latest > current;
         }
     }
