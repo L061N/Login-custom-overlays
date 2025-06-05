@@ -206,6 +206,7 @@
         "hasDeployModeType2": true,
         "hasEntryDiff": true,
         "hasFineBrakeBias": true,
+        "hasBrakeBiasMigration": true,
         "hasDryTireCompounds": true
     },
     "formularenault35": {
