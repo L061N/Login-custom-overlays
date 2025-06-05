@@ -248,5 +248,8 @@
     },
     "stockcars2 chevy gen4cup": {
         "hasTwoPartBrakeBias": true
+    },
+    "stockcars2 chevy": {
+        "hasTwoPartBrakeBias": true
     }
 }
