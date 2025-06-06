@@ -256,5 +256,8 @@
     },
     "stockcars2 chevy": {
         "hasTwoPartBrakeBias": true
+    },
+    "hondacivictyper": {
+        "hasABS": true
     }
 }
