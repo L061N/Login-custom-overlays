@@ -321,7 +321,7 @@ namespace benofficial2.Plugin
                         row.StintLap = driver.StintLap;
                         row.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;
                         row.GapToClassLeader = opponent.GaptoClassLeader ?? 0;
-                        (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, opponent);
+                        (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, driver.CarIdx);
                         row.BestLapTime = driver.BestLapTime;
                         row.LastLapTime = driver.LastLapTime;
                         row.JokerLapsComplete = driver.JokerLapsComplete;
@@ -434,36 +434,22 @@ namespace benofficial2.Plugin
             return -1;
         }
 
-        public (string compound, bool visible) GetTireCompound(ref GameData data, Opponent opponent)
+        public (string compound, bool visible) GetTireCompound(ref GameData data, int carIdx)
         {
-            dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) return ("", false);
-
-            // TODO Revisit this logic when these cars get wet tires
-            if (_carModule.HasDryTireCompounds)
-            {
-                return (opponent.FrontTyreCompound, opponent.FrontTyreCompound.Length > 0);
-            }
-
-            List<int> rawCompounds = null;
-            try { rawCompounds = new List<int>(raw.Telemetry["CarIdxTireCompound"]); } catch { }
-            if (rawCompounds != null && opponent.FrontTyreCompoundGameCode == "1")
-            {
-                // Wet enabled car with wet tires
-                return ("W", true);
-            }
-
-            if (opponent.FrontTyreCompoundGameCode == "-1")
-            {
-                // Hidden
+            if (_carModule.TireCompounds == null)
                 return ("", false);
-            }
 
-            // Override SimHub's tire compound for cars that don't have dry compounds
-            // It should be 'H' by default not 'S'
-            // TODO: This logic won't work for multi-class with a mix of cars with/without compounds
-            // because Car module is currently only looking at the player car.
-            return ("H", true);
+            if (!RawDataHelper.TryGetTelemetryData<int>(ref data, out int tireCompoundIdx, "CarIdxTireCompound", carIdx))
+                return ("", false);
+
+            if (!_carModule.TireCompounds.TryGetValue(tireCompoundIdx, out string tireCompoundName))
+                return ("", false);
+
+            if (tireCompoundName == null || tireCompoundName.Length == 0)
+                return ("", false);
+
+            // Return the first letter of the compound name as a short representation
+            return (tireCompoundName[0].ToString(), true);
         }
 
         public bool IsValidRow(Opponent opponent)

@@ -54,21 +54,6 @@ function rowTop(classIdx, rowIdx)
 function getTireCompound(classIdx, rowIdx)
 {
     const compound = isnull(getStandingsProp(classIdx, rowIdx, 'TireCompound'), '');
-    const carId = $prop('DataCorePlugin.GameData.CarId');
-
-    // Special case for IndyCar, return M as S and S as H because that's matching the color.
-    if (carId == 'dallarair18')
-    {
-        if (compound == 'M')
-        {
-            return 'S';
-        }
-        else if (compound == 'S')
-        {
-            return 'H';
-        }
-    }
-
     return compound;
 }
 

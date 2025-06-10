@@ -21,6 +21,7 @@ using Newtonsoft.Json.Linq;
 using SimHub.Plugins;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -40,6 +41,8 @@ namespace benofficial2.Plugin
 
         // Key: Car ID, Value: Car Brand
         private Dictionary<string, string> _carBrands = new Dictionary<string, string>();
+
+        public Dictionary<int, string> TireCompounds = null;
 
         public string Brand { get; set; } = string.Empty;
         public bool IsGT3 { get; set; } = false;
@@ -131,9 +134,29 @@ namespace benofficial2.Plugin
             {
                 _lastCarId = data.NewData.CarId;
                 UpdateFromJson(ref data);
+                UpdateTireCompounds(ref data);
             }
 
             UpdateBrakeBias(ref data);
+        }
+
+        public void UpdateTireCompounds(ref GameData data)
+        {
+            TireCompounds = new Dictionary<int, string>();
+
+            if (!RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> driverTires, "DriverInfo", "DriverTires"))
+                return;
+
+            for (int i = 0; i < driverTires.Count; i++)
+            {
+                RawDataHelper.TryGetSessionData<string>(ref data, out string compoundType, "DriverInfo", "DriverTires", i, "TireCompoundType");
+                RawDataHelper.TryGetSessionData<int>(ref data, out int tireIndex, "DriverInfo", "DriverTires", i, "TireIndex");
+
+                if (compoundType.Length > 0)
+                {
+                    TireCompounds[tireIndex] = compoundType;
+                }
+            }
         }
 
         public void UpdateBrakeBias(ref GameData data)
