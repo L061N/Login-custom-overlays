@@ -289,5 +289,9 @@
     },
     "stockcars2 mustang2019": {
         "hasTwoPartBrakeBias": true
+    },
+    "hpdarx01c": {
+        "hasTC": true,
+        "hasTwoPartBrakeBias": true
     }
 }
