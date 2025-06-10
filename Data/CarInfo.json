@@ -251,6 +251,12 @@
     "trucks toyotatundra2022": {
         "hasTwoPartBrakeBias": true
     },
+    "trucks silverado2019": {
+        "hasTwoPartBrakeBias": true
+    },
+    "trucks fordf150": {
+        "hasTwoPartBrakeBias": true
+    },
     "stockcars2 chevy gen4cup": {
         "hasTwoPartBrakeBias": true
     },
@@ -259,5 +265,29 @@
     },
     "hondacivictyper": {
         "hasABS": true
+    },
+    "audirs3lms": {
+        "hasABS": true
+    },
+    "hyundaivelostern": {
+        "hasABS": true
+    },
+    "stockcars toyotacamry": {
+        "hasTwoPartBrakeBias": true
+    },
+    "stockcars fordmustang2019": {
+        "hasTwoPartBrakeBias": true
+    },
+    "stockcars camarozl12018": {
+        "hasTwoPartBrakeBias": true
+    },
+    "stockcars2 supra2019": {
+        "hasTwoPartBrakeBias": true
+    },
+    "stockcars2 camaro2019": {
+        "hasTwoPartBrakeBias": true
+    },
+    "stockcars2 mustang2019": {
+        "hasTwoPartBrakeBias": true
     }
 }
