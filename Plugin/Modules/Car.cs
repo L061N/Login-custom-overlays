@@ -362,7 +362,7 @@ namespace benofficial2.Plugin
 
             // Check if the car brand is in the CarBrandInfo JSON
             // This is inneficient, that's why we cache them in a run-time dictionary
-            if (_carBrandInfo.Json["car_brands"] is JObject carBrands)
+            if (_carBrandInfo.Json != null && _carBrandInfo.Json["car_brands"] is JObject carBrands)
             {
                 foreach (var brand in carBrands)
                 {
