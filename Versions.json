@@ -1,6 +1,6 @@
 {
-    "plugin": "3.3",
-    "standings": "3.3",
+    "plugin": "3.4",
+    "standings": "3.4",
     "relative": "3.3",
     "trackmap": "3.3",
     "delta": "3.3",
@@ -13,7 +13,7 @@
     "fuelcalc": "3.3",
     "wind": "3.3",
     "weather": "3.3",
-    "multiclassstandings": "3.3",
+    "multiclassstandings": "3.4",
     "precipitation": "3.3",
     "trackwetness": "3.3"
 }
