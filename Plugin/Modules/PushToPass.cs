@@ -52,15 +52,12 @@ namespace benofficial2.Plugin
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) return;
-
             if (_carModule?.HasPushToPassCount ?? false)
             {
                 Enabled = true;
                 Activated = (bool)data.NewData.PushToPassActive;
-                try { Count = raw.Telemetry["P2P_Count"]; }
-                catch { Count = 0; }
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int p2pCount, "P2P_Count");
+                Count = p2pCount;
                 TimeLeft = 0;
                 Cooldown = 0;
                 TotalCooldown = 0;
@@ -71,8 +68,8 @@ namespace benofficial2.Plugin
                 // We have to generate the other values.
                 Enabled = true;
                 Activated = (bool)data.NewData.PushToPassActive;
-                try { TimeLeft = raw.Telemetry["P2P_Count"]; }
-                catch { TimeLeft = 0; }
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int p2pCount, "P2P_Count");
+                TimeLeft = p2pCount;
 
                 // Total cooldown time at that track in seconds
                 TotalCooldown = _trackModule?.PushToPassCooldown ?? 0.0f;
@@ -101,13 +98,8 @@ namespace benofficial2.Plugin
                     bool isRace = data.NewData.SessionTypeName.IndexOf("Race") != -1;
                     if (isRace)
                     {
-                        int enterExitReset;
-                        try { enterExitReset = raw.Telemetry["EnterExitReset"]; }
-                        catch { enterExitReset = 0; }
-
-                        int sessionState;
-                        try { sessionState = raw.Telemetry["SessionState"]; }
-                        catch { sessionState = 0; }
+                        RawDataHelper.TryGetTelemetryData<int>(ref data, out int enterExitReset, "EnterExitReset");
+                        RawDataHelper.TryGetTelemetryData<int>(ref data, out int sessionState, "SessionState");
 
                         bool cancelCooldown = enterExitReset != 2 && sessionState == 4;
                         if (cancelCooldown)

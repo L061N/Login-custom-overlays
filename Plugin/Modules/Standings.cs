@@ -18,11 +18,12 @@
 
 using GameReaderCommon;
 using SimHub.Plugins;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
+using System.Windows.Media;
 
 namespace benofficial2.Plugin
 {
@@ -110,6 +111,10 @@ namespace benofficial2.Plugin
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
 
+        private Font _font = null;
+        private Bitmap _fontBitmap = null;
+        private Graphics _fontGraphics = null;
+
         public StandingsSettings Settings { get; set; }
 
         public const int MaxCarClasses = 4;
@@ -123,16 +128,22 @@ namespace benofficial2.Plugin
         public bool BestVisible { get; internal set; } = true;
         public bool LastVisible { get; internal set; } = true;
 
+        public override int UpdatePriority => 80;
+
         public StandingsModule()
         {
             CarClasses = new List<StandingCarClass>(Enumerable.Range(0, MaxCarClasses).Select(x => new StandingCarClass()));
         }
-        public override int UpdatePriority => 80;
+
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _driverModule = plugin.GetModule<DriverModule>();
             _carModule = plugin.GetModule<CarModule>();
             _sessionModule = plugin.GetModule<SessionModule>();
+
+            _font = new Font("Roboto", 16);
+            _fontBitmap = new Bitmap(1, 1);
+            _fontGraphics = Graphics.FromImage(_fontBitmap);
 
             Settings = plugin.ReadCommonSettings<StandingsSettings>("StandingsSettings", () => new StandingsSettings());
             plugin.AttachDelegate(name: $"Standings.HeaderVisible", valueProvider: () => Settings.HeaderVisible);
@@ -549,17 +560,12 @@ namespace benofficial2.Plugin
 
         public float MeasureTextInPixels(string text)
         {
+            if (_fontBitmap == null || _fontGraphics == null || _font == null)
+                return 0.0f;
+
             SizeF textSize;
-            Font font = new Font("Roboto", 16);
-
-            using (Bitmap bitmap = new Bitmap(1, 1))
-            using (Graphics graphics = Graphics.FromImage(bitmap))
-            {
-                textSize = graphics.MeasureString(text, font);
-            }
-
-            font.Dispose();
-            return textSize.Width;
+            textSize = _fontGraphics.MeasureString(text, _font);
+            return textSize.Width;           
         }
     }
 }

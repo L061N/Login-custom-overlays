@@ -34,12 +34,7 @@ namespace benofficial2.Plugin
         
         public void Update(ref GameData data)
         {
-            dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) return;
-
-            double sessionTime = 0;
-            try { sessionTime = (double)raw.Telemetry["SessionTime"]; } catch { Debug.Assert(false); }
-
+            RawDataHelper.TryGetTelemetryData<double>(ref data, out double sessionTime, "SessionTime");
             SessionTime = TimeSpan.FromSeconds(sessionTime);
             DeltaTime = TimeSpan.FromSeconds(Math.Max(sessionTime - _lastSessionTime, 0));
 
