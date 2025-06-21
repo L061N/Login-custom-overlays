@@ -5,7 +5,7 @@ from subprocess import call
 
 simhub_folder = "C:\\Program Files (x86)\\SimHub"
 images_folder = "..\\Images"
-libraries_to_copy = ["CarLogos"]
+libraries_to_copy = ["CarLogos", "Flairs"]
 
 def copy_libraries_from_simhub():
     for library_name in libraries_to_copy:
