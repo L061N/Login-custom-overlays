@@ -109,6 +109,7 @@
     <Compile Include="Modules\Dash.cs" />
     <Compile Include="Modules\Delta.cs" />
     <Compile Include="Modules\Driver.cs" />
+    <Compile Include="Modules\Flair.cs" />
     <Compile Include="Modules\FuelCalc.cs" />
     <Compile Include="Modules\General.cs" />
     <Compile Include="Modules\LaunchAssist.cs" />

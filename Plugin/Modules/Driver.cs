@@ -33,6 +33,7 @@ namespace benofficial2.Plugin
         public int DriverInfoIdx { get; set; } = -1;
         public int CarIdx { get; set; } = -1;
         public string CarId { get; set; } = "";
+        public int FlairId { get; set; } = 0;
         public int EnterPitLapUnconfirmed { get; set; } = -1;
         public int EnterPitLap { get; set; } = -1;
         public int ExitPitLap { get; set; } = -1;
@@ -371,6 +372,8 @@ namespace benofficial2.Plugin
                 string carPath = string.Empty;
                 try { carPath = raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarPath"]; } catch { Debug.Assert(false); }
 
+                RawDataHelper.TryGetSessionData<int>(ref data, out int flairId, "DriverInfo", "Drivers", i, "FlairID");
+
                 double lastLapTime = 0;
                 try { lastLapTime = Math.Max(0, (double)raw.Telemetry["CarIdxLastLapTime"][carIdx]); } catch { Debug.Assert(false); }
 
@@ -391,6 +394,7 @@ namespace benofficial2.Plugin
                     driver.DriverInfoIdx = i;
                     driver.CarIdx = carIdx;
                     driver.CarId = carPath;
+                    driver.FlairId = flairId;
                     driver.LastLapTime = lastLapTime > 0 ? TimeSpan.FromSeconds(lastLapTime) : TimeSpan.Zero;
                     driver.BestLapTime = bestLapTime > 0 ? TimeSpan.FromSeconds(bestLapTime) : TimeSpan.Zero;
                     driver.SessionFlags = sessionFlags;

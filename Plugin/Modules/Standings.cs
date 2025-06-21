@@ -39,6 +39,7 @@ namespace benofficial2.Plugin
         public int LeadFocusedRows { get; set; } = 3;
         public int MaxRowsOtherClasses { get; set; } = 3;
         public int MaxRowsPlayerClass { get; set; } = 10;
+        public bool CountryFlagVisible { get; set; } = true;
         public bool CarLogoVisible { get; set; } = true;
         public bool CarLogoVisibleInRace { get; set; } = true;
         public bool GapVisibleInRace { get; set; } = true;
@@ -64,6 +65,7 @@ namespace benofficial2.Plugin
         public string Name { get; set; } = string.Empty;
         public string CarId { get; set; } = string.Empty;
         public string CarBrand { get; set; } = string.Empty;
+        public string CountryCode { get; set; } = string.Empty;
         public bool InPitLane { get; set; } = false;
         public bool Towing { get; set; } = false;
         public bool OutLap { get; set; } = false;
@@ -107,6 +109,7 @@ namespace benofficial2.Plugin
         private DriverModule _driverModule = null;
         private CarModule _carModule = null;
         private SessionModule _sessionModule = null;
+        private FlairModule _flairModule = null;
 
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
@@ -140,6 +143,7 @@ namespace benofficial2.Plugin
             _driverModule = plugin.GetModule<DriverModule>();
             _carModule = plugin.GetModule<CarModule>();
             _sessionModule = plugin.GetModule<SessionModule>();
+            _flairModule = plugin.GetModule<FlairModule>();
 
             _font = new Font("Roboto", 16);
             _fontBitmap = new Bitmap(1, 1);
@@ -158,6 +162,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.LeadFocusedRows", valueProvider: () => Settings.LeadFocusedRows);
             plugin.AttachDelegate(name: $"Standings.MaxRowsPlayerClass", valueProvider: () => Settings.MaxRowsPlayerClass);
             plugin.AttachDelegate(name: $"Standings.MaxRowsOtherClasses", valueProvider: () => Settings.MaxRowsOtherClasses);
+            plugin.AttachDelegate(name: $"Standings.CountryFlagVisible", valueProvider: () => Settings.CountryFlagVisible);
             plugin.AttachDelegate(name: $"Standings.CarLogoVisible", valueProvider: () => CarLogoVisible);
             plugin.AttachDelegate(name: $"Standings.GapVisible", valueProvider: () => GapVisible);
             plugin.AttachDelegate(name: $"Standings.BestVisible", valueProvider: () => BestVisible);
@@ -193,6 +198,7 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Name", valueProvider: () => row.Name);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CarId", valueProvider: () => row.CarId);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CarBrand", valueProvider: () => row.CarBrand);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CountryCode", valueProvider: () => row.CountryCode);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.InPitLane", valueProvider: () => row.InPitLane);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Towing", valueProvider: () => row.Towing);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.OutLap", valueProvider: () => row.OutLap);
@@ -322,6 +328,7 @@ namespace benofficial2.Plugin
                         row.Name = opponent.Name;
                         row.CarId = driver.CarId;
                         row.CarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName);
+                        row.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
                         row.InPitLane = opponent.IsCarInPitLane;
                         row.Towing = driver.Towing;
                         row.OutLap = driver.OutLap;
@@ -403,6 +410,7 @@ namespace benofficial2.Plugin
             row.Name = string.Empty;
             row.CarId = string.Empty;
             row.CarBrand = string.Empty;
+            row.CountryCode = string.Empty;
             row.InPitLane = false;
             row.Towing = false;
             row.OutLap = false;

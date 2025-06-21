@@ -34,6 +34,7 @@ namespace benofficial2.Plugin
         public int HeaderOpacity { get; set; } = 90;
         public bool FooterVisible { get; set; } = false;
         public bool CarLogoVisible { get; set; } = true;
+        public bool CountryFlagVisible { get; set; } = true;
         public int AlternateRowBackgroundColor { get; set; } = 5;
         public bool HighlightPlayerRow { get; set; } = true;
         public int BackgroundOpacity { get; set; } = 60;
@@ -48,6 +49,7 @@ namespace benofficial2.Plugin
         public string Number { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string CarBrand { get; set; } = string.Empty;
+        public string CountryCode { get; set; } = string.Empty;
         public bool OutLap { get; set; } = false;
         public int iRating { get; set; } = 0;
         public string License { get; set; } = string.Empty;
@@ -84,8 +86,10 @@ namespace benofficial2.Plugin
     {
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
+
         private DriverModule _driverModule = null;
         private CarModule _carModule = null;
+        private FlairModule _flairModule = null;
 
         public RelativeSettings Settings { get; set; }
 
@@ -96,6 +100,7 @@ namespace benofficial2.Plugin
         {
             _driverModule = plugin.GetModule<DriverModule>();
             _carModule = plugin.GetModule<CarModule>();
+            _flairModule = plugin.GetModule<FlairModule>();
 
             Settings = plugin.ReadCommonSettings<RelativeSettings>("RelativeSettings", () => new RelativeSettings());
             plugin.AttachDelegate(name: "Relative.Width", valueProvider: () => Settings.Width);
@@ -104,6 +109,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Relative.HeaderOpacity", valueProvider: () => Settings.HeaderOpacity);
             plugin.AttachDelegate(name: "Relative.FooterVisible", valueProvider: () => Settings.FooterVisible);
             plugin.AttachDelegate(name: "Relative.CarLogoVisible", valueProvider: () => Settings.CarLogoVisible);
+            plugin.AttachDelegate(name: "Relative.CountryFlagVisible", valueProvider: () => Settings.CountryFlagVisible);
             plugin.AttachDelegate(name: "Relative.AlternateRowBackgroundColor", valueProvider: () => Settings.AlternateRowBackgroundColor);
             plugin.AttachDelegate(name: "Relative.HighlightPlayerRow", valueProvider: () => Settings.HighlightPlayerRow);
             plugin.AttachDelegate(name: "Relative.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
@@ -124,6 +130,7 @@ namespace benofficial2.Plugin
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.Number", valueProvider: () => row.Number);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.Name", valueProvider: () => row.Name);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.CarBrand", valueProvider: () => row.CarBrand);
+                plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.CountryCode", valueProvider: () => row.CountryCode);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.OutLap", valueProvider: () => row.OutLap);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.iRating", valueProvider: () => row.iRating);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.License", valueProvider: () => row.License);
@@ -174,6 +181,7 @@ namespace benofficial2.Plugin
                 row.Number = opponent.CarNumber;
                 row.Name = opponent.Name;
                 row.CarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName); ;
+                row.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
                 row.OutLap = driver.OutLap;
                 row.iRating = (int)(opponent.IRacing_IRating ?? 0);
                 (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
@@ -199,6 +207,7 @@ namespace benofficial2.Plugin
             row.Number = string.Empty;
             row.Name = string.Empty;
             row.CarBrand = string.Empty;
+            row.CountryCode = string.Empty;
             row.OutLap = false;
             row.iRating = 0;
             row.License = string.Empty;

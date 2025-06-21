@@ -18,7 +18,7 @@
 
 <UserControl x:Class="benofficial2.Plugin.SettingsControl" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:converter="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:iconpacks="clr-namespace:MahApps.Metro.IconPacks;assembly=MahApps.Metro.IconPacks.Material" xmlns:local="clr-namespace:benofficial2.Plugin" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:styles="clr-namespace:SimHub.Plugins.Styles;assembly=SimHub.Plugins" xmlns:ui="clr-namespace:SimHub.Plugins.UI;assembly=SimHub.Plugins" mc:Ignorable="d">
     <ScrollViewer>
-        <Grid Height="4200">
+        <Grid Height="4400">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="44*"/>
                 <ColumnDefinition Width="377*"/>
@@ -136,6 +136,13 @@
                             Show Stint Lap instead of Pit Lap in race
                         </styles:SHToggleCheckbox>
 
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show the country flag corresponding to the driver's flair" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.CountryFlagVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show country flag*
+                        </styles:SHToggleCheckbox>
+
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Columns to show in race*" Margin="0,0,0,0" Width="180"/>
 
@@ -231,18 +238,38 @@
 
                 <styles:SHSection Title="RELATIVE OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
-                        <styles:SHToggleCheckbox 
-                            ToolTip="Show the header with session information" 
-                            HorizontalAlignment="Left" Margin="0,0,4,8"
-                            IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.HeaderVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            Show header
-                        </styles:SHToggleCheckbox>
+                        <StackPanel Orientation="Horizontal">
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show the header with session information" 
+                                HorizontalAlignment="Left" Margin="0,0,4,8"
+                                IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.HeaderVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show header
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show the footer with additional session information" 
+                                HorizontalAlignment="Left" Margin="8,0,4,8"
+                                IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.FooterVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show footer
+                            </styles:SHToggleCheckbox>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Header Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.HeaderOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider HorizontalAlignment="Left" Width="400" Title="Width (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="Maximum number of visible rows ahead and behind the player"/>
+                            <ui:TitledSlider HorizontalAlignment="Left" Width="400" Title="Max Row Count (Ahead and Behind)" Maximum="5" Minimum="1" Value="{Binding Plugin.Modules[RelativeModule].Settings.MaxRows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="Maximum number of visible rows ahead and behind the player"/>
+                        </StackPanel>
 
                         <styles:SHToggleCheckbox 
-                            ToolTip="Show the footer with additional session information" 
+                            ToolTip="Show the country flag corresponding to the driver's flair" 
                             HorizontalAlignment="Left" Margin="0,0,4,8"
-                            IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.FooterVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            Show footer
+                            IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.CountryFlagVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show country flag
                         </styles:SHToggleCheckbox>
 
                         <styles:SHToggleCheckbox 
@@ -260,21 +287,9 @@
                         </styles:SHToggleCheckbox>
 
                         <StackPanel Orientation="Horizontal">
-                            <ui:TitledSlider HorizontalAlignment="Left" Width="400" Title="Width (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                ToolTip="Maximum number of visible rows ahead and behind the player"/>
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal">
-                            <ui:TitledSlider HorizontalAlignment="Left" Width="400" Title="Max Row Count (Ahead and Behind)" Maximum="5" Minimum="1" Value="{Binding Plugin.Modules[RelativeModule].Settings.MaxRows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                ToolTip="Maximum number of visible rows ahead and behind the player"/>
-
                             <ui:TitledSlider MinWidth="400" Width="400" Title="Alternate row background color (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.AlternateRowBackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 ToolTip="Use a different background color to make alternate rows easier to read. 100% for maximum contrast, 0% to disable."/>
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal">
                             <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            <ui:TitledSlider Width="400" Title="Header Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.HeaderOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </StackPanel>
                 </styles:SHSection>
