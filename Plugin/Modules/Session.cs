@@ -69,6 +69,7 @@ namespace benofficial2.Plugin
         public bool StandingStart { get; internal set; } = false;
         public bool ShortParadeLap { get; internal set; } = false;
         public double MaxFuelPct { get; internal set; } = 1.0;
+        public bool TeamRacing { get; internal set; } = false;
 
         public override int UpdatePriority => 10;
 
@@ -84,6 +85,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Session.RaceTimer", valueProvider: () => RaceTimer);
             plugin.AttachDelegate(name: "Session.Oval", valueProvider: () => Oval);
             plugin.AttachDelegate(name: "Session.StandingStart", valueProvider: () => StandingStart);
+            plugin.AttachDelegate(name: "Session.TeamRacing", valueProvider: () => TeamRacing);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -118,6 +120,9 @@ namespace benofficial2.Plugin
                 ShortParadeLap = shortParadeLap == 1;
 
                 try { MaxFuelPct = double.Parse(raw.AllSessionData["DriverInfo"]["DriverCarMaxFuelPct"]); } catch { Debug.Assert(false); }
+
+                RawDataHelper.TryGetSessionData<string>(ref data, out string teamRacing, "WeekendInfo", "TeamRacing");
+                TeamRacing = teamRacing == "1";
 
                 _lastSessionTypeName = data.NewData.SessionTypeName;
             }

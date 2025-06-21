@@ -325,7 +325,14 @@ namespace benofficial2.Plugin
                         row.Connected = opponent.IsConnected;
                         row.LivePositionInClass = driver.LivePositionInClass;
                         row.Number = opponent.CarNumber;
-                        row.Name = opponent.Name;
+                        if (_sessionModule.TeamRacing)
+                        {                             
+                            row.Name = opponent.TeamName;
+                        }
+                        else
+                        {
+                            row.Name = opponent.Name;
+                        }
                         row.CarId = driver.CarId;
                         row.CarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName);
                         row.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
