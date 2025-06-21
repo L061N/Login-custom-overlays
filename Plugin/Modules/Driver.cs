@@ -65,8 +65,11 @@ namespace benofficial2.Plugin
         private DateTime _lastUpdateTime = DateTime.MinValue;
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(500);
         private TimeSpan _minTimeInPit = TimeSpan.FromMilliseconds(2500);
-        private SessionModule _sessionModule;
+
+        private SessionModule _sessionModule = null;
         private CarModule _carModule = null;
+        private FlairModule _flairModule = null;
+
         private SessionState _sessionState = new SessionState();
 
         public const int MaxDrivers = 64;
@@ -80,6 +83,7 @@ namespace benofficial2.Plugin
         public bool PlayerOutLap { get; internal set; } = false;
         public string PlayerNumber { get; internal set; } = "";
         public string PlayerCarBrand { get; internal set; } = "";
+        public string PlayerCountryCode { get; internal set; } = "";
         public int PlayerPositionInClass { get; internal set; } = 0;
         public int PlayerLivePositionInClass { get; internal set; } = 0;
         public bool PlayerHadWhiteFlag { get; internal set; } = false;
@@ -91,10 +95,12 @@ namespace benofficial2.Plugin
         {
             _sessionModule = plugin.GetModule<SessionModule>();
             _carModule = plugin.GetModule<CarModule>();
+            _flairModule = plugin.GetModule<FlairModule>();
 
             plugin.AttachDelegate(name: "Player.OutLap", valueProvider: () => PlayerOutLap);
             plugin.AttachDelegate(name: "Player.Number", valueProvider: () => PlayerNumber);
             plugin.AttachDelegate(name: "Player.CarBrand", valueProvider: () => PlayerCarBrand);
+            plugin.AttachDelegate(name: "Player.CountryCode", valueProvider: () => PlayerCountryCode);
             plugin.AttachDelegate(name: "Player.PositionInClass", valueProvider: () => PlayerPositionInClass);
             plugin.AttachDelegate(name: "Player.LivePositionInClass", valueProvider: () => PlayerLivePositionInClass);
             plugin.AttachDelegate(name: "Player.LastLapTime", valueProvider: () => PlayerLastLapTime);
@@ -118,6 +124,7 @@ namespace benofficial2.Plugin
                 PlayerOutLap = false;
                 PlayerNumber = "";
                 PlayerCarBrand = "";
+                PlayerCountryCode = "";
                 PlayerPositionInClass = 0;
                 PlayerLivePositionInClass = 0;
                 PlayerHadWhiteFlag = false;
@@ -268,6 +275,7 @@ namespace benofficial2.Plugin
                     PlayerOutLap = driver.OutLap;
                     PlayerNumber = opponent.CarNumber;
                     PlayerCarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName);
+                    PlayerCountryCode = _flairModule.GetCountryCode(driver.FlairId);
                     PlayerPositionInClass = opponent.Position > 0 ? opponent.PositionInClass : 0;
                     PlayerLastLapTime = driver.LastLapTime;
 
