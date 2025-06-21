@@ -12,3 +12,6 @@ PLugin/.vs/
 
 # Ignore VS user file
 Plugin/benofficial2.Plugin.csproj.user
+
+# Ignore all .env files, including in subdirectories
+**/.env
