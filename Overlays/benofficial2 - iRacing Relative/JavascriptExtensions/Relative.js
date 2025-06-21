@@ -147,6 +147,18 @@ function getRelativeCarBrand(index)
     }
 }
 
+function getRelativeCountryCode(index)
+{
+    if (index == 0)
+    {
+        return $prop('benofficial2.Player.CountryCode');
+    }
+    else
+    {
+        return getRelativeProp(index, 'CountryCode');
+    }
+}
+
 function getRelativeIRating(index)
 {
     let iRating;
