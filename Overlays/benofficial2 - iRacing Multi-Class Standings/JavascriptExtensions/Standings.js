@@ -40,46 +40,18 @@ function isLeadFocusedRow(classIdx, rowIdx)
     return isDividerVisible(classIdx) && (rowIdx < leadFocusedRows);
 }
 
-function getTireCompound(classIdx, rowIdx)
-{
-    const compound = isnull(getStandingsProp(classIdx, rowIdx, 'TireCompound'), '');
-    return compound;
-}
-
-function getTireCompoundColor(classIdx, rowIdx)
-{
-    const compound = getTireCompound(classIdx, rowIdx);
-    
-    if (compound == 'H')
-    {
-        return '#FEFEFC';
-    }
-    else if (compound == 'M')
-    {
-        return '#FFF94D'
-    }
-    else if (compound == 'S')
-    {
-        return '#FF584F';
-    }
-    else if (compound == 'W')
-    {
-        return '#48D3FA';
-    }
-    return '#FEFEFC'
-}
-
 function getTireCompoundVisible(classIdx, rowIdx)
 {
     const visible = isnull(getStandingsProp(classIdx, rowIdx, 'TireCompoundVisible'), false);
-    if (!visible) return false;
+    if (!visible) 
+        return false;
 
     // Hide before the race start
-    if (isRace()) return isRaceStarted();
+    if (isRace()) 
+        return isRaceStarted();
 
-    const inPit = getStandingsProp(classIdx, rowIdx, 'InPitLane');
     const connected = getStandingsProp(classIdx, rowIdx, 'Connected');
-    return connected && !inPit;
+    return connected;
 }
 
 function getLapTimingVisible(classIdx, rowIdx)

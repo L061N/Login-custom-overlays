@@ -165,6 +165,9 @@ Section "Plugin" SEC_PLUGIN
   SetOutPath "$INSTDIR\ImageLibrary\benofficial2\Flairs"
   File /r "..\Images\Flairs\*.*"
 
+  SetOutPath "$INSTDIR\ImageLibrary\benofficial2\Icons"
+  File /r "..\Images\Icons\*.*"
+
   ; Register uninstaller
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\bo2-official-overlays" \
                 "DisplayName" "benofficial2's Official Overlays"
