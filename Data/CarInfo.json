@@ -293,5 +293,14 @@
     "hpdarx01c": {
         "hasTC": true,
         "hasTwoPartBrakeBias": true
+    },
+    "stockcars2 arcatoyota25": {
+        "hasTwoPartBrakeBias": true
+    },
+    "stockcars2 arcaford25": {
+        "hasTwoPartBrakeBias": true
+    },
+    "stockcars2 arcachevy25": {
+        "hasTwoPartBrakeBias": true
     }
 }
