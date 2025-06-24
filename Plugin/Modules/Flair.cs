@@ -51,8 +51,8 @@ namespace benofficial2.Plugin
             }
 
             // Special handling for flair_id 1 and 2
-            flairIdToCountryCode[1] = "IR";
-            flairIdToCountryCode[2] = "IR";
+            flairIdToCountryCode[1] = "iracing";
+            flairIdToCountryCode[2] = "iracing";
         }
 
         public string GetCountryCode(int flairId)
