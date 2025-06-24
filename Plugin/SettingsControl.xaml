@@ -143,6 +143,13 @@
                             Show country flag*
                         </styles:SHToggleCheckbox>
 
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show the driver's safety rating" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.SafetyRatingVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show safety rating*
+                        </styles:SHToggleCheckbox>
+
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Columns to show in race*" Margin="0,0,0,0" Width="180"/>
 
@@ -270,6 +277,13 @@
                             HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.CountryFlagVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Show country flag
+                        </styles:SHToggleCheckbox>
+
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show the driver's safety rating" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.SafetyRatingVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show safety rating
                         </styles:SHToggleCheckbox>
 
                         <styles:SHToggleCheckbox 

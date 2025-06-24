@@ -174,6 +174,20 @@ function getRelativeIRating(index)
     return formatIRating(iRating);
 }
 
+function getRelativeSafetyRating(index)
+{
+    let iRating;
+    if (index == 0 || g_UseSimHubProp)
+    {
+        const position = getopponentleaderboardposition_aheadbehind(index);
+        return Number(String(driverlicencestring(position)).slice(2, 6));
+    }
+    else
+    {
+        return getRelativeProp(index, 'SafetyRating');
+    }
+}
+
 function getRelativeLicense(index)
 {
     if (index == 0 || g_UseSimHubProp)
