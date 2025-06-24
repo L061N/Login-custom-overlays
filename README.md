@@ -3,9 +3,9 @@
 
 ## Overview
 
-With benofficial2's Official Overlays you get a simple collection of free overlays for [iRacing](https://www.iracing.com/). The overlays are made with [SimHub](https://www.simhubdash.com/download-2/), which means they are fully customizable, and don't require any other executable to run in the background.
+With benofficial2's Official Overlays you get a complete collection of free overlays for [iRacing](https://www.iracing.com/). The overlays are made with [SimHub](https://www.simhubdash.com/download-2/), which means they are fully customizable, and are easy on CPU and memory so you get more FPS in-game.
 
-<a href="https://youtu.be/Bj29vDSf8bw?si=UCBgdk9UT7WfN2Eg&t=143">
+<a href="https://youtu.be/zrjqHcTWbKs?si=2-y9SHETUnE3BI-7&t=263">
 <p align="center">
   <img src="Images/Overview-LMP3.png" width="1920"/>
 </p>
@@ -27,7 +27,7 @@ To see them in action, click the image above for a video demo.
 - **[Launch Assist](#launch-assist)**: shows precise pedal inputs to nail a perfect start
 - **[Spotter](#spotter)**: shows orange bars when side-by-side with another car
 - **[Fuel Calculator](#fuel-calculator)**: when in garage, shows how much fuel is needed for the race
-- **[Wind](#wind)**: show the speed & direction of wind relative to the player car rotation
+- **[Wind, Track Wetness & Precipitation](#wind-track-wetness--precipitation)**: shows weather-related data fields
 
 ## How to Install
 
@@ -112,11 +112,11 @@ Shows the live **Leaderboard** for up to 4 car classes. Optional columns: **Car 
 Shows the live **Leaderboard** for the player's car class. Can show up to 25 drivers and have **Lead-Focused** rows (configurable in plugin options). The driver's **iRating** is shown with their **License Class** color. The **Tire Compound** indicator also serves as an **On-Track** indicator. In a race, the **Gap to Leader** and **Last Pit Stop Lap** are shown. In practice and qualification, the **Best Lap Time** is shown. For streamers, the large header makes it clear to your viewers if you're in a race or practice session.
 
 <p align="center">
-  <img src="Images/Standings-Pit.png" width="450"/>
+  <img src="Images/Standings-Pit.png" width="400"/>
 </p>
 
 <p align="center">
-  <img src="Images/Standings-Wet.png" width="450"/>
+  <img src="Images/Standings-Wet.png" width="400"/>
 </p>
 
 ## Relative
@@ -126,6 +126,8 @@ Shows the nearby drivers **Ahead & Behind** on-track. This includes cars from ev
 <p align="center">
   <img src="Images/Relative-LMP3.png" width="350"/>
 </p>
+
+There's an optional footer (not enabled by default) that shows additional session information typically seen in the Standings header.
 
 ## Track Map
 
@@ -164,7 +166,7 @@ This delta bar can help you improve your lap times by giving you on-the-spot fee
 Shows the current **Gear**, **Speed** and a graph of **Pedal Input Traces** over time. This is useful to understand bad habits. This overlay is modular meaning you can hide parts you don't need as well as adjusting the width of the traces (see configuration options in benofficial2 plugin).
 
 <p align="center">
-  <img src="Images/Inputs.png" width="600"/>
+  <img src="Images/Inputs.png" width="500"/>
 </p>
 
 ## Dash Overlay
@@ -179,7 +181,7 @@ Useful when the in-game steering wheel is not visible in your FOV. This overlay 
   <img src="Images/Dash-ERS-Red.png" width="350"/>
 </p>
 
-The yellow boxes are for **Fuel** and **Laps Remaining Estimate**. A **Pit Indicator** will blink when it's time to pit. The orange boxes are for various in-car settings such as **Entry Diff**. And finally the red boxes are for **Brake Bias** adjustments.
+The yellow boxes are for **Fuel** and **Laps Remaining Estimate**. A **Pit Indicator** will pop up when it's time to pit. The orange boxes are for various in-car settings such as **Entry Diff**. And finally the red boxes are for **Brake Bias** and **ABS** adjustments.
 
 <p align="center">
   <img src="Images/Dash-Pit.png" width="350"/>
@@ -225,7 +227,7 @@ Designed to be placed over the virtual mirror, but can be placed wherever you wa
 
 ## Fuel Calculator
 
-Shows up when in the garage / setup screen and tells you how much fuel is needed to start the race. Supports heat races and will determine if the race is limited by time or laps when both are specified. Useful for leagues that have a custom race length.
+Shows up only when in the garage / setup screen and tells you how much fuel is needed to start the race. Supports heat races and will determine if the race is limited by time or laps when both are specified. Useful for leagues that have a custom race length.
 
 <p align="center">
   <img src="Images/FuelCalc-2.png" width="350"/>
@@ -239,13 +241,18 @@ A blinking **Fuel Warning** lights up when you're about to grid with an under-fu
 
 *Beta Warning: use at your own risk. I might have missed an edge case but so far so good in my tests. Please report any issue or feedback in my [Discord](https://discord.gg/s2834nmdYx).*
 
-## Wind
+## Wind, Track Wetness & Precipitation
 
-Shows the speed & direction of wind relative to the player car rotation. Useful to understand the impact of wind on straight line speed and cornering grip.
+Three small overlays that show weather-related data fields.
 
 <p align="center">
-  <img src="Images/Wind.png" width="150"/>
+  <img src="Images/Weather.png" width="150"/>
 </p>
+
+The speed & direction of wind is relative to the player car rotation, so a down arrow would be a headwind. Useful to understand the impact of wind on straight line speed and cornering grip.
+
+The track wetness is relative to the maximum wetness (100%). Precipitation is the forecasted chance of rain at the moment.
+
 
 ## Help & Feedback
 
