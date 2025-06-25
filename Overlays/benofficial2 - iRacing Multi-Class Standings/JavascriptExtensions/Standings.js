@@ -58,11 +58,13 @@ function getLapTimingVisible(classIdx, rowIdx)
 {
     if (isRace())
     {
-        if (!isRaceStarted()) return false;
+        if (!isRaceStarted()) 
+            return false;
 
         // Wait until driver completed 1 lap before showing lap timing (best / last lap)
         const lap = isnull(getStandingsProp(classIdx, rowIdx, 'CurrentLap'), 0);
-        if(lap == 1) return false;
+        if(lap == 1) 
+            return false;
     }
     return true;
 }
