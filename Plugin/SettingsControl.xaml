@@ -181,6 +181,13 @@
                                 Last Lap Time
                             </styles:SHToggleCheckbox>
 
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Driver's delta lap time to leader's last lap time" 
+                                HorizontalAlignment="Left" Margin="0,0,4,4"
+                                IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.DeltaVisibleInRace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Delta
+                            </styles:SHToggleCheckbox>
+
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
@@ -214,6 +221,13 @@
                                 HorizontalAlignment="Left" Margin="0,0,4,4"
                                 IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.LastVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 Last Lap Time
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Driver's delta lap time to the session best lap time" 
+                                HorizontalAlignment="Left" Margin="0,0,4,4"
+                                IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.DeltaVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Delta
                             </styles:SHToggleCheckbox>
 
                         </StackPanel>

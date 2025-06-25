@@ -46,8 +46,10 @@ namespace benofficial2.Plugin
         public bool GapVisibleInRace { get; set; } = true;
         public bool BestVisibleInRace { get; set; } = true;
         public bool LastVisibleInRace { get; set; } = true;
+        public bool DeltaVisibleInRace { get; set; } = true;
         public bool BestVisible { get; set; } = true;
         public bool LastVisible { get; set; } = true;
+        public bool DeltaVisible { get; set; } = true;
         public bool ShowStintLapInRace { get; set; } = true;
         public int AlternateRowBackgroundColor { get; set; } = 5;
         public bool HighlightPlayerRow { get; set; } = true;
@@ -78,6 +80,7 @@ namespace benofficial2.Plugin
         public int StintLap { get; set; } = 0;
         public int LapsToClassLeader { get; set; } = 0;
         public double GapToClassLeader { get; set; } = 0;
+        public TimeSpan DeltaToClassLeader { get; set; } = TimeSpan.Zero;
         public string TireCompound {  get; set; } = string.Empty;
         public bool TireCompoundVisible { get; set; } = false;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
@@ -98,6 +101,7 @@ namespace benofficial2.Plugin
         public int Sof { get; set; } = 0;
         public int DriverCount { get; set; } = 0;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
+        public TimeSpan LeaderLastLapTime { get; set; } = TimeSpan.Zero;
 
         public StandingCarClass()
         {
@@ -131,6 +135,7 @@ namespace benofficial2.Plugin
         public bool GapVisible { get; internal set; } = true;
         public bool BestVisible { get; internal set; } = true;
         public bool LastVisible { get; internal set; } = true;
+        public bool DeltaVisible { get; internal set; } = true;
 
         public override int UpdatePriority => 80;
 
@@ -169,6 +174,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.GapVisible", valueProvider: () => GapVisible);
             plugin.AttachDelegate(name: $"Standings.BestVisible", valueProvider: () => BestVisible);
             plugin.AttachDelegate(name: $"Standings.LastVisible", valueProvider: () => LastVisible);
+            plugin.AttachDelegate(name: $"Standings.DeltaVisible", valueProvider: () => DeltaVisible);
             plugin.AttachDelegate(name: $"Standings.ShowStintLapInRace", valueProvider: () => Settings.ShowStintLapInRace);
             plugin.AttachDelegate(name: "Standings.AlternateRowBackgroundColor", valueProvider: () => Settings.AlternateRowBackgroundColor);
             plugin.AttachDelegate(name: "Standings.HighlightPlayerRow", valueProvider: () => Settings.HighlightPlayerRow);
@@ -212,6 +218,7 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.StintLap", valueProvider: () => row.StintLap);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LapsToClassLeader", valueProvider: () => row.LapsToClassLeader);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.GapToClassLeader", valueProvider: () => row.GapToClassLeader);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.DeltaToClassLeader", valueProvider: () => row.DeltaToClassLeader);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompound", valueProvider: () => row.TireCompound);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompoundVisible", valueProvider: () => row.TireCompoundVisible);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.BestLapTime", valueProvider: () => row.BestLapTime);
@@ -234,6 +241,7 @@ namespace benofficial2.Plugin
                 GapVisible = Settings.GapVisibleInRace;
                 BestVisible = Settings.BestVisibleInRace;
                 LastVisible = Settings.LastVisibleInRace;
+                DeltaVisible = Settings.DeltaVisibleInRace;
             }
             else
             {
@@ -241,6 +249,7 @@ namespace benofficial2.Plugin
                 GapVisible = false;
                 BestVisible = Settings.BestVisible;
                 LastVisible = Settings.LastVisible;
+                DeltaVisible = Settings.DeltaVisible;
             }
 
             int visibleClassCount = 0;
@@ -269,10 +278,17 @@ namespace benofficial2.Plugin
                     carClass.NameSize = MeasureTextInPixels(carClass.Name);
                     carClass.Color = opponentClass.ClassColor;
                     carClass.TextColor = opponentClass.ClassTextColor;
-                    
-                    
                     carClass.Sof = CalculateSof(opponentsWithDrivers);
                     carClass.DriverCount = opponentsWithDrivers.Count;
+
+                    if (opponentsWithDrivers.Count > 0)
+                    {
+                        carClass.LeaderLastLapTime = opponentsWithDrivers[0].Item2.LastLapTime;
+                    }
+                    else
+                    {
+                        carClass.LeaderLastLapTime = TimeSpan.Zero;
+                    }
 
                     int skipRowCount = 0;
                     int maxRowCount;
@@ -353,6 +369,29 @@ namespace benofficial2.Plugin
                         row.LastLapTime = driver.LastLapTime;
                         row.JokerLapsComplete = driver.JokerLapsComplete;
 
+                        if (_sessionModule.Race)
+                        {
+                            if (row.LastLapTime > TimeSpan.Zero && carClass.LeaderLastLapTime > TimeSpan.Zero)
+                            {
+                                row.DeltaToClassLeader = row.LastLapTime - carClass.LeaderLastLapTime;
+                            }
+                            else
+                            {
+                                row.DeltaToClassLeader = TimeSpan.Zero;
+                            }
+                        }
+                        else
+                        {
+                            if (row.LastLapTime > TimeSpan.Zero && carClass.BestLapTime > TimeSpan.Zero)
+                            {
+                                row.DeltaToClassLeader = row.LastLapTime - carClass.BestLapTime;
+                            }
+                            else
+                            {
+                                row.DeltaToClassLeader = TimeSpan.Zero;
+                            }
+                        }
+
                         // Make sure we have a best lap time for the first lap of a race
                         // iRacing often doesn't provide a valid best lap time for lap 1
                         if (_sessionModule.Race && row.BestLapTime <= TimeSpan.Zero && row.LastLapTime > TimeSpan.Zero)
@@ -400,6 +439,7 @@ namespace benofficial2.Plugin
             carClass.Sof = 0;
             carClass.DriverCount = 0;
             carClass.BestLapTime = TimeSpan.Zero;
+            carClass.LeaderLastLapTime = TimeSpan.Zero;
 
             for (int driverIdx = 0; driverIdx < StandingCarClass.MaxRows; driverIdx++)
             {
@@ -431,6 +471,7 @@ namespace benofficial2.Plugin
             row.StintLap = 0;
             row.LapsToClassLeader = 0;
             row.GapToClassLeader = 0;
+            row.DeltaToClassLeader = TimeSpan.Zero;
             row.TireCompound = string.Empty;
             row.TireCompoundVisible = false;
             row.BestLapTime = TimeSpan.Zero;
