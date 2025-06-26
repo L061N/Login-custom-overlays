@@ -35,7 +35,7 @@ namespace benofficial2.Plugin
 
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
-            Settings = plugin.ReadCommonSettings<WindSettings>("GeneralSettings", () => new WindSettings());
+            Settings = plugin.ReadCommonSettings<WindSettings>("WindSettings", () => new WindSettings());
             plugin.AttachDelegate(name: "Wind.RotateWithCar", valueProvider: () => Settings.RotateWithCar);
             plugin.AttachDelegate(name: "Wind.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
         }
@@ -47,7 +47,7 @@ namespace benofficial2.Plugin
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
-            plugin.SaveCommonSettings("GeneralSettings", Settings);
+            plugin.SaveCommonSettings("WindSettings", Settings);
         }
     }
 }

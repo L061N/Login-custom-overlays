@@ -35,7 +35,7 @@ namespace benofficial2.Plugin
 
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
-            Settings = plugin.ReadCommonSettings<TrackWetnessSettings>("GeneralSettings", () => new TrackWetnessSettings());
+            Settings = plugin.ReadCommonSettings<TrackWetnessSettings>("TrackWetnessSettings", () => new TrackWetnessSettings());
             plugin.AttachDelegate(name: "TrackWetness.HideWhenZero", valueProvider: () => Settings.HideWhenZero);
             plugin.AttachDelegate(name: "TrackWetness.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
         }
@@ -47,7 +47,7 @@ namespace benofficial2.Plugin
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
-            plugin.SaveCommonSettings("GeneralSettings", Settings);
+            plugin.SaveCommonSettings("TrackWetnessSettings", Settings);
         }
     }
 }

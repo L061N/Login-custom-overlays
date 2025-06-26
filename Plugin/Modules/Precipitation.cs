@@ -35,7 +35,7 @@ namespace benofficial2.Plugin
 
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
-            Settings = plugin.ReadCommonSettings<PrecipitationSettings>("GeneralSettings", () => new PrecipitationSettings());
+            Settings = plugin.ReadCommonSettings<PrecipitationSettings>("PrecipitationSettings", () => new PrecipitationSettings());
             plugin.AttachDelegate(name: "Precipitation.HideWhenZero", valueProvider: () => Settings.HideWhenZero);
             plugin.AttachDelegate(name: "Precipitation.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
         }
@@ -47,7 +47,7 @@ namespace benofficial2.Plugin
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
-            plugin.SaveCommonSettings("GeneralSettings", Settings);
+            plugin.SaveCommonSettings("PrecipitationSettings", Settings);
         }
     }
 }
