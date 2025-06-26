@@ -32,7 +32,7 @@ namespace benofficial2.Plugin
     public class StandingsSettings : ModuleSettings
     {
         public int HeaderWidth { get; set; } = 10;
-        public int Width { get; set; } = 34;
+        public int Width { get; set; } = 80;
         public bool HideInReplay { get; set; } = true;
         public bool HeaderVisible { get; set; } = true;
         public bool CarClassHeaderVisible { get; set; } = true;
@@ -41,7 +41,7 @@ namespace benofficial2.Plugin
         public int MaxRowsPlayerClass { get; set; } = 10;
         public bool CountryFlagVisible { get; set; } = true;
         public bool CarLogoVisible { get; set; } = true;
-        public bool SafetyRatingVisible { get; set; } = false;
+        public bool SafetyRatingVisible { get; set; } = true;
         public bool CarLogoVisibleInRace { get; set; } = true;
         public bool GapVisibleInRace { get; set; } = true;
         public bool BestVisibleInRace { get; set; } = true;

@@ -28,14 +28,14 @@ namespace benofficial2.Plugin
 {
     public class RelativeSettings : ModuleSettings
     {
-        public int Width { get; set; } = 34;
-        public int MaxRows { get; set; } = 3;
+        public int Width { get; set; } = 80;
+        public int MaxRows { get; set; } = 4;
         public bool HeaderVisible { get; set; } = true;
         public int HeaderOpacity { get; set; } = 90;
         public bool FooterVisible { get; set; } = false;
         public bool CarLogoVisible { get; set; } = true;
         public bool CountryFlagVisible { get; set; } = true;
-        public bool SafetyRatingVisible { get; set; } = false;
+        public bool SafetyRatingVisible { get; set; } = true;
         public int AlternateRowBackgroundColor { get; set; } = 5;
         public bool HighlightPlayerRow { get; set; } = true;
         public int BackgroundOpacity { get; set; } = 60;
