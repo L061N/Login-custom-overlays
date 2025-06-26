@@ -80,7 +80,7 @@ namespace benofficial2.Plugin
         public int StintLap { get; set; } = 0;
         public int LapsToClassLeader { get; set; } = 0;
         public double GapToClassLeader { get; set; } = 0;
-        public TimeSpan DeltaToClassLeader { get; set; } = TimeSpan.Zero;
+        public TimeSpan? DeltaToClassLeader { get; set; } = null;
         public string TireCompound {  get; set; } = string.Empty;
         public bool TireCompoundVisible { get; set; } = false;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
@@ -377,7 +377,7 @@ namespace benofficial2.Plugin
                             }
                             else
                             {
-                                row.DeltaToClassLeader = TimeSpan.Zero;
+                                row.DeltaToClassLeader = null;
                             }
                         }
                         else
@@ -388,7 +388,7 @@ namespace benofficial2.Plugin
                             }
                             else
                             {
-                                row.DeltaToClassLeader = TimeSpan.Zero;
+                                row.DeltaToClassLeader = null;
                             }
                         }
 
@@ -471,7 +471,7 @@ namespace benofficial2.Plugin
             row.StintLap = 0;
             row.LapsToClassLeader = 0;
             row.GapToClassLeader = 0;
-            row.DeltaToClassLeader = TimeSpan.Zero;
+            row.DeltaToClassLeader = null;
             row.TireCompound = string.Empty;
             row.TireCompoundVisible = false;
             row.BestLapTime = TimeSpan.Zero;
