@@ -262,8 +262,6 @@ namespace benofficial2.Plugin
                     LeaderboardCarClassDescription opponentClass = _driverModule.LiveClassLeaderboards[carClassIdx].CarClassDescription;
                     OpponentsWithDrivers opponentsWithDrivers = _driverModule.LiveClassLeaderboards[carClassIdx].Drivers;
 
-                    TimeSpan bestLapTime = TimeSpan.MaxValue;
-
                     if ((opponentClass.ClassName == null || opponentClass.ClassName.Length == 0 || opponentClass.ClassName == "Hosted All Cars")                            
                         && opponentClass.CarModels.Count == 1)
                     {
@@ -280,6 +278,7 @@ namespace benofficial2.Plugin
                     carClass.TextColor = opponentClass.ClassTextColor;
                     carClass.Sof = CalculateSof(opponentsWithDrivers);
                     carClass.DriverCount = opponentsWithDrivers.Count;
+                    carClass.BestLapTime = FindBestLapTime(opponentsWithDrivers);
 
                     if (opponentsWithDrivers.Count > 0)
                     {
@@ -399,17 +398,10 @@ namespace benofficial2.Plugin
                             row.BestLapTime = row.LastLapTime;
                         }
 
-                        // Determine the class best lap time
-                        if (row.BestLapTime > TimeSpan.Zero && row.BestLapTime < bestLapTime)
-                        {
-                            bestLapTime = row.BestLapTime;
-                        }
-
                         visibleRowCount++;
                     }
 
                     carClass.VisibleRowCount = visibleRowCount;
-                    carClass.BestLapTime = bestLapTime < TimeSpan.MaxValue ? bestLapTime : TimeSpan.Zero;
                     visibleClassCount++;
                 }
                 else
@@ -592,6 +584,23 @@ namespace benofficial2.Plugin
             }
 
             return skipRowCount;
+        }
+
+        public TimeSpan FindBestLapTime(OpponentsWithDrivers opponentsWithDrivers)
+        {
+            if (opponentsWithDrivers.Count <= 0) 
+                return TimeSpan.Zero;
+
+            TimeSpan bestLapTime = TimeSpan.MaxValue;
+            for (int opponentIdx = 0; opponentIdx < opponentsWithDrivers.Count; opponentIdx++)
+            {
+                Driver driver = opponentsWithDrivers[opponentIdx].Item2;
+                if (driver.BestLapTime > TimeSpan.Zero && driver.BestLapTime < bestLapTime)
+                {
+                    bestLapTime = driver.BestLapTime;
+                }
+            }
+            return bestLapTime < TimeSpan.MaxValue ? bestLapTime : TimeSpan.Zero;
         }
 
         public int CalculateSof(OpponentsWithDrivers opponentsWithDrivers)
