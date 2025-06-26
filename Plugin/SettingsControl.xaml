@@ -42,7 +42,10 @@
                                     </Label.Content>
                                 </Label>
 
-                                <styles:SHLinkButton HorizontalAlignment="Left" Click="TwitchLink_Click" Content="Follow benofficial2 on Twitch.tv" Margin="5,10,1,1"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <styles:SHLinkButton HorizontalAlignment="Left" Click="TwitchLink_Click" Content="Follow benofficial2 on Twitch.tv" Margin="5,10,1,1"/>
+                                    <styles:SHLinkButton HorizontalAlignment="Left" Click="DonateLink_Click" Content="Donate to support development" Margin="15,10,1,1"/>
+                                </StackPanel>
                             </StackPanel>
                         </styles:SHSubSection>
 

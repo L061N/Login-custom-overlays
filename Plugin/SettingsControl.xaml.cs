@@ -84,6 +84,15 @@ namespace benofficial2.Plugin
             });
         }
 
+        private void DonateLink_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://streamelements.com/benofficial2/tip",
+                UseShellExecute = true // Ensures it opens in the default browser
+            });
+        }
+
         private void CheckForUpdates_Click(object sender, RoutedEventArgs e)
         {
             if (CheckForUpdates.IsChecked == true)
