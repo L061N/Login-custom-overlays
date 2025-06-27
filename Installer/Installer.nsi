@@ -20,11 +20,11 @@ Name "${PRODUCT_NAME}"
 
 ; Custom Welcome Page Text
 !define MUI_WELCOMEPAGE_TITLE "Welcome to ${PRODUCT_NAME} ${PRODUCT_VERSION} Setup"
-!define MUI_WELCOMEPAGE_TEXT "You will soon be racing with the greatest homemade overlays in sim-racing history.$\r$\n$\r$\nSince the overlays are made with SimHub, it is necessary to have installed SimHub version ${SIMHUB_VERSION} or later.$\r$\n$\r$\nThis Setup will guide you through this process.$\r$\n$\r$\nClick Next to continue."
+!define MUI_WELCOMEPAGE_TEXT "You will soon be racing with the greatest overlays in sim-racing history.$\r$\n$\r$\nSince the overlays are made with SimHub, it is necessary to have installed SimHub version ${SIMHUB_VERSION} or later.$\r$\n$\r$\nThis Setup will guide you through this process.$\r$\n$\r$\nClick Next to continue."
 
 ; Custom Finish Page Text
 !define MUI_FINISHPAGE_TITLE "Completing ${PRODUCT_NAME} ${PRODUCT_VERSION} Setup"
-!define MUI_FINISHPAGE_TEXT "Thank you for installing my homemade overlays. I hope you will enjoy them!$\r$\n$\r$\nPlease consider following me on Twitch at twitch.tv/benofficial2$\r$\n$\r$\nClick Finish to close Setup and open Twitch."
+!define MUI_FINISHPAGE_TEXT "Thank you for installing my overlays. I hope you will enjoy them!$\r$\n$\r$\nPlease consider following me on Twitch at twitch.tv/benofficial2$\r$\n$\r$\nClick Finish to close Setup and open Twitch."
 
 ; Pages
 !insertmacro MUI_PAGE_WELCOME
