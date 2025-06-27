@@ -27,6 +27,49 @@ namespace benofficial2.Plugin
 {
     using OpponentsWithDrivers = List<(Opponent, Driver)>;
 
+    public class AverageLapTime
+    {
+        private readonly Queue<TimeSpan> _lapTimes = new Queue<TimeSpan>();
+        private readonly int _maxLapCount;
+        private int _currentLap = -1;
+
+        public AverageLapTime(int lapCount)
+        {
+            if (lapCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(lapCount), "Lap count must be greater than zero.");
+            }
+            _maxLapCount = lapCount;
+        }
+
+        public void AddLapTime(int currentLap, TimeSpan lapTime)
+        {
+            if (currentLap == _currentLap)
+                return;
+
+            if (lapTime <= TimeSpan.Zero)
+                return;
+
+            if (_lapTimes.Count == _maxLapCount)
+            {
+                _lapTimes.Dequeue();
+            }
+            _lapTimes.Enqueue(lapTime);
+            _currentLap = currentLap;
+        }
+
+        public TimeSpan GetAverageLapTime()
+        {
+            if (_lapTimes.Count == 0)
+            {
+                return TimeSpan.Zero;
+            }
+
+            long averageTicks = (long)_lapTimes.Average(ts => ts.Ticks);
+            return new TimeSpan(averageTicks);
+        }
+    }
+
     public class Driver
     {
         // Index in the array AllSessionData["DriverInfo"]["Drivers"]
@@ -50,6 +93,7 @@ namespace benofficial2.Plugin
         public bool FinishedRace { get; set; } = false;
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
+        public AverageLapTime AvgLapTime { get; set; } = new AverageLapTime(3);
         public int JokerLapsComplete { get; set; } = 0;
         public int SessionFlags { get; set; } = 0;
     }
@@ -269,6 +313,10 @@ namespace benofficial2.Plugin
 
                     driver.LastCurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? -1;
                 }
+
+                // Update the average lap time for the driver
+                int currentLap = opponent.CurrentLap ?? -1;
+                driver.AvgLapTime.AddLapTime(currentLap, driver.LastLapTime);
 
                 if (opponent.IsPlayer)
                 {

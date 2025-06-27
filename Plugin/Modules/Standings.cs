@@ -102,6 +102,7 @@ namespace benofficial2.Plugin
         public int DriverCount { get; set; } = 0;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan LeaderLastLapTime { get; set; } = TimeSpan.Zero;
+        public TimeSpan LeaderAvgLapTime { get; set; } = TimeSpan.Zero;
 
         public StandingCarClass()
         {
@@ -283,10 +284,12 @@ namespace benofficial2.Plugin
                     if (opponentsWithDrivers.Count > 0)
                     {
                         carClass.LeaderLastLapTime = opponentsWithDrivers[0].Item2.LastLapTime;
+                        carClass.LeaderAvgLapTime = opponentsWithDrivers[0].Item2.AvgLapTime.GetAverageLapTime();
                     }
                     else
                     {
                         carClass.LeaderLastLapTime = TimeSpan.Zero;
+                        carClass.LeaderAvgLapTime = TimeSpan.Zero;
                     }
 
                     int skipRowCount = 0;
@@ -432,6 +435,7 @@ namespace benofficial2.Plugin
             carClass.DriverCount = 0;
             carClass.BestLapTime = TimeSpan.Zero;
             carClass.LeaderLastLapTime = TimeSpan.Zero;
+            carClass.LeaderAvgLapTime = TimeSpan.Zero;
 
             for (int driverIdx = 0; driverIdx < StandingCarClass.MaxRows; driverIdx++)
             {

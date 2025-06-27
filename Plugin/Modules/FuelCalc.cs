@@ -127,7 +127,7 @@ namespace benofficial2.Plugin
 
             Visible = isGarageVisible;
 
-            if (Visible || _sessionModule.Race && !_sessionModule.RaceStarted && Settings.EnablePreRaceWarning)
+            if (Visible || (_sessionModule.Race && !_sessionModule.RaceStarted && Settings.EnablePreRaceWarning))
             {
                 UpdateBestLapTime(ref data);
                 UpdateSetupFuelLevel(ref data);
