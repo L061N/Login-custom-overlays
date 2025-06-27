@@ -349,7 +349,13 @@ function getClassSof(classIdx)
     return isnull(getStandingsClassProp(classIdx, 'Sof'), 0);
 }
 
+function truncateToDecimal(num, decimals) 
+{
+  const factor = Math.pow(10, decimals)
+  return (Math.floor(num * factor) / factor).toFixed(decimals)
+}
+
 function formatIRating(iRating)
 {
-    return (Number(iRating) / 1000).toFixed(1) + 'k';
+    return truncateToDecimal(Number(iRating) / 1000, 1) + 'k';
 }
