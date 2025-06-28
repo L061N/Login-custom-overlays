@@ -24,8 +24,8 @@ namespace benofficial2.Plugin
 {
     public class TrackMapSettings : ModuleSettings
     {
-        public int DotRadius { get; set; } = 40;
-        public int FontSize { get; set; } = 40;
+        public int DotRadius { get; set; } = 20;
+        public int FontSize { get; set; } = 20;
         public int BackgroundOpacity { get; set; } = 0;
     }
 
