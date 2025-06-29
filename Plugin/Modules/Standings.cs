@@ -50,6 +50,7 @@ namespace benofficial2.Plugin
         public bool BestVisible { get; set; } = true;
         public bool LastVisible { get; set; } = true;
         public bool DeltaVisible { get; set; } = true;
+        public bool UseDeltaToPlayer { get; set; } = false;
         public bool ShowStintLapInRace { get; set; } = true;
         public int AlternateRowBackgroundColor { get; set; } = 5;
         public bool HighlightPlayerRow { get; set; } = true;
@@ -81,6 +82,7 @@ namespace benofficial2.Plugin
         public int LapsToClassLeader { get; set; } = 0;
         public double GapToClassLeader { get; set; } = 0;
         public TimeSpan? DeltaToClassLeader { get; set; } = null;
+        public TimeSpan? DeltaToPlayer { get; set; } = null;
         public string TireCompound {  get; set; } = string.Empty;
         public bool TireCompoundVisible { get; set; } = false;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
@@ -178,6 +180,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.BestVisible", valueProvider: () => BestVisible);
             plugin.AttachDelegate(name: $"Standings.LastVisible", valueProvider: () => LastVisible);
             plugin.AttachDelegate(name: $"Standings.DeltaVisible", valueProvider: () => DeltaVisible);
+            plugin.AttachDelegate(name: $"Standings.UseDeltaToPlayer", valueProvider: () => Settings.UseDeltaToPlayer);
             plugin.AttachDelegate(name: $"Standings.ShowStintLapInRace", valueProvider: () => Settings.ShowStintLapInRace);
             plugin.AttachDelegate(name: "Standings.AlternateRowBackgroundColor", valueProvider: () => Settings.AlternateRowBackgroundColor);
             plugin.AttachDelegate(name: "Standings.HighlightPlayerRow", valueProvider: () => Settings.HighlightPlayerRow);
@@ -223,6 +226,7 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LapsToClassLeader", valueProvider: () => row.LapsToClassLeader);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.GapToClassLeader", valueProvider: () => row.GapToClassLeader);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.DeltaToClassLeader", valueProvider: () => row.DeltaToClassLeader);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.DeltaToPlayer", valueProvider: () => row.DeltaToPlayer);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompound", valueProvider: () => row.TireCompound);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompoundVisible", valueProvider: () => row.TireCompoundVisible);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.BestLapTime", valueProvider: () => row.BestLapTime);
@@ -386,6 +390,15 @@ namespace benofficial2.Plugin
                             {
                                 row.DeltaToClassLeader = null;
                             }
+
+                            if (row.LastLapTime > TimeSpan.Zero && _driverModule.PlayerLastLapTime > TimeSpan.Zero)
+                            {
+                                row.DeltaToPlayer = row.LastLapTime - _driverModule.PlayerLastLapTime;
+                            }
+                            else
+                            {
+                                row.DeltaToPlayer = null;
+                            }
                         }
                         else
                         {
@@ -396,6 +409,15 @@ namespace benofficial2.Plugin
                             else
                             {
                                 row.DeltaToClassLeader = null;
+                            }
+
+                            if (row.LastLapTime > TimeSpan.Zero && _driverModule.PlayerBestLapTime > TimeSpan.Zero)
+                            {
+                                row.DeltaToPlayer = row.LastLapTime - _driverModule.PlayerBestLapTime;
+                            }
+                            else
+                            {
+                                row.DeltaToPlayer = null;
                             }
                         }
 
@@ -475,6 +497,7 @@ namespace benofficial2.Plugin
             row.LapsToClassLeader = 0;
             row.GapToClassLeader = 0;
             row.DeltaToClassLeader = null;
+            row.DeltaToPlayer = null;
             row.TireCompound = string.Empty;
             row.TireCompoundVisible = false;
             row.BestLapTime = TimeSpan.Zero;

@@ -153,6 +153,13 @@
                             Show safety rating*
                         </styles:SHToggleCheckbox>
 
+                        <styles:SHToggleCheckbox 
+                            ToolTip="The delta column will be relative to the player's time rather than the class leader's time" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.UseDeltaToPlayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Use delta to player instead of delta to leader*
+                        </styles:SHToggleCheckbox>
+
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Columns to show in race*" Margin="0,0,0,0" Width="180"/>
 

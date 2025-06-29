@@ -132,6 +132,7 @@ namespace benofficial2.Plugin
         public bool PlayerHadWhiteFlag { get; internal set; } = false;
         public bool PlayerHadCheckeredFlag { get; internal set; } = false;
         public TimeSpan PlayerLastLapTime { get; internal set; } = TimeSpan.Zero;
+        public TimeSpan PlayerBestLapTime { get; internal set; } = TimeSpan.Zero;
         public double PlayerCurrentLapHighPrecision { get; set; } = -1;
 
         public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
@@ -149,6 +150,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.PositionInClass", valueProvider: () => PlayerPositionInClass);
             plugin.AttachDelegate(name: "Player.LivePositionInClass", valueProvider: () => PlayerLivePositionInClass);
             plugin.AttachDelegate(name: "Player.LastLapTime", valueProvider: () => PlayerLastLapTime);
+            plugin.AttachDelegate(name: "Player.BestLapTime", valueProvider: () => PlayerBestLapTime);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -176,6 +178,7 @@ namespace benofficial2.Plugin
                 PlayerHadCheckeredFlag = false;
                 LiveClassLeaderboards = new List<ClassLeaderboard>();
                 PlayerLastLapTime = TimeSpan.Zero;
+                PlayerBestLapTime = TimeSpan.Zero;
             }
 
             UpdateDrivers(ref data);
@@ -328,6 +331,7 @@ namespace benofficial2.Plugin
                     PlayerCountryCode = _flairModule.GetCountryCode(driver.FlairId);
                     PlayerPositionInClass = opponent.Position > 0 ? opponent.PositionInClass : 0;
                     PlayerLastLapTime = driver.LastLapTime;
+                    PlayerBestLapTime = driver.BestLapTime;
                     PlayerCurrentLapHighPrecision = driver.CurrentLapHighPrecision;
 
                     if (_sessionModule.Race)
