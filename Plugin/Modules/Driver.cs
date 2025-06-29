@@ -90,7 +90,6 @@ namespace benofficial2.Plugin
         public double CurrentLapHighPrecision { get; set; } = -1;
         public bool Towing { get; set; } = false;
         public DateTime TowingEndTime { get; set; } = DateTime.MinValue;
-        public bool FinishedRace { get; set; } = false;
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
         public AverageLapTime AvgLapTime { get; set; } = new AverageLapTime(3);
@@ -131,7 +130,9 @@ namespace benofficial2.Plugin
         public int PlayerPositionInClass { get; internal set; } = 0;
         public int PlayerLivePositionInClass { get; internal set; } = 0;
         public bool PlayerHadWhiteFlag { get; internal set; } = false;
+        public bool PlayerHadCheckeredFlag { get; internal set; } = false;
         public TimeSpan PlayerLastLapTime { get; internal set; } = TimeSpan.Zero;
+        public double PlayerCurrentLapHighPrecision { get; set; } = -1;
 
         public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
         public override int UpdatePriority => 30;
@@ -172,6 +173,7 @@ namespace benofficial2.Plugin
                 PlayerPositionInClass = 0;
                 PlayerLivePositionInClass = 0;
                 PlayerHadWhiteFlag = false;
+                PlayerHadCheckeredFlag = false;
                 LiveClassLeaderboards = new List<ClassLeaderboard>();
                 PlayerLastLapTime = TimeSpan.Zero;
             }
@@ -326,10 +328,12 @@ namespace benofficial2.Plugin
                     PlayerCountryCode = _flairModule.GetCountryCode(driver.FlairId);
                     PlayerPositionInClass = opponent.Position > 0 ? opponent.PositionInClass : 0;
                     PlayerLastLapTime = driver.LastLapTime;
+                    PlayerCurrentLapHighPrecision = driver.CurrentLapHighPrecision;
 
                     if (_sessionModule.Race)
                     {
                         PlayerHadWhiteFlag = PlayerHadWhiteFlag || data.NewData.Flag_White == 1;
+                        PlayerHadCheckeredFlag = PlayerHadCheckeredFlag || data.NewData.Flag_Checkered == 1;
                     }
                 }
             }

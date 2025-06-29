@@ -53,7 +53,7 @@ namespace benofficial2.Plugin
         private string _lastSessionTypeName = string.Empty;
         private bool _raceFinishedForPlayer = false;
         private double? _lastTrackPct = null;
-        private DateTime _raceStartedTime = DateTime.MinValue;
+        private TimeSpan _raceStartedTime = TimeSpan.Zero;
 
         public SessionState State { get; internal set; } = new SessionState();
         public bool Race { get; internal set; } = false;
@@ -63,6 +63,7 @@ namespace benofficial2.Plugin
         public bool ReplayPlaying { get; internal set; } = false;
         public bool RaceStarted { get; internal set; } = false;
         public bool RaceFinished { get; internal set; } = false;
+        public TimeSpan SessionTimeTotal { get; internal set; } = TimeSpan.Zero;
         public double RaceTimer { get; internal set; } = 0;
         public bool JoinedRaceInProgress { get; internal set; } = false;
         public bool Oval { get; internal set; } = false;
@@ -123,6 +124,9 @@ namespace benofficial2.Plugin
 
                 RawDataHelper.TryGetSessionData<string>(ref data, out string teamRacing, "WeekendInfo", "TeamRacing");
                 TeamRacing = teamRacing == "1";
+
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int sessionTimeTotal, "SessionTimeTotal");
+                SessionTimeTotal = TimeSpan.FromSeconds(sessionTimeTotal);
 
                 _lastSessionTypeName = data.NewData.SessionTypeName;
             }
@@ -200,18 +204,18 @@ namespace benofficial2.Plugin
                 // Freeze timer when race is finished
                 if (!RaceFinished)
                 {
-                    if (_raceStartedTime == DateTime.MinValue)
+                    if (_raceStartedTime <= TimeSpan.Zero)
                     {
-                        _raceStartedTime = DateTime.Now;
+                        _raceStartedTime = State.SessionTime;
                     }
 
-                    RaceTimer = (DateTime.Now - _raceStartedTime).TotalSeconds;
+                    RaceTimer = (State.SessionTime - _raceStartedTime).TotalSeconds;
                 }
             }
             else
             {
                 RaceTimer = 0;
-                _raceStartedTime = DateTime.MinValue;
+                _raceStartedTime = TimeSpan.Zero;
             }
         }
 

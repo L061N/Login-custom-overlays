@@ -103,6 +103,8 @@ namespace benofficial2.Plugin
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan LeaderLastLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan LeaderAvgLapTime { get; set; } = TimeSpan.Zero;
+        public int EstimatedTotalLaps { get; set; } = 0;
+        public bool EstimatedTotalLapsConfirmed { get; set; } = false;
 
         public StandingCarClass()
         {
@@ -194,6 +196,7 @@ namespace benofficial2.Plugin
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Sof", valueProvider: () => carClass.Sof);
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.DriverCount", valueProvider: () => carClass.DriverCount);
                 plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.BestLapTime", valueProvider: () => carClass.BestLapTime);
+                plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.EstimatedTotalLaps", valueProvider: () => carClass.EstimatedTotalLaps);
 
                 for (int rowIdx = 0; rowIdx < StandingCarClass.MaxRows; rowIdx++)
                 {
@@ -263,7 +266,7 @@ namespace benofficial2.Plugin
                     LeaderboardCarClassDescription opponentClass = _driverModule.LiveClassLeaderboards[carClassIdx].CarClassDescription;
                     OpponentsWithDrivers opponentsWithDrivers = _driverModule.LiveClassLeaderboards[carClassIdx].Drivers;
 
-                    if ((opponentClass.ClassName == null || opponentClass.ClassName.Length == 0 || opponentClass.ClassName == "Hosted All Cars")                            
+                    if ((opponentClass.ClassName == null || opponentClass.ClassName.Length == 0 || opponentClass.ClassName == "Hosted All Cars")
                         && opponentClass.CarModels.Count == 1)
                     {
                         // Fallback to the car model name when we don't have a class name and there's only 1 car model.
@@ -291,6 +294,8 @@ namespace benofficial2.Plugin
                         carClass.LeaderLastLapTime = TimeSpan.Zero;
                         carClass.LeaderAvgLapTime = TimeSpan.Zero;
                     }
+
+                    UpdateEstimatedTotalLaps(ref data, carClass, opponentsWithDrivers);
 
                     int skipRowCount = 0;
                     int maxRowCount;
@@ -346,7 +351,7 @@ namespace benofficial2.Plugin
                         row.LivePositionInClass = driver.LivePositionInClass;
                         row.Number = opponent.CarNumber;
                         if (_sessionModule.TeamRacing)
-                        {                             
+                        {
                             row.Name = opponent.TeamName;
                         }
                         else
@@ -436,6 +441,8 @@ namespace benofficial2.Plugin
             carClass.BestLapTime = TimeSpan.Zero;
             carClass.LeaderLastLapTime = TimeSpan.Zero;
             carClass.LeaderAvgLapTime = TimeSpan.Zero;
+            carClass.EstimatedTotalLaps = 0;
+            carClass.EstimatedTotalLapsConfirmed = false;
 
             for (int driverIdx = 0; driverIdx < StandingCarClass.MaxRows; driverIdx++)
             {
@@ -527,7 +534,7 @@ namespace benofficial2.Plugin
             int validRowCount = 0;
             for (int opponentIdx = 0; opponentIdx < opponentsWithDrivers.Count; opponentIdx++)
             {
-                if (IsValidRow(opponentsWithDrivers[opponentIdx].Item1)) { validRowCount++; }               
+                if (IsValidRow(opponentsWithDrivers[opponentIdx].Item1)) { validRowCount++; }
             }
             return validRowCount;
         }
@@ -568,7 +575,7 @@ namespace benofficial2.Plugin
             // Center the player in the view by trying to keep an equal amount of rows before as after 
             int shown = Math.Max(0, validRowCount - Settings.LeadFocusedRows);
             int before = Math.Max(0, playerOpponentIdx - Settings.LeadFocusedRows);
-            int after = Math.Max(0, validRowCount - playerOpponentIdx - 1);         
+            int after = Math.Max(0, validRowCount - playerOpponentIdx - 1);
             int skipRowCount = 0;
 
             // TODO make this O(1)
@@ -592,9 +599,6 @@ namespace benofficial2.Plugin
 
         public TimeSpan FindBestLapTime(OpponentsWithDrivers opponentsWithDrivers)
         {
-            if (opponentsWithDrivers.Count <= 0) 
-                return TimeSpan.Zero;
-
             TimeSpan bestLapTime = TimeSpan.MaxValue;
             for (int opponentIdx = 0; opponentIdx < opponentsWithDrivers.Count; opponentIdx++)
             {
@@ -636,7 +640,64 @@ namespace benofficial2.Plugin
 
             SizeF textSize;
             textSize = _fontGraphics.MeasureString(text, _font);
-            return textSize.Width;           
+            return textSize.Width;
+        }
+
+        public void UpdateEstimatedTotalLaps(ref GameData data, StandingCarClass carClass, OpponentsWithDrivers opponentsWithDrivers)
+        {
+            if (!_sessionModule.Race || !_sessionModule.RaceStarted
+                || opponentsWithDrivers.Count <= 0
+                || carClass.LeaderAvgLapTime <= TimeSpan.Zero)
+            {
+                carClass.EstimatedTotalLaps = 0;
+                carClass.EstimatedTotalLapsConfirmed = false;
+                return;
+            }
+
+            if (carClass.EstimatedTotalLapsConfirmed)
+                return;
+
+            double leaderCurrentLapHighPrecision = opponentsWithDrivers[0].Item1.CurrentLapHighPrecision ?? 1.0;
+
+            RawDataHelper.TryGetTelemetryData<int>(ref data, out int totalLaps, "SessionLapsTotal");
+
+            double sessionTimeRemain = Math.Max(0.0, _sessionModule.SessionTimeTotal.TotalSeconds - _sessionModule.RaceTimer);
+            bool totalLapsValid = totalLaps > 0 && totalLaps < 20000;
+            if (totalLapsValid)
+            {
+                double lapsRemaining = totalLaps - leaderCurrentLapHighPrecision;
+                TimeSpan minTimeForLaps = TimeSpan.FromSeconds(lapsRemaining * carClass.LeaderAvgLapTime.TotalSeconds);
+                if (minTimeForLaps <= TimeSpan.FromSeconds(sessionTimeRemain))
+                {
+                    // Leader has enough time left to complete the remaining laps
+                    carClass.EstimatedTotalLaps = 0;
+                    return;
+                }
+            }
+
+            // Confirm the total laps when the player gets the white flag.
+            // Because we don't have the data for other cars in the iRacing SDK.
+            // Missing edge cases such as when the player gets lapped on the leader's last lap.
+            // Or when the player tows before starting the last lap. Etc.
+            bool playerStartingLastLap = _driverModule.PlayerHadWhiteFlag && _driverModule.PlayerCurrentLapHighPrecision % 1.0 < 0.50;
+            if (playerStartingLastLap)
+            {
+                carClass.EstimatedTotalLaps = (int)Math.Max(1, Math.Ceiling(leaderCurrentLapHighPrecision));
+                carClass.EstimatedTotalLapsConfirmed = true;
+                return;
+            }
+
+            double estimatedTotalLaps = sessionTimeRemain / carClass.LeaderAvgLapTime.TotalSeconds;
+            estimatedTotalLaps += leaderCurrentLapHighPrecision;
+
+            // Add an extra lap if we would cross the line with more than 60% of a lap time remaining on the timer.
+            // It is unknown what is the exact white flag rule used by iRacing. Best guess is 60% of avg time from last 3 laps.
+            if (sessionTimeRemain > 0 && estimatedTotalLaps % 1.0 > 0.60)
+            {
+                estimatedTotalLaps++;
+            }
+
+            carClass.EstimatedTotalLaps = (int)Math.Max(1, Math.Ceiling(estimatedTotalLaps));
         }
     }
 }
