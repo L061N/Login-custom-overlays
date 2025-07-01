@@ -119,21 +119,17 @@ namespace benofficial2.Plugin
             if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
             _lastUpdateTime = data.FrameTime;
 
-            dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) return;
-
-            bool isGarageVisible = false;
-            try { isGarageVisible = (bool)raw.Telemetry["IsGarageVisible"]; } catch { }
+            RawDataHelper.TryGetTelemetryData<bool>(ref data, out bool isGarageVisible, "IsGarageVisible");
 
             Visible = isGarageVisible;
+            UpdateWarningVisible(ref data);
 
-            if (Visible || (_sessionModule.Race && !_sessionModule.RaceStarted && Settings.EnablePreRaceWarning))
+            if (Visible || WarningVisible)
             {
                 UpdateBestLapTime(ref data);
                 UpdateSetupFuelLevel(ref data);
                 UpdateConsumptionPerLap(pluginManager, ref data);
                 UpdateSessionFuel(ref data);
-                UpdateWarningVisible(ref data);
             }            
         }
 
