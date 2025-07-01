@@ -101,10 +101,14 @@ For a two-PC streaming setup, replace **127.0.0.1** by the **IP Address** of you
 
 ## Multi-Class Standings
 
-Shows the live **Leaderboard** for up to 4 car classes. Optional columns: **Car Logo**, **Gap**, **Best Lap Time**, **Last Lap Time**. See the **benofficial2 plugin** page (in the left menu) for all options.
+Shows the live **Leaderboard** for up to 4 car classes. Optional columns: **Car Logo**, **Gap**, **Best Lap Time**, **Last Lap Time**, and **Delta**. See the **benofficial2 plugin** page (in the left menu) for all options.
 
 <p align="center">
   <img src="Images/Multi-Class-Standings-LMP3.png" width="450"/>
+</p>
+
+<p align="center">
+  <img src="Images/Multi-Class-Standings-GTE.png" width="450"/>
 </p>
 
 ## Standings
