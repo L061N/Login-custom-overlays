@@ -96,6 +96,7 @@ namespace benofficial2.Plugin
         public AverageLapTime AvgLapTime { get; set; } = new AverageLapTime(3);
         public int JokerLapsComplete { get; set; } = 0;
         public int SessionFlags { get; set; } = 0;
+        public int TeamIncidentCount { get; set; } = 0;
     }
 
     public class ClassLeaderboard
@@ -138,6 +139,7 @@ namespace benofficial2.Plugin
         public double PlayerCurrentLapHighPrecision { get; set; } = -1;
         public int HighlightedCarIdx { get; set; } = -1;
         public int HighlightedCurrentLap { get; internal set; } = 0;
+        public int HighlightedTeamIncidentCount { get; internal set; } = 0;
 
         public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
         public override int UpdatePriority => 30;
@@ -156,6 +158,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.LastLapTime", valueProvider: () => PlayerLastLapTime);
             plugin.AttachDelegate(name: "Player.BestLapTime", valueProvider: () => PlayerBestLapTime);
             plugin.AttachDelegate(name: "Highlighted.CurrentLap", valueProvider: () => HighlightedCurrentLap);
+            plugin.AttachDelegate(name: "Highlighted.TeamIncidentCount", valueProvider: () => HighlightedTeamIncidentCount);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -187,6 +190,7 @@ namespace benofficial2.Plugin
                 PlayerBestLapTime = TimeSpan.Zero;
                 HighlightedCarIdx = -1;
                 HighlightedCurrentLap = 0;
+                HighlightedTeamIncidentCount = 0;
             }
 
             UpdateDrivers(ref data);
@@ -208,6 +212,7 @@ namespace benofficial2.Plugin
             {
                 HighlightedCarIdx = -1;
                 HighlightedCurrentLap = 0;
+                HighlightedTeamIncidentCount = 0;
             }
 
             for (int i = 0; i < data.NewData.Opponents.Count; i++)
@@ -366,6 +371,7 @@ namespace benofficial2.Plugin
                 if (driver.CarIdx == HighlightedCarIdx)
                 {
                     HighlightedCurrentLap = opponent.CurrentLap ?? 0;
+                    HighlightedTeamIncidentCount = driver.TeamIncidentCount;
                 }
             }
 
@@ -469,6 +475,7 @@ namespace benofficial2.Plugin
 
                 RawDataHelper.TryGetSessionData<int>(ref data, out int flairId, "DriverInfo", "Drivers", i, "FlairID");
                 RawDataHelper.TryGetSessionData<int>(ref data, out int carClassId, "DriverInfo", "Drivers", i, "CarClassID");
+                RawDataHelper.TryGetSessionData<int>(ref data, out int teamIncidentCount, "DriverInfo", "Drivers", i, "TeamIncidentCount");
 
                 double lastLapTime = 0;
                 try { lastLapTime = Math.Max(0, (double)raw.Telemetry["CarIdxLastLapTime"][carIdx]); } catch { Debug.Assert(false); }
@@ -492,6 +499,7 @@ namespace benofficial2.Plugin
                     driver.CarId = carPath;
                     driver.FlairId = flairId;
                     driver.CarClassId = carClassId;
+                    driver.TeamIncidentCount = teamIncidentCount;
                     driver.LastLapTime = lastLapTime > 0 ? TimeSpan.FromSeconds(lastLapTime) : TimeSpan.Zero;
                     driver.BestLapTime = bestLapTime > 0 ? TimeSpan.FromSeconds(bestLapTime) : TimeSpan.Zero;
                     driver.SessionFlags = sessionFlags;
