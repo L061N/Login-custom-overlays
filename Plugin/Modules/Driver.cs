@@ -137,6 +137,7 @@ namespace benofficial2.Plugin
         public TimeSpan PlayerBestLapTime { get; internal set; } = TimeSpan.Zero;
         public double PlayerCurrentLapHighPrecision { get; set; } = -1;
         public int HighlightedCarIdx { get; set; } = -1;
+        public int HighlightedCurrentLap { get; internal set; } = 0;
 
         public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
         public override int UpdatePriority => 30;
@@ -154,6 +155,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.LivePositionInClass", valueProvider: () => PlayerLivePositionInClass);
             plugin.AttachDelegate(name: "Player.LastLapTime", valueProvider: () => PlayerLastLapTime);
             plugin.AttachDelegate(name: "Player.BestLapTime", valueProvider: () => PlayerBestLapTime);
+            plugin.AttachDelegate(name: "Highlighted.CurrentLap", valueProvider: () => HighlightedCurrentLap);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -184,6 +186,7 @@ namespace benofficial2.Plugin
                 PlayerLastLapTime = TimeSpan.Zero;
                 PlayerBestLapTime = TimeSpan.Zero;
                 HighlightedCarIdx = -1;
+                HighlightedCurrentLap = 0;
             }
 
             UpdateDrivers(ref data);
@@ -204,6 +207,7 @@ namespace benofficial2.Plugin
             else
             {
                 HighlightedCarIdx = -1;
+                HighlightedCurrentLap = 0;
             }
 
             for (int i = 0; i < data.NewData.Opponents.Count; i++)
@@ -357,6 +361,11 @@ namespace benofficial2.Plugin
                         PlayerHadWhiteFlag = PlayerHadWhiteFlag || data.NewData.Flag_White == 1;
                         PlayerHadCheckeredFlag = PlayerHadCheckeredFlag || data.NewData.Flag_Checkered == 1;
                     }
+                }
+
+                if (driver.CarIdx == HighlightedCarIdx)
+                {
+                    HighlightedCurrentLap = opponent.CurrentLap ?? 0;
                 }
             }
 
