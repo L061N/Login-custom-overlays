@@ -77,6 +77,7 @@ namespace benofficial2.Plugin
         public int CarIdx { get; set; } = -1;
         public string CarId { get; set; } = "";
         public int FlairId { get; set; } = 0;
+        public int CarClassId { get; set; } = 0;
         public int EnterPitLapUnconfirmed { get; set; } = -1;
         public int EnterPitLap { get; set; } = -1;
         public int ExitPitLap { get; set; } = -1;
@@ -123,6 +124,7 @@ namespace benofficial2.Plugin
         // Key is CarIdx
         public Dictionary<int, Driver> DriversByCarIdx { get; private set; } = new Dictionary<int, Driver>();
 
+        public int PlayerCarIdx { get; set; } = -1;
         public bool PlayerOutLap { get; internal set; } = false;
         public string PlayerNumber { get; internal set; } = "";
         public string PlayerCarBrand { get; internal set; } = "";
@@ -134,6 +136,7 @@ namespace benofficial2.Plugin
         public TimeSpan PlayerLastLapTime { get; internal set; } = TimeSpan.Zero;
         public TimeSpan PlayerBestLapTime { get; internal set; } = TimeSpan.Zero;
         public double PlayerCurrentLapHighPrecision { get; set; } = -1;
+        public int HighlightedCarIdx { get; set; } = -1;
 
         public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
         public override int UpdatePriority => 30;
@@ -168,6 +171,7 @@ namespace benofficial2.Plugin
             {
                 Drivers = new Dictionary<string, Driver>();
                 DriversByCarIdx = new Dictionary<int, Driver>();
+                PlayerCarIdx = -1;
                 PlayerOutLap = false;
                 PlayerNumber = "";
                 PlayerCarBrand = "";
@@ -179,6 +183,7 @@ namespace benofficial2.Plugin
                 LiveClassLeaderboards = new List<ClassLeaderboard>();
                 PlayerLastLapTime = TimeSpan.Zero;
                 PlayerBestLapTime = TimeSpan.Zero;
+                HighlightedCarIdx = -1;
             }
 
             UpdateDrivers(ref data);
@@ -187,6 +192,19 @@ namespace benofficial2.Plugin
             // Do this after first trying to get the times from telemetry. 
             // Because lap times will be invalid in telemetry after the driver diconnected or exited the car.
             UpdateLapTimesFromSessionResults(ref data);
+
+            // Update the highlighted car index
+            RawDataHelper.TryGetTelemetryData<int>(ref data, out int highlightedCarIdx, "CamCarIdx");
+            RawDataHelper.TryGetTelemetryData<int>(ref data, out int camCameraState, "CamCameraState");
+            bool camCameraIsScenic = (camCameraState & 0x0002) != 0;
+            if (highlightedCarIdx >= 0 && !camCameraIsScenic)
+            {
+                HighlightedCarIdx = highlightedCarIdx;
+            }
+            else
+            {
+                HighlightedCarIdx = -1;
+            }
 
             for (int i = 0; i < data.NewData.Opponents.Count; i++)
             {
@@ -420,8 +438,12 @@ namespace benofficial2.Plugin
         private void UpdateDrivers(ref GameData data)
         {
             dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) return;
-            
+            if (raw == null) 
+                return;
+
+            RawDataHelper.TryGetSessionData<int>(ref data, out int playerCarIdx, "DriverInfo", "DriverCarIdx");
+            PlayerCarIdx = playerCarIdx;
+
             int driverCount = 0;
             try { driverCount = (int)raw.AllSessionData["DriverInfo"]["Drivers"].Count; } catch { Debug.Assert(false); }
 
@@ -437,6 +459,7 @@ namespace benofficial2.Plugin
                 try { carPath = raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarPath"]; } catch { Debug.Assert(false); }
 
                 RawDataHelper.TryGetSessionData<int>(ref data, out int flairId, "DriverInfo", "Drivers", i, "FlairID");
+                RawDataHelper.TryGetSessionData<int>(ref data, out int carClassId, "DriverInfo", "Drivers", i, "CarClassID");
 
                 double lastLapTime = 0;
                 try { lastLapTime = Math.Max(0, (double)raw.Telemetry["CarIdxLastLapTime"][carIdx]); } catch { Debug.Assert(false); }
@@ -459,6 +482,7 @@ namespace benofficial2.Plugin
                     driver.CarIdx = carIdx;
                     driver.CarId = carPath;
                     driver.FlairId = flairId;
+                    driver.CarClassId = carClassId;
                     driver.LastLapTime = lastLapTime > 0 ? TimeSpan.FromSeconds(lastLapTime) : TimeSpan.Zero;
                     driver.BestLapTime = bestLapTime > 0 ? TimeSpan.FromSeconds(bestLapTime) : TimeSpan.Zero;
                     driver.SessionFlags = sessionFlags;

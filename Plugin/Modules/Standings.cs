@@ -62,6 +62,7 @@ namespace benofficial2.Plugin
     {
         public bool RowVisible { get; set; } = false;
         public bool IsPlayer { get; set; } = false;
+        public bool IsHighlighted { get; set; } = false;
         public string PlayerID { get; set; } = string.Empty;
         public bool Connected { get; set; } = false;
         public int LivePositionInClass { get; set; } = 0;
@@ -135,7 +136,7 @@ namespace benofficial2.Plugin
         public int VisibleClassCount { get; internal set; } = 0;
         public int TotalDriverCount { get; internal set; } = 0;
         public int TotalSoF { get; internal set; } = 0;
-        public int PlayerCarClassIdx { get; internal set; } = 0;
+        public int HighlightedCarClassIdx { get; internal set; } = 0;
         public bool CarLogoVisible { get; internal set; } = true;
         public bool GapVisible { get; internal set; } = true;
         public bool BestVisible { get; internal set; } = true;
@@ -168,7 +169,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.VisibleClassCount", valueProvider: () => VisibleClassCount);
             plugin.AttachDelegate(name: $"Standings.TotalDriverCount", valueProvider: () => TotalDriverCount);
             plugin.AttachDelegate(name: $"Standings.TotalSoF", valueProvider: () => TotalSoF);
-            plugin.AttachDelegate(name: $"Standings.PlayerCarClassIdx", valueProvider: () => PlayerCarClassIdx);
+            plugin.AttachDelegate(name: $"Standings.PlayerCarClassIdx", valueProvider: () => HighlightedCarClassIdx);
             plugin.AttachDelegate(name: $"Standings.HideInReplay", valueProvider: () => Settings.HideInReplay);
             plugin.AttachDelegate(name: $"Standings.LeadFocusedRows", valueProvider: () => Settings.LeadFocusedRows);
             plugin.AttachDelegate(name: $"Standings.MaxRowsPlayerClass", valueProvider: () => Settings.MaxRowsPlayerClass);
@@ -206,6 +207,7 @@ namespace benofficial2.Plugin
                     StandingRow row = carClass.Rows[rowIdx];
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.RowVisible", valueProvider: () => row.RowVisible);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.IsPlayer", valueProvider: () => row.IsPlayer);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.IsHighlighted", valueProvider: () => row.IsHighlighted);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PlayerID", valueProvider: () => row.PlayerID);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Connected", valueProvider: () => row.Connected);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LivePositionInClass", valueProvider: () => row.LivePositionInClass);
@@ -241,7 +243,8 @@ namespace benofficial2.Plugin
             if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
             _lastUpdateTime = data.FrameTime;
 
-            PlayerCarClassIdx = FindPlayerCarClassIdx(ref data);
+            int highlightedCarIdx = -1;
+            (highlightedCarIdx, HighlightedCarClassIdx) = FindHighlightedCar(ref data);
 
             if (_sessionModule.Race)
             {
@@ -303,12 +306,12 @@ namespace benofficial2.Plugin
 
                     int skipRowCount = 0;
                     int maxRowCount;
-                    if (PlayerCarClassIdx == carClassIdx)
+                    if (HighlightedCarClassIdx == carClassIdx)
                     {
                         maxRowCount = Settings.MaxRowsPlayerClass;
 
                         // How many rows to skip to have a lead-focused leaderboard
-                        skipRowCount = GetLeadFocusedSkipRowCount(opponentsWithDrivers);
+                        skipRowCount = GetLeadFocusedSkipRowCount(highlightedCarIdx, opponentsWithDrivers);
                     }
                     else
                     {
@@ -350,6 +353,7 @@ namespace benofficial2.Plugin
 
                         row.RowVisible = true;
                         row.IsPlayer = opponent.IsPlayer;
+                        row.IsHighlighted = (highlightedCarIdx == driver.CarIdx);
                         row.PlayerID = opponent.Id;
                         row.Connected = opponent.IsConnected;
                         row.LivePositionInClass = driver.LivePositionInClass;
@@ -477,6 +481,7 @@ namespace benofficial2.Plugin
         {
             row.RowVisible = false;
             row.IsPlayer = false;
+            row.IsHighlighted = false;
             row.PlayerID = string.Empty;
             row.Connected = false;
             row.LivePositionInClass = 0;
@@ -505,13 +510,27 @@ namespace benofficial2.Plugin
             row.JokerLapsComplete = 0;
         }
 
-        public int FindPlayerCarClassIdx(ref GameData data)
+        public (int, int) FindHighlightedCar(ref GameData data)
         {
-            dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) return -1;
+            int highlightedCarIdx = -1;
+            int highlightedCarClassId = -1;
 
-            int playerCarClassID = 0;
-            try { playerCarClassID = (int)raw.Telemetry["PlayerCarClass"]; } catch { }
+            if (_driverModule.HighlightedCarIdx >= 0)
+            {
+                highlightedCarIdx = _driverModule.HighlightedCarIdx;
+            }
+            else
+            {
+                highlightedCarIdx = _driverModule.PlayerCarIdx;
+            }
+
+            if (highlightedCarIdx >= 0)
+            {
+                if (_driverModule.DriversByCarIdx.TryGetValue(highlightedCarIdx, out Driver highlightedDriver))
+                {
+                    highlightedCarClassId = highlightedDriver.CarClassId;
+                }
+            }
 
             for (int carClassIdx = 0; carClassIdx < data.NewData.OpponentsClassses.Count; carClassIdx++)
             {
@@ -519,14 +538,14 @@ namespace benofficial2.Plugin
                 List<Opponent> opponents = carClass.Opponents;
                 if (opponents.Count > 0)
                 {
-                    if (opponents[0].CarClassID == playerCarClassID.ToString())
+                    if (opponents[0].CarClassID == highlightedCarClassId.ToString())
                     {
-                        return carClassIdx;
+                        return (highlightedCarIdx, carClassIdx);
                     }
                 }
             }
 
-            return -1;
+            return (-1, -1);
         }
 
         public (string compound, bool visible) GetTireCompound(ref GameData data, int carIdx)
@@ -562,22 +581,22 @@ namespace benofficial2.Plugin
             return validRowCount;
         }
 
-        public int GetLeadFocusedSkipRowCount(OpponentsWithDrivers opponentsWithDrivers)
+        public int GetLeadFocusedSkipRowCount(int highlightedCarIdx, OpponentsWithDrivers opponentsWithDrivers)
         {
-            // Find the player in the opponent list
-            int playerOpponentIdx = -1;
+            // Find the highlighted car in the opponent list
+            int highlightedOpponentIdx = -1;
             for (int opponentIdx = 0; opponentIdx < opponentsWithDrivers.Count; opponentIdx++)
             {
-                if (opponentsWithDrivers[opponentIdx].Item1.IsPlayer)
+                if (opponentsWithDrivers[opponentIdx].Item2.CarIdx == highlightedCarIdx)
                 {
-                    playerOpponentIdx = opponentIdx;
+                    highlightedOpponentIdx = opponentIdx;
                     break;
                 }
             }
 
-            if (playerOpponentIdx < 0 || !IsValidRow(opponentsWithDrivers[playerOpponentIdx].Item1))
+            if (highlightedOpponentIdx < 0 || !IsValidRow(opponentsWithDrivers[highlightedOpponentIdx].Item1))
             {
-                // Player not in opponent list
+                // Highlighted car not in opponent list
                 return 0;
             }
 
@@ -589,7 +608,7 @@ namespace benofficial2.Plugin
             }
 
             int nonLeadFocusedRowCount = Math.Max(0, Settings.MaxRowsPlayerClass - Settings.LeadFocusedRows);
-            if (playerOpponentIdx <= Settings.LeadFocusedRows + nonLeadFocusedRowCount / 2)
+            if (highlightedOpponentIdx <= Settings.LeadFocusedRows + nonLeadFocusedRowCount / 2)
             {
                 // Player already centered in top rows
                 return 0;
@@ -597,8 +616,8 @@ namespace benofficial2.Plugin
 
             // Center the player in the view by trying to keep an equal amount of rows before as after 
             int shown = Math.Max(0, validRowCount - Settings.LeadFocusedRows);
-            int before = Math.Max(0, playerOpponentIdx - Settings.LeadFocusedRows);
-            int after = Math.Max(0, validRowCount - playerOpponentIdx - 1);
+            int before = Math.Max(0, highlightedOpponentIdx - Settings.LeadFocusedRows);
+            int after = Math.Max(0, validRowCount - highlightedOpponentIdx - 1);
             int skipRowCount = 0;
 
             // TODO make this O(1)
