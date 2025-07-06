@@ -16,7 +16,6 @@ To see them in action, click the image above for a video demo.
 ### Included in the collection
 
 - **[Multi-Class Standings](#multi-class-standings)**: shows the live leaderboard in up to 4 car classes
-- **[Standings](#standings)**: shows the live leaderboard in the player's car class
 - **[Relative](#relative)**: shows drivers ahead / behind on track
 - **[Track Map](#track-map)**: shows cars on a map
 - **[Delta Bar](#delta-bar)**: gives you feedback on your pace with time and speed deltas
@@ -111,7 +110,9 @@ Shows the live **Leaderboard** for up to 4 car classes. Optional columns: **Car 
   <img src="Images/Multi-Class-Standings-GTE.png" width="450"/>
 </p>
 
-## Standings
+## Standings (deprecated)
+
+*Note: This overlay has been deprecated and will not be supported anymore. Please use the Multi-Class Standings overlay instead, which can be configured to look the same with only the player's car class.*
 
 Shows the live **Leaderboard** for the player's car class. Can show up to 25 drivers and have **Lead-Focused** rows (configurable in plugin options). The driver's **iRating** is shown with their **License Class** color. The **Tire Compound** indicator also serves as an **On-Track** indicator. In a race, the **Gap to Leader** and **Last Pit Stop Lap** are shown. In practice and qualification, the **Best Lap Time** is shown. For streamers, the large header makes it clear to your viewers if you're in a race or practice session.
 
