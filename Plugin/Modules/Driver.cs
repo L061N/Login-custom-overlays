@@ -128,6 +128,8 @@ namespace benofficial2.Plugin
         public int TeamIncidentCount { get; set; } = 0;
         public string CarClassColor { get; set; } = string.Empty;
         public string CarClassTextColor { get; set; } = string.Empty;
+        public TimeSpan LastLapTime { get; internal set; } = TimeSpan.Zero;
+        public TimeSpan BestLapTime { get; internal set; } = TimeSpan.Zero;
     }
 
     public class DriverModule : PluginModuleBase
@@ -202,6 +204,8 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Highlighted.TeamIncidentCount", valueProvider: () => HighlightedDriver.TeamIncidentCount);
             plugin.AttachDelegate(name: "Highlighted.CarClassColor", valueProvider: () => HighlightedDriver.CarClassColor);
             plugin.AttachDelegate(name: "Highlighted.CarClassTextColor", valueProvider: () => HighlightedDriver.CarClassTextColor);
+            plugin.AttachDelegate(name: "Highlighted.LastLapTime", valueProvider: () => HighlightedDriver.LastLapTime);
+            plugin.AttachDelegate(name: "Highlighted.BestLapTime", valueProvider: () => HighlightedDriver.BestLapTime);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -418,6 +422,8 @@ namespace benofficial2.Plugin
                     (HighlightedDriver.License, HighlightedDriver.SafetyRating) = ParseLicenseString(opponent.LicenceString);
                     HighlightedDriver.CurrentLap = opponent.CurrentLap ?? 0;
                     HighlightedDriver.TeamIncidentCount = driver.TeamIncidentCount;
+                    HighlightedDriver.LastLapTime = driver.LastLapTime;
+                    HighlightedDriver.BestLapTime = driver.BestLapTime;
                 }
             }
 
@@ -706,6 +712,8 @@ namespace benofficial2.Plugin
             HighlightedDriver.TeamIncidentCount = 0;
             HighlightedDriver.CarClassColor = string.Empty;
             HighlightedDriver.CarClassTextColor = string.Empty;
+            HighlightedDriver.LastLapTime = TimeSpan.Zero;
+            HighlightedDriver.BestLapTime = TimeSpan.Zero;
         }
     }
 }

@@ -395,9 +395,9 @@ namespace benofficial2.Plugin
                                 row.DeltaToClassLeader = null;
                             }
 
-                            if (row.LastLapTime > TimeSpan.Zero && _driverModule.PlayerLastLapTime > TimeSpan.Zero)
+                            if (row.LastLapTime > TimeSpan.Zero && _driverModule.HighlightedDriver.LastLapTime > TimeSpan.Zero)
                             {
-                                row.DeltaToPlayer = row.LastLapTime - _driverModule.PlayerLastLapTime;
+                                row.DeltaToPlayer = row.LastLapTime - _driverModule.HighlightedDriver.LastLapTime;
                             }
                             else
                             {
@@ -415,9 +415,9 @@ namespace benofficial2.Plugin
                                 row.DeltaToClassLeader = null;
                             }
 
-                            if (row.LastLapTime > TimeSpan.Zero && _driverModule.PlayerBestLapTime > TimeSpan.Zero)
+                            if (row.LastLapTime > TimeSpan.Zero && _driverModule.HighlightedDriver.BestLapTime > TimeSpan.Zero)
                             {
-                                row.DeltaToPlayer = row.LastLapTime - _driverModule.PlayerBestLapTime;
+                                row.DeltaToPlayer = row.LastLapTime - _driverModule.HighlightedDriver.BestLapTime;
                             }
                             else
                             {
