@@ -191,6 +191,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.BestLapTime", valueProvider: () => PlayerBestLapTime);
             plugin.AttachDelegate(name: "Highlighted.Width", valueProvider: () => HighlightedDriverSettings.Width);
             plugin.AttachDelegate(name: "Highlighted.BackgroundOpacity", valueProvider: () => HighlightedDriverSettings.BackgroundOpacity);
+            plugin.AttachDelegate(name: "Highlighted.CarIdx", valueProvider: () => HighlightedDriver.CarIdx);
             plugin.AttachDelegate(name: "Highlighted.Number", valueProvider: () => HighlightedDriver.Number);
             plugin.AttachDelegate(name: "Highlighted.Name", valueProvider: () => HighlightedDriver.Name);
             plugin.AttachDelegate(name: "Highlighted.CarBrand", valueProvider: () => HighlightedDriver.CarBrand);
