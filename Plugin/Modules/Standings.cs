@@ -515,9 +515,9 @@ namespace benofficial2.Plugin
             int highlightedCarIdx = -1;
             int highlightedCarClassId = -1;
 
-            if (_driverModule.HighlightedCarIdx >= 0)
+            if (_driverModule.HighlightedDriver.CarIdx >= 0)
             {
-                highlightedCarIdx = _driverModule.HighlightedCarIdx;
+                highlightedCarIdx = _driverModule.HighlightedDriver.CarIdx;
             }
             else
             {

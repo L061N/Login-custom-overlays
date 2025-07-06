@@ -22,10 +22,17 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime;
 
 namespace benofficial2.Plugin
 {
     using OpponentsWithDrivers = List<(Opponent, Driver)>;
+
+    public class HighlightedDriverSettings : ModuleSettings
+    {
+        public int Width { get; set; } = 30;
+        public int BackgroundOpacity { get; set; } = 60;
+    }
 
     public class AverageLapTime
     {
@@ -105,6 +112,24 @@ namespace benofficial2.Plugin
         public OpponentsWithDrivers Drivers { get; set; } = new OpponentsWithDrivers();
     }
 
+    public class HighlightedDriver
+    {
+        public int CarIdx { get; set; } = -1;
+        public string Number { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string CarBrand { get; set; } = string.Empty;
+        public string CarName { get; set; } = string.Empty;
+        public string CountryCode { get; set; } = string.Empty;
+        public int IRating { get; set; } = 0;
+        public string License { get; set; } = string.Empty;
+        public double SafetyRating { get; set; } = 0.0;
+        public int LivePositionInClass { get; set; } = 0;
+        public int CurrentLap { get; set; } = 0;
+        public int TeamIncidentCount { get; set; } = 0;
+        public string CarClassColor { get; set; } = string.Empty;
+        public string CarClassTextColor { get; set; } = string.Empty;
+    }
+
     public class DriverModule : PluginModuleBase
     {
         private DateTime _lastUpdateTime = DateTime.MinValue;
@@ -125,6 +150,8 @@ namespace benofficial2.Plugin
         // Key is CarIdx
         public Dictionary<int, Driver> DriversByCarIdx { get; private set; } = new Dictionary<int, Driver>();
 
+        public HighlightedDriverSettings HighlightedDriverSettings { get; set; }
+
         public int PlayerCarIdx { get; set; } = -1;
         public bool PlayerOutLap { get; internal set; } = false;
         public string PlayerNumber { get; internal set; } = "";
@@ -136,18 +163,21 @@ namespace benofficial2.Plugin
         public bool PlayerHadCheckeredFlag { get; internal set; } = false;
         public TimeSpan PlayerLastLapTime { get; internal set; } = TimeSpan.Zero;
         public TimeSpan PlayerBestLapTime { get; internal set; } = TimeSpan.Zero;
-        public double PlayerCurrentLapHighPrecision { get; set; } = -1;
-        public int HighlightedCarIdx { get; set; } = -1;
-        public int HighlightedCurrentLap { get; internal set; } = 0;
-        public int HighlightedTeamIncidentCount { get; internal set; } = 0;
+        public double PlayerCurrentLapHighPrecision { get; set; } = -1;       
 
         public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
+
+        public HighlightedDriver HighlightedDriver { get; private set; } = new HighlightedDriver();
+
         public override int UpdatePriority => 30;
+
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             _sessionModule = plugin.GetModule<SessionModule>();
             _carModule = plugin.GetModule<CarModule>();
             _flairModule = plugin.GetModule<FlairModule>();
+
+            HighlightedDriverSettings = plugin.ReadCommonSettings<HighlightedDriverSettings>("HighlightedDriverSettings", () => new HighlightedDriverSettings());
 
             plugin.AttachDelegate(name: "Player.OutLap", valueProvider: () => PlayerOutLap);
             plugin.AttachDelegate(name: "Player.Number", valueProvider: () => PlayerNumber);
@@ -157,8 +187,21 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.LivePositionInClass", valueProvider: () => PlayerLivePositionInClass);
             plugin.AttachDelegate(name: "Player.LastLapTime", valueProvider: () => PlayerLastLapTime);
             plugin.AttachDelegate(name: "Player.BestLapTime", valueProvider: () => PlayerBestLapTime);
-            plugin.AttachDelegate(name: "Highlighted.CurrentLap", valueProvider: () => HighlightedCurrentLap);
-            plugin.AttachDelegate(name: "Highlighted.TeamIncidentCount", valueProvider: () => HighlightedTeamIncidentCount);
+            plugin.AttachDelegate(name: "Highlighted.Width", valueProvider: () => HighlightedDriverSettings.Width);
+            plugin.AttachDelegate(name: "Highlighted.BackgroundOpacity", valueProvider: () => HighlightedDriverSettings.BackgroundOpacity);
+            plugin.AttachDelegate(name: "Highlighted.Number", valueProvider: () => HighlightedDriver.Number);
+            plugin.AttachDelegate(name: "Highlighted.Name", valueProvider: () => HighlightedDriver.Name);
+            plugin.AttachDelegate(name: "Highlighted.CarBrand", valueProvider: () => HighlightedDriver.CarBrand);
+            plugin.AttachDelegate(name: "Highlighted.CarName", valueProvider: () => HighlightedDriver.CarName);
+            plugin.AttachDelegate(name: "Highlighted.CountryCode", valueProvider: () => HighlightedDriver.CountryCode);
+            plugin.AttachDelegate(name: "Highlighted.IRating", valueProvider: () => HighlightedDriver.IRating);
+            plugin.AttachDelegate(name: "Highlighted.License", valueProvider: () => HighlightedDriver.License);
+            plugin.AttachDelegate(name: "Highlighted.SafetyRating", valueProvider: () => HighlightedDriver.SafetyRating);
+            plugin.AttachDelegate(name: "Highlighted.LivePositionInClass", valueProvider: () => HighlightedDriver.LivePositionInClass);
+            plugin.AttachDelegate(name: "Highlighted.CurrentLap", valueProvider: () => HighlightedDriver.CurrentLap);
+            plugin.AttachDelegate(name: "Highlighted.TeamIncidentCount", valueProvider: () => HighlightedDriver.TeamIncidentCount);
+            plugin.AttachDelegate(name: "Highlighted.CarClassColor", valueProvider: () => HighlightedDriver.CarClassColor);
+            plugin.AttachDelegate(name: "Highlighted.CarClassTextColor", valueProvider: () => HighlightedDriver.CarClassTextColor);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -188,9 +231,7 @@ namespace benofficial2.Plugin
                 LiveClassLeaderboards = new List<ClassLeaderboard>();
                 PlayerLastLapTime = TimeSpan.Zero;
                 PlayerBestLapTime = TimeSpan.Zero;
-                HighlightedCarIdx = -1;
-                HighlightedCurrentLap = 0;
-                HighlightedTeamIncidentCount = 0;
+                BlankHighlightedDriver();
             }
 
             UpdateDrivers(ref data);
@@ -206,13 +247,11 @@ namespace benofficial2.Plugin
             bool camCameraIsScenic = (camCameraState & 0x0002) != 0;
             if (highlightedCarIdx >= 0 && !camCameraIsScenic)
             {
-                HighlightedCarIdx = highlightedCarIdx;
+                HighlightedDriver.CarIdx = highlightedCarIdx;
             }
             else
             {
-                HighlightedCarIdx = -1;
-                HighlightedCurrentLap = 0;
-                HighlightedTeamIncidentCount = 0;
+                BlankHighlightedDriver();
             }
 
             for (int i = 0; i < data.NewData.Opponents.Count; i++)
@@ -368,10 +407,17 @@ namespace benofficial2.Plugin
                     }
                 }
 
-                if (driver.CarIdx == HighlightedCarIdx)
+                if (driver.CarIdx == HighlightedDriver.CarIdx)
                 {
-                    HighlightedCurrentLap = opponent.CurrentLap ?? 0;
-                    HighlightedTeamIncidentCount = driver.TeamIncidentCount;
+                    HighlightedDriver.Name = opponent.Name;
+                    HighlightedDriver.Number = opponent.CarNumber;
+                    HighlightedDriver.CarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName);
+                    HighlightedDriver.CarName = opponent.CarName;
+                    HighlightedDriver.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
+                    HighlightedDriver.IRating = (int)(opponent.IRacing_IRating ?? 0);
+                    (HighlightedDriver.License, HighlightedDriver.SafetyRating) = ParseLicenseString(opponent.LicenceString);
+                    HighlightedDriver.CurrentLap = opponent.CurrentLap ?? 0;
+                    HighlightedDriver.TeamIncidentCount = driver.TeamIncidentCount;
                 }
             }
 
@@ -381,7 +427,7 @@ namespace benofficial2.Plugin
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
-
+            plugin.SaveCommonSettings("HighlightedDriverSettings", HighlightedDriverSettings);
         }
 
         private double ComputeAvgSpeedKph(double trackLength, double fromPos, double toPos, TimeSpan deltaTime)
@@ -581,6 +627,13 @@ namespace benofficial2.Plugin
                     {
                         PlayerLivePositionInClass = driver.LivePositionInClass;
                     }
+
+                    if (driver.CarIdx == HighlightedDriver.CarIdx)
+                    {
+                        HighlightedDriver.LivePositionInClass = driver.LivePositionInClass;
+                        HighlightedDriver.CarClassColor = leaderboard.CarClassDescription.ClassColor;
+                        HighlightedDriver.CarClassTextColor = leaderboard.CarClassDescription.ClassTextColor;
+                    }
                 }
             }
         }
@@ -635,6 +688,24 @@ namespace benofficial2.Plugin
                 try { jokerLapsComplete = int.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["JokerLapsComplete"]); } catch { Debug.Assert(false); }
                 driver.JokerLapsComplete = jokerLapsComplete;
             }
+        }
+
+        private void BlankHighlightedDriver()
+        {
+            HighlightedDriver.CarIdx = -1;
+            HighlightedDriver.Number = string.Empty;
+            HighlightedDriver.Name = string.Empty;
+            HighlightedDriver.CarBrand = string.Empty;
+            HighlightedDriver.CarName = string.Empty;
+            HighlightedDriver.CountryCode = string.Empty;
+            HighlightedDriver.IRating = 0;
+            HighlightedDriver.License = string.Empty;
+            HighlightedDriver.SafetyRating = 0.0;
+            HighlightedDriver.LivePositionInClass = 0;
+            HighlightedDriver.CurrentLap = 0;
+            HighlightedDriver.TeamIncidentCount = 0;
+            HighlightedDriver.CarClassColor = string.Empty;
+            HighlightedDriver.CarClassTextColor = string.Empty;
         }
     }
 }

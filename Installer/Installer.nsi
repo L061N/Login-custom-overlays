@@ -151,6 +151,11 @@ Section "Track Wetness" SEC_FOLDER15
   File /r "..\Overlays\benofficial2 - iRacing Track Wetness\*.*"
 SectionEnd
 
+Section "Highlighted Driver" SEC_FOLDER16
+  SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Highlighted Driver"
+  File /r "..\Overlays\benofficial2 - iRacing Highlighted Driver\*.*"
+SectionEnd
+
 Section "Plugin" SEC_PLUGIN
   SectionIn RO
   WriteUninstaller "$INSTDIR\bo2-official-overlays-uninstall.exe"
@@ -194,6 +199,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER13} "Install iRacing Multi-Class Standings SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER14} "Install iRacing Precipitation SimHub overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER15} "Install iRacing Track Wetness SimHub overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER16} "Install iRacing Highlighted Driver overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PLUGIN} "Install necessary files such as the plugin, license and uninstaller"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
@@ -214,6 +220,7 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Multi-Class Standings"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Precipitation"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Track Wetness"
+  RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Highlighted Driver"
   RMDir /r "$INSTDIR\ImageLibrary\benofficial2"
       
   ; Remove the uninstaller itself

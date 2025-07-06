@@ -15,5 +15,6 @@
     "weather": "3.3",
     "multiclassstandings": "3.6",
     "precipitation": "3.3",
-    "trackwetness": "3.3"
+    "trackwetness": "3.3",
+    "highlighteddriver": "3.7"
 }
