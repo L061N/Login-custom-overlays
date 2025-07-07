@@ -747,9 +747,9 @@ namespace benofficial2.Plugin
             double estimatedTotalLaps = sessionTimeRemain / carClass.LeaderAvgLapTime.TotalSeconds;
             estimatedTotalLaps += leaderCurrentLapHighPrecision;
 
-            // Add an extra lap if we would cross the line with more than 60% of a lap time remaining on the timer.
-            // It is unknown what is the exact white flag rule used by iRacing. Best guess is 60% of avg time from last 3 laps.
-            if (sessionTimeRemain > 0 && estimatedTotalLaps % 1.0 > 0.60)
+            // Add an extra lap if we would cross the line with more than 65% of a lap time remaining on the timer.
+            // It is unknown what is the exact white flag rule used by iRacing. Best guess is 65% of avg time from last 3 laps.
+            if (sessionTimeRemain > 0 && estimatedTotalLaps % 1.0 > 0.65)
             {
                 estimatedTotalLaps++;
             }

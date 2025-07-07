@@ -64,7 +64,7 @@ namespace benofficial2.Plugin
 
         // Maximum amount of time remaining (in percentage of best lap) for the white flag to be shown.
         // It is unknown what is the exact rule used by iRacing. Could be 60% of avg from last 3 race laps.
-        private const double WhiteFlagRuleLapPct = 0.60;
+        private const double WhiteFlagRuleLapPct = 0.65;
 
         // How long is the short parade lap at supported tracks (as a percentage of a lap).
         // This is the default values for tracks we don't have in the database.
