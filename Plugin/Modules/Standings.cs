@@ -51,6 +51,7 @@ namespace benofficial2.Plugin
         public bool LastVisible { get; set; } = true;
         public bool DeltaVisible { get; set; } = true;
         public bool UseDeltaToPlayer { get; set; } = false;
+        public bool InvertDeltaToPlayer { get; set; } = false;
         public bool ShowStintLapInRace { get; set; } = true;
         public int AlternateRowBackgroundColor { get; set; } = 5;
         public bool HighlightPlayerRow { get; set; } = true;
@@ -397,7 +398,14 @@ namespace benofficial2.Plugin
 
                             if (row.LastLapTime > TimeSpan.Zero && _driverModule.HighlightedDriver.LastLapTime > TimeSpan.Zero)
                             {
-                                row.DeltaToPlayer = row.LastLapTime - _driverModule.HighlightedDriver.LastLapTime;
+                                if (Settings.InvertDeltaToPlayer)
+                                {
+                                    row.DeltaToPlayer = _driverModule.HighlightedDriver.LastLapTime - row.LastLapTime;
+                                }
+                                else
+                                {
+                                    row.DeltaToPlayer = row.LastLapTime - _driverModule.HighlightedDriver.LastLapTime;
+                                }
                             }
                             else
                             {
@@ -417,7 +425,14 @@ namespace benofficial2.Plugin
 
                             if (row.LastLapTime > TimeSpan.Zero && _driverModule.HighlightedDriver.BestLapTime > TimeSpan.Zero)
                             {
-                                row.DeltaToPlayer = row.LastLapTime - _driverModule.HighlightedDriver.BestLapTime;
+                                if (Settings.InvertDeltaToPlayer)
+                                {
+                                    row.DeltaToPlayer = _driverModule.HighlightedDriver.BestLapTime - row.LastLapTime;
+                                }
+                                else
+                                {
+                                    row.DeltaToPlayer = row.LastLapTime - _driverModule.HighlightedDriver.BestLapTime;
+                                }
                             }
                             else
                             {
