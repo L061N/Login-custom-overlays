@@ -165,7 +165,9 @@ namespace benofficial2.Plugin
         public bool PlayerHadCheckeredFlag { get; internal set; } = false;
         public TimeSpan PlayerLastLapTime { get; internal set; } = TimeSpan.Zero;
         public TimeSpan PlayerBestLapTime { get; internal set; } = TimeSpan.Zero;
-        public double PlayerCurrentLapHighPrecision { get; set; } = -1;       
+        public double PlayerCurrentLapHighPrecision { get; set; } = -1;
+        public int PlayerCurrentLap { get; set; } = 0;
+        public int PlayerTeamIncidentCount { get; set; } = 0;
 
         public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
 
@@ -189,6 +191,8 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.LivePositionInClass", valueProvider: () => PlayerLivePositionInClass);
             plugin.AttachDelegate(name: "Player.LastLapTime", valueProvider: () => PlayerLastLapTime);
             plugin.AttachDelegate(name: "Player.BestLapTime", valueProvider: () => PlayerBestLapTime);
+            plugin.AttachDelegate(name: "Player.CurrentLap", valueProvider: () => PlayerCurrentLap);
+            plugin.AttachDelegate(name: "Player.TeamIncidentCount", valueProvider: () => PlayerTeamIncidentCount);
             plugin.AttachDelegate(name: "Highlighted.Width", valueProvider: () => HighlightedDriverSettings.Width);
             plugin.AttachDelegate(name: "Highlighted.BackgroundOpacity", valueProvider: () => HighlightedDriverSettings.BackgroundOpacity);
             plugin.AttachDelegate(name: "Highlighted.CarIdx", valueProvider: () => HighlightedDriver.CarIdx);
@@ -236,6 +240,8 @@ namespace benofficial2.Plugin
                 LiveClassLeaderboards = new List<ClassLeaderboard>();
                 PlayerLastLapTime = TimeSpan.Zero;
                 PlayerBestLapTime = TimeSpan.Zero;
+                PlayerCurrentLap = 0;
+                PlayerTeamIncidentCount = 0;
                 BlankHighlightedDriver();
             }
 
@@ -404,6 +410,8 @@ namespace benofficial2.Plugin
                     PlayerLastLapTime = driver.LastLapTime;
                     PlayerBestLapTime = driver.BestLapTime;
                     PlayerCurrentLapHighPrecision = driver.CurrentLapHighPrecision;
+                    PlayerCurrentLap = opponent.CurrentLap ?? 0;
+                    PlayerTeamIncidentCount = driver.TeamIncidentCount;
 
                     if (_sessionModule.Race)
                     {
