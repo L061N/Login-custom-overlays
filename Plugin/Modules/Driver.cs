@@ -157,6 +157,7 @@ namespace benofficial2.Plugin
 
         public int PlayerCarIdx { get; set; } = -1;
         public bool PlayerOutLap { get; internal set; } = false;
+        public int PlayerStintLap { get; internal set; } = 0;
         public string PlayerNumber { get; internal set; } = "";
         public string PlayerCarBrand { get; internal set; } = "";
         public string PlayerCountryCode { get; internal set; } = "";
@@ -185,6 +186,7 @@ namespace benofficial2.Plugin
             HighlightedDriverSettings = plugin.ReadCommonSettings<HighlightedDriverSettings>("HighlightedDriverSettings", () => new HighlightedDriverSettings());
 
             plugin.AttachDelegate(name: "Player.OutLap", valueProvider: () => PlayerOutLap);
+            plugin.AttachDelegate(name: "Player.StintLap", valueProvider: () => PlayerStintLap);
             plugin.AttachDelegate(name: "Player.Number", valueProvider: () => PlayerNumber);
             plugin.AttachDelegate(name: "Player.CarBrand", valueProvider: () => PlayerCarBrand);
             plugin.AttachDelegate(name: "Player.CountryCode", valueProvider: () => PlayerCountryCode);
@@ -232,6 +234,7 @@ namespace benofficial2.Plugin
                 DriversByCarIdx = new Dictionary<int, Driver>();
                 PlayerCarIdx = -1;
                 PlayerOutLap = false;
+                PlayerStintLap = 0;
                 PlayerNumber = "";
                 PlayerCarBrand = "";
                 PlayerCountryCode = "";
@@ -405,6 +408,7 @@ namespace benofficial2.Plugin
                 if (opponent.IsPlayer)
                 {
                     PlayerOutLap = driver.OutLap;
+                    PlayerStintLap = driver.StintLap;
                     PlayerNumber = opponent.CarNumber;
                     PlayerCarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName);
                     PlayerCountryCode = _flairModule.GetCountryCode(driver.FlairId);
