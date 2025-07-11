@@ -244,8 +244,8 @@ namespace benofficial2.Plugin
             if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
             _lastUpdateTime = data.FrameTime;
 
-            int highlightedCarIdx = -1;
-            (highlightedCarIdx, HighlightedCarClassIdx) = FindHighlightedCar(ref data);
+            Driver highlightedDriver = null;
+            (highlightedDriver, HighlightedCarClassIdx) = FindHighlightedDriver(ref data);
 
             if (_sessionModule.Race)
             {
@@ -307,12 +307,12 @@ namespace benofficial2.Plugin
 
                     int skipRowCount = 0;
                     int maxRowCount;
-                    if (HighlightedCarClassIdx == carClassIdx)
+                    if (highlightedDriver != null && HighlightedCarClassIdx == carClassIdx)
                     {
                         maxRowCount = Settings.MaxRowsPlayerClass;
 
                         // How many rows to skip to have a lead-focused leaderboard
-                        skipRowCount = GetLeadFocusedSkipRowCount(highlightedCarIdx, opponentsWithDrivers);
+                        skipRowCount = GetLeadFocusedSkipRowCount(highlightedDriver.CarIdx, opponentsWithDrivers);
                     }
                     else
                     {
@@ -354,7 +354,7 @@ namespace benofficial2.Plugin
 
                         row.RowVisible = true;
                         row.IsPlayer = opponent.IsPlayer;
-                        row.IsHighlighted = (highlightedCarIdx == driver.CarIdx);
+                        row.IsHighlighted = ((highlightedDriver?.CarIdx ?? -1) == driver.CarIdx);
                         row.PlayerID = opponent.Id;
                         row.Connected = opponent.IsConnected;
                         row.LivePositionInClass = driver.LivePositionInClass;
@@ -396,15 +396,15 @@ namespace benofficial2.Plugin
                                 row.DeltaToClassLeader = null;
                             }
 
-                            if (row.LastLapTime > TimeSpan.Zero && _driverModule.HighlightedDriver.LastLapTime > TimeSpan.Zero)
+                            if (highlightedDriver != null && row.LastLapTime > TimeSpan.Zero && highlightedDriver.LastLapTime > TimeSpan.Zero)
                             {
                                 if (Settings.InvertDeltaToPlayer)
                                 {
-                                    row.DeltaToPlayer = _driverModule.HighlightedDriver.LastLapTime - row.LastLapTime;
+                                    row.DeltaToPlayer = highlightedDriver.LastLapTime - row.LastLapTime;
                                 }
                                 else
                                 {
-                                    row.DeltaToPlayer = row.LastLapTime - _driverModule.HighlightedDriver.LastLapTime;
+                                    row.DeltaToPlayer = row.LastLapTime - highlightedDriver.LastLapTime;
                                 }
                             }
                             else
@@ -423,15 +423,15 @@ namespace benofficial2.Plugin
                                 row.DeltaToClassLeader = null;
                             }
 
-                            if (row.LastLapTime > TimeSpan.Zero && _driverModule.HighlightedDriver.BestLapTime > TimeSpan.Zero)
+                            if (highlightedDriver != null && row.LastLapTime > TimeSpan.Zero && highlightedDriver.BestLapTime > TimeSpan.Zero)
                             {
                                 if (Settings.InvertDeltaToPlayer)
                                 {
-                                    row.DeltaToPlayer = _driverModule.HighlightedDriver.BestLapTime - row.LastLapTime;
+                                    row.DeltaToPlayer = highlightedDriver.BestLapTime - row.LastLapTime;
                                 }
                                 else
                                 {
-                                    row.DeltaToPlayer = row.LastLapTime - _driverModule.HighlightedDriver.BestLapTime;
+                                    row.DeltaToPlayer = row.LastLapTime - highlightedDriver.BestLapTime;
                                 }
                             }
                             else
@@ -525,10 +525,10 @@ namespace benofficial2.Plugin
             row.JokerLapsComplete = 0;
         }
 
-        public (int, int) FindHighlightedCar(ref GameData data)
+        public (Driver, int) FindHighlightedDriver(ref GameData data)
         {
             int highlightedCarIdx = -1;
-            int highlightedCarClassId = -1;
+            Driver highlightedDriver = null;
 
             if (_driverModule.HighlightedDriver.CarIdx >= 0)
             {
@@ -539,28 +539,25 @@ namespace benofficial2.Plugin
                 highlightedCarIdx = _driverModule.PlayerCarIdx;
             }
 
-            if (highlightedCarIdx >= 0)
-            {
-                if (_driverModule.DriversByCarIdx.TryGetValue(highlightedCarIdx, out Driver highlightedDriver))
-                {
-                    highlightedCarClassId = highlightedDriver.CarClassId;
-                }
-            }
+            _driverModule.DriversByCarIdx.TryGetValue(highlightedCarIdx, out highlightedDriver);           
 
-            for (int carClassIdx = 0; carClassIdx < data.NewData.OpponentsClassses.Count; carClassIdx++)
+            if (highlightedDriver != null)
             {
-                var carClass = data.NewData.OpponentsClassses[carClassIdx];
-                List<Opponent> opponents = carClass.Opponents;
-                if (opponents.Count > 0)
+                for (int carClassIdx = 0; carClassIdx < data.NewData.OpponentsClassses.Count; carClassIdx++)
                 {
-                    if (opponents[0].CarClassID == highlightedCarClassId.ToString())
+                    var carClass = data.NewData.OpponentsClassses[carClassIdx];
+                    List<Opponent> opponents = carClass.Opponents;
+                    if (opponents.Count > 0)
                     {
-                        return (highlightedCarIdx, carClassIdx);
+                        if (opponents[0].CarClassID == highlightedDriver.CarClassId.ToString())
+                        {
+                            return (highlightedDriver, carClassIdx);
+                        }
                     }
                 }
             }
 
-            return (-1, -1);
+            return (null, -1);
         }
 
         public (string compound, bool visible) GetTireCompound(ref GameData data, int carIdx)
