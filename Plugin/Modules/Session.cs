@@ -61,6 +61,7 @@ namespace benofficial2.Plugin
         public bool Practice { get; internal set; } = false;
         public bool Offline { get; internal set; } = false;
         public bool ReplayPlaying { get; internal set; } = false;
+        public bool SessionScreen { get; internal set; } = false;
         public bool RaceStarted { get; internal set; } = false;
         public bool RaceFinished { get; internal set; } = false;
         public TimeSpan SessionTimeTotal { get; internal set; } = TimeSpan.Zero;
@@ -81,6 +82,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Session.Practice", valueProvider: () => Practice);
             plugin.AttachDelegate(name: "Session.Offline", valueProvider: () => Offline);
             plugin.AttachDelegate(name: "Session.ReplayPlaying", valueProvider: () => ReplayPlaying);
+            plugin.AttachDelegate(name: "Session.SessionScreen", valueProvider: () => SessionScreen);
             plugin.AttachDelegate(name: "Session.RaceStarted", valueProvider: () => RaceStarted);
             plugin.AttachDelegate(name: "Session.RaceFinished", valueProvider: () => RaceFinished);
             plugin.AttachDelegate(name: "Session.RaceTimer", valueProvider: () => RaceTimer);
@@ -134,6 +136,7 @@ namespace benofficial2.Plugin
             // Determine if replay is playing.
             // There's a short moment when loading into a session when isReplayPlaying is false
             // but position or trackSurface is -1.
+            // IsReplayPlaying is false when spotting.
             bool isReplayPLaying = false;
             try { isReplayPLaying = (bool)raw.Telemetry["IsReplayPlaying"]; } catch { }
 
@@ -144,6 +147,11 @@ namespace benofficial2.Plugin
             try { trackSurface = (int)raw.Telemetry["PlayerTrackSurface"]; } catch { }
 
             ReplayPlaying = isReplayPLaying || position < 0 || trackSurface < 0;
+
+            // Determine if Session Screen is active (out of car)
+            // Remains true when spotting.
+            RawDataHelper.TryGetTelemetryData<int>(ref data, out int sessionScreen, "CamCameraState");
+            SessionScreen = (sessionScreen & 0x0001) != 0; // irsdk_IsSessionScreen
 
             // Determine if race started
             int sessionState = 0;
