@@ -126,6 +126,17 @@ namespace benofficial2.Plugin
 
             if (Visible || WarningVisible)
             {
+                // Remember the last valid consumption & time for this car/track combo
+                // So if we immediately come back to the same car/track combo, we can reuse the values
+                string carTrackCombo = data.NewData.CarId + "_" + data.NewData.TrackId;
+                bool carTrackComboValid = data.NewData.CarId.Length > 0 && data.NewData.TrackId.Length > 0;
+                if (carTrackComboValid && carTrackCombo != _lastCarTrackCombo)
+                {
+                    ConsumptionPerLap = 0.0;
+                    BestLapTime = TimeSpan.Zero;
+                    _lastCarTrackCombo = carTrackCombo;
+                }
+
                 UpdateBestLapTime(ref data);
                 UpdateSetupFuelLevel(ref data);
                 UpdateConsumptionPerLap(pluginManager, ref data);
@@ -140,10 +151,9 @@ namespace benofficial2.Plugin
 
         private void UpdateBestLapTime(ref GameData data)
         {
-            BestLapTime = TimeSpan.Zero;
-
             dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) return;
+            if (raw == null) 
+                return;
 
             int driverCount = 0;
             try { driverCount = (int)raw.AllSessionData["DriverInfo"]["Drivers"].Count; } catch { Debug.Assert(false); }
@@ -151,7 +161,8 @@ namespace benofficial2.Plugin
             int playerCarIdx = -1;
             try { playerCarIdx = int.Parse(raw.AllSessionData["DriverInfo"]["DriverCarIdx"]); } catch { Debug.Assert(false); }
 
-            if (playerCarIdx < 0 || playerCarIdx >= driverCount) return;
+            if (playerCarIdx < 0 || playerCarIdx >= driverCount) 
+                return;
 
             string playerClassId = data.NewData.CarClass;
             try { playerClassId = raw.AllSessionData["DriverInfo"]["Drivers"][playerCarIdx]["CarClassID"]; } catch { Debug.Assert(false); }
@@ -165,7 +176,8 @@ namespace benofficial2.Plugin
             {
                 List<object> positions = null;
                 try { positions = raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"]; } catch { Debug.Assert(false); }
-                if (positions == null) continue;
+                if (positions == null) 
+                    continue;
 
                 for (int posIdx = 0; posIdx < positions.Count; posIdx++)
                 {
@@ -194,7 +206,10 @@ namespace benofficial2.Plugin
                 }
             }
 
-            BestLapTime = TimeSpan.FromSeconds(fastestTime);
+            if (fastestTime > 0)
+            {
+                BestLapTime = TimeSpan.FromSeconds(fastestTime);
+            }
         }
 
         private void UpdateSetupFuelLevel(ref GameData data)
@@ -261,16 +276,6 @@ namespace benofficial2.Plugin
 
         private void UpdateConsumptionPerLap(PluginManager pluginManager, ref GameData data)
         {
-            // Remember the last valid consumption for this car/track combo
-            // Because sometimes when advancing session we lose the computed value
-            string carTrackCombo = data.NewData.CarId + "_" + data.NewData.TrackId;
-            bool carTrackComboValid = data.NewData.CarId.Length > 0 && data.NewData.TrackId.Length > 0;
-            if (carTrackComboValid && carTrackCombo != _lastCarTrackCombo)
-            {
-                ConsumptionPerLap = 0.0;
-                _lastCarTrackCombo = carTrackCombo;
-            }
-
             var dataCorePlugin = pluginManager.GetPlugin<DataCorePlugin>();
             double fuelLitersPerLap = dataCorePlugin.properties.Computed_Fuel_LitersPerLap.Value;
 
