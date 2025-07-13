@@ -58,7 +58,7 @@ function getLapTimingVisible(classIdx, rowIdx)
 {
     if (isRace())
     {
-        if (!isRaceStarted()) 
+        if (!isRaceStarted())
             return false;
 
         // Wait until driver completed 1 lap before showing lap timing (best / last lap)

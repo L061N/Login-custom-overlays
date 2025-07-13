@@ -93,7 +93,6 @@ namespace benofficial2.Plugin
         public DateTime InPitSince { get; set; } = DateTime.MinValue;
         public int StintLap { get; set; } = 0;
         public int QualPositionInClass { get; set; } = 0;
-        public double QualFastestTime { get; set; } = 0;
         public int LivePositionInClass { get; set; } = 0;
         public double LastCurrentLapHighPrecision { get; set; } = -1;
         public double CurrentLapHighPrecision { get; set; } = -1;
@@ -487,33 +486,53 @@ namespace benofficial2.Plugin
         private void UpdateQualResult(ref GameData data)
         {
             // Only needed before the race start to show qual position
-            if (!(_sessionModule.Race && !_sessionModule.RaceStarted)) return;
+            if (!(_sessionModule.Race && !_sessionModule.RaceStarted))
+                return;
 
-            dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) return;
-
-            int resultCount = 0;
-            try { resultCount = (int)raw.AllSessionData["QualifyResultsInfo"]["Results"].Count; } catch { }
-
-            for (int i = 0; i < resultCount; i++)
+            RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> qualResults, "QualifyResultsInfo", "Results");
+            if (qualResults != null)
             {
-                int carIdx = 0;
-                try { carIdx = int.Parse(raw.AllSessionData["QualifyResultsInfo"]["Results"][i]["CarIdx"]); } catch { }
-
-                if (!DriversByCarIdx.TryGetValue(carIdx, out Driver driver))
+                for (int i = 0; i < qualResults.Count; i++)
                 {
-                    Debug.Assert(false);
-                    continue;
+                    RawDataHelper.TryGetSessionData<int>(ref data, out int carIdx, "QualifyResultsInfo", "Results", i, "CarIdx");
+                    if (!DriversByCarIdx.TryGetValue(carIdx, out Driver driver))
+                    {
+                        Debug.Assert(false);
+                        continue;
+                    }
+
+                    RawDataHelper.TryGetSessionData<int>(ref data, out int positionInClass, "QualifyResultsInfo", "Results", i, "ClassPosition");
+                    RawDataHelper.TryGetSessionData<double>(ref data, out double fastestTime, "QualifyResultsInfo", "Results", i, "FastestTime");
+
+                    driver.QualPositionInClass = positionInClass + 1;
+                    driver.BestLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
                 }
 
-                int positionInClass = 0;
-                try { positionInClass = int.Parse(raw.AllSessionData["QualifyResultsInfo"]["Results"][i]["ClassPosition"]) + 1; } catch { }
+                return;
+            }
 
-                double fastestTime = 0;
-                try { fastestTime = double.Parse(raw.AllSessionData["QualifyResultsInfo"]["Results"][i]["FastestTime"]); } catch { }
+            RawDataHelper.TryGetSessionData<int>(ref data, out int currentSessionIdx, "SessionInfo", "CurrentSessionNum");
+            if (currentSessionIdx < 0)
+                return;
 
-                driver.QualPositionInClass = positionInClass;
-                driver.QualFastestTime = fastestTime;
+            RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> qualPositions, "SessionInfo", "Sessions", currentSessionIdx, "QualifyPositions");
+            if (qualPositions != null)
+            {
+                for (int i = 0; i < qualPositions.Count; i++)
+                {
+                    RawDataHelper.TryGetSessionData<int>(ref data, out int carIdx, "SessionInfo", "Sessions", currentSessionIdx, "QualifyPositions", i, "CarIdx");
+                    if (!DriversByCarIdx.TryGetValue(carIdx, out Driver driver))
+                    {
+                        Debug.Assert(false);
+                        continue;
+                    }
+
+                    RawDataHelper.TryGetSessionData<int>(ref data, out int positionInClass, "SessionInfo", "Sessions", currentSessionIdx, "QualifyPositions", i, "ClassPosition");
+                    RawDataHelper.TryGetSessionData<double>(ref data, out double fastestTime, "SessionInfo", "Sessions", currentSessionIdx, "QualifyPositions", i, "FastestTime");
+
+                    driver.QualPositionInClass = positionInClass + 1;
+                    driver.BestLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
+                }
             }
         }
 
@@ -662,26 +681,31 @@ namespace benofficial2.Plugin
         private void UpdateLapTimesFromSessionResults(ref GameData data)
         {
             dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) return;
+            if (raw == null) 
+                return;
 
             // It can happen that CurrentSessionNum is missing on SessionInfo. We can't tell which session to use in that case.
             int sessionInfoCount = -1;
             try { sessionInfoCount = raw.AllSessionData["SessionInfo"].Count; } catch { Debug.Assert(false); }
-            if (sessionInfoCount <= 1) return;
+            if (sessionInfoCount <= 1) 
+                return;
 
             int sessionIdx = -1;
             try { sessionIdx = int.Parse(raw.AllSessionData["SessionInfo"]["CurrentSessionNum"]); } catch { Debug.Assert(false); }
-            if (sessionIdx < 0) return;
+            if (sessionIdx < 0) 
+                return;
 
             List<object> positions = null;
             try { positions = raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"]; } catch { Debug.Assert(false); }
-            if (positions == null) return;
+            if (positions == null) 
+                return;
 
             for (int posIdx = 0; posIdx < positions.Count; posIdx++)
             {
                 int carIdx = -1;
                 try { carIdx = int.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["CarIdx"]); } catch { Debug.Assert(false); }
-                if (carIdx < 0) continue;
+                if (carIdx < 0) 
+                    continue;
 
                 if (!DriversByCarIdx.TryGetValue(carIdx, out Driver driver))
                 {
