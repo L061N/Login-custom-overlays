@@ -23,10 +23,16 @@ function getFuelCalcSessionProp(sessionIdx, prop)
 
 function getSessionDetails(sessionIdx)
 {
-    const sessionTypeName = getFuelCalcSessionProp(sessionIdx, 'TypeName')
+    let sessionTypeName = getFuelCalcSessionProp(sessionIdx, 'TypeName')
     if (sessionTypeName == "")
     {
         return ''
+    }
+
+    const sessionSubTypeName = getFuelCalcSessionProp(sessionIdx, 'SubTypeName')
+    if (sessionSubTypeName != null && sessionSubTypeName != "")
+    {
+        sessionTypeName = sessionSubTypeName;
     }
 
     const limitedByTime = getFuelCalcSessionProp(sessionIdx, 'LimitedByTime')

@@ -44,6 +44,7 @@ namespace benofficial2.Plugin
     public class FuelCalcSession
     {
         public string TypeName { get; set; } = string.Empty;
+        public string SubTypeName { get; set; } = string.Empty;
         public int Laps { get; set; } = 0;
         public TimeSpan Time { get; set; } = TimeSpan.Zero;
         public bool LimitedByTime { get; set; } = false;
@@ -106,6 +107,7 @@ namespace benofficial2.Plugin
             {
                 FuelCalcSession session = Sessions[sessionIdx];
                 plugin.AttachDelegate(name: $"FuelCalc.Session{sessionIdx:00}.TypeName", valueProvider: () => session.TypeName);
+                plugin.AttachDelegate(name: $"FuelCalc.Session{sessionIdx:00}.SubTypeName", valueProvider: () => session.SubTypeName);
                 plugin.AttachDelegate(name: $"FuelCalc.Session{sessionIdx:00}.Laps", valueProvider: () => session.Laps);
                 plugin.AttachDelegate(name: $"FuelCalc.Session{sessionIdx:00}.Time", valueProvider: () => session.Time);
                 plugin.AttachDelegate(name: $"FuelCalc.Session{sessionIdx:00}.LimitedByTime", valueProvider: () => session.LimitedByTime);
@@ -302,7 +304,11 @@ namespace benofficial2.Plugin
                     continue;
                 }
 
-                try { session.TypeName = raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["SessionType"]; } catch { Debug.Assert(false); }
+                RawDataHelper.TryGetSessionData<string>(ref data, out string sessionType, "SessionInfo", "Sessions", sessionIdx, "SessionType");
+                session.TypeName = sessionType;
+
+                RawDataHelper.TryGetSessionData<string>(ref data, out string sessionSubType, "SessionInfo", "Sessions", sessionIdx, "SessionSubType");
+                session.SubTypeName = sessionSubType;
 
                 string sessionLaps = string.Empty;
                 try { sessionLaps = raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["SessionLaps"]; } catch { Debug.Assert(false); }
@@ -436,6 +442,7 @@ namespace benofficial2.Plugin
         private void BlankSession(FuelCalcSession session)
         {
             session.TypeName = string.Empty;
+            session.SubTypeName = string.Empty;
             session.Laps = 0;
             session.Time = TimeSpan.Zero;
             session.LimitedByTime = false;
