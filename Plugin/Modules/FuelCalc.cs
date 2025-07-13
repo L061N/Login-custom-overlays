@@ -79,7 +79,7 @@ namespace benofficial2.Plugin
         public double ConsumptionPerLap { get; internal set; } = 0.0;
         public bool WarningVisible { get; internal set; } = false;
 
-        public const int MaxSessions = 5;
+        public const int MaxSessions = 6;
         public List<FuelCalcSession> Sessions { get; internal set; }
 
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
