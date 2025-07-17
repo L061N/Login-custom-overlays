@@ -28,6 +28,7 @@ namespace benofficial2.Plugin
 {
     public class RelativeSettings : ModuleSettings
     {
+        public bool HideInReplay { get; set; } = true;
         public int Width { get; set; } = 80;
         public int MaxRows { get; set; } = 4;
         public bool HeaderVisible { get; set; } = true;
@@ -104,6 +105,7 @@ namespace benofficial2.Plugin
             _flairModule = plugin.GetModule<FlairModule>();
 
             Settings = plugin.ReadCommonSettings<RelativeSettings>("RelativeSettings", () => new RelativeSettings());
+            plugin.AttachDelegate(name: "Relative.HideInReplay", valueProvider: () => Settings.HideInReplay);
             plugin.AttachDelegate(name: "Relative.Width", valueProvider: () => Settings.Width);
             plugin.AttachDelegate(name: "Relative.MaxRows", valueProvider: () => Settings.MaxRows);
             plugin.AttachDelegate(name: "Relative.HeaderVisible", valueProvider: () => Settings.HeaderVisible);

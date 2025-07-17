@@ -278,6 +278,13 @@
 
                 <styles:SHSection Title="RELATIVE OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Hide the relative when the replay is playing (i.e. when out of the car)" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.HideInReplay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Hide in replay
+                        </styles:SHToggleCheckbox>
+                        
                         <StackPanel Orientation="Horizontal">
                             <styles:SHToggleCheckbox 
                                 ToolTip="Show the header with session information" 
@@ -343,6 +350,13 @@
 
                 <styles:SHSection Title="TRACK MAP OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Hide the track map when the replay is playing (i.e. when out of the car)" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[TrackMapModule].Settings.HideInReplay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Hide in replay
+                        </styles:SHToggleCheckbox>
+                        
                         <StackPanel Orientation="Horizontal">
                             <ui:TitledSlider Width="400" Title="Dot Radius (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TrackMapModule].Settings.DotRadius, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Radius size of the car dots on the map" />
                             <ui:TitledSlider Width="400" Title="Font Size (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TrackMapModule].Settings.FontSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Font size on the car dots on the map" />
