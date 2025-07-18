@@ -3,7 +3,9 @@
 
 ## Overview
 
-With benofficial2's Official Overlays you get a complete collection of free overlays for [iRacing](https://www.iracing.com/). The overlays are made with [SimHub](https://www.simhubdash.com/download-2/), which means they are fully customizable, and are easy on CPU and memory so you get more FPS in-game.
+With benofficial2's Official Overlays you get a complete collection of overlays for [iRacing](https://www.iracing.com/). The overlays are made with [SimHub](https://www.simhubdash.com/download-2/), which means they are fully customizable, and are easy on CPU and memory so you get more FPS in-game. 
+
+Completely free and supported by [donations](https://streamelements.com/benofficial2/tip).
 
 <a href="https://youtu.be/zrjqHcTWbKs?si=2-y9SHETUnE3BI-7&t=263">
 <p align="center">
@@ -20,6 +22,7 @@ To see them in action, click the image above for a video demo.
 - **[Track Map](#track-map)**: shows cars on a map
 - **[Delta Bar](#delta-bar)**: gives you feedback on your pace with time and speed deltas
 - **[Inputs Telemetry](#inputs-telemetry)**: shows pedal inputs and a graph
+- **[Highlighted Driver](#highlighted-driver)**: shows information about the currently spectated driver
 - **[Dash Overlay](#dash-overlay)**: shows various in-car settings and statuses (DRS, ERS, Fuel, BB, etc.)
 - **[Setup Cover](#setup-cover)**: For streamers, hides the setup page when in garage
 - **[Twitch Chat](#twitch-chat)**: For streamers, shows your chat on screen
@@ -110,19 +113,7 @@ Shows the live **Leaderboard** for up to 4 car classes. Optional columns: **Car 
   <img src="Images/Multi-Class-Standings-GTE.png" width="450"/>
 </p>
 
-## Standings (deprecated)
-
-*Note: This overlay has been deprecated and will not be supported anymore. Please use the Multi-Class Standings overlay instead, which can be configured to look the same with only the player's car class.*
-
-Shows the live **Leaderboard** for the player's car class. Can show up to 25 drivers and have **Lead-Focused** rows (configurable in plugin options). The driver's **iRating** is shown with their **License Class** color. The **Tire Compound** indicator also serves as an **On-Track** indicator. In a race, the **Gap to Leader** and **Last Pit Stop Lap** are shown. In practice and qualification, the **Best Lap Time** is shown. For streamers, the large header makes it clear to your viewers if you're in a race or practice session.
-
-<p align="center">
-  <img src="Images/Standings-Pit.png" width="400"/>
-</p>
-
-<p align="center">
-  <img src="Images/Standings-Wet.png" width="400"/>
-</p>
+*Note: The old **Standings** overlay has been deprecated and will not be supported anymore. Please use the **Multi-Class Standings** overlay instead, which can be configured to look the same with only the player's car class.*
 
 ## Relative
 
@@ -172,6 +163,14 @@ Shows the current **Gear**, **Speed** and a graph of **Pedal Input Traces** over
 
 <p align="center">
   <img src="Images/Inputs.png" width="500"/>
+</p>
+
+## Highlighted Driver
+
+Shows information about the currently spectated driver when spectating. Can optionally be shown when in-car as well.
+
+<p align="center">
+  <img src="Images/Highlighted-Driver.png" width="400"/>
 </p>
 
 ## Dash Overlay
@@ -274,9 +273,6 @@ Thanks to **Wotever** for making [SimHub](https://www.simhubdash.com/download-2/
 Thanks to **Romainrob** for making the excellent [iRacing Extra Properties](https://www.simhubdash.com/community-2/dashboard-templates/romainrobs-collection/) plugin and his collection of overlays which was a great inspiration.
 
 The overlays in this collection are made by **benofficial2**. 
-If you like them, consider following me on:
-- [**Twitch**](https://www.twitch.tv/benofficial2)
-- [**YouTube**](https://www.youtube.com/@benofficial2?sub_confirmation=1)
-- [**Bluesky**](https://bsky.app/profile/benofficial2.bsky.social)
+If you like them, consider following me on [Twitch](https://www.twitch.tv/benofficial2), [YouTube](https://www.youtube.com/@benofficial2?sub_confirmation=1), [Bluesky](https://bsky.app/profile/benofficial2.bsky.social) or making a [donation](https://streamelements.com/benofficial2/tip).
 
 And thank *you* for using them!
