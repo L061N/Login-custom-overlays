@@ -152,6 +152,7 @@
         "hasTC": true,
         "hasTC2": true,
         "hasBrakeBiasMigration": true,
+        "hasErs": true,
         "hasDeployMode": true,
         "hasDeployModeType2": true
     },
