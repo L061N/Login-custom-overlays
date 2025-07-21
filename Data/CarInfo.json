@@ -151,7 +151,9 @@
         "isGTP": true,
         "hasTC": true,
         "hasTC2": true,
-        "hasBrakeBiasMigration": true
+        "hasBrakeBiasMigration": true,
+        "hasDeployMode": true,
+        "hasDeployModeType2": true
     },
     "dallarair18": {
         "hasPushToPass": true,
