@@ -76,6 +76,7 @@ namespace benofficial2.Plugin
         public bool Towing { get; set; } = false;
         public bool OutLap { get; set; } = false;
         public int EnterPitLap { get; set; } = 0;
+        public TimeSpan LastPitStopDuration { get; set; } = TimeSpan.Zero;
         public int iRating { get; set; } = 0;
         public string License {  get; set; } = string.Empty;
         public double SafetyRating { get; set; } = 0;
@@ -221,6 +222,7 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Towing", valueProvider: () => row.Towing);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.OutLap", valueProvider: () => row.OutLap);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.EnterPitLap", valueProvider: () => row.EnterPitLap);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LastPitStopDuration", valueProvider: () => row.LastPitStopDuration);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.iRating", valueProvider: () => row.iRating);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.License", valueProvider: () => row.License);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.SafetyRating", valueProvider: () => row.SafetyRating);
@@ -374,6 +376,7 @@ namespace benofficial2.Plugin
                         row.Towing = driver.Towing;
                         row.OutLap = driver.OutLap;
                         row.EnterPitLap = driver.EnterPitLap;
+                        row.LastPitStopDuration = driver.LastPitStopDuration;
                         row.iRating = (int)(opponent.IRacing_IRating ?? 0);
                         (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
                         row.CurrentLap = opponent.CurrentLap ?? 0;
@@ -509,6 +512,7 @@ namespace benofficial2.Plugin
             row.Towing = false;
             row.OutLap = false;
             row.EnterPitLap = 0;
+            row.LastPitStopDuration = TimeSpan.Zero;
             row.iRating = 0;
             row.License = string.Empty;
             row.SafetyRating = 0;

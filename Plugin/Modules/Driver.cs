@@ -91,6 +91,8 @@ namespace benofficial2.Plugin
         public int ExitPitLap { get; set; } = -1;
         public bool OutLap { get; set; } = false;
         public DateTime InPitSince { get; set; } = DateTime.MinValue;
+        public DateTime InPitBoxSince { get; set; } = DateTime.MinValue;
+        public TimeSpan LastPitStopDuration { get; set; } = TimeSpan.Zero;
         public int StintLap { get; set; } = 0;
         public int QualPositionInClass { get; set; } = 0;
         public int LivePositionInClass { get; set; } = 0;
@@ -293,11 +295,23 @@ namespace benofficial2.Plugin
                         driver.InPitSince + _minTimeInPit < DateTime.Now)
                     {
                         driver.EnterPitLap = driver.EnterPitLapUnconfirmed;
-                    }
+                        driver.OutLap = false;
+                        driver.ExitPitLap = -1;
+                        driver.StintLap = 0;
 
-                    driver.OutLap = false;
-                    driver.ExitPitLap = -1;
-                    driver.StintLap = 0;
+                        if (opponent.IsCarInPit)
+                        {
+                            if (driver.InPitBoxSince == DateTime.MinValue)
+                            {
+                                driver.InPitBoxSince = DateTime.Now;
+                            }
+                            driver.LastPitStopDuration = DateTime.Now - driver.InPitBoxSince;
+                        }
+                        else
+                        {
+                            driver.InPitBoxSince = DateTime.MinValue;
+                        }
+                    }                    
                 }
                 else
                 {
@@ -320,6 +334,7 @@ namespace benofficial2.Plugin
 
                     driver.OutLap = opponent.IsConnected && driver.ExitPitLap >= opponent.CurrentLap;
                     driver.InPitSince = DateTime.MinValue;
+                    driver.InPitBoxSince = DateTime.MinValue;
 
                     if (driver.ExitPitLap >= 0)
                     {
