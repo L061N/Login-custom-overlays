@@ -480,7 +480,9 @@ namespace benofficial2.Plugin
         public static (string license, double rating) ParseLicenseString(string licenseString)
         {
             var parts = licenseString.Split(' ');
-            return (parts[0], double.Parse(parts[1]));
+            string license = parts[0].Substring(0, 1); // take only the first letter, Pro is 'PWC'
+            double rating = double.Parse(parts[1]);
+            return (license, rating);
         }
 
         private void UpdateQualResult(ref GameData data)
