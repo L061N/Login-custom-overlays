@@ -20,10 +20,8 @@ using GameReaderCommon;
 using SimHub.Plugins;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Media;
 
 namespace benofficial2.Plugin
 {
@@ -671,24 +669,30 @@ namespace benofficial2.Plugin
 
         public int CalculateSof(OpponentsWithDrivers opponentsWithDrivers)
         {
-            if (opponentsWithDrivers.Count <= 0) return 0;
-            double totalSof = 0;
-            for (int opponentIdx = 0; opponentIdx < opponentsWithDrivers.Count; opponentIdx++)
+            if (opponentsWithDrivers.Count <= 0) 
+                return 0;
+
+            double sum = 0.0;
+            foreach (var (opponent, driver) in opponentsWithDrivers)
             {
-                totalSof += opponentsWithDrivers[opponentIdx].Item1.IRacing_IRating ?? 0;
+                sum += Math.Pow(2.0, -(opponent.IRacing_IRating ?? 0.0) / 1600.0);
             }
-            return (int)(totalSof / opponentsWithDrivers.Count);
+
+            return (int)((1600.0 / Math.Log(2.0)) * Math.Log(opponentsWithDrivers.Count / sum));
         }
 
         public int CalculateTotalSof(List<Opponent> opponents)
         {
-            if (opponents.Count <= 0) return 0;
-            double totalSof = 0;
-            for (int opponentIdx = 0; opponentIdx < opponents.Count; opponentIdx++)
+            if (opponents.Count <= 0) 
+                return 0;
+
+            double sum = 0.0;
+            foreach (var opponent in opponents)
             {
-                totalSof += opponents[opponentIdx].IRacing_IRating ?? 0;
+                sum += Math.Pow(2.0, -(opponent.IRacing_IRating ?? 0.0) / 1600.0);
             }
-            return (int)(totalSof / opponents.Count);
+
+            return (int)((1600.0 / Math.Log(2.0)) * Math.Log(opponents.Count / sum));
         }
 
         public float MeasureTextInPixels(string text)
