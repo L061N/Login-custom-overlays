@@ -5,7 +5,7 @@ Name "${PRODUCT_NAME}"
 !define PRODUCT_PUBLISHER "benofficial2"
 !define PRODUCT_WEB_SITE "https://twitch.tv/benofficial2"
 !define PRODUCT_DIR_REGKEY "Software\bo2-official-overlays"
-!define SIMHUB_VERSION "9.8.4"
+!define SIMHUB_VERSION "9.9.3"
 
 ; Include Modern User Interface
 !include "MUI2.nsh"
@@ -235,3 +235,7 @@ SectionEnd
 Function FinishPageLeave
   ExecShell "open" "https://www.twitch.tv/benofficial2"
 FunctionEnd
+
+; Sign executable using code-signing certificate
+!finalize 'Sign.bat "%1"' ; %1 inside the batch file is the .exe to sign
+!uninstfinalize 'Sign.bat "%1"'
