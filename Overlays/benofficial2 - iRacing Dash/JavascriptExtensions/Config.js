@@ -96,32 +96,6 @@ function carHasDeployMode()
     return isnull($prop('benofficial2.Car.HasDeployMode'), false);
 }
 
-// Used for the lower green box.
-// This mode shows a target SoC value, or 'Qual'.
-function carHasDeployModeType1()
-{
-    return isnull($prop('benofficial2.Car.HasDeployModeType1'), false);
-}
-
-// Used for the lower green box.
-// This mode shows a named mode 'Build', 'Bal', etc.
-function carHasDeployModeType2()
-{
-    return isnull($prop('benofficial2.Car.HasDeployModeType2'), false);
-}
-
-// Used for the lower green box.
-function carHasThrottleShaping()
-{
-    return isnull($prop('benofficial2.Car.HasThrottleShaping'), false);
-}
-
-// Used for the lower green box.
-function carHasFuelMix()
-{
-    return isnull($prop('benofficial2.Car.HasFuelMix'), false);
-}
-
 // Used for cars that show their ARB as 'P2' instead of '1'.
 function carHasARBModeP()
 {
