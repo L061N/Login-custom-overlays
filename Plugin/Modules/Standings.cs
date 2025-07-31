@@ -40,6 +40,8 @@ namespace benofficial2.Plugin
         public bool CountryFlagVisible { get; set; } = true;
         public bool CarLogoVisible { get; set; } = true;
         public bool SafetyRatingVisible { get; set; } = true;
+        public bool IRatingVisible { get; set; } = true;
+        public bool IRatingChangeVisible { get; set; } = true;
         public bool CarLogoVisibleInRace { get; set; } = true;
         public bool GapVisibleInRace { get; set; } = true;
         public bool BestVisibleInRace { get; set; } = true;
@@ -178,6 +180,8 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.CountryFlagVisible", valueProvider: () => Settings.CountryFlagVisible);
             plugin.AttachDelegate(name: $"Standings.CarLogoVisible", valueProvider: () => CarLogoVisible);
             plugin.AttachDelegate(name: $"Standings.SafetyRatingVisible", valueProvider: () => Settings.SafetyRatingVisible);
+            plugin.AttachDelegate(name: $"Standings.iRatingVisible", valueProvider: () => Settings.IRatingVisible);
+            plugin.AttachDelegate(name: $"Standings.iRatingChangeVisible", valueProvider: () => Settings.IRatingChangeVisible);
             plugin.AttachDelegate(name: $"Standings.GapVisible", valueProvider: () => GapVisible);
             plugin.AttachDelegate(name: $"Standings.BestVisible", valueProvider: () => BestVisible);
             plugin.AttachDelegate(name: $"Standings.LastVisible", valueProvider: () => LastVisible);

@@ -174,6 +174,18 @@ function getRelativeIRating(index)
     return formatIRating(iRating);
 }
 
+function getRelativeIRatingChange(index)
+{
+    if (index == 0)
+    {
+        return isnull($prop('benofficial2.Player.iRatingChange'), 0)
+    }
+    else
+    {
+        return isnull(getRelativeProp(index, 'iRatingChange'), 0)
+    }
+}
+
 function getRelativeSafetyRating(index)
 {
     let iRating;

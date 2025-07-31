@@ -114,7 +114,7 @@
                         </styles:SHToggleCheckbox>
 
                         <StackPanel Orientation="Horizontal">
-                            <ui:TitledSlider Width="400" Title="Header Width (%)*" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.HeaderWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <ui:TitledSlider Width="400" Title="Header Width (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.HeaderWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             <ui:TitledSlider Width="400" Title="Header Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.HeaderOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
 
@@ -122,14 +122,14 @@
                             ToolTip="Show the car class header with class information" 
                             HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.CarClassHeaderVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            Show car class header*
+                            Show car class header
                         </styles:SHToggleCheckbox>
 
                         <styles:SHToggleCheckbox 
                             ToolTip="Highlight the player row with a bright background color" 
                             HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.HighlightPlayerRow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            Highlight player row*
+                            Highlight player row
                         </styles:SHToggleCheckbox>
 
                         <styles:SHToggleCheckbox 
@@ -143,34 +143,50 @@
                             ToolTip="Show the country flag corresponding to the driver's flair" 
                             HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.CountryFlagVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            Show country flag*
+                            Show country flag
                         </styles:SHToggleCheckbox>
 
-                        <styles:SHToggleCheckbox 
-                            ToolTip="Show the driver's safety rating" 
-                            HorizontalAlignment="Left" Margin="0,0,4,8"
-                            IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.SafetyRatingVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            Show safety rating*
-                        </styles:SHToggleCheckbox>
+                        <StackPanel Orientation="Horizontal">
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show the driver's safety rating" 
+                                HorizontalAlignment="Left" Margin="0,0,4,8"
+                                IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.SafetyRatingVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show safety rating
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show the driver's iRating" 
+                                HorizontalAlignment="Left" Margin="4,0,4,8"
+                                IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.IRatingVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show iRating
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show the driver's iRating gain/loss if they were to finish the race in their current position" 
+                                HorizontalAlignment="Left" Margin="4,0,4,8"
+                                IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.IRatingChangeVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show iRating gain/loss in race
+                            </styles:SHToggleCheckbox>
+                        </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
                             <styles:SHToggleCheckbox 
                                 ToolTip="The delta column will be relative to the player's time rather than the class leader's time" 
                                 HorizontalAlignment="Left" Margin="0,0,4,8"
                                 IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.UseDeltaToPlayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                Use delta to player instead of delta to leader*
+                                Use delta to player instead of delta to leader
                             </styles:SHToggleCheckbox>
 
                             <styles:SHToggleCheckbox 
                                 ToolTip="When inverted, a green delta means the player is faster" 
                                 HorizontalAlignment="Left" Margin="8,0,4,8"
                                 IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.InvertDeltaToPlayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                Invert delta to player*
+                                Invert delta to player
                             </styles:SHToggleCheckbox>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="Columns to show in race*" Margin="0,0,0,0" Width="180"/>
+                            <Label Content="Columns to show in race:" Margin="0,0,0,0" Width="180"/>
 
                             <styles:SHToggleCheckbox 
                                 ToolTip="Car brand logo when available" 
@@ -210,7 +226,7 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="Columns to show not-in-race*" Margin="0,0,00,10" Width="180"/>
+                            <Label Content="Columns to show not-in-race:" Margin="0,0,00,10" Width="180"/>
 
                             <styles:SHToggleCheckbox 
                                 ToolTip="Car brand logo when available" 
@@ -260,19 +276,17 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <ui:TitledSlider MinWidth="400" Title="Max Row Count (Other Classes)*" Maximum="5" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.MaxRowsOtherClasses, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            <ui:TitledSlider MinWidth="400" Title="Max Row Count (Other Classes)" Maximum="5" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.MaxRowsOtherClasses, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Maximum number of visible rows in the Standings leaderboard for other classes"/>
 
-                            <ui:TitledSlider MinWidth="400" Title="Alternate row background color (%)*" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.AlternateRowBackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            <ui:TitledSlider MinWidth="400" Title="Alternate row background color (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.AlternateRowBackgroundColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             ToolTip="Use a different background color to make alternate rows easier to read. 100% for maximum contrast, 0% to disable."/>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <ui:TitledSlider Width="400" Title="Width (%)*" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <ui:TitledSlider Width="400" Title="Width (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
-
-                        <Label Content="* Note: Some options marked with a star (*) only apply to the Multi-Class Standings overlay" Margin="0,0,0,0"/>
                     </StackPanel>
                 </styles:SHSection>
 
@@ -319,12 +333,28 @@
                             Show country flag
                         </styles:SHToggleCheckbox>
 
-                        <styles:SHToggleCheckbox 
-                            ToolTip="Show the driver's safety rating" 
-                            HorizontalAlignment="Left" Margin="0,0,4,8"
-                            IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.SafetyRatingVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            Show safety rating
-                        </styles:SHToggleCheckbox>
+                        <StackPanel Orientation="Horizontal">
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show the driver's safety rating" 
+                                HorizontalAlignment="Left" Margin="0,0,4,8"
+                                IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.SafetyRatingVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show safety rating
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show the driver's iRating" 
+                                HorizontalAlignment="Left" Margin="4,0,4,8"
+                                IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.IRatingVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show iRating
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show the driver's iRating gain/loss if they were to finish the race in their current position" 
+                                HorizontalAlignment="Left" Margin="4,0,4,8"
+                                IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.IRatingChangeVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show iRating gain/loss in race
+                            </styles:SHToggleCheckbox>
+                        </StackPanel>
 
                         <styles:SHToggleCheckbox 
                             ToolTip="Show the car brand logo column when available" 
