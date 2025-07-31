@@ -106,6 +106,7 @@ namespace benofficial2.Plugin
         public int JokerLapsComplete { get; set; } = 0;
         public int SessionFlags { get; set; } = 0;
         public int TeamIncidentCount { get; set; } = 0;
+        public float IRatingChange { get; set; } = 0.0f;
     }
 
     public class ClassLeaderboard
@@ -171,6 +172,7 @@ namespace benofficial2.Plugin
         public double PlayerCurrentLapHighPrecision { get; set; } = -1;
         public int PlayerCurrentLap { get; set; } = 0;
         public int PlayerTeamIncidentCount { get; set; } = 0;
+        public float PlayerIRatingChange { get; set; } = 0.0f;
 
         public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
 
@@ -197,6 +199,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.BestLapTime", valueProvider: () => PlayerBestLapTime);
             plugin.AttachDelegate(name: "Player.CurrentLap", valueProvider: () => PlayerCurrentLap);
             plugin.AttachDelegate(name: "Player.TeamIncidentCount", valueProvider: () => PlayerTeamIncidentCount);
+            plugin.AttachDelegate(name: "Player.iRatingChange", valueProvider: () => PlayerIRatingChange);
             plugin.AttachDelegate(name: "Highlighted.HideWhenInCar", valueProvider: () => HighlightedDriverSettings.HideWhenInCar);
             plugin.AttachDelegate(name: "Highlighted.Width", valueProvider: () => HighlightedDriverSettings.Width);
             plugin.AttachDelegate(name: "Highlighted.BackgroundOpacity", valueProvider: () => HighlightedDriverSettings.BackgroundOpacity);
@@ -248,6 +251,7 @@ namespace benofficial2.Plugin
                 PlayerBestLapTime = TimeSpan.Zero;
                 PlayerCurrentLap = 0;
                 PlayerTeamIncidentCount = 0;
+                PlayerIRatingChange = 0.0f;
                 BlankHighlightedDriver();
             }
 
@@ -458,6 +462,7 @@ namespace benofficial2.Plugin
 
             UpdateQualResult(ref data);
             UpdateLivePositionInClass(ref data);
+            UpdateIRatingChange(ref data);
         }
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)
@@ -750,6 +755,40 @@ namespace benofficial2.Plugin
                 try { jokerLapsComplete = int.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["JokerLapsComplete"]); } catch { Debug.Assert(false); }
                 driver.JokerLapsComplete = jokerLapsComplete;
             }
+        }
+
+        private void UpdateIRatingChange(ref GameData data)
+        {
+            if (!(_sessionModule.Race))
+                return;
+
+            foreach (var leaderboard in LiveClassLeaderboards)
+            {
+                var raceResults = new List<RaceResult<Driver>>();
+                foreach (var driverTuple in leaderboard.Drivers)
+                {
+                    Opponent opponent = driverTuple.Item1;
+                    Driver driver = driverTuple.Item2;
+                    bool started = !_sessionModule.RaceStarted || driver.CurrentLapHighPrecision >= 0;
+                    raceResults.Add(new RaceResult<Driver>(
+                        driver,
+                        (uint)driver.LivePositionInClass,
+                        (uint)(opponent.IRacing_IRating ?? 0),
+                        started));
+                }
+
+                var results = IRatingCalculator.Calculate(raceResults);
+                for (int i = 0; i < results.Count; i++)
+                {
+                    var result = results[i];
+                    result.RaceResult.Driver.IRatingChange = result.IRatingChange;
+
+                    if (result.RaceResult.Driver.CarIdx == PlayerCarIdx)
+                    {
+                        PlayerIRatingChange = result.IRatingChange;
+                    }
+                }
+            }            
         }
 
         private void BlankHighlightedDriver()

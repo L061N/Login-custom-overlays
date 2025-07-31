@@ -54,6 +54,7 @@ namespace benofficial2.Plugin
         public string CountryCode { get; set; } = string.Empty;
         public bool OutLap { get; set; } = false;
         public int iRating { get; set; } = 0;
+        public float iRatingChange { get; set; } = 0;
         public string License { get; set; } = string.Empty;
         public double SafetyRating { get; set; } = 0;
         public double GapToPlayer { get; set; } = 0;
@@ -137,6 +138,7 @@ namespace benofficial2.Plugin
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.CountryCode", valueProvider: () => row.CountryCode);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.OutLap", valueProvider: () => row.OutLap);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.iRating", valueProvider: () => row.iRating);
+                plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.iRatingChange", valueProvider: () => row.iRatingChange);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.License", valueProvider: () => row.License);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.SafetyRating", valueProvider: () => row.SafetyRating);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.GapToPlayer", valueProvider: () => row.GapToPlayer);
@@ -188,6 +190,7 @@ namespace benofficial2.Plugin
                 row.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
                 row.OutLap = driver.OutLap;
                 row.iRating = (int)(opponent.IRacing_IRating ?? 0);
+                row.iRatingChange = driver.IRatingChange;
                 (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
                 row.GapToPlayer = opponent.RelativeGapToPlayer ?? 0;
                 row.GapToPlayerCombined = opponent.GapToPlayerCombined;
@@ -214,6 +217,7 @@ namespace benofficial2.Plugin
             row.CountryCode = string.Empty;
             row.OutLap = false;
             row.iRating = 0;
+            row.iRatingChange = 0;
             row.License = string.Empty;
             row.SafetyRating = 0;
             row.GapToPlayer = 0;
