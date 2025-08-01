@@ -41,7 +41,7 @@ namespace benofficial2.Plugin
         public bool CarLogoVisible { get; set; } = true;
         public bool SafetyRatingVisible { get; set; } = true;
         public bool IRatingVisible { get; set; } = true;
-        public bool IRatingChangeVisible { get; set; } = true;
+        public bool IRatingChangeVisible { get; set; } = false;
         public bool CarLogoVisibleInRace { get; set; } = true;
         public bool GapVisibleInRace { get; set; } = true;
         public bool BestVisibleInRace { get; set; } = true;

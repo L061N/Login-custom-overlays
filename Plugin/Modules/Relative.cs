@@ -38,7 +38,7 @@ namespace benofficial2.Plugin
         public bool CountryFlagVisible { get; set; } = true;
         public bool SafetyRatingVisible { get; set; } = true;
         public bool IRatingVisible { get; set; } = true;
-        public bool IRatingChangeVisible { get; set; } = true;
+        public bool IRatingChangeVisible { get; set; } = false;
         public int AlternateRowBackgroundColor { get; set; } = 5;
         public bool HighlightPlayerRow { get; set; } = true;
         public int BackgroundOpacity { get; set; } = 60;
