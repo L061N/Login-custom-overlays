@@ -105,6 +105,9 @@ namespace benofficial2.Plugin
 
         private static float Chance(float a, float b, float factor)
         {
+            if (a <= 0 || b <= 0) 
+                return 0.5f;
+
             float expA = (float)Math.Exp(-a / factor);
             float expB = (float)Math.Exp(-b / factor);
             return (1 - expA) * expB / ((1 - expB) * expA + (1 - expA) * expB);
