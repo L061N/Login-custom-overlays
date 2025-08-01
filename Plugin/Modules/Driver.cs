@@ -144,6 +144,8 @@ namespace benofficial2.Plugin
         private SessionModule _sessionModule = null;
         private CarModule _carModule = null;
         private FlairModule _flairModule = null;
+        private StandingsModule _standingsModule = null;
+        private RelativeModule _relativeModule = null;
 
         private SessionState _sessionState = new SessionState();
 
@@ -185,6 +187,8 @@ namespace benofficial2.Plugin
             _sessionModule = plugin.GetModule<SessionModule>();
             _carModule = plugin.GetModule<CarModule>();
             _flairModule = plugin.GetModule<FlairModule>();
+            _standingsModule = plugin.GetModule<StandingsModule>();
+            _relativeModule = plugin.GetModule<RelativeModule>();
 
             HighlightedDriverSettings = plugin.ReadCommonSettings<HighlightedDriverSettings>("HighlightedDriverSettings", () => new HighlightedDriverSettings());
 
@@ -760,6 +764,10 @@ namespace benofficial2.Plugin
         private void UpdateIRatingChange(ref GameData data)
         {
             if (!(_sessionModule.Race))
+                return;
+
+            // Optim: Don't calculate if the iRating change is not visible.
+            if (!_standingsModule.Settings.IRatingChangeVisible && !_relativeModule.Settings.IRatingChangeVisible)
                 return;
 
             foreach (var leaderboard in LiveClassLeaderboards)
