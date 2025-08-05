@@ -67,6 +67,7 @@ namespace benofficial2.Plugin
         public string PlayerID { get; set; } = string.Empty;
         public bool Connected { get; set; } = false;
         public int LivePositionInClass { get; set; } = 0;
+        public int PositionChange { get; set; } = 0;
         public string Number { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string CarId { get; set; } = string.Empty;
@@ -216,6 +217,7 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PlayerID", valueProvider: () => row.PlayerID);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Connected", valueProvider: () => row.Connected);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LivePositionInClass", valueProvider: () => row.LivePositionInClass);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PositionChange", valueProvider: () => row.PositionChange);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Number", valueProvider: () => row.Number);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Name", valueProvider: () => row.Name);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CarId", valueProvider: () => row.CarId);
@@ -364,6 +366,12 @@ namespace benofficial2.Plugin
                         row.PlayerID = opponent.Id;
                         row.Connected = opponent.IsConnected;
                         row.LivePositionInClass = driver.LivePositionInClass;
+
+                        if (_sessionModule.Race && driver.QualPositionInClass > 0 && driver.LivePositionInClass > 0)
+                        {
+                            row.PositionChange = driver.QualPositionInClass - driver.LivePositionInClass;
+                        }
+
                         row.Number = opponent.CarNumber;
                         if (_sessionModule.TeamRacing)
                         {
@@ -508,6 +516,7 @@ namespace benofficial2.Plugin
             row.PlayerID = string.Empty;
             row.Connected = false;
             row.LivePositionInClass = 0;
+            row.PositionChange = 0;
             row.Number = string.Empty;
             row.Name = string.Empty;
             row.CarId = string.Empty;
