@@ -148,6 +148,7 @@ namespace benofficial2.Plugin
         private RelativeModule _relativeModule = null;
 
         private SessionState _sessionState = new SessionState();
+        private bool _qualResultsUpdated = false;
 
         public const int MaxDrivers = 64;
 
@@ -257,6 +258,7 @@ namespace benofficial2.Plugin
                 PlayerTeamIncidentCount = 0;
                 PlayerIRatingChange = 0.0f;
                 BlankHighlightedDriver();
+                _qualResultsUpdated = false;
             }
 
             UpdateDrivers(ref data);
@@ -284,7 +286,7 @@ namespace benofficial2.Plugin
                 Opponent opponent = data.NewData.Opponents[i];
                 if (!Drivers.TryGetValue(opponent.CarNumber, out Driver driver))
                 {
-                    Debug.Assert(false);
+                    // Can happen when spectating a race and driving, the player car has no car number.
                     continue;
                 }
 
@@ -511,8 +513,8 @@ namespace benofficial2.Plugin
 
         private void UpdateQualResult(ref GameData data)
         {
-            // Only needed before the race start to show qual position
-            if (!(_sessionModule.Race && !_sessionModule.RaceStarted))
+            // Optimization: Only update the qualifying results once before the race starts.
+            if (_qualResultsUpdated || !_sessionModule.Race)
                 return;
 
             RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> qualResults, "QualifyResultsInfo", "Results");
@@ -534,6 +536,7 @@ namespace benofficial2.Plugin
                     driver.BestLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
                 }
 
+                _qualResultsUpdated = true;
                 return;
             }
 
@@ -559,6 +562,8 @@ namespace benofficial2.Plugin
                     driver.QualPositionInClass = positionInClass + 1;
                     driver.BestLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
                 }
+
+                _qualResultsUpdated = true;
             }
         }
 
@@ -639,7 +644,7 @@ namespace benofficial2.Plugin
                     Opponent opponent = opponents[i];
                     if (!Drivers.TryGetValue(opponent.CarNumber, out Driver driver))
                     {
-                        Debug.Assert(false);
+                        // Can happen when spectating a race and driving, the player car has no car number.
                         continue;
                     }
 

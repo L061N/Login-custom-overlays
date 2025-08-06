@@ -169,6 +169,13 @@
                             </styles:SHToggleCheckbox>
                         </StackPanel>
 
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show the number of positions gained or lost in a race" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.PositionChangeVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show position gain/loss in race
+                        </styles:SHToggleCheckbox>
+
                         <StackPanel Orientation="Horizontal">
                             <styles:SHToggleCheckbox 
                                 ToolTip="The delta column will be relative to the player's time rather than the class leader's time" 

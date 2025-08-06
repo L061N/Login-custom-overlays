@@ -37,6 +37,7 @@ namespace benofficial2.Plugin
         public int LeadFocusedRows { get; set; } = 3;
         public int MaxRowsOtherClasses { get; set; } = 3;
         public int MaxRowsPlayerClass { get; set; } = 10;
+        public bool PositionChangeVisible { get; set; } = false;
         public bool CountryFlagVisible { get; set; } = true;
         public bool CarLogoVisible { get; set; } = true;
         public bool SafetyRatingVisible { get; set; } = true;
@@ -178,6 +179,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.LeadFocusedRows", valueProvider: () => Settings.LeadFocusedRows);
             plugin.AttachDelegate(name: $"Standings.MaxRowsPlayerClass", valueProvider: () => Settings.MaxRowsPlayerClass);
             plugin.AttachDelegate(name: $"Standings.MaxRowsOtherClasses", valueProvider: () => Settings.MaxRowsOtherClasses);
+            plugin.AttachDelegate(name: $"Standings.PositionChangeVisible", valueProvider: () => Settings.PositionChangeVisible);
             plugin.AttachDelegate(name: $"Standings.CountryFlagVisible", valueProvider: () => Settings.CountryFlagVisible);
             plugin.AttachDelegate(name: $"Standings.CarLogoVisible", valueProvider: () => CarLogoVisible);
             plugin.AttachDelegate(name: $"Standings.SafetyRatingVisible", valueProvider: () => Settings.SafetyRatingVisible);
