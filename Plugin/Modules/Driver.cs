@@ -103,6 +103,7 @@ namespace benofficial2.Plugin
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
         public AverageLapTime AvgLapTime { get; set; } = new AverageLapTime(3);
+        public int LapsComplete { get; set; } = 0;
         public int JokerLapsComplete { get; set; } = 0;
         public int SessionFlags { get; set; } = 0;
         public int TeamIncidentCount { get; set; } = 0;
@@ -760,6 +761,10 @@ namespace benofficial2.Plugin
                     driver.LastLapTime = TimeSpan.FromSeconds(lastLapTime);
                 }
 
+                int lapsComplete = 0;
+                RawDataHelper.TryGetSessionData<int>(ref data, out lapsComplete, "SessionInfo", "Sessions", sessionIdx, "ResultsPositions", posIdx, "LapsComplete");
+                driver.LapsComplete = lapsComplete;
+
                 int jokerLapsComplete = 0;
                 try { jokerLapsComplete = int.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["JokerLapsComplete"]); } catch { Debug.Assert(false); }
                 driver.JokerLapsComplete = jokerLapsComplete;
@@ -782,7 +787,7 @@ namespace benofficial2.Plugin
                 {
                     Opponent opponent = driverTuple.Item1;
                     Driver driver = driverTuple.Item2;
-                    bool started = !_sessionModule.RaceStarted || driver.CurrentLapHighPrecision >= 0;
+                    bool started = !_sessionModule.RaceStarted || driver.CurrentLapHighPrecision >= 0 || driver.LapsComplete > 0;
                     raceResults.Add(new RaceResult<Driver>(
                         driver,
                         (uint)driver.LivePositionInClass,
