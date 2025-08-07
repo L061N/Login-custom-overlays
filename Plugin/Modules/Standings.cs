@@ -73,6 +73,8 @@ namespace benofficial2.Plugin
         public string Name { get; set; } = string.Empty;
         public string CarId { get; set; } = string.Empty;
         public string CarBrand { get; set; } = string.Empty;
+        public string CarClassColor { get; set; } = string.Empty;
+        public string CarClassTextColor { get; set; } = string.Empty;
         public string CountryCode { get; set; } = string.Empty;
         public bool InPitLane { get; set; } = false;
         public bool Towing { get; set; } = false;
@@ -224,6 +226,8 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Name", valueProvider: () => row.Name);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CarId", valueProvider: () => row.CarId);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CarBrand", valueProvider: () => row.CarBrand);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CarClassColor", valueProvider: () => row.CarClassColor);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CarClassTextColor", valueProvider: () => row.CarClassTextColor);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.CountryCode", valueProvider: () => row.CountryCode);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.InPitLane", valueProvider: () => row.InPitLane);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Towing", valueProvider: () => row.Towing);
@@ -284,11 +288,24 @@ namespace benofficial2.Plugin
                     LeaderboardCarClassDescription opponentClass = _driverModule.LiveClassLeaderboards[carClassIdx].CarClassDescription;
                     OpponentsWithDrivers opponentsWithDrivers = _driverModule.LiveClassLeaderboards[carClassIdx].Drivers;
 
-                    if ((opponentClass.ClassName == null || opponentClass.ClassName.Length == 0 || opponentClass.ClassName == "Hosted All Cars")
-                        && opponentClass.CarModels.Count == 1)
+                    carClass.Color = opponentClass.ClassColor;
+                    carClass.TextColor = opponentClass.ClassTextColor;
+
+                    if ((opponentClass.ClassName == null || opponentClass.ClassName.Length == 0 || opponentClass.ClassName == "Hosted All Cars"))
                     {
-                        // Fallback to the car model name when we don't have a class name and there's only 1 car model.
-                        carClass.Name = opponentClass.CarModels[0];
+                        if (opponentClass.CarModels.Count == 1)
+                        {
+                            // Fallback to the car model name when we don't have a class name and there's only 1 car model.
+                            carClass.Name = opponentClass.CarModels[0];
+                        }
+                        else
+                        {
+                            // There's an issue with AI races where iRacing does not provide a class name, and SimHub fails to create the classes.
+                            // https://github.com/fixfactory/bo2-official-overlays/issues/33
+                            carClass.Name = "All Cars";
+                            carClass.Color = "#FFFFFF";
+                            carClass.TextColor = "#000000";
+                        }
                     }
                     else
                     {
@@ -296,8 +313,6 @@ namespace benofficial2.Plugin
                     }
 
                     carClass.NameSize = MeasureTextInPixels(carClass.Name);
-                    carClass.Color = opponentClass.ClassColor;
-                    carClass.TextColor = opponentClass.ClassTextColor;
                     carClass.Sof = CalculateSof(opponentsWithDrivers);
                     carClass.DriverCount = opponentsWithDrivers.Count;
                     carClass.BestLapTime = FindBestLapTime(opponentsWithDrivers);
@@ -385,6 +400,8 @@ namespace benofficial2.Plugin
                         }
                         row.CarId = driver.CarId;
                         row.CarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName);
+                        row.CarClassColor = opponent.CarClassColor;
+                        row.CarClassTextColor = opponent.CarClassTextColor;
                         row.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
                         row.InPitLane = opponent.IsCarInPitLane;
                         row.Towing = driver.Towing;
@@ -523,6 +540,8 @@ namespace benofficial2.Plugin
             row.Name = string.Empty;
             row.CarId = string.Empty;
             row.CarBrand = string.Empty;
+            row.CarClassColor = string.Empty;
+            row.CarClassTextColor = string.Empty;
             row.CountryCode = string.Empty;
             row.InPitLane = false;
             row.Towing = false;
