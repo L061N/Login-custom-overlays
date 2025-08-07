@@ -37,7 +37,7 @@ namespace benofficial2.Plugin
         public int LeadFocusedRows { get; set; } = 3;
         public int MaxRowsOtherClasses { get; set; } = 3;
         public int MaxRowsPlayerClass { get; set; } = 10;
-        public bool PositionChangeVisible { get; set; } = false;
+        public bool PositionChangeVisible { get; set; } = true;
         public bool CountryFlagVisible { get; set; } = true;
         public bool CarLogoVisible { get; set; } = true;
         public bool SafetyRatingVisible { get; set; } = true;
