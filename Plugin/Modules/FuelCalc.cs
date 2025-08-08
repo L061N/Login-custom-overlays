@@ -77,7 +77,9 @@ namespace benofficial2.Plugin
         public double SetupFuelLevel { get; internal set; } = 0.0;
         public string Units { get; internal set; } = "L";
         public double ConvertFromLiters { get; internal set; } = 1.0;
-        public double ConsumptionPerLap { get; internal set; } = 0.0;
+        public double ConsumptionPerLapSafe { get; internal set; } = 0.0;
+        public double ConsumptionPerLapAvg { get; internal set; } = 0.0;
+        public double ConsumptionLastLap { get; internal set; } = 0.0;
         public bool WarningVisible { get; internal set; } = false;
 
         public const int MaxSessions = 6;
@@ -99,7 +101,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "FuelCalc.BestLapTime", valueProvider: () => BestLapTime);
             plugin.AttachDelegate(name: "FuelCalc.SetupFuelLevel", valueProvider: () => SetupFuelLevel);
             plugin.AttachDelegate(name: "FuelCalc.Units", valueProvider: () => Units);
-            plugin.AttachDelegate(name: "FuelCalc.ConsumptionPerLap", valueProvider: () => ConsumptionPerLap);
+            plugin.AttachDelegate(name: "FuelCalc.ConsumptionPerLap", valueProvider: () => ConsumptionPerLapSafe);
             plugin.AttachDelegate(name: "FuelCalc.WarningVisible", valueProvider: () => WarningVisible);
 
             Sessions = new List<FuelCalcSession>(Enumerable.Range(0, MaxSessions).Select(x => new FuelCalcSession()));
@@ -134,7 +136,7 @@ namespace benofficial2.Plugin
                 bool carTrackComboValid = data.NewData.CarId.Length > 0 && data.NewData.TrackId.Length > 0;
                 if (carTrackComboValid && carTrackCombo != _lastCarTrackCombo)
                 {
-                    ConsumptionPerLap = 0.0;
+                    ConsumptionPerLapSafe = 0.0;
                     BestLapTime = TimeSpan.Zero;
                     _lastCarTrackCombo = carTrackCombo;
                 }
@@ -142,7 +144,7 @@ namespace benofficial2.Plugin
                 UpdateBestLapTime(ref data);
                 UpdateSetupFuelLevel(ref data);
                 UpdateConsumptionPerLap(pluginManager, ref data);
-                UpdateSessionFuel(ref data);
+                UpdateAllSessionFuel(ref data);
             }            
         }
 
@@ -280,162 +282,163 @@ namespace benofficial2.Plugin
         {
             var dataCorePlugin = pluginManager.GetPlugin<DataCorePlugin>();
             double fuelLitersPerLap = dataCorePlugin.properties.Computed_Fuel_LitersPerLap.Value;
+            double fuelLitersLastLap = dataCorePlugin.properties.Computed_Fuel_LastLapConsumption.Value;
+
+            ConsumptionPerLapAvg = fuelLitersPerLap * ConvertFromLiters;
+            ConsumptionLastLap = fuelLitersLastLap * ConvertFromLiters;
 
             if (fuelLitersPerLap > 0)
             {
-                ConsumptionPerLap = fuelLitersPerLap * (1 + Settings.ExtraConsumption / 100.0) * ConvertFromLiters;
+                ConsumptionPerLapSafe = fuelLitersPerLap * (1 + Settings.ExtraConsumption / 100.0) * ConvertFromLiters;
             }
         }
 
-        private void UpdateSessionFuel(ref GameData data)
+        private void UpdateAllSessionFuel(ref GameData data)
         {
-            dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) return;
-
-            int sessionCount = 0;
-            try { sessionCount = (int)raw.AllSessionData["SessionInfo"]["Sessions"].Count; } catch { Debug.Assert(false); }
-
             for (int sessionIdx = 0; sessionIdx < MaxSessions; sessionIdx++)
             {
-                FuelCalcSession session = Sessions[sessionIdx];
-                if (sessionIdx >= sessionCount)
+                UpdateSessionFuel(ref data, sessionIdx);
+            }
+        }
+
+        private void UpdateSessionFuel(ref GameData data, int sessionIdx)
+        {
+            FuelCalcSession session = Sessions[sessionIdx];
+
+            RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> sessions, "SessionInfo", "Sessions");           
+            if (sessions == null || sessionIdx >= sessions.Count)
+            {
+                BlankSession(session);
+                return;
+            }
+
+            RawDataHelper.TryGetSessionData<string>(ref data, out string sessionType, "SessionInfo", "Sessions", sessionIdx, "SessionType");
+            session.TypeName = sessionType;
+
+            RawDataHelper.TryGetSessionData<string>(ref data, out string sessionSubType, "SessionInfo", "Sessions", sessionIdx, "SessionSubType");
+            session.SubTypeName = sessionSubType;
+
+            RawDataHelper.TryGetSessionData<string>(ref data, out string sessionLaps, "SessionInfo", "Sessions", sessionIdx, "SessionLaps");
+            if (sessionLaps.IndexOf("unlimited") != -1)
+            {
+                session.Laps = -1;
+            }
+            else
+            {
+                session.Laps = int.Parse(sessionLaps);
+            }
+
+            RawDataHelper.TryGetSessionData<string>(ref data, out string sessionTime, "SessionInfo", "Sessions", sessionIdx, "SessionTime");
+            if (sessionTime.IndexOf("unlimited") != -1 || sessionTime.Length <= 4)
+            {
+                session.Time = TimeSpan.Zero;
+            }
+            else
+            {
+                double sessionTimeSecs = double.Parse(sessionTime.Substring(0, sessionTime.Length - 4));
+                session.Time = TimeSpan.FromSeconds(sessionTimeSecs);
+            }
+
+            if (session.Laps < 0 && session.Time == TimeSpan.MinValue)
+            {
+                session.FuelNeeded = 0.0;
+                session.StopsNeeded = 0;
+                return;
+            }
+
+            TimeSpan minTimeForLaps = TimeSpan.Zero;
+            if (session.Laps > 0 && BestLapTime > TimeSpan.Zero)
+            {
+                minTimeForLaps = TimeSpan.FromSeconds(session.Laps * BestLapTime.TotalSeconds);
+            }
+
+            if (session.Laps > 0 && (session.Time <= TimeSpan.Zero || minTimeForLaps < session.Time))
+            {
+                session.LimitedByTime = false;
+                session.FuelNeeded = ConsumptionPerLapSafe * session.Laps;
+            }
+            else
+            {
+                session.LimitedByTime = true;
+                if (BestLapTime <= TimeSpan.Zero)
                 {
-                    BlankSession(session);
-                    continue;
-                }
-
-                RawDataHelper.TryGetSessionData<string>(ref data, out string sessionType, "SessionInfo", "Sessions", sessionIdx, "SessionType");
-                session.TypeName = sessionType;
-
-                RawDataHelper.TryGetSessionData<string>(ref data, out string sessionSubType, "SessionInfo", "Sessions", sessionIdx, "SessionSubType");
-                session.SubTypeName = sessionSubType;
-
-                string sessionLaps = string.Empty;
-                try { sessionLaps = raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["SessionLaps"]; } catch { Debug.Assert(false); }
-
-                if (sessionLaps.IndexOf("unlimited") != -1)
-                {
-                    session.Laps = -1;
-                }
-                else
-                {
-                    session.Laps = int.Parse(sessionLaps);
-                }
-
-                string sessionTime = string.Empty;
-                try { sessionTime = raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["SessionTime"]; } catch { Debug.Assert(false); }
-
-                if (sessionTime.IndexOf("unlimited") != -1 || sessionTime.Length <= 4)
-                {
-                    session.Time = TimeSpan.Zero;
-                }
-                else
-                {
-                    double sessionTimeSecs = double.Parse(sessionTime.Substring(0, sessionTime.Length - 4));
-                    session.Time = TimeSpan.FromSeconds(sessionTimeSecs);
-                }
-
-                if (session.Laps < 0 && session.Time == TimeSpan.MinValue)
-                {
+                    // Can't compute fuel without a best lap time.
                     session.FuelNeeded = 0.0;
                     session.StopsNeeded = 0;
-                    continue;
+                    return;
                 }
 
-                TimeSpan minTimeForLaps = TimeSpan.Zero;
-                if (session.Laps > 0 && BestLapTime > TimeSpan.Zero)
+                double lapsEstimate = Math.Ceiling(session.Time.TotalSeconds / BestLapTime.TotalSeconds);
+
+                // Add an extra lap if we would cross the line with more than X% of a lap remaining
+                // It is unknown what is the exact rule used by iRacing. Could be 60% of avg from last 3 race laps.
+                double remainingTimeSecs = session.Time.TotalSeconds % BestLapTime.TotalSeconds;
+                if (remainingTimeSecs > WhiteFlagRuleLapPct * BestLapTime.TotalSeconds)
                 {
-                    minTimeForLaps = TimeSpan.FromSeconds(session.Laps * BestLapTime.TotalSeconds);
+                    lapsEstimate++;
                 }
 
-                if (session.Laps > 0 && (session.Time <= TimeSpan.Zero || minTimeForLaps < session.Time))
+                session.FuelNeeded = ConsumptionPerLapSafe * lapsEstimate;
+            }
+
+            double outLaps = 0;
+            if (session.TypeName.IndexOf("Qual") != -1)
+            {
+                // Add an outlap for qualifying.
+                // At some tracks (e.g. Nurburgring) the outlap is shorter.
+                outLaps = 1 - _trackModule.QualStartTrackPct;
+            }
+            else if (session.TypeName.IndexOf("Race") != -1)
+            {
+                if (!_sessionModule.StandingStart)
                 {
-                    session.LimitedByTime = false;
-                    session.FuelNeeded = ConsumptionPerLap * session.Laps;
-                }
-                else
-                {
-                    session.LimitedByTime = true;
-                    if (BestLapTime <= TimeSpan.Zero)
+                    if (_sessionModule.Oval)
                     {
-                        // Can't compute fuel without a best lap time.
-                        session.FuelNeeded = 0.0;
-                        session.StopsNeeded = 0;
-                        continue;
-                    }
-
-                    double lapsEstimate = Math.Ceiling(session.Time.TotalSeconds / BestLapTime.TotalSeconds);
-
-                    // Add an extra lap if we would cross the line with more than X% of a lap remaining
-                    // It is unknown what is the exact rule used by iRacing. Could be 60% of avg from last 3 race laps.
-                    double remainingTimeSecs = session.Time.TotalSeconds % BestLapTime.TotalSeconds;
-                    if (remainingTimeSecs > WhiteFlagRuleLapPct * BestLapTime.TotalSeconds)
-                    {
-                        lapsEstimate++;
-                    }
-
-                    session.FuelNeeded = ConsumptionPerLap * lapsEstimate;
-                }
-
-                double outLaps = 0;
-                if (session.TypeName.IndexOf("Qual") != -1)
-                {
-                    // Add an outlap for qualifying.
-                    // At some tracks (e.g. Nurburgring) the outlap is shorter.
-                    outLaps = 1 - _trackModule.QualStartTrackPct;
-                }
-                else if (session.TypeName.IndexOf("Race") != -1)
-                {
-                    if (!_sessionModule.StandingStart)
-                    {
-                        if (_sessionModule.Oval)
+                        if (_trackModule.RaceStartTrackPct > 0.0f)
                         {
-                            if (_trackModule.RaceStartTrackPct > 0.0f)
-                            {
-                                outLaps = 1 - _trackModule.RaceStartTrackPct;
-                            }
-                            else if (_sessionModule.ShortParadeLap)
-                            {
-                                outLaps = ShortParadeLapPct;
-                            }
-                            else if (_trackModule.TrackType == "super speedway")
-                            {
-                                outLaps = 1.0;
-                            }
-                            else
-                            {
-                                outLaps = 2.0;
-                            }
+                            outLaps = 1 - _trackModule.RaceStartTrackPct;
+                        }
+                        else if (_sessionModule.ShortParadeLap)
+                        {
+                            outLaps = ShortParadeLapPct;
+                        }
+                        else if (_trackModule.TrackType == "super speedway")
+                        {
+                            outLaps = 1.0;
                         }
                         else
                         {
-                            // Add an outlap for the formation lap on road courses.
-                            // At some tracks (e.g. Nurburgring) the formation lap is shorter.
-                            outLaps = 1 - _trackModule.RaceStartTrackPct;
+                            outLaps = 2.0;
                         }
                     }
-                }
-
-                session.FuelNeeded += ConsumptionPerLap * outLaps;
-
-                if (session.FuelNeeded > 0 && ConsumptionPerLap > 0)
-                {
-                    session.FuelNeeded += Settings.FuelReserveLiters * ConvertFromLiters;
-
-                    if (session.TypeName.IndexOf("Race") != -1)
+                    else
                     {
-                        session.FuelNeeded += ConsumptionPerLap * Settings.ExtraRaceLaps;
+                        // Add an outlap for the formation lap on road courses.
+                        // At some tracks (e.g. Nurburgring) the formation lap is shorter.
+                        outLaps = 1 - _trackModule.RaceStartTrackPct;
                     }
                 }
+            }
 
-                double maxFuelTank = data.NewData.MaxFuel * ConvertFromLiters;
-                double maxFuel = maxFuelTank * _sessionModule.MaxFuelPct;
+            session.FuelNeeded += ConsumptionPerLapSafe * outLaps;
 
-                session.StopsNeeded = (int)Math.Floor(session.FuelNeeded / maxFuel);
-                if (session.StopsNeeded >= 1)
+            if (session.FuelNeeded > 0 && ConsumptionPerLapSafe > 0)
+            {
+                session.FuelNeeded += Settings.FuelReserveLiters * ConvertFromLiters;
+
+                if (session.TypeName.IndexOf("Race") != -1)
                 {
-                    session.FuelNeeded = maxFuel;
+                    session.FuelNeeded += ConsumptionPerLapSafe * Settings.ExtraRaceLaps;
                 }
+            }
+
+            double maxFuelTank = data.NewData.MaxFuel * ConvertFromLiters;
+            double maxFuel = maxFuelTank * _sessionModule.MaxFuelPct;
+
+            session.StopsNeeded = (int)Math.Floor(session.FuelNeeded / maxFuel);
+            if (session.StopsNeeded >= 1)
+            {
+                session.FuelNeeded = maxFuel;
             }
         }
 
