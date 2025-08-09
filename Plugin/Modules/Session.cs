@@ -65,6 +65,7 @@ namespace benofficial2.Plugin
         public bool RaceStarted { get; internal set; } = false;
         public bool RaceFinished { get; internal set; } = false;
         public TimeSpan SessionTimeTotal { get; internal set; } = TimeSpan.Zero;
+        public int SessionLapsTotal { get; internal set; } = 0;
         public double RaceTimer { get; internal set; } = 0;
         public bool JoinedRaceInProgress { get; internal set; } = false;
         public bool Oval { get; internal set; } = false;
@@ -89,6 +90,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Session.Oval", valueProvider: () => Oval);
             plugin.AttachDelegate(name: "Session.StandingStart", valueProvider: () => StandingStart);
             plugin.AttachDelegate(name: "Session.TeamRacing", valueProvider: () => TeamRacing);
+            plugin.AttachDelegate(name: "Session.LapsTotal", valueProvider: () => SessionLapsTotal);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -129,6 +131,9 @@ namespace benofficial2.Plugin
 
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int sessionTimeTotal, "SessionTimeTotal");
                 SessionTimeTotal = TimeSpan.FromSeconds(sessionTimeTotal);
+
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int totalLaps, "SessionLapsTotal");
+                SessionLapsTotal = (totalLaps > 0) && (totalLaps < 20000) ? totalLaps : 0;
 
                 _lastSessionTypeName = data.NewData.SessionTypeName;
             }
