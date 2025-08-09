@@ -681,6 +681,29 @@
                             Evenly distribute fuel across stints
                         </styles:SHToggleCheckbox>
 
+                        <StackPanel Orientation="Horizontal">
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show / hide the Fuel Remaining info in the Fuel Calculator overlay." 
+                                HorizontalAlignment="Left" Margin="0,10,4,4"
+                                IsChecked="{Binding Plugin.Modules[FuelCalcModule].Settings.FuelRemainingInfoVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show Fuel Remaining Info
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show / hide the Pit Stop info in the Fuel Calculator overlay." 
+                                HorizontalAlignment="Left" Margin="0,10,4,4"
+                                IsChecked="{Binding Plugin.Modules[FuelCalcModule].Settings.PitStopInfoVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show Pit Stop Info
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show / hide the Consumption info in the Fuel Calculator overlay." 
+                                HorizontalAlignment="Left" Margin="0,10,4,4"
+                                IsChecked="{Binding Plugin.Modules[FuelCalcModule].Settings.ConsumptionInfoVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show Consumption Info
+                            </styles:SHToggleCheckbox>
+                        </StackPanel>
+
                         <styles:SHToggleCheckbox 
                             ToolTip="Enable a fuel warning before the race when the current setup is under-fueled." 
                             HorizontalAlignment="Left" Margin="0,10,4,4"

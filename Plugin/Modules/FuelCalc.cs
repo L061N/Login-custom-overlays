@@ -35,6 +35,9 @@ namespace benofficial2.Plugin
         public ModuleSettingFloat ExtraRaceLaps { get; set; } = new ModuleSettingFloat(0.0f);
         public ModuleSettingFloat ExtraRaceLapsOval { get; set; } = new ModuleSettingFloat(2.0f);
         public ModuleSettingFloat ExtraConsumption { get; set; } = new ModuleSettingFloat(1.0f);
+        public bool FuelRemainingInfoVisible { get; set; } = true;
+        public bool PitStopInfoVisible { get; set; } = true;
+        public bool ConsumptionInfoVisible { get; set; } = true;
         public bool EnablePreRaceWarning { get; set; } = true;
         public bool EvenFuelStints { get; set; } = false;
 
@@ -114,6 +117,9 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "FuelCalc.ExtraLaps", valueProvider: () => Settings.ExtraRaceLaps.Value);
             plugin.AttachDelegate(name: "FuelCalc.ExtraLapsOval", valueProvider: () => Settings.ExtraRaceLapsOval.Value);
             plugin.AttachDelegate(name: "FuelCalc.ExtraConsumptionPct", valueProvider: () => Settings.ExtraConsumption.Value);
+            plugin.AttachDelegate(name: "FuelCalc.FuelRemainingInfoVisible", valueProvider: () => Settings.FuelRemainingInfoVisible);
+            plugin.AttachDelegate(name: "FuelCalc.PitStopInfoVisible", valueProvider: () => Settings.PitStopInfoVisible);
+            plugin.AttachDelegate(name: "FuelCalc.ConsumptionInfoVisible", valueProvider: () => Settings.ConsumptionInfoVisible);
             plugin.AttachDelegate(name: "FuelCalc.EnablePreRaceWarning", valueProvider: () => Settings.EnablePreRaceWarning);
             plugin.AttachDelegate(name: "FuelCalc.EvenFuelStints", valueProvider: () => Settings.EvenFuelStints);
             plugin.AttachDelegate(name: "FuelCalc.Visible", valueProvider: () => StartFuelCalculatorVisible);
