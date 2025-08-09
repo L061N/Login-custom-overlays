@@ -45,8 +45,8 @@ namespace benofficial2.Plugin
 
     public class ModuleSettingFloat : INotifyPropertyChanged
     {
-        private float _value;
-        private string _valueString;
+        private float _value = 0.0f;
+        private string _valueString = "0";
         private bool _valid = true;
 
         public ModuleSettingFloat(float initialValue = default)
