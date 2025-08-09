@@ -129,6 +129,7 @@ namespace benofficial2.Plugin
         public double SafetyRating { get; set; } = 0.0;
         public int LivePositionInClass { get; set; } = 0;
         public int CurrentLap { get; set; } = 0;
+        public double CurrentLapHighPrecision { get; set; } = 0.0;
         public int TeamIncidentCount { get; set; } = 0;
         public string CarClassColor { get; set; } = string.Empty;
         public string CarClassTextColor { get; set; } = string.Empty;
@@ -425,6 +426,10 @@ namespace benofficial2.Plugin
 
                     driver.LastCurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? -1;
                 }
+                else
+                {
+                    driver.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? -1;
+                }
 
                 // Update the average lap time for the driver
                 int currentLap = opponent.CurrentLap ?? -1;
@@ -461,6 +466,7 @@ namespace benofficial2.Plugin
                     HighlightedDriver.IRating = (int)(opponent.IRacing_IRating ?? 0);
                     (HighlightedDriver.License, HighlightedDriver.SafetyRating) = ParseLicenseString(opponent.LicenceString);
                     HighlightedDriver.CurrentLap = opponent.CurrentLap ?? 0;
+                    HighlightedDriver.CurrentLapHighPrecision = driver.CurrentLapHighPrecision;
                     HighlightedDriver.TeamIncidentCount = driver.TeamIncidentCount;
                     HighlightedDriver.LastLapTime = driver.LastLapTime;
                     HighlightedDriver.BestLapTime = driver.BestLapTime;
