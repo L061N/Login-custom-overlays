@@ -36,6 +36,7 @@ overlays_to_copy = [
     "benofficial2 - iRacing Setup Cover",
     "benofficial2 - iRacing Spotter",
     "benofficial2 - iRacing Fuel Calculator",
+    "benofficial2 - iRacing Fuel Calculator Live",
     "benofficial2 - Twitch Chat",
     "benofficial2 - iRacing Wind",
     "benofficial2 - iRacing Precipitation",

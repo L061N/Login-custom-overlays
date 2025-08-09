@@ -636,25 +636,54 @@
                             </TextBox.Style>
                         </TextBox>
 
-                        <Label Content="Extra Lap(s)" Margin="0,10,0,0"/>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel HorizontalAlignment="Left">
+                                <Label Content="Extra Race Lap(s)" Margin="0,10,0,0"/>
 
-                        <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLaps.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
-                                 ToolTip="How many extra race laps of fuel to add as a safety. Can have decimals or be negative.">
-                            <!-- Style to highlight invalid input -->
-                            <TextBox.Style>
-                                <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLaps.Valid}" Value="False">
-                                            <Setter Property="Background" Value="LightCoral"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                                <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLaps.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                                         ToolTip="How many extra race laps of fuel to add as a safety. Can have decimals or be negative.">
+                                    <!-- Style to highlight invalid input -->
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLaps.Valid}" Value="False">
+                                                    <Setter Property="Background" Value="LightCoral"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </StackPanel>
+
+                            <StackPanel HorizontalAlignment="Left">
+                                <Label Content="Extra Race Lap(s) Oval" Margin="20,10,0,0"/>
+
+                                <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLapsOval.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
+                                            ToolTip="How many extra race laps of fuel to add as a safety on ovals. Can have decimals or be negative." Margin="20,0,0,0">
+                                    <!-- Style to highlight invalid input -->
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLapsOval.Valid}" Value="False">
+                                                    <Setter Property="Background" Value="LightCoral"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Instead of fueling the tank to the max every stop, use even fuel stints." 
+                            HorizontalAlignment="Left" Margin="0,20,4,4"
+                            IsChecked="{Binding Plugin.Modules[FuelCalcModule].Settings.EvenFuelStints, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Evenly distribute fuel across stints
+                        </styles:SHToggleCheckbox>
 
                         <styles:SHToggleCheckbox 
                             ToolTip="Enable a fuel warning before the race when the current setup is under-fueled." 
-                            HorizontalAlignment="Left" Margin="0,20,4,4"
+                            HorizontalAlignment="Left" Margin="0,10,4,4"
                             IsChecked="{Binding Plugin.Modules[FuelCalcModule].Settings.EnablePreRaceWarning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Enable Pre-Race Fuel Warning
                         </styles:SHToggleCheckbox>
