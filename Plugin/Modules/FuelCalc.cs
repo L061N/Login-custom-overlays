@@ -531,7 +531,15 @@ namespace benofficial2.Plugin
                 double fuelLeftAtStop = Math.Max(0.0, Fuel - fuelToNextStop);
 
                 double fuelToFinishAfterNextStop = (lapsToFinishAfterNextStop * ConsumptionPerLapAvg) + fuelReserve;
-                fuelToFinishAfterNextStop += (Settings.ExtraRaceLaps.Value * ConsumptionPerLapAvg);
+
+                if (_sessionModule.Race)
+                {
+                    if (_sessionModule.Oval)
+                        fuelToFinishAfterNextStop += (Settings.ExtraRaceLapsOval.Value * ConsumptionPerLapAvg);
+                    else
+                        fuelToFinishAfterNextStop += (Settings.ExtraRaceLaps.Value * ConsumptionPerLapAvg);
+                }
+
                 double maxFuelTank = data.NewData.MaxFuel * ConvertFromLiters;
                 double maxFuel = maxFuelTank * _sessionModule.MaxFuelPct;
                 PitStopsNeeded = (int)Math.Floor(fuelToFinishAfterNextStop / maxFuel) + 1;
@@ -539,11 +547,11 @@ namespace benofficial2.Plugin
                 if (Settings.EvenFuelStints)
                 {
                     // Don't fill up the tank to the maximum so that each stint is evenly fueled.
-                    RefuelNeeded = Math.Min(fuelToFinishAfterNextStop / PitStopsNeeded, maxFuel);
+                    RefuelNeeded = Math.Min(Math.Max(0.0, (fuelToFinishAfterNextStop / PitStopsNeeded) - fuelLeftAtStop), maxFuel);
                 }
                 else
                 {
-                    RefuelNeeded = Math.Min(fuelToFinishAfterNextStop, maxFuel);
+                    RefuelNeeded = Math.Min(Math.Max(0.0, fuelToFinishAfterNextStop - fuelLeftAtStop), maxFuel);
                 }
 
                 double maxRefuel = maxFuel * PitStopsNeeded;
