@@ -78,6 +78,7 @@ namespace benofficial2.Plugin
         public bool HasFineBrakeBias { get; set; } = false;
         public bool HasBrakeBiasMigration { get; set; } = false;
         public bool HasDryTireCompounds { get; set; } = false;
+        public bool HasRefueling { get; set; } = true;
         public double TotalBrakeBias { get; set; } = 0.0;
         public double TotalPeakBrakeBias { get; set; } = 0.0;
         public override int UpdatePriority => 20;
@@ -121,6 +122,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Car.HasFineBrakeBias", valueProvider: () => HasFineBrakeBias);
             plugin.AttachDelegate(name: "Car.HasBrakeBiasMigration", valueProvider: () => HasBrakeBiasMigration);
             plugin.AttachDelegate(name: "Car.HasDryTireCompounds", valueProvider: () => HasDryTireCompounds);
+            plugin.AttachDelegate(name: "Car.HasRefueling", valueProvider: () => HasRefueling);
             plugin.AttachDelegate(name: "Car.TotalBrakeBias", valueProvider: () => TotalBrakeBias);
             plugin.AttachDelegate(name: "Car.TotalPeakBrakeBias", valueProvider: () => TotalPeakBrakeBias);
         }
@@ -135,6 +137,12 @@ namespace benofficial2.Plugin
                 _lastCarId = data.NewData.CarId;
                 UpdateFromJson(ref data);
                 UpdateTireCompounds(ref data);
+
+                // When the Auto Fill property is null, the car does not support refueling.
+                if (RawDataHelper.TryGetTelemetryData<int>(ref data, out int dpFuelAutoFillEnabled, "dpFuelAutoFillEnabled"))
+                    HasRefueling = true;
+                else
+                    HasRefueling = false;
             }
 
             UpdateBrakeBias(ref data);
