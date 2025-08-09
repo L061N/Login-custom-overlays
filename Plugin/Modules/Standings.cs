@@ -750,13 +750,6 @@ namespace benofficial2.Plugin
                 if (!_sessionModule.RaceStarted)
                     carClass.EstimatedTotalLapsConfirmed = false;
 
-                TimeSpan avgLapTime = carClass.LeaderAvgLapTime > TimeSpan.Zero ? carClass.LeaderAvgLapTime : carClass.BestLapTime;
-                if (avgLapTime <= TimeSpan.Zero || opponentsWithDrivers.Count <= 0)
-                {
-                    carClass.EstimatedTotalLaps = 0;
-                    return;
-                }
-
                 if (carClass.EstimatedTotalLapsConfirmed)
                     return;
 
@@ -775,6 +768,7 @@ namespace benofficial2.Plugin
                 }
 
                 double sessionTimeRemain = Math.Max(0.0, _sessionModule.SessionTimeTotal.TotalSeconds - _sessionModule.RaceTimer);
+                TimeSpan avgLapTime = carClass.LeaderAvgLapTime > TimeSpan.Zero ? carClass.LeaderAvgLapTime : carClass.BestLapTime;
                 carClass.EstimatedTotalLaps = EstimateTotalLaps(leaderCurrentLapHighPrecision, _sessionModule.SessionLapsTotal, sessionTimeRemain, avgLapTime.TotalSeconds);
                 return;
             }
