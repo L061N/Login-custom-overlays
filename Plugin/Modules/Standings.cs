@@ -745,50 +745,65 @@ namespace benofficial2.Plugin
 
         public void UpdateEstimatedTotalLaps(ref GameData data, StandingCarClass carClass, OpponentsWithDrivers opponentsWithDrivers)
         {
-            if (!_sessionModule.Race || !_sessionModule.RaceStarted
-                || opponentsWithDrivers.Count <= 0
-                || carClass.LeaderAvgLapTime <= TimeSpan.Zero)
+            if (_sessionModule.Race)
             {
-                carClass.EstimatedTotalLaps = 0;
-                carClass.EstimatedTotalLapsConfirmed = false;
-                return;
-            }
+                if (!_sessionModule.RaceStarted)
+                    carClass.EstimatedTotalLapsConfirmed = false;
 
-            if (carClass.EstimatedTotalLapsConfirmed)
-                return;
-
-            double leaderCurrentLapHighPrecision = opponentsWithDrivers[0].Item1.CurrentLapHighPrecision ?? 1.0;
-
-            RawDataHelper.TryGetTelemetryData<int>(ref data, out int totalLaps, "SessionLapsTotal");
-
-            double sessionTimeRemain = Math.Max(0.0, _sessionModule.SessionTimeTotal.TotalSeconds - _sessionModule.RaceTimer);
-            bool totalLapsValid = totalLaps > 0 && totalLaps < 20000;
-            if (totalLapsValid)
-            {
-                double lapsRemaining = totalLaps - leaderCurrentLapHighPrecision;
-                TimeSpan minTimeForLaps = TimeSpan.FromSeconds(lapsRemaining * carClass.LeaderAvgLapTime.TotalSeconds);
-                if (minTimeForLaps <= TimeSpan.FromSeconds(sessionTimeRemain))
+                TimeSpan avgLapTime = carClass.LeaderAvgLapTime > TimeSpan.Zero ? carClass.LeaderAvgLapTime : carClass.BestLapTime;
+                if (avgLapTime <= TimeSpan.Zero || opponentsWithDrivers.Count <= 0)
                 {
-                    // Leader has enough time left to complete the remaining laps
                     carClass.EstimatedTotalLaps = 0;
                     return;
                 }
-            }
 
-            // Confirm the total laps when the player gets the white flag.
-            // Because we don't have the data for other cars in the iRacing SDK.
-            // Missing edge cases such as when the player gets lapped on the leader's last lap.
-            // Or when the player tows before starting the last lap. Etc.
-            bool playerStartingLastLap = _driverModule.PlayerHadWhiteFlag && _driverModule.PlayerCurrentLapHighPrecision % 1.0 < 0.50;
-            if (playerStartingLastLap)
-            {
-                carClass.EstimatedTotalLaps = (int)Math.Max(1, Math.Ceiling(leaderCurrentLapHighPrecision));
-                carClass.EstimatedTotalLapsConfirmed = true;
+                if (carClass.EstimatedTotalLapsConfirmed)
+                    return;
+
+                double leaderCurrentLapHighPrecision = opponentsWithDrivers[0].Item1.CurrentLapHighPrecision ?? 1.0;
+
+                // Confirm the total laps when the player gets the white flag.
+                // Because we don't have the data for other cars in the iRacing SDK.
+                // TODO: Missing edge cases such as when the player gets lapped on the leader's last lap.
+                // Or when the player tows before starting the last lap. Etc.
+                bool playerStartingLastLap = _driverModule.PlayerHadWhiteFlag && _driverModule.PlayerCurrentLapHighPrecision % 1.0 < 0.50;
+                if (playerStartingLastLap)
+                {
+                    carClass.EstimatedTotalLaps = (int)Math.Max(1, Math.Ceiling(leaderCurrentLapHighPrecision));
+                    carClass.EstimatedTotalLapsConfirmed = true;
+                    return;
+                }
+
+                double sessionTimeRemain = Math.Max(0.0, _sessionModule.SessionTimeTotal.TotalSeconds - _sessionModule.RaceTimer);
+                carClass.EstimatedTotalLaps = EstimateTotalLaps(leaderCurrentLapHighPrecision, _sessionModule.SessionLapsTotal, sessionTimeRemain, avgLapTime.TotalSeconds);
                 return;
             }
 
-            double estimatedTotalLaps = sessionTimeRemain / carClass.LeaderAvgLapTime.TotalSeconds;
-            estimatedTotalLaps += leaderCurrentLapHighPrecision;
+            carClass.EstimatedTotalLaps = EstimateTotalLaps(_driverModule.PlayerCurrentLapHighPrecision, 
+                _sessionModule.SessionLapsTotal,
+                data.NewData.SessionTimeLeft.TotalSeconds, 
+                _driverModule.PlayerBestLapTime.TotalSeconds);
+        }
+
+        public int EstimateTotalLaps(double currentLapHighPrecision, int sessionTotalLaps, double sessionTimeRemain, double avgLapTime)
+        {
+            // Even if it is a lapped race, check if there's enough time to complete the remaining laps.
+            if (sessionTotalLaps > 0)
+            {
+                double lapsRemaining = Math.Max(0.0, sessionTotalLaps - currentLapHighPrecision);
+                TimeSpan minTimeForLaps = TimeSpan.FromSeconds(lapsRemaining * avgLapTime);
+                if (minTimeForLaps <= TimeSpan.FromSeconds(sessionTimeRemain))
+                {
+                    // We have enough time left to complete the remaining laps.
+                    return sessionTotalLaps;
+                }
+            }
+
+            if (avgLapTime <= 0)
+                return 0;
+
+            double estimatedTotalLaps = Math.Max(0.0, sessionTimeRemain / avgLapTime);
+            estimatedTotalLaps += currentLapHighPrecision;
 
             // Add an extra lap if we would cross the line with more than 65% of a lap time remaining on the timer.
             // It is unknown what is the exact white flag rule used by iRacing. Best guess is 65% of avg time from last 3 laps.
@@ -797,7 +812,7 @@ namespace benofficial2.Plugin
                 estimatedTotalLaps++;
             }
 
-            carClass.EstimatedTotalLaps = (int)Math.Max(1, Math.Ceiling(estimatedTotalLaps));
+            return (int)Math.Max(0, Math.Ceiling(estimatedTotalLaps));
         }
     }
 }
