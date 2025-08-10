@@ -91,6 +91,7 @@ namespace benofficial2.Plugin
         public double ConsumptionLastLap { get; internal set; } = 0.0;
         public double ConsumptionTargetForExtraLap { get; internal set; } = 0.0;
         public double RemainingLaps { get; internal set; } = 0.0;
+        public int EstimatedTotalLaps { get; internal set; } = 0;
         public int PitLap { get; internal set; } = 0;
         public bool PitIndicatorOn { get; internal set; } = false;
         public int PitWindowLap { get; internal set; } = 0;
@@ -131,6 +132,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "FuelCalc.ConsumptionLastLap", valueProvider: () => ConsumptionLastLap);
             plugin.AttachDelegate(name: "FuelCalc.ConsumptionTargetForExtraLap", valueProvider: () => ConsumptionTargetForExtraLap);
             plugin.AttachDelegate(name: "FuelCalc.RemainingLaps", valueProvider: () => RemainingLaps);
+            plugin.AttachDelegate(name: "FuelCalc.EstimatedTotalLaps", valueProvider: () => EstimatedTotalLaps);
             plugin.AttachDelegate(name: "FuelCalc.PitLap", valueProvider: () => PitLap);
             plugin.AttachDelegate(name: "FuelCalc.PitIndicatorOn", valueProvider: () => PitIndicatorOn);
             plugin.AttachDelegate(name: "FuelCalc.PitWindowLap", valueProvider: () => PitWindowLap);
@@ -521,8 +523,8 @@ namespace benofficial2.Plugin
             PitLap = Math.Max(1, (int)Math.Floor(currentLapHighPrecision + RemainingLaps));
             PitIndicatorOn = _carModule.HasRefueling ? currentLapHighPrecision >= (PitLap - 1) : false;
 
-            int estimatedTotalLaps = _standingsModule.CarClasses[_standingsModule.HighlightedCarClassIdx].EstimatedTotalLaps;
-            int lapsToFinishAfterNextStop = Math.Max(0, estimatedTotalLaps - PitLap);
+            EstimatedTotalLaps = _standingsModule.CarClasses[_standingsModule.HighlightedCarClassIdx].EstimatedTotalLaps;
+            int lapsToFinishAfterNextStop = Math.Max(0, EstimatedTotalLaps - PitLap);
             if (lapsToFinishAfterNextStop > 0)
             {
                 ExtraFuelAtFinish = 0.0;
@@ -557,7 +559,7 @@ namespace benofficial2.Plugin
 
                 double maxRefuel = maxFuel * PitStopsNeeded;
                 double maxLapsAfterRefuel = Math.Max(0.0, maxRefuel / ConsumptionPerLapAvg);
-                PitWindowLap = Math.Max(1, estimatedTotalLaps - (int)Math.Floor(maxLapsAfterRefuel));
+                PitWindowLap = Math.Max(1, EstimatedTotalLaps - (int)Math.Floor(maxLapsAfterRefuel));
                 PitWindowIndicatorOn = _carModule.HasRefueling ? currentLapHighPrecision >= (PitWindowLap - 1) : false;
             }
             else
@@ -567,9 +569,9 @@ namespace benofficial2.Plugin
                 PitWindowLap = 0;
                 PitWindowIndicatorOn = false;
 
-                if (estimatedTotalLaps > 0)
+                if (EstimatedTotalLaps > 0)
                 {
-                    double lapsToFinish = Math.Max(0.0, estimatedTotalLaps - currentLapHighPrecision);
+                    double lapsToFinish = Math.Max(0.0, EstimatedTotalLaps - currentLapHighPrecision);
                     double fuelToFinish = lapsToFinish * ConsumptionPerLapAvg;
 
                     ExtraFuelAtFinish = Math.Max(0.0, Fuel - fuelToFinish);
@@ -587,6 +589,7 @@ namespace benofficial2.Plugin
 
         private void BlankFuelCalculations()
         {
+            EstimatedTotalLaps = 0;
             ConsumptionTargetForExtraLap = 0.0;
             RemainingLaps = 0.0;
             PitLap = 0;
