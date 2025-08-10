@@ -567,10 +567,17 @@ namespace benofficial2.Plugin
                 PitWindowLap = 0;
                 PitWindowIndicatorOn = false;
 
-                double lapsToFinish = Math.Max(0.0, estimatedTotalLaps - currentLapHighPrecision);
-                double fuelToFinish = lapsToFinish * ConsumptionPerLapAvg;
+                if (estimatedTotalLaps > 0)
+                {
+                    double lapsToFinish = Math.Max(0.0, estimatedTotalLaps - currentLapHighPrecision);
+                    double fuelToFinish = lapsToFinish * ConsumptionPerLapAvg;
 
-                ExtraFuelAtFinish = Math.Max(0.0, Fuel - fuelToFinish);
+                    ExtraFuelAtFinish = Math.Max(0.0, Fuel - fuelToFinish);
+                }
+                else
+                {
+                    ExtraFuelAtFinish = 0.0;
+                }
             }
 
             // Calculate the consumption target for an extra lap.
