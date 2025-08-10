@@ -583,6 +583,8 @@ namespace benofficial2.Plugin
             RemainingLaps = 0.0;
             PitLap = 0;
             PitIndicatorOn = false;
+            PitWindowLap = 0;
+            PitWindowIndicatorOn = false;
             PitStopsNeeded = 0;
             RefuelNeeded = 0.0;
             ExtraFuelAtFinish = 0.0;
