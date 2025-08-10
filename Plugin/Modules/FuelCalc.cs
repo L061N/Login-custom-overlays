@@ -492,7 +492,8 @@ namespace benofficial2.Plugin
                 if (Settings.EvenFuelStints)
                 {
                     // Don't fill up the tank to the maximum so that each stint is evenly fueled.
-                    session.FuelNeeded = Math.Min(session.FuelNeeded / session.StopsNeeded, maxFuel);
+                    int stints = Math.Max(1, session.StopsNeeded + 1);
+                    session.FuelNeeded = Math.Min(session.FuelNeeded / stints, maxFuel);
                 }
                 else
                 {
