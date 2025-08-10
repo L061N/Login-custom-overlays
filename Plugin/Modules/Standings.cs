@@ -111,6 +111,7 @@ namespace benofficial2.Plugin
         public int Sof { get; set; } = 0;
         public int DriverCount { get; set; } = 0;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
+        public TimeSpan BestQualLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan LeaderLastLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan LeaderAvgLapTime { get; set; } = TimeSpan.Zero;
         public int EstimatedTotalLaps { get; set; } = 0;
@@ -316,6 +317,7 @@ namespace benofficial2.Plugin
                     carClass.Sof = CalculateSof(opponentsWithDrivers);
                     carClass.DriverCount = opponentsWithDrivers.Count;
                     carClass.BestLapTime = FindBestLapTime(opponentsWithDrivers);
+                    carClass.BestQualLapTime = FindBestQualLapTime(opponentsWithDrivers);
 
                     if (opponentsWithDrivers.Count > 0)
                     {
@@ -515,6 +517,7 @@ namespace benofficial2.Plugin
             carClass.Sof = 0;
             carClass.DriverCount = 0;
             carClass.BestLapTime = TimeSpan.Zero;
+            carClass.BestQualLapTime = TimeSpan.Zero;
             carClass.LeaderLastLapTime = TimeSpan.Zero;
             carClass.LeaderAvgLapTime = TimeSpan.Zero;
             carClass.EstimatedTotalLaps = 0;
@@ -705,6 +708,20 @@ namespace benofficial2.Plugin
             return bestLapTime < TimeSpan.MaxValue ? bestLapTime : TimeSpan.Zero;
         }
 
+        public TimeSpan FindBestQualLapTime(OpponentsWithDrivers opponentsWithDrivers)
+        {
+            TimeSpan bestQualLapTime = TimeSpan.MaxValue;
+            for (int opponentIdx = 0; opponentIdx < opponentsWithDrivers.Count; opponentIdx++)
+            {
+                Driver driver = opponentsWithDrivers[opponentIdx].Item2;
+                if (driver.QualLapTime > TimeSpan.Zero && driver.QualLapTime < bestQualLapTime)
+                {
+                    bestQualLapTime = driver.QualLapTime;
+                }
+            }
+            return bestQualLapTime < TimeSpan.MaxValue ? bestQualLapTime : TimeSpan.Zero;
+        }
+
         public int CalculateSof(OpponentsWithDrivers opponentsWithDrivers)
         {
             if (opponentsWithDrivers.Count <= 0) 
@@ -768,7 +785,13 @@ namespace benofficial2.Plugin
                 }
 
                 double sessionTimeRemain = Math.Max(0.0, _sessionModule.SessionTimeTotal.TotalSeconds - _sessionModule.RaceTimer);
-                TimeSpan avgLapTime = carClass.LeaderAvgLapTime > TimeSpan.Zero ? carClass.LeaderAvgLapTime : carClass.BestLapTime;
+                TimeSpan avgLapTime = carClass.LeaderAvgLapTime;
+                if (avgLapTime <= TimeSpan.Zero)
+                    avgLapTime = carClass.BestLapTime;
+
+                if (avgLapTime <= TimeSpan.Zero)
+                    avgLapTime = carClass.BestQualLapTime;
+
                 carClass.EstimatedTotalLaps = EstimateTotalLaps(leaderCurrentLapHighPrecision, _sessionModule.SessionLapsTotal, sessionTimeRemain, avgLapTime.TotalSeconds);
                 return;
             }

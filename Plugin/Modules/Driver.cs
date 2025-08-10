@@ -102,6 +102,7 @@ namespace benofficial2.Plugin
         public DateTime TowingEndTime { get; set; } = DateTime.MinValue;
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
+        public TimeSpan QualLapTime { get; set; } = TimeSpan.Zero;
         public AverageLapTime AvgLapTime { get; set; } = new AverageLapTime(3);
         public int LapsComplete { get; set; } = 0;
         public int JokerLapsComplete { get; set; } = 0;
@@ -540,7 +541,7 @@ namespace benofficial2.Plugin
                     RawDataHelper.TryGetSessionData<double>(ref data, out double fastestTime, "QualifyResultsInfo", "Results", i, "FastestTime");
 
                     driver.QualPositionInClass = positionInClass + 1;
-                    driver.BestLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
+                    driver.QualLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
                 }
 
                 _qualResultsUpdated = true;
@@ -567,7 +568,7 @@ namespace benofficial2.Plugin
                     RawDataHelper.TryGetSessionData<double>(ref data, out double fastestTime, "SessionInfo", "Sessions", currentSessionIdx, "QualifyPositions", i, "FastestTime");
 
                     driver.QualPositionInClass = positionInClass + 1;
-                    driver.BestLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
+                    driver.QualLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
                 }
 
                 _qualResultsUpdated = true;
