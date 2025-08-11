@@ -533,14 +533,15 @@ namespace benofficial2.Plugin
                 double fuelToNextStop = lapsToNextStop * ConsumptionPerLapAvg;
                 double fuelLeftAtStop = Math.Max(0.0, Fuel - fuelToNextStop);
 
-                double fuelToFinishAfterNextStop = (lapsToFinishAfterNextStop * ConsumptionPerLapAvg) + fuelReserve;
+                double consumptionPerLapSafe = ConsumptionPerLapAvg * (1 + Settings.ExtraConsumption / 100.0) * ConvertFromLiters;
+                double fuelToFinishAfterNextStop = (lapsToFinishAfterNextStop * consumptionPerLapSafe) + fuelReserve;
 
                 if (_sessionModule.Race)
                 {
                     if (_sessionModule.Oval)
-                        fuelToFinishAfterNextStop += (Settings.ExtraRaceLapsOval.Value * ConsumptionPerLapAvg);
+                        fuelToFinishAfterNextStop += (Settings.ExtraRaceLapsOval.Value * consumptionPerLapSafe);
                     else
-                        fuelToFinishAfterNextStop += (Settings.ExtraRaceLaps.Value * ConsumptionPerLapAvg);
+                        fuelToFinishAfterNextStop += (Settings.ExtraRaceLaps.Value * consumptionPerLapSafe);
                 }
 
                 double maxFuelTank = data.NewData.MaxFuel * ConvertFromLiters;
@@ -558,7 +559,7 @@ namespace benofficial2.Plugin
                 }
 
                 double maxRefuel = maxFuel * PitStopsNeeded;
-                double maxLapsAfterRefuel = Math.Max(0.0, maxRefuel / ConsumptionPerLapAvg);
+                double maxLapsAfterRefuel = Math.Max(0.0, maxRefuel / consumptionPerLapSafe);
                 PitWindowLap = Math.Max(1, EstimatedTotalLaps - (int)Math.Floor(maxLapsAfterRefuel));
                 PitWindowIndicatorOn = _carModule.HasRefueling ? currentLapHighPrecision >= (PitWindowLap - 1) : false;
             }
