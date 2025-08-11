@@ -51,7 +51,7 @@ namespace benofficial2.Plugin
     {
         public static List<CalculationResult<T>> Calculate<T>(List<RaceResult<T>> raceResults)
         {
-            float br1 = 1600f / (float)Math.Log(2);
+            float br1 = 1350f / (float)Math.Log(2);
 
             int numRegistrations = raceResults.Count;
             int numStarters = raceResults.Count(r => r.Started);

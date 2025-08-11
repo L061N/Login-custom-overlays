@@ -95,6 +95,7 @@ namespace benofficial2.Plugin
         public DateTime InPitBoxSince { get; set; } = DateTime.MinValue;
         public TimeSpan LastPitStopDuration { get; set; } = TimeSpan.Zero;
         public int StintLap { get; set; } = 0;
+        public int PositionInClass { get; set; } = 0;
         public int QualPositionInClass { get; set; } = 0;
         public int LivePositionInClass { get; set; } = 0;
         public double LastCurrentLapHighPrecision { get; set; } = -1;
@@ -109,6 +110,7 @@ namespace benofficial2.Plugin
         public int JokerLapsComplete { get; set; } = 0;
         public int SessionFlags { get; set; } = 0;
         public int TeamIncidentCount { get; set; } = 0;
+        public int IRating { get; set; } = 0;
         public float IRatingChange { get; set; } = 0.0f;
     }
 
@@ -603,6 +605,7 @@ namespace benofficial2.Plugin
                 RawDataHelper.TryGetSessionData<int>(ref data, out int flairId, "DriverInfo", "Drivers", i, "FlairID");
                 RawDataHelper.TryGetSessionData<int>(ref data, out int carClassId, "DriverInfo", "Drivers", i, "CarClassID");
                 RawDataHelper.TryGetSessionData<int>(ref data, out int teamIncidentCount, "DriverInfo", "Drivers", i, "TeamIncidentCount");
+                RawDataHelper.TryGetSessionData<int>(ref data, out int iRating, "DriverInfo", "Drivers", i, "IRating");
 
                 double lastLapTime = 0;
                 try { lastLapTime = Math.Max(0, (double)raw.Telemetry["CarIdxLastLapTime"][carIdx]); } catch { Debug.Assert(false); }
@@ -611,6 +614,7 @@ namespace benofficial2.Plugin
                 try { bestLapTime = Math.Max(0, (double)raw.Telemetry["CarIdxBestLapTime"][carIdx]); } catch { Debug.Assert(false); }
 
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int sessionFlags, "CarIdxSessionFlags", carIdx);
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int classPosition, "CarIdxClassPosition", carIdx);
 
                 if (carIdx >= 0 && carNumber.Length > 0)
                 {
@@ -627,9 +631,11 @@ namespace benofficial2.Plugin
                     driver.FlairId = flairId;
                     driver.CarClassId = carClassId;
                     driver.TeamIncidentCount = teamIncidentCount;
+                    driver.IRating = iRating;
                     driver.LastLapTime = lastLapTime > 0 ? TimeSpan.FromSeconds(lastLapTime) : TimeSpan.Zero;
                     driver.BestLapTime = bestLapTime > 0 ? TimeSpan.FromSeconds(bestLapTime) : TimeSpan.Zero;
                     driver.SessionFlags = sessionFlags;
+                    driver.PositionInClass = classPosition;
                 }
                 else
                 {
@@ -789,19 +795,43 @@ namespace benofficial2.Plugin
             if (!_standingsModule.Settings.IRatingChangeVisible && !_relativeModule.Settings.IRatingChangeVisible)
                 return;
 
-            foreach (var leaderboard in LiveClassLeaderboards)
+            foreach (var group in Drivers.Values.GroupBy(d => d.CarClassId))
             {
+                int carClassId = group.Key;
+                int countInClass = group.Count();
                 var raceResults = new List<RaceResult<Driver>>();
-                foreach (var driverTuple in leaderboard.Drivers)
+
+                // Consider drivers with an official position first. They are considered as started.
+                // TODO: Should DQ drivers be considered as not started?
+                // TODO: How much of the first lap should be completed to be considered started?
+                var withPosition = group.Where(d => d.PositionInClass != 0).ToList();
+                foreach (var driver in withPosition)
                 {
-                    Opponent opponent = driverTuple.Item1;
-                    Driver driver = driverTuple.Item2;
-                    bool started = !_sessionModule.RaceStarted || driver.CurrentLapHighPrecision >= 0 || driver.LapsComplete > 0;
+                    int positionInClass = driver.LivePositionInClass;
+                    if (positionInClass <= 0)
+                    {
+                        // Fallback to the official position if the live position is not available.
+                        positionInClass = driver.PositionInClass;
+                    }
+
                     raceResults.Add(new RaceResult<Driver>(
-                        driver,
-                        (uint)driver.LivePositionInClass,
-                        (uint)(opponent.IRacing_IRating ?? 0),
-                        started));
+                     driver,
+                     (uint)positionInClass,
+                     (uint)driver.IRating,
+                     true));
+                }
+
+                // Then consider drivers without an official position. They are considered as not started.
+                // Assign them a position by sorting them by IRating.
+                var noPosition = group.Where(d => d.PositionInClass == 0).OrderByDescending(d => d.IRating).ToList();
+                int nextPosition = withPosition.Count + 1;
+                foreach (var driver in noPosition)
+                {
+                    raceResults.Add(new RaceResult<Driver>(
+                     driver,
+                     (uint)nextPosition++,
+                     (uint)driver.IRating,
+                     false));
                 }
 
                 var results = IRatingCalculator.Calculate(raceResults);
@@ -815,7 +845,7 @@ namespace benofficial2.Plugin
                         PlayerIRatingChange = result.IRatingChange;
                     }
                 }
-            }            
+            }
         }
 
         private void BlankHighlightedDriver()
