@@ -30,7 +30,7 @@ namespace benofficial2.Plugin
         private const string _downloadPageUrl = "https://github.com/fixfactory/bo2-official-overlays/releases";
 
         public const string CurrentVersion = "3.8";
-        public const string BetaVersion = "2";
+        public const string BetaVersion = "3";
         
         static public bool IsBetaVersion
         {
