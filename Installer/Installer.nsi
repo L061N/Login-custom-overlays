@@ -126,7 +126,7 @@ Section "Spotter" SEC_FOLDER10
   File /r "..\Overlays\benofficial2 - iRacing Spotter\*.*"
 SectionEnd
 
-Section "Fuel Calculator" SEC_FOLDER11
+Section "Setup Fuel Calculator" SEC_FOLDER11
   SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Fuel Calculator"
   File /r "..\Overlays\benofficial2 - iRacing Fuel Calculator\*.*"
 SectionEnd
@@ -154,6 +154,11 @@ SectionEnd
 Section "Highlighted Driver" SEC_FOLDER16
   SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Highlighted Driver"
   File /r "..\Overlays\benofficial2 - iRacing Highlighted Driver\*.*"
+SectionEnd
+
+Section "Fuel Calculator" SEC_FOLDER17
+  SetOutPath "$INSTDIR\DashTemplates\benofficial2 - iRacing Fuel Calculator Live"
+  File /r "..\Overlays\benofficial2 - iRacing Fuel Calculator Live\*.*"
 SectionEnd
 
 Section "Plugin" SEC_PLUGIN
@@ -184,22 +189,23 @@ SectionEnd
 
 ; Components Page Descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER1} "Install iRacing Dash SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER2} "Install iRacing Delta SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER3} "Install iRacing Inputs SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER4} "Install iRacing Relative SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER5} "Install iRacing Standings SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER6} "Install iRacing Track Map SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER7} "Install iRacing Setup Cover SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER8} "Install Twitch Chat SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER9} "Install iRacing Launch Assist SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER10} "Install iRacing Spotter SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER11} "Install iRacing Fuel Calculator SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER12} "Install iRacing Wind SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER13} "Install iRacing Multi-Class Standings SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER14} "Install iRacing Precipitation SimHub overlay"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER15} "Install iRacing Track Wetness SimHub overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER1} "Install iRacing Dash overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER2} "Install iRacing Delta overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER3} "Install iRacing Inputs overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER4} "Install iRacing Relative overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER5} "Install iRacing Standings overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER6} "Install iRacing Track Map overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER7} "Install iRacing Setup Cover overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER8} "Install Twitch Chat overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER9} "Install iRacing Launch Assist overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER10} "Install iRacing Spotter overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER11} "Install iRacing Setup Fuel Calculator overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER12} "Install iRacing Wind overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER13} "Install iRacing Multi-Class Standings overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER14} "Install iRacing Precipitation overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER15} "Install iRacing Track Wetness overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER16} "Install iRacing Highlighted Driver overlay"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC_FOLDER17} "Install iRacing Fuel Calculator overlay"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC_PLUGIN} "Install necessary files such as the plugin, license and uninstaller"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
@@ -221,6 +227,7 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Precipitation"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Track Wetness"
   RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Highlighted Driver"
+  RMDir /r "$INSTDIR\DashTemplates\benofficial2 - iRacing Fuel Calculator Live"
   RMDir /r "$INSTDIR\ImageLibrary\benofficial2"
       
   ; Remove the uninstaller itself
