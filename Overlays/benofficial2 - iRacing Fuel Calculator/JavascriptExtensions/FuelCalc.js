@@ -65,6 +65,12 @@ function getFuelNeeded(sessionIdx)
         return ''
     }
 
+    const fuelNeeded = getFuelCalcSessionProp(sessionIdx, 'FuelNeeded')
+    if (fuelNeeded <= 0)
+    {
+        return '-.-'
+    }
+
     let stops = ''
     const stopsNeeded = getFuelCalcSessionProp(sessionIdx, 'StopsNeeded')
     if (stopsNeeded == 1)
@@ -76,7 +82,6 @@ function getFuelNeeded(sessionIdx)
         stops = '(' + stopsNeeded + ' stops)'
     }
 
-    const fuelNeeded = getFuelCalcSessionProp(sessionIdx, 'FuelNeeded')
     const units = $prop('benofficial2.FuelCalc.Units')
     return fuelNeeded.toFixed(1) + ' ' + units + ' ' + stops
 }
