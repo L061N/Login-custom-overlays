@@ -801,37 +801,52 @@ namespace benofficial2.Plugin
                 int countInClass = group.Count();
                 var raceResults = new List<RaceResult<Driver>>();
 
-                // Consider drivers with an official position first. They are considered as started.
-                // TODO: Should DQ drivers be considered as not started?
-                // TODO: How much of the first lap should be completed to be considered started?
-                var withPosition = group.Where(d => d.PositionInClass != 0).ToList();
-                foreach (var driver in withPosition)
+                if (!_sessionModule.RaceStarted)
                 {
-                    int positionInClass = driver.LivePositionInClass;
-                    if (positionInClass <= 0)
+                    // Consider all drivers as if they finished in their qualifying position.
+                    foreach (var driver in group)
                     {
-                        // Fallback to the official position if the live position is not available.
-                        positionInClass = driver.PositionInClass;
+                        raceResults.Add(new RaceResult<Driver>(
+                         driver,
+                         (uint)driver.QualPositionInClass,
+                         (uint)driver.IRating,
+                         true));
+                    }
+                }
+                else
+                {
+                    // Consider drivers with an official position first. They are considered as started.
+                    // TODO: Should DQ drivers be considered as not started?
+                    // TODO: How much of the first lap should be completed to be considered started?
+                    var withPosition = group.Where(d => d.PositionInClass != 0).ToList();
+                    foreach (var driver in withPosition)
+                    {
+                        int positionInClass = driver.LivePositionInClass;
+                        if (positionInClass <= 0)
+                        {
+                            // Fallback to the official position if the live position is not available.
+                            positionInClass = driver.PositionInClass;
+                        }
+
+                        raceResults.Add(new RaceResult<Driver>(
+                         driver,
+                         (uint)positionInClass,
+                         (uint)driver.IRating,
+                         true));
                     }
 
-                    raceResults.Add(new RaceResult<Driver>(
-                     driver,
-                     (uint)positionInClass,
-                     (uint)driver.IRating,
-                     true));
-                }
-
-                // Then consider drivers without an official position. They are considered as not started.
-                // Assign them a position by sorting them by IRating.
-                var noPosition = group.Where(d => d.PositionInClass == 0).OrderByDescending(d => d.IRating).ToList();
-                int nextPosition = withPosition.Count + 1;
-                foreach (var driver in noPosition)
-                {
-                    raceResults.Add(new RaceResult<Driver>(
-                     driver,
-                     (uint)nextPosition++,
-                     (uint)driver.IRating,
-                     false));
+                    // Then consider drivers without an official position. They are considered as not started.
+                    // Assign them a position by sorting them by IRating.
+                    var noPosition = group.Where(d => d.PositionInClass == 0).OrderByDescending(d => d.IRating).ToList();
+                    int nextPosition = withPosition.Count + 1;
+                    foreach (var driver in noPosition)
+                    {
+                        raceResults.Add(new RaceResult<Driver>(
+                         driver,
+                         (uint)nextPosition++,
+                         (uint)driver.IRating,
+                         false));
+                    }
                 }
 
                 var results = IRatingCalculator.Calculate(raceResults);
