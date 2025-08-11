@@ -31,6 +31,7 @@ namespace benofficial2.Plugin
     public class HighlightedDriverSettings : ModuleSettings
     {
         public bool HideWhenInCar { get; set; } = true;
+        public bool CarBrandVisible { get; set; } = true;
         public int Width { get; set; } = 30;
         public int BackgroundOpacity { get; set; } = 60;
     }
@@ -209,6 +210,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.TeamIncidentCount", valueProvider: () => PlayerTeamIncidentCount);
             plugin.AttachDelegate(name: "Player.iRatingChange", valueProvider: () => PlayerIRatingChange);
             plugin.AttachDelegate(name: "Highlighted.HideWhenInCar", valueProvider: () => HighlightedDriverSettings.HideWhenInCar);
+            plugin.AttachDelegate(name: "Highlighted.CarBrandVisible", valueProvider: () => HighlightedDriverSettings.CarBrandVisible);
             plugin.AttachDelegate(name: "Highlighted.Width", valueProvider: () => HighlightedDriverSettings.Width);
             plugin.AttachDelegate(name: "Highlighted.BackgroundOpacity", valueProvider: () => HighlightedDriverSettings.BackgroundOpacity);
             plugin.AttachDelegate(name: "Highlighted.CarIdx", valueProvider: () => HighlightedDriver.CarIdx);
