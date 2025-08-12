@@ -451,24 +451,24 @@ namespace benofficial2.Plugin
                         }
                         else
                         {
-                            if (row.LastLapTime > TimeSpan.Zero && carClass.BestLapTime > TimeSpan.Zero)
+                            if (row.BestLapTime > TimeSpan.Zero && carClass.BestLapTime > TimeSpan.Zero)
                             {
-                                row.DeltaToClassLeader = row.LastLapTime - carClass.BestLapTime;
+                                row.DeltaToClassLeader = row.BestLapTime - carClass.BestLapTime;
                             }
                             else
                             {
                                 row.DeltaToClassLeader = null;
                             }
 
-                            if (highlightedDriver != null && row.LastLapTime > TimeSpan.Zero && highlightedDriver.BestLapTime > TimeSpan.Zero)
+                            if (highlightedDriver != null && row.BestLapTime > TimeSpan.Zero && highlightedDriver.BestLapTime > TimeSpan.Zero)
                             {
                                 if (Settings.InvertDeltaToPlayer)
                                 {
-                                    row.DeltaToPlayer = highlightedDriver.BestLapTime - row.LastLapTime;
+                                    row.DeltaToPlayer = highlightedDriver.BestLapTime - row.BestLapTime;
                                 }
                                 else
                                 {
-                                    row.DeltaToPlayer = row.LastLapTime - highlightedDriver.BestLapTime;
+                                    row.DeltaToPlayer = row.BestLapTime - highlightedDriver.BestLapTime;
                                 }
                             }
                             else
