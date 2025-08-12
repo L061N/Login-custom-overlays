@@ -79,13 +79,19 @@ namespace benofficial2.Plugin
         // This is the default values for tracks we don't have in the database.
         private const double ShortParadeLapPct = 0.50;
 
+        private const double PoundPerKg = 2.204623;
+        private const double GallonPerLiter = 0.264172;
+
         public FuelCalcSettings Settings { get; set; }
         public bool StartFuelCalculatorVisible { get; internal set; } = true;
         public TimeSpan BestLapTime { get; internal set; } = TimeSpan.Zero;
         public double SetupFuelLevel { get; internal set; } = 0.0;
         public double Fuel { get; internal set; } = 0.0;
+        public double MaxFuel { get; internal set; } = 0.0;
+        public double MaxFuelAllowed { get; internal set; } = 0.0;
         public string Units { get; internal set; } = "L";
         public double ConvertFromLiters { get; internal set; } = 1.0;
+        public double ConvertFromSimHubUnits { get; internal set; } = 1.0;
         public double ConsumptionPerLapSafe { get; internal set; } = 0.0;
         public double ConsumptionPerLapAvg { get; internal set; } = 0.0;
         public double ConsumptionLastLap { get; internal set; } = 0.0;
@@ -114,7 +120,7 @@ namespace benofficial2.Plugin
 
             Settings = plugin.ReadCommonSettings<FuelCalcSettings>("FuelCalcSettings", () => new FuelCalcSettings());
             plugin.AttachDelegate(name: "FuelCalc.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
-            plugin.AttachDelegate(name: "FuelCalc.FuelReserve", valueProvider: () => Settings.FuelReserveLiters.Value);
+            plugin.AttachDelegate(name: "FuelCalc.FuelReserveLiters", valueProvider: () => Settings.FuelReserveLiters.Value);
             plugin.AttachDelegate(name: "FuelCalc.ExtraLaps", valueProvider: () => Settings.ExtraRaceLaps.Value);
             plugin.AttachDelegate(name: "FuelCalc.ExtraLapsOval", valueProvider: () => Settings.ExtraRaceLapsOval.Value);
             plugin.AttachDelegate(name: "FuelCalc.ExtraConsumptionPct", valueProvider: () => Settings.ExtraConsumption.Value);
@@ -127,6 +133,8 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "FuelCalc.BestLapTime", valueProvider: () => BestLapTime);
             plugin.AttachDelegate(name: "FuelCalc.SetupFuelLevel", valueProvider: () => SetupFuelLevel);
             plugin.AttachDelegate(name: "FuelCalc.Fuel", valueProvider: () => Fuel);
+            plugin.AttachDelegate(name: "FuelCalc.MaxFuel", valueProvider: () => MaxFuel);
+            plugin.AttachDelegate(name: "FuelCalc.MaxFuelAllowed", valueProvider: () => MaxFuelAllowed);
             plugin.AttachDelegate(name: "FuelCalc.Units", valueProvider: () => Units);
             plugin.AttachDelegate(name: "FuelCalc.ConsumptionPerLap", valueProvider: () => ConsumptionPerLapSafe);
             plugin.AttachDelegate(name: "FuelCalc.ConsumptionLastLap", valueProvider: () => ConsumptionLastLap);
@@ -180,6 +188,13 @@ namespace benofficial2.Plugin
 
             UpdateSetupFuelLevel(ref data);
             UpdateConsumptionPerLap(pluginManager, ref data);
+
+            RawDataHelper.TryGetTelemetryData<double>(ref data, out double fuelLevel, "FuelLevel");
+            Fuel = fuelLevel * ConvertFromLiters;
+
+            RawDataHelper.TryGetSessionData<double>(ref data, out double driverCarFuelMaxLtr, "DriverInfo", "DriverCarFuelMaxLtr");
+            MaxFuel = driverCarFuelMaxLtr * ConvertFromLiters;
+            MaxFuelAllowed = MaxFuel * _sessionModule.MaxFuelPct;
 
             bool beforeRaceStart = _sessionModule.Race && !_sessionModule.RaceStarted;
             if (StartFuelCalculatorVisible || beforeRaceStart)
@@ -261,29 +276,63 @@ namespace benofficial2.Plugin
 
         private void UpdateSetupFuelLevel(ref GameData data)
         {
-            string fuelLevel = GetSetupFuelLevel(ref data);
+            string fuelLevelStr = GetSetupFuelLevel(ref data);
 
-            if (fuelLevel.IndexOf("L") != -1)
+            RawDataHelper.TryGetSessionData<double>(ref data, out double driverCarFuelKgPerLtr, "DriverInfo", "DriverCarFuelKgPerLtr");
+            if (driverCarFuelKgPerLtr <= 0)
+                driverCarFuelKgPerLtr = 0.7438;
+
+            if (fuelLevelStr.IndexOf("L") != -1)
             {
-                Units = "L";
-                ConvertFromLiters = 1.0;
-                SetupFuelLevel = double.Parse(fuelLevel.Substring(0, fuelLevel.Length - 2), CultureInfo.InvariantCulture);
+                double fuelLevelLiters = double.Parse(fuelLevelStr.Substring(0, fuelLevelStr.Length - 2), CultureInfo.InvariantCulture);
+                if (data.NewData.FuelUnit == "Liters")
+                {
+                    Units = "L";
+                    ConvertFromLiters = 1.0;
+                    ConvertFromSimHubUnits = 1.0;
+                    SetupFuelLevel = fuelLevelLiters;
+                }
+                else
+                {
+                    Units = "gal";
+                    ConvertFromLiters = GallonPerLiter;
+                    ConvertFromSimHubUnits = 1.0;
+                    SetupFuelLevel = fuelLevelLiters * GallonPerLiter;
+                }
             }
-            else if (fuelLevel.IndexOf("Kg") != -1)
+            else if (fuelLevelStr.IndexOf("Kg") != -1)
             {
-                Units = "Kg";
-
-                double driverCarFuelKgPerLtr;
-                RawDataHelper.TryGetSessionData<double>(ref data, out driverCarFuelKgPerLtr, "DriverInfo", "DriverCarFuelKgPerLtr");
-                
-                ConvertFromLiters = driverCarFuelKgPerLtr > 0 ? driverCarFuelKgPerLtr : 0.7438;
-                SetupFuelLevel = double.Parse(fuelLevel.Substring(0, fuelLevel.Length - 3), CultureInfo.InvariantCulture);
+                double fuelLevelKg = double.Parse(fuelLevelStr.Substring(0, fuelLevelStr.Length - 3), CultureInfo.InvariantCulture);
+           
+                if (data.NewData.FuelUnit == "Liters")
+                {
+                    Units = "Kg";
+                    ConvertFromLiters = driverCarFuelKgPerLtr;
+                    ConvertFromSimHubUnits = driverCarFuelKgPerLtr;
+                    SetupFuelLevel = fuelLevelKg;
+                }
+                else
+                {
+                    Units = "lb";
+                    ConvertFromLiters = PoundPerKg * driverCarFuelKgPerLtr;
+                    ConvertFromSimHubUnits = (1 / GallonPerLiter) * ConvertFromLiters;
+                    SetupFuelLevel = fuelLevelKg * PoundPerKg;
+                }
             }
             else
             {
-                Units = "L";
-                ConvertFromLiters = 1.0;
                 SetupFuelLevel = 0.0;
+
+                if (data.NewData.FuelUnit == "Liters")
+                {
+                    Units = "L";
+                    ConvertFromLiters = 1.0;
+                }
+                else
+                {
+                    Units = "gal";
+                    ConvertFromLiters = GallonPerLiter;
+                }
             }
         }
 
@@ -324,15 +373,16 @@ namespace benofficial2.Plugin
         private void UpdateConsumptionPerLap(PluginManager pluginManager, ref GameData data)
         {
             var dataCorePlugin = pluginManager.GetPlugin<DataCorePlugin>();
-            double fuelLitersPerLap = dataCorePlugin.properties.Computed_Fuel_LitersPerLap.Value;
-            double fuelLitersLastLap = dataCorePlugin.properties.Computed_Fuel_LastLapConsumption.Value;
-                        
-            ConsumptionLastLap = fuelLitersLastLap * ConvertFromLiters;
+            double fuelPerLap = dataCorePlugin.properties.Computed_Fuel_LitersPerLap.Value;
+            double fuelLastLap = dataCorePlugin.properties.Computed_Fuel_LastLapConsumption.Value;
 
-            if (fuelLitersPerLap > 0)
+            // Even though the property is called "LitersPerLap", consumption will be in gallons when SimHub is set to gallons.
+            ConsumptionLastLap = fuelLastLap * ConvertFromSimHubUnits;
+
+            if (fuelPerLap > 0)
             {
-                ConsumptionPerLapAvg = fuelLitersPerLap * ConvertFromLiters;
-                ConsumptionPerLapSafe = fuelLitersPerLap * (1 + Settings.ExtraConsumption / 100.0) * ConvertFromLiters;
+                ConsumptionPerLapAvg = fuelPerLap * ConvertFromSimHubUnits;
+                ConsumptionPerLapSafe = ConsumptionPerLapAvg * (1 + Settings.ExtraConsumption / 100.0);
             }
         }
 
@@ -485,29 +535,24 @@ namespace benofficial2.Plugin
                 }
             }
 
-            double maxFuelTank = data.NewData.MaxFuel * ConvertFromLiters;
-            double maxFuel = maxFuelTank * _sessionModule.MaxFuelPct;
-
-            session.StopsNeeded = (int)Math.Floor(session.FuelNeeded / maxFuel);
+            session.StopsNeeded = (int)Math.Floor(session.FuelNeeded / MaxFuelAllowed);
             if (session.StopsNeeded >= 1)
             {
                 if (Settings.EvenFuelStints)
                 {
                     // Don't fill up the tank to the maximum so that each stint is evenly fueled.
                     int stints = Math.Max(1, session.StopsNeeded + 1);
-                    session.FuelNeeded = Math.Min(session.FuelNeeded / stints, maxFuel);
+                    session.FuelNeeded = Math.Min(session.FuelNeeded / stints, MaxFuelAllowed);
                 }
                 else
                 {
-                    session.FuelNeeded = maxFuel;
+                    session.FuelNeeded = MaxFuelAllowed;
                 }
             }
         }
 
         private void UpdateFuelCalculations(ref GameData data)
         {
-            Fuel = data.NewData.Fuel * ConvertFromLiters;
-
             if (ConsumptionPerLapAvg <= 0.0 || _standingsModule.HighlightedCarClassIdx < 0 || _standingsModule.HighlightedCarClassIdx >= StandingsModule.MaxCarClasses)
             {
                 BlankFuelCalculations();
@@ -521,7 +566,7 @@ namespace benofficial2.Plugin
             // Determine the lap when we run out of fuel, and pit the lap before that.
             double currentLapHighPrecision = _driverModule.HighlightedDriver.CurrentLapHighPrecision;
             PitLap = Math.Max(1, (int)Math.Floor(currentLapHighPrecision + RemainingLaps));
-            PitIndicatorOn = _carModule.HasRefueling ? currentLapHighPrecision >= (PitLap - 1) : false;
+            PitIndicatorOn = currentLapHighPrecision >= (PitLap - 1);
 
             EstimatedTotalLaps = _standingsModule.CarClasses[_standingsModule.HighlightedCarClassIdx].EstimatedTotalLaps;
             int lapsToFinishAfterNextStop = Math.Max(0, EstimatedTotalLaps - PitLap);
@@ -532,36 +577,32 @@ namespace benofficial2.Plugin
                 double lapsToNextStop = Math.Max(0.0, PitLap - currentLapHighPrecision);
                 double fuelToNextStop = lapsToNextStop * ConsumptionPerLapAvg;
                 double fuelLeftAtStop = Math.Max(0.0, Fuel - fuelToNextStop);
-
-                double consumptionPerLapSafe = ConsumptionPerLapAvg * (1 + Settings.ExtraConsumption / 100.0) * ConvertFromLiters;
-                double fuelToFinishAfterNextStop = (lapsToFinishAfterNextStop * consumptionPerLapSafe) + fuelReserve;
+                double fuelToFinishAfterNextStop = (lapsToFinishAfterNextStop * ConsumptionPerLapSafe) + fuelReserve;
 
                 if (_sessionModule.Race)
                 {
                     if (_sessionModule.Oval)
-                        fuelToFinishAfterNextStop += (Settings.ExtraRaceLapsOval.Value * consumptionPerLapSafe);
+                        fuelToFinishAfterNextStop += (Settings.ExtraRaceLapsOval.Value * ConsumptionPerLapSafe);
                     else
-                        fuelToFinishAfterNextStop += (Settings.ExtraRaceLaps.Value * consumptionPerLapSafe);
+                        fuelToFinishAfterNextStop += (Settings.ExtraRaceLaps.Value * ConsumptionPerLapSafe);
                 }
 
-                double maxFuelTank = data.NewData.MaxFuel * ConvertFromLiters;
-                double maxFuel = maxFuelTank * _sessionModule.MaxFuelPct;
-                PitStopsNeeded = (int)Math.Floor(fuelToFinishAfterNextStop / maxFuel) + 1;
+                PitStopsNeeded = (int)Math.Floor(fuelToFinishAfterNextStop / MaxFuelAllowed) + 1;
 
                 if (Settings.EvenFuelStints)
                 {
                     // Don't fill up the tank to the maximum so that each stint is evenly fueled.
-                    RefuelNeeded = Math.Min(Math.Max(0.0, (fuelToFinishAfterNextStop / PitStopsNeeded) - fuelLeftAtStop), maxFuel);
+                    RefuelNeeded = Math.Min(MaxFuelAllowed, Math.Max(0.0, (fuelToFinishAfterNextStop / PitStopsNeeded) - fuelLeftAtStop));
                 }
                 else
                 {
-                    RefuelNeeded = Math.Min(Math.Max(0.0, fuelToFinishAfterNextStop - fuelLeftAtStop), maxFuel);
+                    RefuelNeeded = Math.Min(MaxFuelAllowed, Math.Max(0.0, fuelToFinishAfterNextStop - fuelLeftAtStop));
                 }
 
-                double maxRefuel = maxFuel * PitStopsNeeded;
-                double maxLapsAfterRefuel = Math.Max(0.0, maxRefuel / consumptionPerLapSafe);
+                double maxRefuel = MaxFuelAllowed * PitStopsNeeded;
+                double maxLapsAfterRefuel = Math.Max(0.0, maxRefuel / ConsumptionPerLapSafe);
                 PitWindowLap = Math.Max(1, EstimatedTotalLaps - (int)Math.Floor(maxLapsAfterRefuel));
-                PitWindowIndicatorOn = _carModule.HasRefueling ? currentLapHighPrecision >= (PitWindowLap - 1) : false;
+                PitWindowIndicatorOn = currentLapHighPrecision >= (PitWindowLap - 1);
             }
             else
             {
