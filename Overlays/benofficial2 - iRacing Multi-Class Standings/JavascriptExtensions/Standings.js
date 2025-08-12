@@ -92,7 +92,7 @@ function getLicenseColor(classIdx, rowIdx)
     {
         return '#E1251B'
     }
-    return 'Black'
+    return '#808085'
 }
 
 function getLicenseTextColor(classIdx, rowIdx)
@@ -118,7 +118,7 @@ function getLicenseTextColor(classIdx, rowIdx)
     {
         return '#ED7C66'
     }
-    return 'White'
+    return '#AEAEB0'
 }
 
 function getLicenseBackColor(classIdx, rowIdx)
@@ -144,7 +144,7 @@ function getLicenseBackColor(classIdx, rowIdx)
     {
         return '#5D1214'
     }
-    return 'Black'
+    return '#37373F'
 }
 
 function getClassColor(classIdx)

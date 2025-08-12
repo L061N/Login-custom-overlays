@@ -236,7 +236,7 @@ function getRelativeLicenseColor(index)
     {
         return '#E1251B'
     }
-    return 'Black'
+    return '#808085'
 }
 
 function getRelativeLicenseTextColor(index)
@@ -262,7 +262,7 @@ function getRelativeLicenseTextColor(index)
     {
         return '#ED7C66'
     }
-    return 'White'
+    return '#AEAEB0'
 }
 
 function getRelativeLicenseBackColor(index)
@@ -288,7 +288,7 @@ function getRelativeLicenseBackColor(index)
     {
         return '#5D1214'
     }
-    return 'Black'
+    return '#37373F'
 }
 
 function getRelativeGapToPlayer(index)
