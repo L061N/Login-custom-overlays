@@ -770,7 +770,7 @@ namespace benofficial2.Plugin
                 if (carClass.EstimatedTotalLapsConfirmed)
                     return;
 
-                double leaderCurrentLapHighPrecision = opponentsWithDrivers[0].Item1.CurrentLapHighPrecision ?? 1.0;
+                double leaderCurrentLapHighPrecision = opponentsWithDrivers.Count > 0 ? opponentsWithDrivers[0].Item1.CurrentLapHighPrecision ?? 1.0 : 0.0;
 
                 // Confirm the total laps when the player gets the white flag.
                 // Because we don't have the data for other cars in the iRacing SDK.
