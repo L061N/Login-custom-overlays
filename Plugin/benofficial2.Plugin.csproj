@@ -103,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="benofficial2.cs" />
+    <Compile Include="BroadcastMessage.cs" />
     <Compile Include="IRatingCalculator.cs" />
     <Compile Include="ModuleSetting.cs" />
     <Compile Include="Modules\BlindSpotMonitor.cs" />

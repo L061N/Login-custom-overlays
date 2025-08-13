@@ -25,6 +25,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime;
+using static benofficial2.Plugin.BroadcastMessage;
 
 namespace benofficial2.Plugin
 {
@@ -40,6 +41,7 @@ namespace benofficial2.Plugin
         public bool ConsumptionInfoVisible { get; set; } = true;
         public bool EnablePreRaceWarning { get; set; } = true;
         public bool EvenFuelStints { get; set; } = false;
+        public bool AutoFuelEnabled { get; set; } = false;
 
         // Legacy properties for backwards compatibility (saved pre 3.0)
         public string FuelReserveString { get => FuelReserveLiters.ValueString; set => FuelReserveLiters.ValueString = value; }
@@ -70,6 +72,7 @@ namespace benofficial2.Plugin
         private TimeSpan _updateInterval = TimeSpan.FromMilliseconds(1000);
 
         private string _lastCarTrackCombo = string.Empty;
+        private bool _lastIsInPitLane = false;
 
         // Maximum amount of time remaining (in percentage of best lap) for the white flag to be shown.
         // It is unknown what is the exact rule used by iRacing. Could be 60% of avg from last 3 race laps.
@@ -129,6 +132,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "FuelCalc.ConsumptionInfoVisible", valueProvider: () => Settings.ConsumptionInfoVisible);
             plugin.AttachDelegate(name: "FuelCalc.EnablePreRaceWarning", valueProvider: () => Settings.EnablePreRaceWarning);
             plugin.AttachDelegate(name: "FuelCalc.EvenFuelStints", valueProvider: () => Settings.EvenFuelStints);
+            plugin.AttachDelegate(name: "FuelCalc.AutoFuelEnabled", valueProvider: () => Settings.AutoFuelEnabled);
             plugin.AttachDelegate(name: "FuelCalc.Visible", valueProvider: () => StartFuelCalculatorVisible);
             plugin.AttachDelegate(name: "FuelCalc.BestLapTime", valueProvider: () => BestLapTime);
             plugin.AttachDelegate(name: "FuelCalc.SetupFuelLevel", valueProvider: () => SetupFuelLevel);
@@ -204,6 +208,7 @@ namespace benofficial2.Plugin
             }
 
             UpdateFuelCalculations(ref data);
+            UpdateAutoFuel(ref data);
         }
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)
@@ -686,6 +691,33 @@ namespace benofficial2.Plugin
             }
 
             WarningVisible = true;
+        }
+
+        private void UpdateAutoFuel(ref GameData data)
+        {
+            if (!Settings.AutoFuelEnabled)
+                return;
+
+            // Set the fuel to add when entering the pit lane.
+            if (data.NewData.IsInPitLane > 0 && !_lastIsInPitLane)
+            {
+                int amountLiters = (int)Math.Ceiling(RefuelNeeded / ConvertFromLiters);
+
+                // TODO: Is there a way to clear the fuel to add in iRacing?
+                // Sending 0 doesn't set the fuel to add to 0, it just sends "#fuel" which checks the Begin Fueling box.
+                // The workaround is to leave Auto Fuel on in iRacing (which is the default).
+                if (amountLiters > 0)
+                {
+                    SendAddFuel(amountLiters);
+                }
+            }
+
+            _lastIsInPitLane = data.NewData.IsInPitLane > 0;
+        }
+
+        public void SendAddFuel(int amountLiters)
+        {
+            BroadcastMessage.Broadcast(BroadcastMessageTypes.PitCommand, (int)PitCommandModeTypes.Fuel, amountLiters, 0);
         }
     }
 }

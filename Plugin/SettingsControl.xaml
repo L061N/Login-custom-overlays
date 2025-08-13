@@ -605,6 +605,13 @@
 
                 <styles:SHSection Title="FUEL CALCULATOR OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
+                        <styles:SHToggleCheckbox 
+                            ToolTip="When entering the pit, automatically set the fuel to add to the calculated amount needed." 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[FuelCalcModule].Settings.AutoFuelEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Automatically set fuel to add on pit entry
+                        </styles:SHToggleCheckbox>
+                        
                         <Label Content="Fuel Reserve (liters)"/>
 
                         <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.FuelReserveLiters.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
