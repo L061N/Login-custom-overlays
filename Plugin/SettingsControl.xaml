@@ -400,6 +400,7 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Line Thickness (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TrackMapModule].Settings.LineThickness, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Track line thickness on the map" />
                             <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TrackMapModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </StackPanel>

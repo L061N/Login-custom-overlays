@@ -27,6 +27,7 @@ namespace benofficial2.Plugin
         public bool HideInReplay { get; set; } = true;
         public int DotRadius { get; set; } = 20;
         public int FontSize { get; set; } = 20;
+        public int LineThickness { get; set; } = 0;
         public int BackgroundOpacity { get; set; } = 0;
     }
 
@@ -40,6 +41,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "TrackMap.HideInReplay", valueProvider: () => Settings.HideInReplay);
             plugin.AttachDelegate(name: "TrackMap.DotRadius", valueProvider: () => Settings.DotRadius);
             plugin.AttachDelegate(name: "TrackMap.FontSize", valueProvider: () => Settings.FontSize);
+            plugin.AttachDelegate(name: "TrackMap.LineThickness", valueProvider: () => Settings.LineThickness);
             plugin.AttachDelegate(name: "TrackMap.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
         }
 
