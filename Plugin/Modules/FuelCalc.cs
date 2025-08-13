@@ -702,13 +702,13 @@ namespace benofficial2.Plugin
             if (data.NewData.IsInPitLane > 0 && !_lastIsInPitLane)
             {
                 int amountLiters = (int)Math.Ceiling(RefuelNeeded / ConvertFromLiters);
-
-                // TODO: Is there a way to clear the fuel to add in iRacing?
-                // Sending 0 doesn't set the fuel to add to 0, it just sends "#fuel" which checks the Begin Fueling box.
-                // The workaround is to leave Auto Fuel on in iRacing (which is the default).
                 if (amountLiters > 0)
                 {
                     SendAddFuel(amountLiters);
+                }
+                else
+                {
+                    SendClearFuel();
                 }
             }
 
@@ -718,6 +718,11 @@ namespace benofficial2.Plugin
         public void SendAddFuel(int amountLiters)
         {
             BroadcastMessage.Broadcast(BroadcastMessageTypes.PitCommand, (int)PitCommandModeTypes.Fuel, amountLiters, 0);
+        }
+
+        public void SendClearFuel()
+        {
+            BroadcastMessage.Broadcast(BroadcastMessageTypes.PitCommand, (int)PitCommandModeTypes.ClearFuel, 0, 0);
         }
     }
 }

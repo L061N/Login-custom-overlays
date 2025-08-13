@@ -28,19 +28,7 @@ namespace benofficial2.Plugin
     internal class BroadcastMessage
     {
         public enum BroadcastMessageTypes { CamSwitchPos = 0, CamSwitchNum, CamSetState, ReplaySetPlaySpeed, ReplaySetPlayPosition, ReplaySearch, ReplaySetState, ReloadTextures, ChatCommand, PitCommand, TelemCommand };
-
-        public enum PitCommandModeTypes
-        {
-            Clear = 0,
-            WS = 1,
-            Fuel = 2,
-            LF = 3,
-            RF = 4,
-            LR = 5,
-            RR = 6,
-            ClearTires = 7,
-            FastRepair = 8
-        };
+        public enum PitCommandModeTypes { Clear = 0, WS, Fuel, LF, RF, LR, RR, ClearTires, FastRepair, ClearWS, ClearFR, ClearFuel, TC };
 
         public class Defines
         {
