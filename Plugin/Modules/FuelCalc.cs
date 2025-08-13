@@ -32,9 +32,9 @@ namespace benofficial2.Plugin
     public class FuelCalcSettings : ModuleSettings
     {
         public int BackgroundOpacity { get; set; } = 60;
-        public ModuleSettingFloat FuelReserveLiters { get; set; } = new ModuleSettingFloat(0.4f);
+        public ModuleSettingFloat FuelReserveLiters { get; set; } = new ModuleSettingFloat(0.5f);
         public ModuleSettingFloat ExtraRaceLaps { get; set; } = new ModuleSettingFloat(0.0f);
-        public ModuleSettingFloat ExtraRaceLapsOval { get; set; } = new ModuleSettingFloat(2.0f);
+        public ModuleSettingFloat ExtraRaceLapsOval { get; set; } = new ModuleSettingFloat(3.0f);
         public ModuleSettingFloat ExtraConsumption { get; set; } = new ModuleSettingFloat(1.0f);
         public bool FuelRemainingInfoVisible { get; set; } = true;
         public bool PitStopInfoVisible { get; set; } = true;
