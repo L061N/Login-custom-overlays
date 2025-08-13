@@ -592,11 +592,11 @@ namespace benofficial2.Plugin
                 if (Settings.EvenFuelStints)
                 {
                     // Don't fill up the tank to the maximum so that each stint is evenly fueled.
-                    RefuelNeeded = Math.Min(MaxFuelAllowed, Math.Max(0.0, (fuelToFinishAfterNextStop / PitStopsNeeded) - fuelLeftAtStop));
+                    RefuelNeeded = Math.Max(0.0, Math.Min(MaxFuelAllowed, (fuelToFinishAfterNextStop / PitStopsNeeded)) - fuelLeftAtStop);
                 }
                 else
                 {
-                    RefuelNeeded = Math.Min(MaxFuelAllowed, Math.Max(0.0, fuelToFinishAfterNextStop - fuelLeftAtStop));
+                    RefuelNeeded = Math.Max(0.0, Math.Min(MaxFuelAllowed, fuelToFinishAfterNextStop) - fuelLeftAtStop);
                 }
 
                 double maxRefuel = MaxFuelAllowed * PitStopsNeeded;
