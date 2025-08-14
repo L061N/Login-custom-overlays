@@ -21,6 +21,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace benofficial2.Plugin
 {
@@ -51,7 +53,7 @@ namespace benofficial2.Plugin
     {
         public static List<CalculationResult<T>> Calculate<T>(List<RaceResult<T>> raceResults)
         {
-            float br1 = 1350f / (float)Math.Log(2);
+            float br1 = 1600f / (float)Math.Log(2);
 
             int numRegistrations = raceResults.Count;
             int numStarters = raceResults.Count(r => r.Started);
@@ -105,12 +107,71 @@ namespace benofficial2.Plugin
 
         private static float Chance(float a, float b, float factor)
         {
-            if (a <= 0 || b <= 0) 
+            if (a <= 0 || b <= 0)
                 return 0.5f;
 
             float expA = (float)Math.Exp(-a / factor);
             float expB = (float)Math.Exp(-b / factor);
             return (1 - expA) * expB / ((1 - expB) * expA + (1 - expA) * expB);
+        }
+
+        public static List<RaceResult<string>> LoadRaceResults(string filePath)
+        {
+            var results = new List<RaceResult<string>>();
+
+            // Load the JSON file into a JObject
+            var json = JObject.Parse(File.ReadAllText(filePath));
+
+            var sessionResults = json["data"]?["session_results"] as JArray;
+            if (sessionResults == null)
+                return results;
+
+            foreach (var session in sessionResults)
+            {
+                // Only race sessions (simsession_type == 6)
+                if ((int?)session["simsession_type"] != 6)
+                    continue;
+
+                var drivers = session["results"] as JArray;
+                if (drivers == null)
+                    continue;
+
+                foreach (var driver in drivers)
+                {
+                    string name = (string)driver["display_name"];
+                    uint oldIRating = (uint)driver["oldi_rating"];
+                    uint finishPosClass = (uint)driver["finish_position_in_class"];
+                    uint lapsComplete = (uint)driver["laps_complete"];
+
+                    bool started = lapsComplete > 0;
+
+                    results.Add(new RaceResult<string>(
+                        name,
+                        finishPosClass + 1,
+                        oldIRating,
+                        started
+                    ));
+                }
+            }
+
+            return results;
+        }
+
+        public static void Test(string raceResultsJsonFile)
+        {
+            var raceResults = LoadRaceResults(raceResultsJsonFile);
+            SimHub.Logging.Current.Info("Race Results:");
+            foreach (var result in raceResults)
+            {
+                SimHub.Logging.Current.Info($"{result.Driver} | Start iRating: {result.StartIRating} | Finish Rank: {result.FinishRank} | Started: {result.Started}");
+            }
+
+            var results = IRatingCalculator.Calculate(raceResults);
+            SimHub.Logging.Current.Info("Calculation Results:");
+            foreach (var result in results)
+            {
+                SimHub.Logging.Current.Info($"{result.RaceResult.Driver} | Start iRating: {result.RaceResult.StartIRating} | Finish Rank: {result.RaceResult.FinishRank} | Started: {result.RaceResult.Started} | IRating Change: {result.IRatingChange} | New iRating: {result.NewIRating}");
+            }
         }
     }
 }
