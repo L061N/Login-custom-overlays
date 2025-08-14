@@ -699,7 +699,7 @@ namespace benofficial2.Plugin
                 return;
 
             // Set the fuel to add when entering the pit lane.
-            if (data.NewData.IsInPitLane > 0 && !_lastIsInPitLane)
+            if (data.NewData.IsInPitLane > 0 && !_lastIsInPitLane && data.NewData.SpeedLocal > 0)
             {
                 int amountLiters = (int)Math.Ceiling(RefuelNeeded / ConvertFromLiters);
                 if (amountLiters > 0)
