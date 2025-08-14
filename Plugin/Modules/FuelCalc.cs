@@ -73,6 +73,7 @@ namespace benofficial2.Plugin
 
         private string _lastCarTrackCombo = string.Empty;
         private bool _lastIsInPitLane = false;
+        private bool _lastIsTowing = false;
 
         // Maximum amount of time remaining (in percentage of best lap) for the white flag to be shown.
         // It is unknown what is the exact rule used by iRacing. Could be 60% of avg from last 3 race laps.
@@ -698,8 +699,14 @@ namespace benofficial2.Plugin
             if (!Settings.AutoFuelEnabled)
                 return;
 
-            // Set the fuel to add when entering the pit lane.
-            if (data.NewData.IsInPitLane > 0 && !_lastIsInPitLane && data.NewData.SpeedLocal > 0)
+            Driver playerDriver = _driverModule.GetPlayerDriver();
+            if (playerDriver == null)
+                return;
+
+            bool enteringPitLane = data.NewData.IsInPitLane > 0 && !_lastIsInPitLane && data.NewData.SpeedKmh > 1;
+            bool startedTowing = playerDriver.Towing && !_lastIsTowing;
+
+            if (enteringPitLane || startedTowing)
             {
                 int amountLiters = (int)Math.Ceiling(RefuelNeeded / ConvertFromLiters);
                 if (amountLiters > 0)
@@ -713,6 +720,7 @@ namespace benofficial2.Plugin
             }
 
             _lastIsInPitLane = data.NewData.IsInPitLane > 0;
+            _lastIsTowing = playerDriver.Towing;
         }
 
         public void SendAddFuel(int amountLiters)

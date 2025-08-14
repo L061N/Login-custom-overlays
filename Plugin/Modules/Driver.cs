@@ -883,5 +883,11 @@ namespace benofficial2.Plugin
             HighlightedDriver.LastLapTime = TimeSpan.Zero;
             HighlightedDriver.BestLapTime = TimeSpan.Zero;
         }
+
+        public Driver GetPlayerDriver()
+        {
+            DriversByCarIdx.TryGetValue(PlayerCarIdx, out Driver driver);
+            return driver;
+        }
     }
 }
