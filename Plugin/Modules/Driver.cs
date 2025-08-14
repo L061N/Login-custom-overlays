@@ -111,7 +111,7 @@ namespace benofficial2.Plugin
         public int SessionFlags { get; set; } = 0;
         public int TeamIncidentCount { get; set; } = 0;
         public int IRating { get; set; } = 0;
-        public float IRatingChange { get; set; } = 0.0f;
+        public int IRatingChange { get; set; } = 0;
     }
 
     public class ClassLeaderboard
@@ -181,7 +181,7 @@ namespace benofficial2.Plugin
         public double PlayerCurrentLapHighPrecision { get; set; } = -1;
         public int PlayerCurrentLap { get; set; } = 0;
         public int PlayerTeamIncidentCount { get; set; } = 0;
-        public float PlayerIRatingChange { get; set; } = 0.0f;
+        public int PlayerIRatingChange { get; set; } = 0;
 
         public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
 
@@ -263,7 +263,7 @@ namespace benofficial2.Plugin
                 PlayerBestLapTime = TimeSpan.Zero;
                 PlayerCurrentLap = 0;
                 PlayerTeamIncidentCount = 0;
-                PlayerIRatingChange = 0.0f;
+                PlayerIRatingChange = 0;
                 BlankHighlightedDriver();
                 _qualResultsUpdated = false;
             }
@@ -853,11 +853,12 @@ namespace benofficial2.Plugin
                 for (int i = 0; i < results.Count; i++)
                 {
                     var result = results[i];
-                    result.RaceResult.Driver.IRatingChange = result.IRatingChange;
+                    int change = (int)result.NewIRating - (int)result.RaceResult.StartIRating;
+                    result.RaceResult.Driver.IRatingChange = change;
 
                     if (result.RaceResult.Driver.CarIdx == PlayerCarIdx)
                     {
-                        PlayerIRatingChange = result.IRatingChange;
+                        PlayerIRatingChange = change;
                     }
                 }
             }
