@@ -606,7 +606,7 @@
                 <styles:SHSection Title="FUEL CALCULATOR OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
                         <styles:SHToggleCheckbox 
-                            ToolTip="When entering the pit, automatically set the fuel to add to the calculated amount needed." 
+                            ToolTip="When entering the pit, automatically set the fuel to add to the calculated amount needed. Overrides iRacing's Auto Fuel." 
                             HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[FuelCalcModule].Settings.AutoFuelEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Automatically set fuel to add on pit entry
