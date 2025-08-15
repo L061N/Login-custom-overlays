@@ -27,7 +27,7 @@ namespace benofficial2.Plugin
         public bool HideInReplay { get; set; } = true;
         public int DotRadius { get; set; } = 20;
         public int FontSize { get; set; } = 20;
-        public int LineThickness { get; set; } = 0;
+        public int LineThickness { get; set; } = 20;
         public int BackgroundOpacity { get; set; } = 0;
     }
 
