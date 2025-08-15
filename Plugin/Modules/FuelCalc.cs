@@ -130,7 +130,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "FuelCalc.MaxFuel", valueProvider: () => MaxFuel);
             plugin.AttachDelegate(name: "FuelCalc.MaxFuelAllowed", valueProvider: () => MaxFuelAllowed);
             plugin.AttachDelegate(name: "FuelCalc.Units", valueProvider: () => Units);
-            plugin.AttachDelegate(name: "FuelCalc.ConsumptionPerLap", valueProvider: () => ConsumptionPerLapSafe);
+            plugin.AttachDelegate(name: "FuelCalc.ConsumptionPerLap", valueProvider: () => ConsumptionPerLapAvg);
             plugin.AttachDelegate(name: "FuelCalc.ConsumptionLastLap", valueProvider: () => ConsumptionLastLap);
             plugin.AttachDelegate(name: "FuelCalc.ConsumptionTargetForExtraLap", valueProvider: () => ConsumptionTargetForExtraLap);
             plugin.AttachDelegate(name: "FuelCalc.RemainingLaps", valueProvider: () => RemainingLaps);
