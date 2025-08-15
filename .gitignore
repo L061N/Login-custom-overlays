@@ -5,7 +5,9 @@
 Bin/
 Plugin/bin/
 Plugin/obj/
-PLugin/.vs/
+Plugin/.vs/
+Plugin/benofficial2.Tests/bin/
+Plugin/benofficial2.Tests/obj/
 
 # Ignore all VS Code workspace files
 *.code-workspace
