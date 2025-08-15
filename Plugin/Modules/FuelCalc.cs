@@ -90,7 +90,7 @@ namespace benofficial2.Plugin
         public bool StartFuelCalculatorVisible { get; internal set; } = true;
         public TimeSpan BestLapTime { get; internal set; } = TimeSpan.Zero;
         public double SetupFuelLevel { get; internal set; } = 0.0;
-        public double Fuel { get; internal set; } = 0.0;
+        public double FuelLevel { get; internal set; } = 0.0;
         public double MaxFuel { get; internal set; } = 0.0;
         public double MaxFuelAllowed { get; internal set; } = 0.0;
         public string Units { get; internal set; } = "L";
@@ -137,7 +137,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "FuelCalc.Visible", valueProvider: () => StartFuelCalculatorVisible);
             plugin.AttachDelegate(name: "FuelCalc.BestLapTime", valueProvider: () => BestLapTime);
             plugin.AttachDelegate(name: "FuelCalc.SetupFuelLevel", valueProvider: () => SetupFuelLevel);
-            plugin.AttachDelegate(name: "FuelCalc.Fuel", valueProvider: () => Fuel);
+            plugin.AttachDelegate(name: "FuelCalc.Fuel", valueProvider: () => FuelLevel);
             plugin.AttachDelegate(name: "FuelCalc.MaxFuel", valueProvider: () => MaxFuel);
             plugin.AttachDelegate(name: "FuelCalc.MaxFuelAllowed", valueProvider: () => MaxFuelAllowed);
             plugin.AttachDelegate(name: "FuelCalc.Units", valueProvider: () => Units);
@@ -195,7 +195,7 @@ namespace benofficial2.Plugin
             UpdateConsumptionPerLap(pluginManager, ref data);
 
             RawDataHelper.TryGetTelemetryData<double>(ref data, out double fuelLevel, "FuelLevel");
-            Fuel = fuelLevel * ConvertFromLiters;
+            FuelLevel = fuelLevel * ConvertFromLiters;
 
             RawDataHelper.TryGetSessionData<double>(ref data, out double driverCarFuelMaxLtr, "DriverInfo", "DriverCarFuelMaxLtr");
             MaxFuel = driverCarFuelMaxLtr * ConvertFromLiters;
@@ -559,94 +559,156 @@ namespace benofficial2.Plugin
 
         private void UpdateFuelCalculations(ref GameData data)
         {
-            if (ConsumptionPerLapAvg <= 0.0 || _standingsModule.HighlightedCarClassIdx < 0 || _standingsModule.HighlightedCarClassIdx >= StandingsModule.MaxCarClasses)
+            if (_standingsModule.HighlightedCarClassIdx >= 0 && _standingsModule.HighlightedCarClassIdx < StandingsModule.MaxCarClasses)
+                EstimatedTotalLaps = _standingsModule.CarClasses[_standingsModule.HighlightedCarClassIdx].EstimatedTotalLaps;
+            else
+                EstimatedTotalLaps = 0;
+
+            CalculateFuel(/*fuelLevel*/ FuelLevel,
+                    /*consumptionPerLapAvg*/ ConsumptionPerLapAvg,
+                    /*currentLapHighPrecision*/ _driverModule.HighlightedDriver.CurrentLapHighPrecision,
+                    /*estimatedTotalLaps*/ EstimatedTotalLaps,
+                    /*isRace*/ _sessionModule.Race,
+                    /*isOval*/ _sessionModule.Oval,
+                    /*maxFuelAllowed*/ MaxFuelAllowed,
+                    /*fuelReserve*/ Settings.FuelReserveLiters.Value * ConvertFromLiters,
+                    /*extraConsumptionPct*/ Settings.ExtraConsumption,
+                    /*extraRaceLaps*/ Settings.ExtraRaceLaps,
+                    /*extraRaceLapsOval*/ Settings.ExtraRaceLapsOval,
+                    /*evenFuelStints*/ Settings.EvenFuelStints,
+                    out double remainingLaps,
+                    out int pitLap,
+                    out int pitWindowLap,
+                    out int pitStopsNeeded,
+                    out double refuelNeeded,
+                    out bool pitIndicatorOn,
+                    out bool pitWindowIndicatorOn,
+                    out double extraFuelAtFinish,
+                    out double consumptionTargetForExtraLap);
+
+            RemainingLaps = remainingLaps;
+            PitLap = pitLap;
+            PitWindowLap = pitWindowLap;
+            PitStopsNeeded = pitStopsNeeded;
+            RefuelNeeded = refuelNeeded;
+            PitIndicatorOn = pitIndicatorOn;
+            PitWindowIndicatorOn = pitWindowIndicatorOn;
+            ExtraFuelAtFinish = extraFuelAtFinish;
+            ConsumptionTargetForExtraLap = consumptionTargetForExtraLap;
+        }
+
+        static public void CalculateFuel(double fuelLevel, 
+            double consumptionPerLapAvg,
+            double currentLapHighPrecision,
+            int estimatedTotalLaps,
+            bool isRace,
+            bool isOval,
+            double maxFuelAllowed,
+            double fuelReserve,
+            double extraConsumptionPct,
+            double extraRaceLaps,
+            double extraRaceLapsOval,
+            bool evenFuelStints,
+            out double remainingLaps,
+            out int pitLap,
+            out int pitWindowLap,
+            out int pitStopsNeeded,
+            out double refuelNeeded,
+            out bool pitIndicatorOn,
+            out bool pitWindowIndicatorOn,
+            out double extraFuelAtFinish,
+            out double consumptionTargetForExtraLap)
+        {
+            if (consumptionPerLapAvg < 0.00000001)
             {
-                BlankFuelCalculations();
+                remainingLaps = 0.0;
+                pitLap = 0;
+                pitStopsNeeded = 0;
+                refuelNeeded = 0.0;
+                pitWindowLap = 0;
+                pitIndicatorOn = false;
+                pitWindowIndicatorOn = false;
+                extraFuelAtFinish = 0.0;
+                consumptionTargetForExtraLap = 0.0;
                 return;
-            }            
-            
-            double fuelReserve = Settings.FuelReserveLiters.Value * ConvertFromLiters;
-            double fuelLeftSafe = Math.Max(0.0, Fuel - fuelReserve);
-            RemainingLaps = fuelLeftSafe / ConsumptionPerLapAvg;
+            }                
+
+            double consumptionPerLapSafe = consumptionPerLapAvg * (1 + extraConsumptionPct / 100.0);
+            double fuelLeftSafe = Math.Max(0.0, fuelLevel - fuelReserve);
+            remainingLaps = fuelLeftSafe / consumptionPerLapAvg;
 
             // Determine the lap when we run out of fuel, and pit the lap before that.
-            double currentLapHighPrecision = _driverModule.HighlightedDriver.CurrentLapHighPrecision;
-            PitLap = Math.Max(1, (int)Math.Floor(currentLapHighPrecision + RemainingLaps));
-            PitIndicatorOn = currentLapHighPrecision >= (PitLap - 1);
+            pitLap = Math.Max(1, (int)Math.Floor(currentLapHighPrecision + remainingLaps));
+            pitIndicatorOn = currentLapHighPrecision >= (pitLap - 1);
 
-            EstimatedTotalLaps = _standingsModule.CarClasses[_standingsModule.HighlightedCarClassIdx].EstimatedTotalLaps;
-            int lapsToFinishAfterNextStop = Math.Max(0, EstimatedTotalLaps - PitLap);
+            int lapsToFinishAfterNextStop = Math.Max(0, estimatedTotalLaps - pitLap);
             if (lapsToFinishAfterNextStop > 0)
             {
-                ExtraFuelAtFinish = 0.0;
+                extraFuelAtFinish = 0.0;
 
-                double lapsToNextStop = Math.Max(0.0, PitLap - currentLapHighPrecision);
-                double fuelToNextStop = lapsToNextStop * ConsumptionPerLapAvg;
-                double fuelLeftAtStop = Math.Max(0.0, Fuel - fuelToNextStop);
-                double fuelToFinishAfterNextStop = (lapsToFinishAfterNextStop * ConsumptionPerLapSafe) + fuelReserve;
+                double lapsToNextStop = Math.Max(0.0, pitLap - currentLapHighPrecision);
+                double fuelToNextStop = lapsToNextStop * consumptionPerLapAvg;
+                double fuelLeftAtStop = Math.Max(0.0, fuelLevel - fuelToNextStop);
+                double fuelToFinishAfterNextStop = (lapsToFinishAfterNextStop * consumptionPerLapSafe) + fuelReserve;
 
-                if (_sessionModule.Race)
+                if (isRace)
                 {
-                    if (_sessionModule.Oval)
-                        fuelToFinishAfterNextStop += (Settings.ExtraRaceLapsOval.Value * ConsumptionPerLapSafe);
+                    if (isOval)
+                        fuelToFinishAfterNextStop += (extraRaceLapsOval * consumptionPerLapSafe);
                     else
-                        fuelToFinishAfterNextStop += (Settings.ExtraRaceLaps.Value * ConsumptionPerLapSafe);
+                        fuelToFinishAfterNextStop += (extraRaceLaps * consumptionPerLapSafe);
                 }
 
-                PitStopsNeeded = (int)Math.Floor(fuelToFinishAfterNextStop / MaxFuelAllowed) + 1;
+                pitStopsNeeded = (int)Math.Floor(fuelToFinishAfterNextStop / maxFuelAllowed) + 1;
 
-                if (Settings.EvenFuelStints)
+                if (evenFuelStints)
                 {
                     // Don't fill up the tank to the maximum so that each stint is evenly fueled.
-                    RefuelNeeded = Math.Max(0.0, Math.Min(MaxFuelAllowed, (fuelToFinishAfterNextStop / PitStopsNeeded)) - fuelLeftAtStop);
+                    refuelNeeded = Math.Max(0.0, Math.Min(maxFuelAllowed, (fuelToFinishAfterNextStop / pitStopsNeeded)) - fuelLeftAtStop);
                 }
                 else
                 {
-                    RefuelNeeded = Math.Max(0.0, Math.Min(MaxFuelAllowed, fuelToFinishAfterNextStop) - fuelLeftAtStop);
+                    refuelNeeded = Math.Max(0.0, Math.Min(maxFuelAllowed, fuelToFinishAfterNextStop) - fuelLeftAtStop);
                 }
 
-                double maxRefuel = MaxFuelAllowed * PitStopsNeeded;
-                double maxLapsAfterRefuel = Math.Max(0.0, maxRefuel / ConsumptionPerLapSafe);
-                PitWindowLap = Math.Max(1, EstimatedTotalLaps - (int)Math.Floor(maxLapsAfterRefuel));
-                PitWindowIndicatorOn = currentLapHighPrecision >= (PitWindowLap - 1);
+                double maxRefuel = maxFuelAllowed * pitStopsNeeded;
+                double maxRefuelSafe = Math.Max(0.0, maxRefuel - fuelReserve);
+                double maxLapsAfterRefuel = Math.Max(0.0, maxRefuelSafe / consumptionPerLapSafe);
+
+                if (isRace)
+                {
+                    if (isOval)
+                        maxLapsAfterRefuel = Math.Max(0.0, maxLapsAfterRefuel - extraRaceLapsOval);
+                    else
+                        maxLapsAfterRefuel = Math.Max(0.0, maxLapsAfterRefuel - extraRaceLaps);
+                }
+
+                pitWindowLap = Math.Max(1, estimatedTotalLaps - (int)Math.Floor(maxLapsAfterRefuel));
+                pitWindowIndicatorOn = currentLapHighPrecision >= (pitWindowLap - 1);
             }
             else
             {
-                PitStopsNeeded = 0;
-                RefuelNeeded = 0.0;
-                PitWindowLap = 0;
-                PitWindowIndicatorOn = false;
+                pitStopsNeeded = 0;
+                refuelNeeded = 0.0;
+                pitWindowLap = 0;
+                pitWindowIndicatorOn = false;
 
-                if (EstimatedTotalLaps > 0)
+                if (estimatedTotalLaps > 0)
                 {
-                    double lapsToFinish = Math.Max(0.0, EstimatedTotalLaps - currentLapHighPrecision);
-                    double fuelToFinish = lapsToFinish * ConsumptionPerLapAvg;
+                    double lapsToFinish = Math.Max(0.0, estimatedTotalLaps - currentLapHighPrecision);
+                    double fuelToFinish = lapsToFinish * consumptionPerLapAvg;
 
-                    ExtraFuelAtFinish = Math.Max(0.0, Fuel - fuelToFinish);
+                    extraFuelAtFinish = Math.Max(0.0, fuelLevel - fuelToFinish);
                 }
                 else
                 {
-                    ExtraFuelAtFinish = 0.0;
+                    extraFuelAtFinish = 0.0;
                 }
             }
 
             // Calculate the consumption target for an extra lap.
-            double lapsToNextStopExtra = Math.Max(0.0, (PitLap + 1) - currentLapHighPrecision);
-            ConsumptionTargetForExtraLap = (lapsToNextStopExtra > 0) ? (fuelLeftSafe / lapsToNextStopExtra) : 0.0;
-        }
-
-        private void BlankFuelCalculations()
-        {
-            EstimatedTotalLaps = 0;
-            ConsumptionTargetForExtraLap = 0.0;
-            RemainingLaps = 0.0;
-            PitLap = 0;
-            PitIndicatorOn = false;
-            PitWindowLap = 0;
-            PitWindowIndicatorOn = false;
-            PitStopsNeeded = 0;
-            RefuelNeeded = 0.0;
-            ExtraFuelAtFinish = 0.0;
+            double lapsToNextStopExtra = Math.Max(0.0, (pitLap + 1) - currentLapHighPrecision);
+            consumptionTargetForExtraLap = (lapsToNextStopExtra > 0) ? (fuelLeftSafe / lapsToNextStopExtra) : 0.0;
         }
 
         private void BlankSession(FuelCalcSession session)
