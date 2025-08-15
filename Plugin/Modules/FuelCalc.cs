@@ -75,17 +75,6 @@ namespace benofficial2.Plugin
         private bool _lastIsInPitLane = false;
         private bool _lastIsTowing = false;
 
-        // Maximum amount of time remaining (in percentage of best lap) for the white flag to be shown.
-        // It is unknown what is the exact rule used by iRacing. Could be 60% of avg from last 3 race laps.
-        private const double WhiteFlagRuleLapPct = 0.65;
-
-        // How long is the short parade lap at supported tracks (as a percentage of a lap).
-        // This is the default values for tracks we don't have in the database.
-        private const double ShortParadeLapPct = 0.50;
-
-        private const double PoundPerKg = 2.204623;
-        private const double GallonPerLiter = 0.264172;
-
         public FuelCalcSettings Settings { get; set; }
         public bool StartFuelCalculatorVisible { get; internal set; } = true;
         public TimeSpan BestLapTime { get; internal set; } = TimeSpan.Zero;
@@ -301,9 +290,9 @@ namespace benofficial2.Plugin
                 else
                 {
                     Units = "gal";
-                    ConvertFromLiters = GallonPerLiter;
+                    ConvertFromLiters = Constants.GallonPerLiter;
                     ConvertFromSimHubUnits = 1.0;
-                    SetupFuelLevel = fuelLevelLiters * GallonPerLiter;
+                    SetupFuelLevel = fuelLevelLiters * Constants.GallonPerLiter;
                 }
             }
             else if (fuelLevelStr.IndexOf("Kg") != -1)
@@ -320,9 +309,9 @@ namespace benofficial2.Plugin
                 else
                 {
                     Units = "lb";
-                    ConvertFromLiters = PoundPerKg * driverCarFuelKgPerLtr;
-                    ConvertFromSimHubUnits = (1 / GallonPerLiter) * ConvertFromLiters;
-                    SetupFuelLevel = fuelLevelKg * PoundPerKg;
+                    ConvertFromLiters = Constants.PoundPerKg * driverCarFuelKgPerLtr;
+                    ConvertFromSimHubUnits = (1 / Constants.GallonPerLiter) * ConvertFromLiters;
+                    SetupFuelLevel = fuelLevelKg * Constants.PoundPerKg;
                 }
             }
             else
@@ -337,7 +326,7 @@ namespace benofficial2.Plugin
                 else
                 {
                     Units = "gal";
-                    ConvertFromLiters = GallonPerLiter;
+                    ConvertFromLiters = Constants.GallonPerLiter;
                 }
             }
         }
@@ -475,7 +464,7 @@ namespace benofficial2.Plugin
                 // Add an extra lap if we would cross the line with more than X% of a lap remaining
                 // It is unknown what is the exact rule used by iRacing. Could be 60% of avg from last 3 race laps.
                 double remainingTimeSecs = session.Time.TotalSeconds % BestLapTime.TotalSeconds;
-                if (remainingTimeSecs > WhiteFlagRuleLapPct * BestLapTime.TotalSeconds)
+                if (remainingTimeSecs > Constants.WhiteFlagRuleLapPct * BestLapTime.TotalSeconds)
                 {
                     lapsEstimate++;
                 }
@@ -502,7 +491,7 @@ namespace benofficial2.Plugin
                         }
                         else if (_sessionModule.ShortParadeLap)
                         {
-                            outLaps = ShortParadeLapPct;
+                            outLaps = Constants.ShortParadeLapPct;
                         }
                         else if (_trackModule.TrackType == "super speedway")
                         {
@@ -708,7 +697,7 @@ namespace benofficial2.Plugin
 
             // Calculate the consumption target for an extra lap.
             double lapsToNextStopExtra = Math.Max(0.0, (pitLap + 1) - currentLapHighPrecision);
-            consumptionTargetForExtraLap = (lapsToNextStopExtra > 0) ? (fuelLeftSafe / lapsToNextStopExtra) : 0.0;
+            consumptionTargetForExtraLap = (lapsToNextStopExtra > Constants.LapEpsilon) ? (fuelLeftSafe / lapsToNextStopExtra) : 0.0;
         }
 
         private void BlankSession(FuelCalcSession session)

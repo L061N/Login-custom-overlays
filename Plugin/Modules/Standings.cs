@@ -802,7 +802,7 @@ namespace benofficial2.Plugin
                 _driverModule.PlayerBestLapTime.TotalSeconds);
         }
 
-        public int EstimateTotalLaps(double currentLapHighPrecision, int sessionTotalLaps, double sessionTimeRemain, double avgLapTime)
+        static public int EstimateTotalLaps(double currentLapHighPrecision, int sessionTotalLaps, double sessionTimeRemain, double avgLapTime)
         {
             // Even if it is a lapped race, check if there's enough time to complete the remaining laps.
             if (sessionTotalLaps > 0)
@@ -816,15 +816,17 @@ namespace benofficial2.Plugin
                 }
             }
 
-            if (avgLapTime <= 0)
+            // Can't estimate laps in a timed race without a valid average lap time.
+            if (avgLapTime < Constants.SecondsEpsilon)
                 return 0;
 
             double estimatedTotalLaps = Math.Max(0.0, sessionTimeRemain / avgLapTime);
             estimatedTotalLaps += currentLapHighPrecision;
 
-            // Add an extra lap if we would cross the line with more than 65% of a lap time remaining on the timer.
+            // Add an extra lap if we would cross the line with more than X% of a lap time remaining on the timer.
             // It is unknown what is the exact white flag rule used by iRacing. Best guess is 65% of avg time from last 3 laps.
-            if (sessionTimeRemain > 0 && estimatedTotalLaps % 1.0 > 0.65)
+            // It's best to overestimate otherwise we risk running out of fuel.
+            if (sessionTimeRemain > Constants.SecondsEpsilon && estimatedTotalLaps % 1.0 > Constants.WhiteFlagRuleLapPct)
             {
                 estimatedTotalLaps++;
             }
