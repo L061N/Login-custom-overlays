@@ -36,8 +36,8 @@ namespace benofficial2.Plugin
         public const double LapEpsilon = 1e-9;
 
         // Maximum amount of a lap left for iRacing to show the white flag.
-        // It is unknown what is the exact white flag rule used by iRacing and seems to change per track.
-        public const double WhiteFlagRuleLapPct = 0.65;
+        // It is unknown what are the exact white flag rule constants used by iRacing and seem to change per track.
+        public const double WhiteFlagRuleLapPct = 0.80;
 
         // How long is the short parade lap at supported tracks (as a percentage of a lap).
         // This is the default values for tracks we don't have in the database.

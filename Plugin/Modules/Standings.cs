@@ -770,7 +770,7 @@ namespace benofficial2.Plugin
                 if (carClass.EstimatedTotalLapsConfirmed)
                     return;
 
-                double leaderCurrentLapHighPrecision = opponentsWithDrivers.Count > 0 ? opponentsWithDrivers[0].Item1.CurrentLapHighPrecision ?? 1.0 : 0.0;
+                double leaderCurrentLapHighPrecision = opponentsWithDrivers.Count > 0 ? opponentsWithDrivers[0].Item1.CurrentLapHighPrecision ?? 0.0 : 0.0;
 
                 // Confirm the total laps when the player gets the white flag.
                 // Because we don't have the data for other cars in the iRacing SDK.
@@ -804,7 +804,7 @@ namespace benofficial2.Plugin
 
         static public int EstimateTotalLaps(double currentLapHighPrecision, int sessionTotalLaps, double sessionTimeRemain, double avgLapTime)
         {
-            // Even if it is a lapped race, check if there's enough time to complete the remaining laps.
+            // Even if it is a lap-limited race, check if there's enough time to complete the remaining laps.
             if (sessionTotalLaps > 0)
             {
                 double lapsRemaining = Math.Max(0.0, sessionTotalLaps - currentLapHighPrecision);
@@ -824,9 +824,9 @@ namespace benofficial2.Plugin
             estimatedTotalLaps += currentLapHighPrecision;
 
             // Add an extra lap if we would cross the line with more than X% of a lap time remaining on the timer.
-            // It is unknown what is the exact white flag rule used by iRacing. Best guess is 65% of avg time from last 3 laps.
-            // It's best to overestimate otherwise we risk running out of fuel.
-            if (sessionTimeRemain > Constants.SecondsEpsilon && estimatedTotalLaps % 1.0 > Constants.WhiteFlagRuleLapPct)
+            // It is unknown what are the exact white flag rule constants used by iRacing and seem to change per track.
+            double lapCompletedPctWhenTimerHitsZero = estimatedTotalLaps % 1.0;
+            if (lapCompletedPctWhenTimerHitsZero < Constants.LapEpsilon || lapCompletedPctWhenTimerHitsZero > Constants.WhiteFlagRuleLapPct)
             {
                 estimatedTotalLaps++;
             }
