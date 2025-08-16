@@ -462,7 +462,7 @@ namespace benofficial2.Plugin
                 double lapsEstimate = Math.Ceiling(session.Time.TotalSeconds / BestLapTime.TotalSeconds);
 
                 // Add an extra lap if we would cross the line with more than X% of a lap remaining
-                // It is unknown what is the exact rule used by iRacing. Could be 60% of avg from last 3 race laps.
+                // It is unknown what are the exact white flag rule constants used by iRacing and seem to change per track.
                 double remainingTimeSecs = session.Time.TotalSeconds % BestLapTime.TotalSeconds;
                 if (remainingTimeSecs > Constants.WhiteFlagRuleLapPct * BestLapTime.TotalSeconds)
                 {
