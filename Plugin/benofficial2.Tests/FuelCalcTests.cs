@@ -91,7 +91,7 @@ namespace benofficial2.Tests
             Assert.AreEqual(refuelNeeded, 0.0, Constants.FuelEpsilon);
             Assert.AreEqual(pitIndicatorOn, false);
             Assert.AreEqual(pitWindowIndicatorOn, false);
-            Assert.AreEqual(extraFuelAtFinish, 60.0, Constants.FuelEpsilon);
+            Assert.AreEqual(extraFuelAtFinish, 59.5, Constants.FuelEpsilon);
             Assert.AreEqual(consumptionTargetForExtraLap, 0.49642857142857144, Constants.FuelEpsilon);
         }
 
@@ -273,6 +273,158 @@ namespace benofficial2.Tests
             Assert.AreEqual(pitWindowIndicatorOn, false);
             Assert.AreEqual(extraFuelAtFinish, 0.0, Constants.FuelEpsilon);
             Assert.AreEqual(consumptionTargetForExtraLap, 0.49642857142857144, Constants.FuelEpsilon);
+        }
+
+        [TestMethod]
+        public void SFL_Mugello_RaceOneStop_PitNextLap()
+        {
+            // 11 min SFL AI race at Mugello, 10.5 L starting fuel.
+            // Was suggesting a pit on 6/7
+            FuelCalcModule.CalculateFuel(/*fuelLevel*/ 4.43250846862793,
+                /*consumptionPerLapAvg*/ 1.4391992902796378,
+                /*currentLapHighPrecision*/ 4.1070254445075989,
+                /*estimatedTotalLaps*/ 7,
+                /*isRace*/ true,
+                /*isOval*/ false,
+                /*maxFuelAllowed*/ 46,
+                /*fuelReserve*/ 0.5,
+                /*extraConsumptionPct*/ 1.0,
+                /*extraRaceLaps*/ 0.0,
+                /*extraRaceLapsOval*/ 3.0,
+                /*evenFuelStints*/ false,
+                out double remainingLaps,
+                out int pitLap,
+                out int pitWindowLap,
+                out int pitStopsNeeded,
+                out double refuelNeeded,
+                out bool pitIndicatorOn,
+                out bool pitWindowIndicatorOn,
+                out double extraFuelAtFinish,
+                out double consumptionTargetForExtraLap);
+
+            Assert.AreEqual(2.7324280210448406, remainingLaps, Constants.FuelEpsilon);
+            Assert.AreEqual(6, pitLap);
+            Assert.AreEqual(1, pitWindowLap);
+            Assert.AreEqual(1, pitStopsNeeded);
+            Assert.AreEqual(0.24545045133658094, refuelNeeded, Constants.FuelEpsilon);
+            Assert.AreEqual(false, pitIndicatorOn);
+            Assert.AreEqual(true, pitWindowIndicatorOn);
+            Assert.AreEqual(0.0, extraFuelAtFinish, Constants.FuelEpsilon);
+            Assert.AreEqual(1.3593304722165431, consumptionTargetForExtraLap, Constants.FuelEpsilon);
+        }
+
+        [TestMethod]
+        public void SFL_Mugello_RaceOneStop_PitThisLap()
+        {
+            // 11 min SFL AI race at Mugello, 10.5 L starting fuel.
+            // Was suggesting a pit on 6/7
+            FuelCalcModule.CalculateFuel(/*fuelLevel*/ 2.9937918186187744,
+                /*consumptionPerLapAvg*/ 1.4374254413629475,
+                /*currentLapHighPrecision*/ 5.1090390831232071,
+                /*estimatedTotalLaps*/ 7,
+                /*isRace*/ true,
+                /*isOval*/ false,
+                /*maxFuelAllowed*/ 46,
+                /*fuelReserve*/ 0.5,
+                /*extraConsumptionPct*/ 1.0,
+                /*extraRaceLaps*/ 0.0,
+                /*extraRaceLapsOval*/ 3.0,
+                /*evenFuelStints*/ false,
+                out double remainingLaps,
+                out int pitLap,
+                out int pitWindowLap,
+                out int pitStopsNeeded,
+                out double refuelNeeded,
+                out bool pitIndicatorOn,
+                out bool pitWindowIndicatorOn,
+                out double extraFuelAtFinish,
+                out double consumptionTargetForExtraLap);
+
+            Assert.AreEqual(1.734901683842603, remainingLaps, Constants.FuelEpsilon);
+            Assert.AreEqual(6, pitLap);
+            Assert.AreEqual(1, pitWindowLap);
+            Assert.AreEqual(1, pitStopsNeeded);
+            Assert.AreEqual(0.23869776633656281, refuelNeeded, Constants.FuelEpsilon);
+            Assert.AreEqual(true, pitIndicatorOn);
+            Assert.AreEqual(true, pitWindowIndicatorOn);
+            Assert.AreEqual(0.0, extraFuelAtFinish, Constants.FuelEpsilon);
+            Assert.AreEqual(1.3187960662548477, consumptionTargetForExtraLap, Constants.FuelEpsilon);
+        }
+
+        [TestMethod]
+        public void SFL_Mugello_RaceOneStop_MissedPitLap_EarlyInLap()
+        {
+            // 11 min SFL AI race at Mugello, 10.5 L starting fuel.
+            // Was suggesting a pit on 6/7 for +0.2, but continued.
+            FuelCalcModule.CalculateFuel(/*fuelLevel*/ 1.5842245817184448,
+                /*consumptionPerLapAvg*/ 1.4420972638619318,
+                /*currentLapHighPrecision*/ 6.08769016712904,
+                /*estimatedTotalLaps*/ 7,
+                /*isRace*/ true,
+                /*isOval*/ false,
+                /*maxFuelAllowed*/ 46,
+                /*fuelReserve*/ 0.5,
+                /*extraConsumptionPct*/ 1.0,
+                /*extraRaceLaps*/ 0.0,
+                /*extraRaceLapsOval*/ 3.0,
+                /*evenFuelStints*/ false,
+                out double remainingLaps,
+                out int pitLap,
+                out int pitWindowLap,
+                out int pitStopsNeeded,
+                out double refuelNeeded,
+                out bool pitIndicatorOn,
+                out bool pitWindowIndicatorOn,
+                out double extraFuelAtFinish,
+                out double consumptionTargetForExtraLap);
+
+            Assert.AreEqual(0.75183873438251658, remainingLaps, Constants.FuelEpsilon);
+            Assert.AreEqual(7, pitLap);
+            Assert.AreEqual(7, pitWindowLap);
+            Assert.AreEqual(1, pitStopsNeeded);
+            Assert.AreEqual(0.2445713271968788, refuelNeeded, Constants.FuelEpsilon);
+            Assert.AreEqual(true, pitIndicatorOn);
+            Assert.AreEqual(true, pitWindowIndicatorOn);
+            Assert.AreEqual(0.0, extraFuelAtFinish, Constants.FuelEpsilon);
+            Assert.AreEqual(0.5669711900663571, consumptionTargetForExtraLap, Constants.FuelEpsilon);
+        }
+
+        [TestMethod]
+        public void SFL_Mugello_RaceOneStop_MissedPitLap_LateInLap()
+        {
+            // 11 min SFL AI race at Mugello, 10.5 L starting fuel.
+            // Was suggesting a pit on 6/7 for +0.2, but continued.
+            FuelCalcModule.CalculateFuel(/*fuelLevel*/ 0.32208803296089172,
+                /*consumptionPerLapAvg*/ 1.4496734014665857,
+                /*currentLapHighPrecision*/ 6.9722132682800293,
+                /*estimatedTotalLaps*/ 7,
+                /*isRace*/ true,
+                /*isOval*/ false,
+                /*maxFuelAllowed*/ 46,
+                /*fuelReserve*/ 0.5,
+                /*extraConsumptionPct*/ 1.0,
+                /*extraRaceLaps*/ 0.0,
+                /*extraRaceLapsOval*/ 3.0,
+                /*evenFuelStints*/ false,
+                out double remainingLaps,
+                out int pitLap,
+                out int pitWindowLap,
+                out int pitStopsNeeded,
+                out double refuelNeeded,
+                out bool pitIndicatorOn,
+                out bool pitWindowIndicatorOn,
+                out double extraFuelAtFinish,
+                out double consumptionTargetForExtraLap);
+
+            Assert.AreEqual(0.0, remainingLaps, Constants.FuelEpsilon);
+            Assert.AreEqual(7, pitLap);
+            Assert.AreEqual(7, pitWindowLap);
+            Assert.AreEqual(1, pitStopsNeeded);
+            Assert.AreEqual(0.21859646978611902, refuelNeeded, Constants.FuelEpsilon);
+            Assert.AreEqual(true, pitIndicatorOn);
+            Assert.AreEqual(true, pitWindowIndicatorOn);
+            Assert.AreEqual(0.0, extraFuelAtFinish, Constants.FuelEpsilon);
+            Assert.AreEqual(0.0, consumptionTargetForExtraLap, Constants.FuelEpsilon);
         }
     }
 }
