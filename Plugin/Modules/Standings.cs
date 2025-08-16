@@ -116,6 +116,7 @@ namespace benofficial2.Plugin
         public TimeSpan LeaderAvgLapTime { get; set; } = TimeSpan.Zero;
         public int EstimatedTotalLaps { get; set; } = 0;
         public bool EstimatedTotalLapsConfirmed { get; set; } = false;
+        public bool EstimatedTotalLapsLogged { get; set; } = false;
 
         public StandingCarClass()
         {
@@ -765,7 +766,10 @@ namespace benofficial2.Plugin
             if (_sessionModule.Race)
             {
                 if (!_sessionModule.RaceStarted)
+                {
                     carClass.EstimatedTotalLapsConfirmed = false;
+                    carClass.EstimatedTotalLapsLogged = false;
+                }
 
                 if (carClass.EstimatedTotalLapsConfirmed)
                     return;
@@ -781,6 +785,12 @@ namespace benofficial2.Plugin
                 {
                     carClass.EstimatedTotalLaps = (int)Math.Max(1, Math.Ceiling(leaderCurrentLapHighPrecision));
                     carClass.EstimatedTotalLapsConfirmed = true;
+
+                    SimHub.Logging.Current.Info($"Estimated total laps confirmed: " +
+                        $"CarClassName={carClass.Name}, " +
+                        $"EstimatedTotalLaps={carClass.EstimatedTotalLaps}, " +
+                        $"LeaderCurrentLapHighPrecision={leaderCurrentLapHighPrecision}, ");
+
                     return;
                 }
 
@@ -793,6 +803,20 @@ namespace benofficial2.Plugin
                     avgLapTime = carClass.BestQualLapTime;
 
                 carClass.EstimatedTotalLaps = EstimateTotalLaps(leaderCurrentLapHighPrecision, _sessionModule.SessionLapsTotal, sessionTimeRemain, avgLapTime.TotalSeconds);
+
+                if (_driverModule.PlayerHadWhiteFlag && !carClass.EstimatedTotalLapsLogged)
+                {
+                    SimHub.Logging.Current.Info($"Estimated total laps at player's white flag: " +
+                        $"CarClassName={carClass.Name}, " +
+                        $"EstimatedTotalLaps={carClass.EstimatedTotalLaps}, " +
+                        $"SessionTotalLaps={_sessionModule.SessionLapsTotal}, " +
+                        $"LeaderCurrentLapHighPrecision={leaderCurrentLapHighPrecision}, " +
+                        $"SessionTimeRemain={sessionTimeRemain}, " +
+                        $"AvgLapTime={avgLapTime.TotalSeconds}");
+
+                    carClass.EstimatedTotalLapsLogged = true;
+                }
+
                 return;
             }
 
