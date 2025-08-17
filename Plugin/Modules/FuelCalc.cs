@@ -658,11 +658,11 @@ namespace benofficial2.Plugin
             // Determine the lap when we run out of fuel and pit the lap before that. Or on the current lap if we went beyond.
             int currentLap = Math.Max(0, (int)Math.Ceiling(currentLapHighPrecision));
             pitLap = Math.Max(currentLap, (int)Math.Floor(currentLapHighPrecision + remainingLaps));
-            pitIndicatorOn = currentLapHighPrecision >= (pitLap - 1);
 
             int lapsToFinishAfterNextStop = Math.Max(0, estimatedTotalLaps - pitLap);
             if (lapsToFinishAfterNextStop > 0)
             {
+                pitIndicatorOn = currentLapHighPrecision >= (pitLap - 1);
                 extraFuelAtFinish = 0.0;
 
                 double lapsToNextStop = Math.Max(0.0, pitLap - currentLapHighPrecision);
@@ -726,6 +726,7 @@ namespace benofficial2.Plugin
                                 fuelToFinishSafe += (extraRaceLaps * consumptionPerLapSafe);
                         }
 
+                        pitIndicatorOn = true;
                         pitStopsNeeded = (int)Math.Floor(fuelToFinishSafe / maxFuelAllowed) + 1;
                         refuelNeeded = Math.Max(0.0, Math.Min(maxFuelAllowed, fuelToFinishSafe) - fuelLevel);
                         pitWindowLap = currentLap;
@@ -733,6 +734,7 @@ namespace benofficial2.Plugin
                     }
                     else
                     {
+                        pitIndicatorOn = false;
                         pitStopsNeeded = 0;
                         refuelNeeded = 0.0;
                         pitWindowLap = 0;
@@ -742,6 +744,7 @@ namespace benofficial2.Plugin
                 else
                 {
                     extraFuelAtFinish = 0.0;
+                    pitIndicatorOn = false;
                     pitStopsNeeded = 0;
                     refuelNeeded = 0.0;
                     pitWindowLap = 0;
