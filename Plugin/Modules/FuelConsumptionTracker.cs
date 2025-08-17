@@ -24,6 +24,10 @@ namespace benofficial2.Plugin
 {
     public class FuelConsumptionTracker
     {
+        private const double LapPositionEpsilon = 1e-5;
+        private const double FullLapThreshold = 0.95;
+
+        private double startLapPosition = -1.0;
         private double lastLapPosition = -1.0;
         private bool lastLapValid = false;
 
@@ -39,6 +43,7 @@ namespace benofficial2.Plugin
             // First update → initialize
             if (lastLapPosition < 0.0)
             {
+                startLapPosition = lapPosition;
                 lastLapPosition = lapPosition;
                 lapFuelStart = fuelLevel;
                 wasInvalidated = invalidate;
@@ -47,12 +52,13 @@ namespace benofficial2.Plugin
             }
 
             // Detect lap completion (lapPosition wrapped around)
-            if (lapPosition < lastLapPosition)
+            if (lapPosition + LapPositionEpsilon < lastLapPosition)
             {
                 double lapFuelConsumed = lapFuelStart - fuelLevel;
-
                 bool incidentHappened = (incidentCount > lapIncidentCount);
-                if (!wasInvalidated && !incidentHappened && lapFuelConsumed > 0)
+                bool fullLapCompleted = (lastLapPosition - startLapPosition) > FullLapThreshold;
+
+                if (fullLapCompleted && !wasInvalidated && !incidentHappened && lapFuelConsumed > Constants.FuelEpsilon)
                 {
                     allConsumptions.Add(lapFuelConsumed);
                     lastLapValid = true;
@@ -63,6 +69,7 @@ namespace benofficial2.Plugin
                 }
 
                 // Reset for next lap
+                startLapPosition = lapPosition;
                 lapFuelStart = fuelLevel;
                 wasInvalidated = false;
                 lapIncidentCount = incidentCount;
@@ -112,6 +119,7 @@ namespace benofficial2.Plugin
 
         public void Reset()
         {
+            startLapPosition = -1.0;
             lastLapPosition = -1.0;
             lastLapValid = false;
             wasInvalidated = false;
