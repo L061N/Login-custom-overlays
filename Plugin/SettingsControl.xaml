@@ -649,7 +649,7 @@
                                 <Label Content="Extra Race Lap(s)" Margin="0,10,0,0"/>
 
                                 <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLaps.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
-                                         ToolTip="How many extra race laps of fuel to add as a safety. Can have decimals or be negative.">
+                                         ToolTip="How many extra race laps of fuel to add as a safety. Can have decimals or be negative. Be careful at long tracks as this could add a considerable amount of fuel.">
                                     <!-- Style to highlight invalid input -->
                                     <TextBox.Style>
                                         <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
