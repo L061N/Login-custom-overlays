@@ -823,7 +823,11 @@ namespace benofficial2.Plugin
                 }
                 else
                 {
-                    SendClearFuel();
+                    // Don't send a clear fuel command when total laps is unknown so that we get the default fuel level.
+                    if (EstimatedTotalLaps > 0)
+                    {
+                        SendClearFuel();
+                    }                    
                 }
             }
 
