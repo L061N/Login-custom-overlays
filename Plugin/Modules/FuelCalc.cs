@@ -75,6 +75,8 @@ namespace benofficial2.Plugin
         private bool _lastIsInPitLane = false;
         private bool _lastIsTowing = false;
 
+        private FuelConsumptionTracker _consumptionTracker = new FuelConsumptionTracker();
+
         public FuelCalcSettings Settings { get; set; }
         public bool StartFuelCalculatorVisible { get; internal set; } = true;
         public TimeSpan BestLapTime { get; internal set; } = TimeSpan.Zero;
@@ -87,6 +89,7 @@ namespace benofficial2.Plugin
         public double ConvertFromSimHubUnits { get; internal set; } = 1.0;
         public double ConsumptionPerLapSafe { get; internal set; } = 0.0;
         public double ConsumptionPerLapAvg { get; internal set; } = 0.0;
+        public double ConsumptionPerLapRecent { get; internal set; } = 0.0;
         public double ConsumptionLastLap { get; internal set; } = 0.0;
         public double ConsumptionTargetForExtraLap { get; internal set; } = 0.0;
         public double RemainingLaps { get; internal set; } = 0.0;
@@ -99,6 +102,10 @@ namespace benofficial2.Plugin
         public double RefuelNeeded { get; internal set; } = 0.0;
         public double ExtraFuelAtFinish { get; internal set; } = 0.0;
         public bool WarningVisible { get; internal set; } = false;
+        public int TrackerValidLapCount { get { return _consumptionTracker.GetValidLapCount(); } }
+        public bool TrackerLastLapValid { get { return _consumptionTracker.IsLastLapValid(); } }
+        public double TrackerMedianConsumption { get; internal set; } = 0.0;
+        public double TrackerRecentConsumption { get; internal set; } = 0.0;
 
         public const int MaxSessions = 6;
         public List<FuelCalcSession> Sessions { get; internal set; }
@@ -130,7 +137,8 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "FuelCalc.MaxFuel", valueProvider: () => MaxFuel);
             plugin.AttachDelegate(name: "FuelCalc.MaxFuelAllowed", valueProvider: () => MaxFuelAllowed);
             plugin.AttachDelegate(name: "FuelCalc.Units", valueProvider: () => Units);
-            plugin.AttachDelegate(name: "FuelCalc.ConsumptionPerLap", valueProvider: () => ConsumptionPerLapAvg);
+            plugin.AttachDelegate(name: "FuelCalc.ConsumptionPerLap", valueProvider: () => ConsumptionPerLapRecent);
+            plugin.AttachDelegate(name: "FuelCalc.ConsumptionPerLapAvg", valueProvider: () => ConsumptionPerLapAvg);
             plugin.AttachDelegate(name: "FuelCalc.ConsumptionLastLap", valueProvider: () => ConsumptionLastLap);
             plugin.AttachDelegate(name: "FuelCalc.ConsumptionTargetForExtraLap", valueProvider: () => ConsumptionTargetForExtraLap);
             plugin.AttachDelegate(name: "FuelCalc.RemainingLaps", valueProvider: () => RemainingLaps);
@@ -143,6 +151,10 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "FuelCalc.RefuelNeeded", valueProvider: () => RefuelNeeded);
             plugin.AttachDelegate(name: "FuelCalc.ExtraFuelAtFinish", valueProvider: () => ExtraFuelAtFinish);
             plugin.AttachDelegate(name: "FuelCalc.WarningVisible", valueProvider: () => WarningVisible);
+            plugin.AttachDelegate(name: "FuelCalc.Tracker.ValidLapCount", valueProvider: () => TrackerValidLapCount);
+            plugin.AttachDelegate(name: "FuelCalc.Tracker.LastLapValid", valueProvider: () => TrackerLastLapValid);
+            plugin.AttachDelegate(name: "FuelCalc.Tracker.MedianConsumption", valueProvider: () => TrackerMedianConsumption);
+            plugin.AttachDelegate(name: "FuelCalc.Tracker.RecentConsumption", valueProvider: () => TrackerRecentConsumption);
 
             Sessions = new List<FuelCalcSession>(Enumerable.Range(0, MaxSessions).Select(x => new FuelCalcSession()));
             for (int sessionIdx = 0; sessionIdx < MaxSessions; sessionIdx++)
@@ -160,6 +172,9 @@ namespace benofficial2.Plugin
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
+            // Update consumption tracker every frame for precise new lap detection.
+            UpdateConsumptionTracker(ref data);
+
             if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
             _lastUpdateTime = data.FrameTime;
 
@@ -174,8 +189,9 @@ namespace benofficial2.Plugin
             bool carTrackComboValid = data.NewData.CarId.Length > 0 && data.NewData.TrackId.Length > 0;
             if (carTrackComboValid && carTrackCombo != _lastCarTrackCombo)
             {
+                _consumptionTracker.Reset();
                 ConsumptionPerLapAvg = 0.0;
-                ConsumptionPerLapSafe = 0.0;
+                ConsumptionPerLapRecent = 0.0;
                 BestLapTime = TimeSpan.Zero;
                 _lastCarTrackCombo = carTrackCombo;
             }
@@ -209,7 +225,7 @@ namespace benofficial2.Plugin
         private void UpdateBestLapTime(ref GameData data)
         {
             dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) 
+            if (raw == null)
                 return;
 
             int driverCount = 0;
@@ -218,7 +234,7 @@ namespace benofficial2.Plugin
             int playerCarIdx = -1;
             try { playerCarIdx = int.Parse(raw.AllSessionData["DriverInfo"]["DriverCarIdx"]); } catch { Debug.Assert(false); }
 
-            if (playerCarIdx < 0 || playerCarIdx >= driverCount) 
+            if (playerCarIdx < 0 || playerCarIdx >= driverCount)
                 return;
 
             string playerClassId = data.NewData.CarClass;
@@ -233,7 +249,7 @@ namespace benofficial2.Plugin
             {
                 List<object> positions = null;
                 try { positions = raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"]; } catch { Debug.Assert(false); }
-                if (positions == null) 
+                if (positions == null)
                     continue;
 
                 for (int posIdx = 0; posIdx < positions.Count; posIdx++)
@@ -298,7 +314,7 @@ namespace benofficial2.Plugin
             else if (fuelLevelStr.IndexOf("Kg") != -1)
             {
                 double fuelLevelKg = double.Parse(fuelLevelStr.Substring(0, fuelLevelStr.Length - 3), CultureInfo.InvariantCulture);
-           
+
                 if (data.NewData.FuelUnit == "Liters")
                 {
                     Units = "Kg";
@@ -368,17 +384,28 @@ namespace benofficial2.Plugin
         private void UpdateConsumptionPerLap(PluginManager pluginManager, ref GameData data)
         {
             var dataCorePlugin = pluginManager.GetPlugin<DataCorePlugin>();
-            double fuelPerLap = dataCorePlugin.properties.Computed_Fuel_LitersPerLap.Value;
-            double fuelLastLap = dataCorePlugin.properties.Computed_Fuel_LastLapConsumption.Value;
+            double fuelPerLapSimHub = dataCorePlugin.properties.Computed_Fuel_LitersPerLap.Value;
+            double fuelLastLapSimHub = dataCorePlugin.properties.Computed_Fuel_LastLapConsumption.Value;
 
             // Even though the property is called "LitersPerLap", consumption will be in gallons when SimHub is set to gallons.
-            ConsumptionLastLap = fuelLastLap * ConvertFromSimHubUnits;
+            ConsumptionLastLap = fuelLastLapSimHub * ConvertFromSimHubUnits;
 
-            if (fuelPerLap > 0)
+            TrackerMedianConsumption = _consumptionTracker.GetConsumption(50) * ConvertFromLiters;
+            TrackerRecentConsumption = _consumptionTracker.GetRecentConsumption(3) * ConvertFromLiters;
+
+            if (_consumptionTracker.GetValidLapCount() > 0)
             {
-                ConsumptionPerLapAvg = fuelPerLap * ConvertFromSimHubUnits;
-                ConsumptionPerLapSafe = ConsumptionPerLapAvg * (1 + Settings.ExtraConsumption / 100.0);
+                ConsumptionPerLapAvg = TrackerMedianConsumption;                
+                ConsumptionPerLapRecent = TrackerRecentConsumption;
             }
+            else if (fuelPerLapSimHub > 0)
+            {
+                // Fallback to SimHub's computed fuel per lap if no valid laps are recorded.
+                ConsumptionPerLapAvg = fuelPerLapSimHub * ConvertFromSimHubUnits;
+                ConsumptionPerLapRecent = ConsumptionPerLapAvg;
+            }
+
+            ConsumptionPerLapSafe = ConsumptionPerLapAvg * (1 + Settings.ExtraConsumption / 100.0);
         }
 
         private void UpdateAllSessionFuel(ref GameData data)
@@ -396,7 +423,7 @@ namespace benofficial2.Plugin
 
             FuelCalcSession session = Sessions[sessionIdx];
 
-            RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> sessions, "SessionInfo", "Sessions");           
+            RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> sessions, "SessionInfo", "Sessions");
             if (sessions == null || sessionIdx >= sessions.Count)
             {
                 BlankSession(session);
@@ -526,7 +553,7 @@ namespace benofficial2.Plugin
                     else
                     {
                         session.FuelNeeded += ConsumptionPerLapSafe * Settings.ExtraRaceLaps;
-                    }                        
+                    }
                 }
             }
 
@@ -555,6 +582,7 @@ namespace benofficial2.Plugin
 
             CalculateFuel(/*fuelLevel*/ FuelLevel,
                     /*consumptionPerLapAvg*/ ConsumptionPerLapAvg,
+                    /*consumptionPerLapRecent*/ ConsumptionPerLapRecent,
                     /*currentLapHighPrecision*/ _driverModule.HighlightedDriver.CurrentLapHighPrecision,
                     /*estimatedTotalLaps*/ EstimatedTotalLaps,
                     /*isRace*/ _sessionModule.Race,
@@ -586,8 +614,9 @@ namespace benofficial2.Plugin
             ConsumptionTargetForExtraLap = consumptionTargetForExtraLap;
         }
 
-        static public void CalculateFuel(double fuelLevel, 
+        static public void CalculateFuel(double fuelLevel,
             double consumptionPerLapAvg,
+            double consumptionPerLapRecent,
             double currentLapHighPrecision,
             int estimatedTotalLaps,
             bool isRace,
@@ -608,7 +637,7 @@ namespace benofficial2.Plugin
             out double extraFuelAtFinish,
             out double consumptionTargetForExtraLap)
         {
-            if (consumptionPerLapAvg < 0.00000001)
+            if (consumptionPerLapAvg < Constants.FuelEpsilon || consumptionPerLapRecent < Constants.FuelEpsilon)
             {
                 remainingLaps = 0.0;
                 pitLap = 0;
@@ -620,11 +649,11 @@ namespace benofficial2.Plugin
                 extraFuelAtFinish = 0.0;
                 consumptionTargetForExtraLap = 0.0;
                 return;
-            }                
+            }
 
             double consumptionPerLapSafe = consumptionPerLapAvg * (1 + extraConsumptionPct / 100.0);
             double fuelLeftSafe = Math.Max(0.0, fuelLevel - fuelReserve);
-            remainingLaps = fuelLeftSafe / consumptionPerLapAvg;
+            remainingLaps = fuelLeftSafe / consumptionPerLapRecent;
 
             // Determine the lap when we run out of fuel and pit the lap before that. Or on the current lap if we went beyond.
             int currentLap = Math.Max(0, (int)Math.Ceiling(currentLapHighPrecision));
@@ -637,7 +666,7 @@ namespace benofficial2.Plugin
                 extraFuelAtFinish = 0.0;
 
                 double lapsToNextStop = Math.Max(0.0, pitLap - currentLapHighPrecision);
-                double fuelToNextStop = lapsToNextStop * consumptionPerLapAvg;
+                double fuelToNextStop = lapsToNextStop * consumptionPerLapRecent;
                 double fuelLeftAtStop = Math.Max(0.0, fuelLevel - fuelToNextStop);
                 double fuelToFinishSafe = (lapsToFinishAfterNextStop * consumptionPerLapSafe) + fuelReserve;
 
@@ -681,7 +710,7 @@ namespace benofficial2.Plugin
                 if (estimatedTotalLaps > 0)
                 {
                     double lapsToFinish = Math.Max(0.0, estimatedTotalLaps - currentLapHighPrecision);
-                    double fuelToFinish = (lapsToFinish * consumptionPerLapAvg) + fuelReserve;
+                    double fuelToFinish = (lapsToFinish * consumptionPerLapRecent) + fuelReserve;
                     extraFuelAtFinish = Math.Max(0.0, fuelLevel - fuelToFinish);
 
                     if (extraFuelAtFinish < Constants.FuelEpsilon)
@@ -807,6 +836,28 @@ namespace benofficial2.Plugin
         public void SendClearFuel()
         {
             BroadcastMessage.Broadcast(BroadcastMessageTypes.PitCommand, (int)PitCommandModeTypes.ClearFuel, 0, 0);
+        }
+
+        private void UpdateConsumptionTracker(ref GameData data)
+        {
+            // Only track when in the car.
+            RawDataHelper.TryGetTelemetryData<int>(ref data, out int enterExitReset, "EnterExitReset");
+            if (enterExitReset <= 0)
+                return;
+            
+            RawDataHelper.TryGetTelemetryData<double>(ref data, out double fuelLevel, "FuelLevel");
+            RawDataHelper.TryGetTelemetryData<int>(ref data, out int incidentCount, "PlayerCarMyIncidentCount");
+            RawDataHelper.TryGetTelemetryData<double>(ref data, out double lapDistPct, "LapDistPct");
+
+            // Only track full-course cautions on ovals.
+            bool caution = _sessionModule.Oval && data.NewData.Flag_Yellow == 1;
+
+            bool stopped = data.NewData.SpeedKmh < 1;
+            bool onPitRoad = data.NewData.IsInPitLane > 0;
+            bool paceLap = _sessionModule.Race && !_sessionModule.RaceStarted;
+            bool invalidate = caution || onPitRoad || paceLap || stopped;         
+
+            _consumptionTracker.Update(lapDistPct, fuelLevel, invalidate, incidentCount);
         }
     }
 }

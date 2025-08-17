@@ -28,6 +28,7 @@ namespace benofficial2.Tests
         {
             FuelCalcModule.CalculateFuel(/*fuelLevel*/ 0.0,
                 /*consumptionPerLapAvg*/ 0.0,
+                /*consumptionPerLapRecent*/ 0.0,
                 /*currentLapHighPrecision*/ 1.0,
                 /*estimatedTotalLaps*/ 20,
                 /*isRace*/ false,
@@ -64,6 +65,7 @@ namespace benofficial2.Tests
         {
             FuelCalcModule.CalculateFuel(/*fuelLevel*/ 70.0,
                 /*consumptionPerLapAvg*/ 0.5,
+                /*consumptionPerLapRecent*/ 0.5,
                 /*currentLapHighPrecision*/ 0.0,
                 /*estimatedTotalLaps*/ 20,
                 /*isRace*/ true,
@@ -100,6 +102,7 @@ namespace benofficial2.Tests
         {
             FuelCalcModule.CalculateFuel(/*fuelLevel*/ 70.0,
                 /*consumptionPerLapAvg*/ 0.5,
+                /*consumptionPerLapRecent*/ 0.5,
                 /*currentLapHighPrecision*/ 0.0,
                 /*estimatedTotalLaps*/ 200,
                 /*isRace*/ true,
@@ -136,6 +139,7 @@ namespace benofficial2.Tests
         {
             FuelCalcModule.CalculateFuel(/*fuelLevel*/ 39.0,
                 /*consumptionPerLapAvg*/ 0.5,
+                /*consumptionPerLapRecent*/ 0.5,
                 /*currentLapHighPrecision*/ 62.0,
                 /*estimatedTotalLaps*/ 200,
                 /*isRace*/ true,
@@ -172,6 +176,7 @@ namespace benofficial2.Tests
         {
             FuelCalcModule.CalculateFuel(/*fuelLevel*/ 1.0,
                 /*consumptionPerLapAvg*/ 0.5,
+                /*consumptionPerLapRecent*/ 0.5,
                 /*currentLapHighPrecision*/ 138.0,
                 /*estimatedTotalLaps*/ 200,
                 /*isRace*/ true,
@@ -208,6 +213,7 @@ namespace benofficial2.Tests
         {
             FuelCalcModule.CalculateFuel(/*fuelLevel*/ 70.0,
                 /*consumptionPerLapAvg*/ 0.5,
+                /*consumptionPerLapRecent*/ 0.5,
                 /*currentLapHighPrecision*/ 0.0,
                 /*estimatedTotalLaps*/ 300,
                 /*isRace*/ true,
@@ -244,6 +250,7 @@ namespace benofficial2.Tests
         {
             FuelCalcModule.CalculateFuel(/*fuelLevel*/ 70.0,
                 /*consumptionPerLapAvg*/ 0.5,
+                /*consumptionPerLapRecent*/ 0.5,
                 /*currentLapHighPrecision*/ 0.0,
                 /*estimatedTotalLaps*/ 200,
                 /*isRace*/ true,
@@ -282,6 +289,7 @@ namespace benofficial2.Tests
             // Was suggesting a pit on 6/7
             FuelCalcModule.CalculateFuel(/*fuelLevel*/ 4.43250846862793,
                 /*consumptionPerLapAvg*/ 1.4391992902796378,
+                /*consumptionPerLapRecent*/ 1.4391992902796378,
                 /*currentLapHighPrecision*/ 4.1070254445075989,
                 /*estimatedTotalLaps*/ 7,
                 /*isRace*/ true,
@@ -320,6 +328,7 @@ namespace benofficial2.Tests
             // Was suggesting a pit on 6/7
             FuelCalcModule.CalculateFuel(/*fuelLevel*/ 2.9937918186187744,
                 /*consumptionPerLapAvg*/ 1.4374254413629475,
+                /*consumptionPerLapRecent*/ 1.4374254413629475,
                 /*currentLapHighPrecision*/ 5.1090390831232071,
                 /*estimatedTotalLaps*/ 7,
                 /*isRace*/ true,
@@ -358,6 +367,7 @@ namespace benofficial2.Tests
             // Was suggesting a pit on 6/7 for +0.2, but continued.
             FuelCalcModule.CalculateFuel(/*fuelLevel*/ 1.5842245817184448,
                 /*consumptionPerLapAvg*/ 1.4420972638619318,
+                /*consumptionPerLapRecent*/ 1.4420972638619318,
                 /*currentLapHighPrecision*/ 6.08769016712904,
                 /*estimatedTotalLaps*/ 7,
                 /*isRace*/ true,
@@ -396,6 +406,7 @@ namespace benofficial2.Tests
             // Was suggesting a pit on 6/7 for +0.2, but continued.
             FuelCalcModule.CalculateFuel(/*fuelLevel*/ 0.32208803296089172,
                 /*consumptionPerLapAvg*/ 1.4496734014665857,
+                /*consumptionPerLapRecent*/ 1.4496734014665857,
                 /*currentLapHighPrecision*/ 6.9722132682800293,
                 /*estimatedTotalLaps*/ 7,
                 /*isRace*/ true,

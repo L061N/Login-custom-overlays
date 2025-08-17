@@ -114,6 +114,7 @@
     <Compile Include="Modules\Driver.cs" />
     <Compile Include="Modules\Flair.cs" />
     <Compile Include="Modules\FuelCalc.cs" />
+    <Compile Include="Modules\FuelConsumptionTracker.cs" />
     <Compile Include="Modules\General.cs" />
     <Compile Include="Modules\LaunchAssist.cs" />
     <Compile Include="Modules\Precipitation.cs" />
