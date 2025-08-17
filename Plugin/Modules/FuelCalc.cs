@@ -852,10 +852,11 @@ namespace benofficial2.Plugin
             // Only track full-course cautions on ovals.
             bool caution = _sessionModule.Oval && data.NewData.Flag_Yellow == 1;
 
+            bool blackFlag = data.NewData.Flag_Black == 1;
             bool stopped = data.NewData.SpeedKmh < 1;
             bool onPitRoad = data.NewData.IsInPitLane > 0;
             bool paceLap = _sessionModule.Race && !_sessionModule.RaceStarted;
-            bool invalidate = caution || onPitRoad || paceLap || stopped;         
+            bool invalidate = caution || onPitRoad || paceLap || stopped || blackFlag;
 
             _consumptionTracker.Update(lapDistPct, fuelLevel, invalidate, incidentCount);
         }
