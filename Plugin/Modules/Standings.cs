@@ -828,6 +828,9 @@ namespace benofficial2.Plugin
 
         static public int EstimateTotalLaps(double currentLapHighPrecision, int sessionTotalLaps, double sessionTimeRemain, double avgLapTime)
         {
+            if (sessionTimeRemain >= Constants.UnlimitedTimeSeconds)
+                return Math.Max(0, sessionTotalLaps);
+
             // Even if it is a lap-limited race, check if there's enough time to complete the remaining laps.
             if (sessionTotalLaps > 0)
             {
