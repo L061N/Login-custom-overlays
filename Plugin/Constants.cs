@@ -45,6 +45,7 @@ namespace benofficial2.Plugin
 
         public const double PoundPerKg = 2.204623;
         public const double GallonPerLiter = 0.264172;
+        public const double FuelKgPerLiter = 0.7438;
 
         // IRSDK_UNLIMITED_TIME
         public const double UnlimitedTimeSeconds = 604800.0f;

@@ -42,6 +42,8 @@ namespace benofficial2.Plugin
         public bool EnablePreRaceWarning { get; set; } = true;
         public bool EvenFuelStints { get; set; } = false;
         public bool AutoFuelEnabled { get; set; } = false;
+        public int ConsumptionRecentLapCount { get; set; } = 3;
+        public int ConsumptionPercentile { get; set; } = 75;
 
         // Legacy properties for backwards compatibility (saved pre 3.0)
         public string FuelReserveString { get => FuelReserveLiters.ValueString; set => FuelReserveLiters.ValueString = value; }
@@ -291,7 +293,7 @@ namespace benofficial2.Plugin
 
             RawDataHelper.TryGetSessionData<double>(ref data, out double driverCarFuelKgPerLtr, "DriverInfo", "DriverCarFuelKgPerLtr");
             if (driverCarFuelKgPerLtr <= 0)
-                driverCarFuelKgPerLtr = 0.7438;
+                driverCarFuelKgPerLtr = Constants.FuelKgPerLiter;
 
             if (fuelLevelStr.IndexOf("L") != -1)
             {
@@ -390,8 +392,8 @@ namespace benofficial2.Plugin
             // Even though the property is called "LitersPerLap", consumption will be in gallons when SimHub is set to gallons.
             ConsumptionLastLap = fuelLastLapSimHub * ConvertFromSimHubUnits;
 
-            TrackerMedianConsumption = _consumptionTracker.GetConsumption(50) * ConvertFromLiters;
-            TrackerRecentConsumption = _consumptionTracker.GetRecentConsumption(3) * ConvertFromLiters;
+            TrackerMedianConsumption = _consumptionTracker.GetConsumption(Settings.ConsumptionPercentile) * ConvertFromLiters;
+            TrackerRecentConsumption = _consumptionTracker.GetRecentConsumption(Settings.ConsumptionRecentLapCount) * ConvertFromLiters;
 
             if (_consumptionTracker.GetValidLapCount() > 0)
             {

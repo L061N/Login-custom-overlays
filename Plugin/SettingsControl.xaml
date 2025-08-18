@@ -682,6 +682,11 @@
                             </StackPanel>
                         </StackPanel>
 
+                        <StackPanel Orientation="Horizontal">
+                            <ui:TitledSlider Width="400" Title="Recent Consumption History (laps)" Maximum="10" Minimum="1" Value="{Binding Plugin.Modules[FuelCalcModule].Settings.ConsumptionRecentLapCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" ToolTip="Number of recent laps to consider for the average consumption. Affects the laps remaining estimate and pit lap. Does not affect the fuel to add." />
+                            <ui:TitledSlider Width="400" Title="Consumption Percentile" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[FuelCalcModule].Settings.ConsumptionPercentile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" ToolTip="Consumption to use to determine the fuel to add. A value of 50 will use the median consumption, 100 will use the max and 0 the min. Considers the whole history, not just recent. Does not affect the laps remaining estimate." />
+                        </StackPanel>
+                        
                         <styles:SHToggleCheckbox 
                             ToolTip="Instead of fueling the tank to the max every stop, use even fuel stints." 
                             HorizontalAlignment="Left" Margin="0,20,4,8"
