@@ -52,7 +52,7 @@ namespace benofficial2.Plugin
             }
 
             // Detect lap completion (lapPosition wrapped around)
-            if (lapPosition + LapPositionEpsilon < _lastLapPosition)
+            if (lapPosition >= 0 && lapPosition + LapPositionEpsilon < _lastLapPosition)
             {
                 double lapFuelConsumed = _lapFuelStart - fuelLevel;
                 bool incidentHappened = (incidentCount > _lapIncidentCount);

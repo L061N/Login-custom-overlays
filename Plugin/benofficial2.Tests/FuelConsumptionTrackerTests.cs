@@ -81,6 +81,19 @@ namespace benofficial2.Tests
         }
 
         [TestMethod]
+        public void TestInvalidLap_NegativePosition()
+        {
+            var tracker = new FuelConsumptionTracker();
+
+            tracker.Update(0.01, 10.0, false, 0);
+            tracker.Update(0.99, 9.0, false, 0);
+            tracker.Update(-1, 9.0, false, 0); // invalid position
+
+            Assert.AreEqual(0, tracker.GetValidLapCount());
+            Assert.AreEqual(false, tracker.IsLastLapValid());
+        }
+
+        [TestMethod]
         public void TestMultipleValidLap()
         {
             var tracker = new FuelConsumptionTracker();
