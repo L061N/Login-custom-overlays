@@ -18,12 +18,15 @@
 
 using GameReaderCommon;
 using SimHub.Plugins;
-using System.ComponentModel;
 
 namespace benofficial2.Plugin
 {
     public class DashSettings : ModuleSettings
     {
+        public bool GreenBoxesVisible { get; set; } = true;
+        public bool YellowBoxesVisible { get; set; } = true;
+        public bool OrangeBoxesVisible { get; set; } = true;
+        public bool RedBoxesVisible { get; set; } = true;
         public int BackgroundOpacity { get; set; } = 60;
     }
 
@@ -34,6 +37,10 @@ namespace benofficial2.Plugin
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<DashSettings>("DashSettings", () => new DashSettings());
+            plugin.AttachDelegate(name: "Dash.GreenBoxesVisible", valueProvider: () => Settings.GreenBoxesVisible);
+            plugin.AttachDelegate(name: "Dash.YellowBoxesVisible", valueProvider: () => Settings.YellowBoxesVisible);
+            plugin.AttachDelegate(name: "Dash.OrangeBoxesVisible", valueProvider: () => Settings.OrangeBoxesVisible);
+            plugin.AttachDelegate(name: "Dash.RedBoxesVisible", valueProvider: () => Settings.RedBoxesVisible);
             plugin.AttachDelegate(name: "Dash.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
         }
 
