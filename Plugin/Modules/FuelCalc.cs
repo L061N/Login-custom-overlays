@@ -103,7 +103,7 @@ namespace benofficial2.Plugin
         public double ExtraFuelAtFinish { get; internal set; } = 0.0;
         public bool WarningVisible { get; internal set; } = false;
         public int TrackerValidLapCount { get { return _consumptionTracker.GetValidLapCount(); } }
-        public bool TrackerLastLapValid { get { return _consumptionTracker.IsLastLapValid(); } }
+        public bool TrackerLastLapValid { get { return _consumptionTracker.IsPreviousLapValid(); } }
         public double TrackerMedianConsumption { get; internal set; } = 0.0;
         public double TrackerRecentConsumption { get; internal set; } = 0.0;
 

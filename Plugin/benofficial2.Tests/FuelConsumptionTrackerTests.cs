@@ -36,7 +36,7 @@ namespace benofficial2.Tests
             tracker.Update(0.01, 9.0, false, 0); // wrap → lap ends
 
             Assert.AreEqual(1, tracker.GetValidLapCount());
-            Assert.AreEqual(true, tracker.IsLastLapValid());
+            Assert.AreEqual(true, tracker.IsPreviousLapValid());
             Assert.AreEqual(1.0, tracker.GetRecentConsumption(1), 1e-6);
             Assert.AreEqual(1.0, tracker.GetRecentConsumption(3), 1e-6);
         }
@@ -51,7 +51,7 @@ namespace benofficial2.Tests
             tracker.Update(0.01, 9.0, false, 0); // lap ends
 
             Assert.AreEqual(0, tracker.GetValidLapCount());
-            Assert.AreEqual(false, tracker.IsLastLapValid());
+            Assert.AreEqual(false, tracker.IsPreviousLapValid());
         }
 
         [TestMethod]
@@ -64,7 +64,7 @@ namespace benofficial2.Tests
             tracker.Update(0.01, 9.0, false, 1); // lap ends
 
             Assert.AreEqual(0, tracker.GetValidLapCount());
-            Assert.AreEqual(false, tracker.IsLastLapValid());
+            Assert.AreEqual(false, tracker.IsPreviousLapValid());
         }
 
         [TestMethod]
@@ -73,24 +73,52 @@ namespace benofficial2.Tests
             var tracker = new FuelConsumptionTracker();
 
             tracker.Update(0.01, 10.0, false, 0);
-            tracker.Update(0.50, 9.0, false, 0); 
+            tracker.Update(0.50, 9.5, false, 0); 
             tracker.Update(0.01, 9.0, false, 0); // teleport, incomplete lap
 
             Assert.AreEqual(0, tracker.GetValidLapCount());
-            Assert.AreEqual(false, tracker.IsLastLapValid());
+            Assert.AreEqual(false, tracker.IsPreviousLapValid());
         }
 
         [TestMethod]
-        public void TestInvalidLap_NegativePosition()
+        public void TestInvalidLap_NegativePosition_Incomplete()
+        {
+            var tracker = new FuelConsumptionTracker();
+
+            tracker.Update(0.01, 10.0, false, 0);
+            tracker.Update(0.50, 9.5, false, 0);
+            tracker.Update(-1, 9.0, false, 0); // negative position, incomplete lap
+
+            Assert.AreEqual(0, tracker.GetValidLapCount());
+            Assert.AreEqual(false, tracker.IsPreviousLapValid());
+        }
+
+        [TestMethod]
+        public void TestInvalidLap_NegativePosition_Complete()
         {
             var tracker = new FuelConsumptionTracker();
 
             tracker.Update(0.01, 10.0, false, 0);
             tracker.Update(0.99, 9.0, false, 0);
-            tracker.Update(-1, 9.0, false, 0); // invalid position
+            tracker.Update(-0.1, 9.0, false, 0); // negative position, complete lap
+
+            Assert.AreEqual(1, tracker.GetValidLapCount());
+            Assert.AreEqual(true, tracker.IsPreviousLapValid());
+        }
+
+        [TestMethod]
+        public void TestInvalidLap_Reverse()
+        {
+            var tracker = new FuelConsumptionTracker();
+
+            tracker.Update(0.01, 10.0, false, 0);
+            tracker.Update(0.50, 9.5, false, 0);
+            tracker.Update(0.49, 9.5, false, 0); // reverse on track
+            tracker.Update(0.99, 9.0, false, 0);
+            tracker.Update(0.01, 9.0, false, 0);
 
             Assert.AreEqual(0, tracker.GetValidLapCount());
-            Assert.AreEqual(false, tracker.IsLastLapValid());
+            Assert.AreEqual(false, tracker.IsPreviousLapValid());
         }
 
         [TestMethod]
@@ -124,7 +152,7 @@ namespace benofficial2.Tests
             tracker.Update(0.01, 4.0, false, 0);
 
             Assert.AreEqual(5, tracker.GetValidLapCount(), "Should have 5 valid laps total");
-            Assert.AreEqual(true, tracker.IsLastLapValid());
+            Assert.AreEqual(true, tracker.IsPreviousLapValid());
 
             // Check average of the most recent 3 laps (Laps 3, 4, 5 → 1.2, 1.3, 1.4)
             double expected = (1.2 + 1.3 + 1.4) / 3.0;
@@ -154,7 +182,7 @@ namespace benofficial2.Tests
             tracker.Update(0.01, 4.0, false, 0);
 
             Assert.AreEqual(3, tracker.GetValidLapCount());
-            Assert.AreEqual(true, tracker.IsLastLapValid());
+            Assert.AreEqual(true, tracker.IsPreviousLapValid());
 
             // Median (50th percentile) should be 2.0
             Assert.AreEqual(2.0, tracker.GetConsumption(50), 1e-6);
@@ -164,6 +192,39 @@ namespace benofficial2.Tests
 
             // 0th percentile should be min = 1.0
             Assert.AreEqual(1.0, tracker.GetConsumption(0), 1e-6);
+        }
+
+        [TestMethod]
+        public void TestNegativePositionAtStartFinish()
+        {
+            var tracker = new FuelConsumptionTracker();
+
+            // Lap 1: 1.0
+            tracker.Update(0.01, 10.0, false, 0);
+            tracker.Update(0.99, 9.0, false, 0);
+            tracker.Update(0.01, 9.0, false, 0);
+
+            // Lap 2: 2.0
+            tracker.Update(0.01, 9.0, false, 0);
+            tracker.Update(0.99, 7.0, false, 0);
+            tracker.Update(0.01, 7.0, false, 0);
+
+            // Lap 3: 3.0
+            tracker.Update(0.01, 7.0, false, 0);
+            tracker.Update(0.99, 4.0, false, 0);
+            tracker.Update(0.01, 4.0, false, 0);
+
+            // Lap 4: box
+            tracker.Update(0.01, 7.0, false, 0);
+            tracker.Update(0.99, 4.0, true, 0);
+            tracker.Update(-0.01, 4.0, true, 0); // negative position at finish
+            tracker.Update(0.01, 4.0, true, 0);
+
+            Assert.AreEqual(3, tracker.GetValidLapCount());
+            Assert.AreEqual(false, tracker.IsPreviousLapValid());
+
+            // Median (50th percentile) should be 2.0
+            Assert.AreEqual(2.0, tracker.GetConsumption(50), 1e-6);
         }
     }
 }
