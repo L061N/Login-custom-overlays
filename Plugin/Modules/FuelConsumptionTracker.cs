@@ -27,58 +27,59 @@ namespace benofficial2.Plugin
         private const double LapPositionEpsilon = 1e-5;
         private const double FullLapThreshold = 0.95;
 
-        private double startLapPosition = -1.0;
-        private double lastLapPosition = -1.0;
-        private bool lastLapValid = false;
+        private double _startLapPosition = -1.0;
+        private double _lastLapPosition = -1.0;
+        private bool _lastLapValid = false;
 
-        private bool wasInvalidated = false;
-        private int lapIncidentCount = 0;
+        private bool _wasInvalidated = false;
+        private int _lapIncidentCount = 0;
 
-        private double lapFuelStart = -1.0;
+        private double _lapFuelStart = -1.0;
 
-        private readonly List<double> allConsumptions = new List<double>();
+        private readonly List<double> _allConsumptions = new List<double>();
 
         public void Update(double lapPosition, double fuelLevel, bool invalidate, int incidentCount)
         {
             // First update → initialize
-            if (lastLapPosition < 0.0)
+            if (_lastLapPosition < 0.0)
             {
-                startLapPosition = lapPosition;
-                lastLapPosition = lapPosition;
-                lapFuelStart = fuelLevel;
-                wasInvalidated = invalidate;
-                lapIncidentCount = incidentCount;
+                _startLapPosition = lapPosition;
+                _lastLapPosition = lapPosition;
+                _lapFuelStart = fuelLevel;
+                _wasInvalidated = invalidate;
+                _lapIncidentCount = incidentCount;
                 return;
             }
 
             // Detect lap completion (lapPosition wrapped around)
-            if (lapPosition + LapPositionEpsilon < lastLapPosition)
+            if (lapPosition + LapPositionEpsilon < _lastLapPosition)
             {
-                double lapFuelConsumed = lapFuelStart - fuelLevel;
-                bool incidentHappened = (incidentCount > lapIncidentCount);
-                bool fullLapCompleted = (lastLapPosition - startLapPosition) > FullLapThreshold;
+                double lapFuelConsumed = _lapFuelStart - fuelLevel;
+                bool incidentHappened = (incidentCount > _lapIncidentCount);
+                bool fullLapCompleted = (_lastLapPosition - _startLapPosition) > FullLapThreshold;
 
-                if (fullLapCompleted && !wasInvalidated && !incidentHappened && lapFuelConsumed > Constants.FuelEpsilon)
+                if (fullLapCompleted && !_wasInvalidated && !incidentHappened && lapFuelConsumed > Constants.FuelEpsilon)
                 {
-                    allConsumptions.Add(lapFuelConsumed);
-                    lastLapValid = true;
+                    _allConsumptions.Add(lapFuelConsumed);
+                    _lastLapValid = true;
                 }
                 else
                 {
-                    lastLapValid = false;
+                    _lastLapValid = false;
                 }
 
                 // Reset for next lap
-                startLapPosition = lapPosition;
-                lapFuelStart = fuelLevel;
-                wasInvalidated = false;
-                lapIncidentCount = incidentCount;
+                _startLapPosition = lapPosition;
+                _lapFuelStart = fuelLevel;
+                _wasInvalidated = false;
+                _lapIncidentCount = incidentCount;
             }
 
             // Update flags during current lap
-            if (invalidate) wasInvalidated = true;
+            if (invalidate)
+                _wasInvalidated = true;
 
-            lastLapPosition = lapPosition;
+            _lastLapPosition = lapPosition;
         }
 
         /// <summary>
@@ -86,8 +87,10 @@ namespace benofficial2.Plugin
         /// </summary>
         public double GetRecentConsumption(int lastLaps)
         {
-            if (allConsumptions.Count == 0 || lastLaps <= 0) return 0.0;
-            var recent = allConsumptions.Skip(Math.Max(0, allConsumptions.Count - lastLaps));
+            if (_allConsumptions.Count == 0 || lastLaps <= 0)
+                return 0.0;
+
+            var recent = _allConsumptions.Skip(Math.Max(0, _allConsumptions.Count - lastLaps));
             return recent.Average();
         }
 
@@ -97,11 +100,12 @@ namespace benofficial2.Plugin
         /// </summary>
         public double GetConsumption(int percentile)
         {
-            if (allConsumptions.Count == 0) return 0.0;
+            if (_allConsumptions.Count == 0)
+                return 0.0;
 
             percentile = Math.Max(0, Math.Min(100, percentile));
 
-            var sorted = allConsumptions.OrderBy(x => x).ToList();
+            var sorted = _allConsumptions.OrderBy(x => x).ToList();
             double index = (percentile / 100.0) * (sorted.Count - 1);
             int lower = (int)Math.Floor(index);
             int upper = (int)Math.Ceiling(index);
@@ -113,19 +117,19 @@ namespace benofficial2.Plugin
             return sorted[lower] + (sorted[upper] - sorted[lower]) * fraction;
         }
 
-        public int GetValidLapCount() => allConsumptions.Count;
+        public int GetValidLapCount() => _allConsumptions.Count;
 
-        public bool IsLastLapValid() => lastLapValid;
+        public bool IsLastLapValid() => _lastLapValid;
 
         public void Reset()
         {
-            startLapPosition = -1.0;
-            lastLapPosition = -1.0;
-            lastLapValid = false;
-            wasInvalidated = false;
-            lapIncidentCount = 0;
-            lapFuelStart = -1.0;
-            allConsumptions.Clear();
+            _startLapPosition = -1.0;
+            _lastLapPosition = -1.0;
+            _lastLapValid = false;
+            _wasInvalidated = false;
+            _lapIncidentCount = 0;
+            _lapFuelStart = -1.0;
+            _allConsumptions.Clear();
         }
     }
 }
