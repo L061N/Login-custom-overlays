@@ -31,6 +31,10 @@
         "qualStartTrackPct": 0.00,
         "raceStartTrackPct": 0.49
     },
+    "silverstone 2019 gp": {
+        "qualStartTrackPct": 0.00,
+        "raceStartTrackPct": 0.84
+    },
     "twinring fullrc": {
         "pushToPassCooldown_SF23" : 120
     },
