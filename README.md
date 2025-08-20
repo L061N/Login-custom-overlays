@@ -42,11 +42,7 @@ See the [Installation Guide](https://github.com/fixfactory/bo2-official-overlays
 Shows the live **Leaderboard** for up to 4 car classes. Optional columns: **Car Logo**, **Gap**, **Best Lap Time**, **Last Lap Time**, and **Delta**. See the **benofficial2 plugin** page (in the left menu) for all options.
 
 <p align="center">
-  <img src="Images/Screenshots/Multi-Class-Standings-LMP3.png" width="450"/>
-</p>
-
-<p align="center">
-  <img src="Images/Screenshots/Multi-Class-Standings-GTE.png" width="450"/>
+  <img src="Images/Screenshots/Standings-IR18.png" width="450"/>
 </p>
 
 *Note: The old **Standings** overlay has been deprecated and will not be supported anymore. Please use the **Multi-Class Standings** overlay instead, which can be configured to look the same with only the player's car class.*
@@ -192,7 +188,6 @@ Three small overlays that show weather-related data fields.
 The speed & direction of wind is relative to the player car rotation, so a down arrow would be a headwind. Useful to understand the impact of wind on straight line speed and cornering grip.
 
 The track wetness is relative to the maximum wetness (100%). Precipitation is the forecasted chance of rain at the moment.
-
 
 ## Help & Feedback
 
