@@ -17,19 +17,20 @@ To see them in action, click the image above for a video demo.
 
 ### Included in the collection
 
+- **[Inputs Telemetry](#inputs-telemetry)**: shows pedal inputs and a graph
 - **[Multi-Class Standings](#multi-class-standings)**: shows the live leaderboard in up to 4 car classes
 - **[Relative](#relative)**: shows drivers ahead / behind on track
+- **[Spotter](#spotter)**: shows orange bars when side-by-side with another car
+- **[Fuel Calculator](#fuel-calculator)**: shows fuel consumption, estimated pit lap and fuel to add.
 - **[Track Map](#track-map)**: shows cars on a map
+- **[Wind, Track Wetness & Precipitation](#wind-track-wetness--precipitation)**: shows weather-related data fields
 - **[Delta Bar](#delta-bar)**: gives you feedback on your pace with time and speed deltas
-- **[Inputs Telemetry](#inputs-telemetry)**: shows pedal inputs and a graph
 - **[Highlighted Driver](#highlighted-driver)**: shows information about the currently spectated driver
 - **[Dash Overlay](#dash-overlay)**: shows various in-car settings and statuses (DRS, ERS, Fuel, BB, etc.)
+- **[Setup Fuel Calculator](#setup-fuel-calculator)**: when in garage, shows how much fuel is needed for the race
 - **[Setup Cover](#setup-cover)**: For streamers, hides the setup page when in garage
 - **[Twitch Chat](#twitch-chat)**: For streamers, shows your chat on screen
 - **[Launch Assist](#launch-assist)**: shows precise pedal inputs to nail a perfect start
-- **[Spotter](#spotter)**: shows orange bars when side-by-side with another car
-- **[Fuel Calculator](#fuel-calculator)**: when in garage, shows how much fuel is needed for the race
-- **[Wind, Track Wetness & Precipitation](#wind-track-wetness--precipitation)**: shows weather-related data fields
 
 ## How to Install
 
@@ -81,12 +82,28 @@ Also comes with a **Rejoin Helper** that will show up when stopped or off-track,
 
 Designed to be placed over the virtual mirror, but can be placed wherever you want it to be.
 
+## Fuel Calculator
+
+This overlay shows the fuel consumption, indicates when to pit and calculates how much fuel to add. It can also automatically set the fuel to add for you when entering pit lane. See the [documentation](https://github.com/fixfactory/bo2-official-overlays/wiki/Overlay-Documentation#fuel-calculator) for details.
+
+<p align="center">
+  <img src="Images/Screenshots/FuelCalc-Box.png" width="400"/>
+</p>
+
 ## Track Map
 
 This overlay shows car positions on a map. Supports multi-class colors.
 
 <p align="center">
   <img src="Images/Screenshots/Map-Multi.png" width="200"/>
+</p>
+
+## Wind, Track Wetness & Precipitation
+
+Three small overlays that show weather-related data fields.
+
+<p align="center">
+  <img src="Images/Screenshots/Weather.png" width="150"/>
 </p>
 
 ## Delta Bar
@@ -131,6 +148,22 @@ The yellow boxes are for **Fuel** and **Laps Remaining Estimate**. A **Pit Indic
   <img src="Images/Screenshots/Dash-Pit.png" width="350"/>
 </p>
 
+## Setup Fuel Calculator
+
+This overlay shows up only when in the garage / setup screen and tells you how much fuel is needed to start the race. Supports heat races and will determine if the race is limited by time or laps when both are specified. Useful for leagues that have a custom race length.
+
+<p align="center">
+  <img src="Images/Screenshots/FuelCalc-2.png" width="350"/>
+</p>
+
+A blinking **Fuel Warning** lights up when you're about to grid with an under-fueled setup. Never start a race with a qualification setup again!
+
+<p align="center">
+  <img src="Images/Screenshots/Fuel-Warning.png" width="200"/>
+</p>
+
+*Beta Warning: use at your own risk. I might have missed an edge case but so far so good in my tests. Please report any issue or feedback in my [Discord](https://discord.gg/s2834nmdYx).*
+
 ## Setup Cover
 
 For streamers, this overlay shows an animation that hides your car setup values when entering the garage.
@@ -152,34 +185,6 @@ There's some randomness to the clutch bitepoint in iRacing, so make sure to expe
 <p align="center">
   <img src="Images/Screenshots/Launch-Assist.png" width="80"/>
 </p>
-
-## Setup Fuel Calculator
-
-This overlay shows up only when in the garage / setup screen and tells you how much fuel is needed to start the race. Supports heat races and will determine if the race is limited by time or laps when both are specified. Useful for leagues that have a custom race length.
-
-<p align="center">
-  <img src="Images/Screenshots/FuelCalc-2.png" width="350"/>
-</p>
-
-A blinking **Fuel Warning** lights up when you're about to grid with an under-fueled setup. Never start a race with a qualification setup again!
-
-<p align="center">
-  <img src="Images/Screenshots/Fuel-Warning.png" width="200"/>
-</p>
-
-*Beta Warning: use at your own risk. I might have missed an edge case but so far so good in my tests. Please report any issue or feedback in my [Discord](https://discord.gg/s2834nmdYx).*
-
-## Wind, Track Wetness & Precipitation
-
-Three small overlays that show weather-related data fields.
-
-<p align="center">
-  <img src="Images/Screenshots/Weather.png" width="150"/>
-</p>
-
-The speed & direction of wind is relative to the player car rotation, so a down arrow would be a headwind. Useful to understand the impact of wind on straight line speed and cornering grip.
-
-The track wetness is relative to the maximum wetness (100%). Precipitation is the forecasted chance of rain at the moment.
 
 ## Help & Feedback
 
