@@ -62,11 +62,7 @@ There's an optional footer (not enabled by default) that shows additional sessio
 Shows car positions on a map. Supports multi-class colors.
 
 <p align="center">
-  <img src="Images/Screenshots/Map.png" width="250"/>
-</p>
-
-<p align="center">
-  <img src="Images/Screenshots/Map-Multi.png" width="150"/>
+  <img src="Images/Screenshots/Map-Multi.png" width="200"/>
 </p>
 
 ## Delta Bar
