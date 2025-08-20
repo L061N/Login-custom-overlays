@@ -37,9 +37,17 @@ To see them in action, click the image above for a video demo.
 
 See the [Installation Guide](https://github.com/fixfactory/bo2-official-overlays/wiki/Installation-Guide) for a detailed walkthrough on how to install and setup the overlays the first time.
 
+## Inputs Telemetry
+
+This overlay shows the current driver inputs in real-time. A graph with **Pedal Input Traces** shows the recent inputs over time. This is useful to understand bad habits. It is modular meaning you can hide parts you don't need.
+
+<p align="center">
+  <img src="Images/Screenshots/Inputs.png" width="500"/>
+</p>
+
 ## Multi-Class Standings
 
-Shows the live **Leaderboard** for up to 4 car classes. Optional columns: **Car Logo**, **Gap**, **Best Lap Time**, **Last Lap Time**, and **Delta**. See the **benofficial2 plugin** page (in the left menu) for all options.
+This overlay shows the live **Leaderboard** for up to 4 car classes. Optional columns: **Car Logo**, **Gap**, **Best Lap Time**, **Last Lap Time**, and **Delta**. See the **benofficial2 plugin** page (in the left menu) for all options.
 
 <p align="center">
   <img src="Images/Screenshots/Standings-IR18.png" width="450"/>
@@ -49,7 +57,7 @@ Shows the live **Leaderboard** for up to 4 car classes. Optional columns: **Car 
 
 ## Relative
 
-Shows the nearby drivers **Ahead & Behind** on-track. This includes cars from every car class. In blue are cars that are a lap down and in red are those a lap ahead. The **Out Lap Indicator** shows when a car is on an out-lap. The last column shows the **Gap** in seconds to that car. The header shows the **Strength of Field** and **Incident Count**. The temperature is the **Track Temperature** and the time is your computer's **Local Time**.
+This overlay shows the nearby drivers **Ahead & Behind** on-track. This includes cars from every car class. In blue are cars that are a lap down and in red are those a lap ahead. The **Out Lap Indicator** shows when a car is on an out-lap. The last column shows the **Gap** in seconds to that car. The header shows the **Strength of Field** and **Incident Count**. The temperature is the **Track Temperature** and the time is your computer's **Local Time**.
 
 <p align="center">
   <img src="Images/Screenshots/Relative-LMP3.png" width="350"/>
@@ -57,9 +65,25 @@ Shows the nearby drivers **Ahead & Behind** on-track. This includes cars from ev
 
 There's an optional footer (not enabled by default) that shows additional session information typically seen in the Standings header.
 
+## Spotter
+
+This overlay shows orange bars when side-by-side with another car. This complements your audio spotter as it will show up the moment your spotter starts talking. The size of the orange bar gives your an idea of the amount of car overlap and how fast you are passing them so you can time the perfect move. 
+
+<p align="center">
+  <img src="Images/Screenshots/Spotter.png" width="400"/>
+</p>
+
+Also comes with a **Rejoin Helper** that will show up when stopped or off-track, telling you how safe it is to rejoin by giving you the gap to the next incoming car. Quicker than looking at Relatives.
+
+<p align="center">
+  <img src="Images/Screenshots/RejoinHelper.png" width="400"/>
+</p>
+
+Designed to be placed over the virtual mirror, but can be placed wherever you want it to be.
+
 ## Track Map
 
-Shows car positions on a map. Supports multi-class colors.
+This overlay shows car positions on a map. Supports multi-class colors.
 
 <p align="center">
   <img src="Images/Screenshots/Map-Multi.png" width="200"/>
@@ -67,35 +91,27 @@ Shows car positions on a map. Supports multi-class colors.
 
 ## Delta Bar
 
-Gives you feedback on your pace. The **Delta Time** (center) and **Delta Speed** (right) are relative to your session's best clean lap. In qualifying, they are relative to your all-time best lap. On the left, in a race, you get **Gap** and last lap **Interval** information about your nearest competitor ahead and behind. Useful to know if your are improving relative to them.
+This overlay gives you feedback on your pace. The **Delta Time** (center) and **Delta Speed** (right) are relative to your session's best clean lap. In qualifying, they are relative to your all-time best lap. On the left, in a race, you get **Gap** and last lap **Interval** information about your nearest competitor ahead and behind. Useful to know if your are improving relative to them.
 
 <p align="center">
   <img src="Images/Screenshots/Delta-Best.png" width="400"/>
 </p>
 
+This delta bar can help you improve your lap times by giving you on-the-spot feedback in a corner. Because the **Delta Speed** field is big enough, you'll be able to see it change color while keeping your eyes on the track. So you'll know instantly if your mid-corner speed was faster/slower for example. You'll learn quickly what works and what doesn't.
+
 <p align="center">
   <img src="Images/Screenshots/Delta-White.png" width="400"/>
 </p>
+
+*Note: if the delta bar doesn't show immediately, it is because it doesn't have a clean reference lap to compare against yet. It will show up once you complete a full lap without incident.*
 
 <p align="center">
   <img src="Images/Screenshots/Delta-Red.png" width="400"/>
 </p>
 
-This delta bar can help you improve your lap times by giving you on-the-spot feedback in a corner. Because the **Delta Speed** field is big enough, you'll be able to see it change color while keeping your eyes on the track. So you'll know instantly if your mid-corner speed was faster/slower for example. You'll learn quickly what works and what doesn't.
-
-*Note: if the delta bar doesn't show immediately, it is because it doesn't have a clean reference lap to compare against yet. It will show up once you complete a full lap without incident.*
-
-## Inputs Telemetry
-
-Shows the current **Gear**, **Speed** and a graph of **Pedal Input Traces** over time. This is useful to understand bad habits. This overlay is modular meaning you can hide parts you don't need as well as adjusting the width of the traces (see configuration options in benofficial2 plugin).
-
-<p align="center">
-  <img src="Images/Screenshots/Inputs.png" width="500"/>
-</p>
-
 ## Highlighted Driver
 
-Shows information about the currently spectated driver when spectating. Can optionally be shown when in-car as well.
+This overlay shows information about the currently spectated driver when spectating. Can optionally be shown when in-car as well.
 
 <p align="center">
   <img src="Images/Screenshots/Highlighted-Driver.png" width="400"/>
@@ -103,14 +119,10 @@ Shows information about the currently spectated driver when spectating. Can opti
 
 ## Dash Overlay
 
-Useful when the in-game steering wheel is not visible in your FOV. This overlay shows various in-car settings and statuses. The green boxes typically show statuses about "going faster" such as **DRS**, **ERS**, **P2P**, **OT** (Super Formula), and **Fuel Mix**. 
+This overlay shows various in-car settings and statuses. Useful when the in-game steering wheel is not visible in your FOV. The green boxes typically show statuses about "going faster" such as **DRS**, **ERS**, **P2P**, **OT** (Super Formula), and **Fuel Mix**. 
 
 <p align="center">
   <img src="Images/Screenshots/Dash-ERS-Green.png" width="350"/>
-</p>
-
-<p align="center">
-  <img src="Images/Screenshots/Dash-ERS-Red.png" width="350"/>
 </p>
 
 The yellow boxes are for **Fuel** and **Laps Remaining Estimate**. A **Pit Indicator** will pop up when it's time to pit. The orange boxes are for various in-car settings such as **Entry Diff**. And finally the red boxes are for **Brake Bias** and **ABS** adjustments.
@@ -121,11 +133,11 @@ The yellow boxes are for **Fuel** and **Laps Remaining Estimate**. A **Pit Indic
 
 ## Setup Cover
 
-For streamers, shows an animation that hides your car setup values when entering the garage.
+For streamers, this overlay shows an animation that hides your car setup values when entering the garage.
 
 ## Twitch Chat
 
-For streamers, shows your chat on-screen so you can keep up with chat. Powered by [ChatIS](https://chatis.is2511.com/).
+For streamers, this overlay shows your chat on-screen so you can keep up with chat. Powered by [ChatIS](https://chatis.is2511.com/).
 
 <p align="center">
   <img src="Images/Screenshots/Twitch-Chat.png" width="500"/>
@@ -141,25 +153,9 @@ There's some randomness to the clutch bitepoint in iRacing, so make sure to expe
   <img src="Images/Screenshots/Launch-Assist.png" width="80"/>
 </p>
 
-## Spotter
+## Setup Fuel Calculator
 
-Shows orange bars when side-by-side with another car. This complements your audio spotter as it will show up the moment your spotter starts talking. The size of the orange bar gives your an idea of the amount of car overlap and how fast you are passing them so you can time the perfect move. 
-
-<p align="center">
-  <img src="Images/Screenshots/Spotter.png" width="400"/>
-</p>
-
-Also comes with a **Rejoin Helper** that will show up when stopped or off-track, telling you how safe it is to rejoin by giving you the gap to the next incoming car. Quicker than looking at Relatives.
-
-<p align="center">
-  <img src="Images/Screenshots/RejoinHelper.png" width="400"/>
-</p>
-
-Designed to be placed over the virtual mirror, but can be placed wherever you want it to be.
-
-## Fuel Calculator
-
-Shows up only when in the garage / setup screen and tells you how much fuel is needed to start the race. Supports heat races and will determine if the race is limited by time or laps when both are specified. Useful for leagues that have a custom race length.
+This overlay shows up only when in the garage / setup screen and tells you how much fuel is needed to start the race. Supports heat races and will determine if the race is limited by time or laps when both are specified. Useful for leagues that have a custom race length.
 
 <p align="center">
   <img src="Images/Screenshots/FuelCalc-2.png" width="350"/>
