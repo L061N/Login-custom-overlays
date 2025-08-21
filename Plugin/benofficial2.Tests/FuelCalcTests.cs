@@ -312,7 +312,7 @@ namespace benofficial2.Tests
 
             Assert.AreEqual(2.7324280210448406, remainingLaps, Constants.FuelEpsilon);
             Assert.AreEqual(6, pitLap);
-            Assert.AreEqual(1, pitWindowLap);
+            Assert.AreEqual(0, pitWindowLap);
             Assert.AreEqual(1, pitStopsNeeded);
             Assert.AreEqual(0.24545045133658094, refuelNeeded, Constants.FuelEpsilon);
             Assert.AreEqual(false, pitIndicatorOn);
@@ -351,7 +351,7 @@ namespace benofficial2.Tests
 
             Assert.AreEqual(1.734901683842603, remainingLaps, Constants.FuelEpsilon);
             Assert.AreEqual(6, pitLap);
-            Assert.AreEqual(1, pitWindowLap);
+            Assert.AreEqual(0, pitWindowLap);
             Assert.AreEqual(1, pitStopsNeeded);
             Assert.AreEqual(0.23869776633656281, refuelNeeded, Constants.FuelEpsilon);
             Assert.AreEqual(true, pitIndicatorOn);
@@ -474,6 +474,44 @@ namespace benofficial2.Tests
             Assert.AreEqual(false, pitWindowIndicatorOn);
             Assert.AreEqual(1.2448343404661717, extraFuelAtFinish, Constants.FuelEpsilon);
             Assert.AreEqual(1.3323927247932597, consumptionTargetForExtraLap, Constants.FuelEpsilon);
+        }
+
+        [TestMethod]
+        public void LateModel_SouthNational_Underfueled_Grid()
+        {
+            // 30 laps Late Model AI race at South National, gridding underfueled.
+            FuelCalcModule.CalculateFuel(/*fuelLevel*/ 7.5616664886474609,
+                /*consumptionPerLapAvg*/ 0.31981949806213378,
+                /*consumptionPerLapRecent*/ 0.31924629211425781,
+                /*currentLapHighPrecision*/ -0.10911405086517334,
+                /*estimatedTotalLaps*/ 30,
+                /*isRace*/ true,
+                /*isOval*/ true,
+                /*maxFuelAllowed*/ 83.867,
+                /*fuelReserve*/ 0.5,
+                /*extraConsumptionPct*/ 1.0,
+                /*extraRaceLaps*/ 0.0,
+                /*extraRaceLapsOval*/ 3.0,
+                /*evenFuelStints*/ false,
+                out double remainingLaps,
+                out int pitLap,
+                out int pitWindowLap,
+                out int pitStopsNeeded,
+                out double refuelNeeded,
+                out bool pitIndicatorOn,
+                out bool pitWindowIndicatorOn,
+                out double extraFuelAtFinish,
+                out double consumptionTargetForExtraLap);
+
+            Assert.AreEqual(22.119807380942422, remainingLaps, Constants.FuelEpsilon);
+            Assert.AreEqual(22, pitLap);
+            Assert.AreEqual(0, pitWindowLap);
+            Assert.AreEqual(1, pitStopsNeeded);
+            Assert.AreEqual(3.54978081749279, refuelNeeded, Constants.FuelEpsilon);
+            Assert.AreEqual(false, pitIndicatorOn);
+            Assert.AreEqual(true, pitWindowIndicatorOn);
+            Assert.AreEqual(0.0, extraFuelAtFinish, Constants.FuelEpsilon);
+            Assert.AreEqual(0.30557928240364896, consumptionTargetForExtraLap, Constants.FuelEpsilon);
         }
     }
 }

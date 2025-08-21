@@ -359,6 +359,9 @@ namespace benofficial2.Plugin
             if (RawDataHelper.TryGetSessionData<string>(ref data, out fuelLevel, "CarSetup", "Chassis", "Rear", "FuelLevel"))
                 return fuelLevel;
 
+            if (RawDataHelper.TryGetSessionData<string>(ref data, out fuelLevel, "CarSetup", "Chassis", "Rear", "FuelFillTo"))
+                return fuelLevel;
+
             if (RawDataHelper.TryGetSessionData<string>(ref data, out fuelLevel, "CarSetup", "Chassis", "Front", "FuelLevel"))
                 return fuelLevel;
 
@@ -704,8 +707,8 @@ namespace benofficial2.Plugin
                         maxLapsAfterRefuel = Math.Max(0.0, maxLapsAfterRefuel - extraRaceLaps);
                 }
 
-                pitWindowLap = Math.Max(1, estimatedTotalLaps - (int)Math.Floor(maxLapsAfterRefuel));
-                pitWindowIndicatorOn = currentLapHighPrecision >= (pitWindowLap - 1);
+                pitWindowLap = Math.Max(0, estimatedTotalLaps - (int)Math.Floor(maxLapsAfterRefuel));
+                pitWindowIndicatorOn = Math.Max(0.0, currentLapHighPrecision) >= (pitWindowLap - 1);
             }
             else
             {
