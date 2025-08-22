@@ -43,7 +43,7 @@ namespace benofficial2.Plugin
         public bool EvenFuelStints { get; set; } = false;
         public bool AutoFuelEnabled { get; set; } = false;
         public int ConsumptionRecentLapCount { get; set; } = 3;
-        public int ConsumptionPercentile { get; set; } = 65;
+        public int ConsumptionPercentile { get; set; } = 75;
 
         // Legacy properties for backwards compatibility (saved pre 3.0)
         public string FuelReserveString { get => FuelReserveLiters.ValueString; set => FuelReserveLiters.ValueString = value; }
