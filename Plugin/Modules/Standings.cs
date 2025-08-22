@@ -591,9 +591,12 @@ namespace benofficial2.Plugin
                 {
                     var carClass = data.NewData.OpponentsClassses[carClassIdx];
                     List<Opponent> opponents = carClass.Opponents;
-                    if (opponents.Count > 0)
+
+                    // Looping instead of only checking the first opponent, because in AI races
+                    // all classes are grouped together.
+                    for (int opponentIdx = 0; opponentIdx < opponents.Count; opponentIdx++)
                     {
-                        if (opponents[0].CarClassID == highlightedDriver.CarClassId.ToString())
+                        if (opponents[opponentIdx].CarClassID == highlightedDriver.CarClassId.ToString())
                         {
                             return (highlightedDriver, carClassIdx);
                         }
