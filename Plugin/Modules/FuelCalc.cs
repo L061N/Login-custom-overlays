@@ -208,10 +208,11 @@ namespace benofficial2.Plugin
             MaxFuel = driverCarFuelMaxLtr * ConvertFromLiters;
             MaxFuelAllowed = MaxFuel * _sessionModule.MaxFuelPct;
 
+            UpdateBestLapTime(ref data);
+
             bool beforeRaceStart = _sessionModule.Race && !_sessionModule.RaceStarted;
             if (StartFuelCalculatorVisible || beforeRaceStart)
             {
-                UpdateBestLapTime(ref data);
                 UpdateAllSessionFuel(ref data);
             }
 
