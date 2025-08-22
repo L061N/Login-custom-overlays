@@ -53,5 +53,47 @@ namespace benofficial2.Tests
             averageLapTime.AddLapTime(4, TimeSpan.FromSeconds(93));
             Assert.AreEqual(TimeSpan.FromSeconds(92), averageLapTime.GetAverageLapTime());
         }
+
+        [TestMethod]
+        public void InvalidateLap()
+        {
+            var averageLapTime = new AverageLapTime(3);
+            Assert.AreEqual(TimeSpan.FromSeconds(0), averageLapTime.GetAverageLapTime());
+
+            averageLapTime.AddLapTime(1, TimeSpan.FromSeconds(90));
+            Assert.AreEqual(TimeSpan.FromSeconds(90), averageLapTime.GetAverageLapTime());
+
+            // Can't invalidate a lap we already added.
+            averageLapTime.InvalidateLap(1);
+            Assert.AreEqual(TimeSpan.FromSeconds(90), averageLapTime.GetAverageLapTime());
+
+            averageLapTime.InvalidateLap(2);
+            Assert.AreEqual(TimeSpan.FromSeconds(90), averageLapTime.GetAverageLapTime());
+
+            // This lap will be ignored because it was invalidated.
+            averageLapTime.AddLapTime(2, TimeSpan.FromSeconds(91));
+            Assert.AreEqual(TimeSpan.FromSeconds(90), averageLapTime.GetAverageLapTime());
+
+            averageLapTime.AddLapTime(3, TimeSpan.FromSeconds(92));
+            Assert.AreEqual(TimeSpan.FromSeconds(91), averageLapTime.GetAverageLapTime());
+        }
+
+        [TestMethod]
+        public void DelayedLapTimeChange()
+        {
+            var averageLapTime = new AverageLapTime(3);
+            Assert.AreEqual(TimeSpan.FromSeconds(0), averageLapTime.GetAverageLapTime());
+
+            averageLapTime.AddLapTime(1, TimeSpan.FromSeconds(90));
+            Assert.AreEqual(TimeSpan.FromSeconds(90), averageLapTime.GetAverageLapTime());
+
+            // Lap incremented, but lap time hasn't been updated yet.
+            averageLapTime.AddLapTime(2, TimeSpan.FromSeconds(90));
+            Assert.AreEqual(TimeSpan.FromSeconds(90), averageLapTime.GetAverageLapTime());
+
+            // Lap time finally updated.
+            averageLapTime.AddLapTime(2, TimeSpan.FromSeconds(91));
+            Assert.AreEqual(TimeSpan.FromSeconds(90.5), averageLapTime.GetAverageLapTime());
+        }
     }
 }

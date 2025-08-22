@@ -40,7 +40,9 @@ namespace benofficial2.Plugin
     {
         private readonly Queue<TimeSpan> _lapTimes = new Queue<TimeSpan>();
         private readonly int _maxLapCount;
-        private int _currentLap = -1;
+        private int _previousLap = -1;
+        private int _invalidLap = -1;
+        private TimeSpan _previousLapTime = TimeSpan.Zero;
 
         public AverageLapTime(int lapCount)
         {
@@ -53,18 +55,36 @@ namespace benofficial2.Plugin
 
         public void AddLapTime(int currentLap, TimeSpan lapTime)
         {
-            if (currentLap == _currentLap)
+            if (lapTime <= TimeSpan.Zero)
                 return;
 
-            if (lapTime <= TimeSpan.Zero)
+            // Both must change to consider it a new valid lap.
+            // This handles the case when the lap increments but the lap time hasn't been updated yet.
+            if (currentLap == _previousLap || lapTime == _previousLapTime)
+                return;
+
+            _previousLap = currentLap;
+            _previousLapTime = lapTime;            
+
+            if (currentLap <= _invalidLap)
                 return;
 
             if (_lapTimes.Count == _maxLapCount)
             {
                 _lapTimes.Dequeue();
             }
+
             _lapTimes.Enqueue(lapTime);
-            _currentLap = currentLap;
+            //SimHub.Logging.Current.Info($"AverageLapTime: Added lapTime={lapTime}, currentLap={currentLap}");
+        }
+
+        public void InvalidateLap(int currentLap)
+        {
+            if (currentLap != _invalidLap)
+            {
+                _invalidLap = currentLap;
+                //SimHub.Logging.Current.Info($"AverageLapTime: Invalidated currentLap={currentLap}");
+            }         
         }
 
         public TimeSpan GetAverageLapTime()
@@ -178,6 +198,7 @@ namespace benofficial2.Plugin
         public bool PlayerHadCheckeredFlag { get; internal set; } = false;
         public TimeSpan PlayerLastLapTime { get; internal set; } = TimeSpan.Zero;
         public TimeSpan PlayerBestLapTime { get; internal set; } = TimeSpan.Zero;
+        public TimeSpan PlayerAvgLapTime { get; internal set; } = TimeSpan.Zero;
         public double PlayerCurrentLapHighPrecision { get; set; } = -1;
         public int PlayerCurrentLap { get; set; } = 0;
         public int PlayerTeamIncidentCount { get; set; } = 0;
@@ -208,6 +229,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.LivePositionInClass", valueProvider: () => PlayerLivePositionInClass);
             plugin.AttachDelegate(name: "Player.LastLapTime", valueProvider: () => PlayerLastLapTime);
             plugin.AttachDelegate(name: "Player.BestLapTime", valueProvider: () => PlayerBestLapTime);
+            plugin.AttachDelegate(name: "Player.AvgLapTime", valueProvider: () => PlayerAvgLapTime);
             plugin.AttachDelegate(name: "Player.CurrentLap", valueProvider: () => PlayerCurrentLap);
             plugin.AttachDelegate(name: "Player.TeamIncidentCount", valueProvider: () => PlayerTeamIncidentCount);
             plugin.AttachDelegate(name: "Player.iRatingChange", valueProvider: () => PlayerIRatingChange);
@@ -261,6 +283,7 @@ namespace benofficial2.Plugin
                 LiveClassLeaderboards = new List<ClassLeaderboard>();
                 PlayerLastLapTime = TimeSpan.Zero;
                 PlayerBestLapTime = TimeSpan.Zero;
+                PlayerAvgLapTime = TimeSpan.Zero;
                 PlayerCurrentLap = 0;
                 PlayerTeamIncidentCount = 0;
                 PlayerIRatingChange = 0;
@@ -297,9 +320,16 @@ namespace benofficial2.Plugin
                     continue;
                 }
 
+                // Update the average lap time for the driver
+                int currentLap = opponent.CurrentLap ?? -1;
+                driver.AvgLapTime.AddLapTime(currentLap - 1, driver.LastLapTime);
+
                 // Evaluate the lap when they entered the pit lane
                 if (opponent.IsCarInPitLane)
                 {
+                    // Ignore in-laps and out-laps for the average lap time.
+                    driver.AvgLapTime.InvalidateLap(currentLap);
+
                     // Remember when they entered the pit.
                     if (driver.InPitSince == DateTime.MinValue)
                     {
@@ -436,10 +466,6 @@ namespace benofficial2.Plugin
                     driver.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? -1;
                 }
 
-                // Update the average lap time for the driver
-                int currentLap = opponent.CurrentLap ?? -1;
-                driver.AvgLapTime.AddLapTime(currentLap, driver.LastLapTime);
-
                 if (opponent.IsPlayer)
                 {
                     PlayerOutLap = driver.OutLap;
@@ -450,6 +476,7 @@ namespace benofficial2.Plugin
                     PlayerPositionInClass = opponent.Position > 0 ? opponent.PositionInClass : 0;
                     PlayerLastLapTime = driver.LastLapTime;
                     PlayerBestLapTime = driver.BestLapTime;
+                    PlayerAvgLapTime = driver.AvgLapTime.GetAverageLapTime();
                     PlayerCurrentLapHighPrecision = driver.CurrentLapHighPrecision;
                     PlayerCurrentLap = opponent.CurrentLap ?? 0;
                     PlayerTeamIncidentCount = driver.TeamIncidentCount;
