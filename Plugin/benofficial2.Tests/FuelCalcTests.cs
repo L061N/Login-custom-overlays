@@ -38,6 +38,7 @@ namespace benofficial2.Tests
                 /*extraConsumptionPct*/ 1.0,
                 /*extraRaceLaps*/ 0.0,
                 /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.0,
                 /*evenFuelStints*/ false,
                 out double remainingLaps,
                 out int pitLap,
@@ -75,6 +76,7 @@ namespace benofficial2.Tests
                 /*extraConsumptionPct*/ 1.0,
                 /*extraRaceLaps*/ 0.0,
                 /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.0,
                 /*evenFuelStints*/ false,
                 out double remainingLaps,
                 out int pitLap,
@@ -112,6 +114,7 @@ namespace benofficial2.Tests
                 /*extraConsumptionPct*/ 1.0,
                 /*extraRaceLaps*/ 0.0,
                 /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.0,
                 /*evenFuelStints*/ false,
                 out double remainingLaps,
                 out int pitLap,
@@ -135,6 +138,44 @@ namespace benofficial2.Tests
         }
 
         [TestMethod]
+        public void RaceOneStop_ExtraFuelPerStop()
+        {
+            FuelCalcModule.CalculateFuel(/*fuelLevel*/ 70.0,
+                /*consumptionPerLapAvg*/ 0.5,
+                /*consumptionPerLapRecent*/ 0.5,
+                /*currentLapHighPrecision*/ 0.0,
+                /*estimatedTotalLaps*/ 200,
+                /*isRace*/ true,
+                /*isOval*/ false,
+                /*maxFuelAllowed*/ 70,
+                /*fuelReserve*/ 0.5,
+                /*extraConsumptionPct*/ 1.0,
+                /*extraRaceLaps*/ 0.0,
+                /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.3,
+                /*evenFuelStints*/ false,
+                out double remainingLaps,
+                out int pitLap,
+                out int pitWindowLap,
+                out int pitStopsNeeded,
+                out double refuelNeeded,
+                out bool pitIndicatorOn,
+                out bool pitWindowIndicatorOn,
+                out double extraFuelAtFinish,
+                out double consumptionTargetForExtraLap);
+
+            Assert.AreEqual(remainingLaps, 139.0, Constants.FuelEpsilon);
+            Assert.AreEqual(pitLap, 139);
+            Assert.AreEqual(pitWindowLap, 63);
+            Assert.AreEqual(pitStopsNeeded, 1);
+            Assert.AreEqual(refuelNeeded, 31.105, Constants.FuelEpsilon);
+            Assert.AreEqual(pitIndicatorOn, false);
+            Assert.AreEqual(pitWindowIndicatorOn, false);
+            Assert.AreEqual(extraFuelAtFinish, 0.0, Constants.FuelEpsilon);
+            Assert.AreEqual(consumptionTargetForExtraLap, 0.49642857142857144, Constants.FuelEpsilon);
+        }
+
+        [TestMethod]
         public void RaceOneStopAtWindow()
         {
             FuelCalcModule.CalculateFuel(/*fuelLevel*/ 39.0,
@@ -149,6 +190,7 @@ namespace benofficial2.Tests
                 /*extraConsumptionPct*/ 1.0,
                 /*extraRaceLaps*/ 0.0,
                 /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.0,
                 /*evenFuelStints*/ false,
                 out double remainingLaps,
                 out int pitLap,
@@ -186,6 +228,7 @@ namespace benofficial2.Tests
                 /*extraConsumptionPct*/ 1.0,
                 /*extraRaceLaps*/ 0.0,
                 /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.0,
                 /*evenFuelStints*/ false,
                 out double remainingLaps,
                 out int pitLap,
@@ -223,6 +266,7 @@ namespace benofficial2.Tests
                 /*extraConsumptionPct*/ 1.0,
                 /*extraRaceLaps*/ 0.0,
                 /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.0,
                 /*evenFuelStints*/ true,
                 out double remainingLaps,
                 out int pitLap,
@@ -260,6 +304,7 @@ namespace benofficial2.Tests
                 /*extraConsumptionPct*/ 1.0,
                 /*extraRaceLaps*/ 0.0,
                 /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.0,
                 /*evenFuelStints*/ false,
                 out double remainingLaps,
                 out int pitLap,
@@ -299,6 +344,7 @@ namespace benofficial2.Tests
                 /*extraConsumptionPct*/ 1.0,
                 /*extraRaceLaps*/ 0.0,
                 /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.0,
                 /*evenFuelStints*/ false,
                 out double remainingLaps,
                 out int pitLap,
@@ -338,6 +384,7 @@ namespace benofficial2.Tests
                 /*extraConsumptionPct*/ 1.0,
                 /*extraRaceLaps*/ 0.0,
                 /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.0,
                 /*evenFuelStints*/ false,
                 out double remainingLaps,
                 out int pitLap,
@@ -377,6 +424,7 @@ namespace benofficial2.Tests
                 /*extraConsumptionPct*/ 1.0,
                 /*extraRaceLaps*/ 0.0,
                 /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.0,
                 /*evenFuelStints*/ false,
                 out double remainingLaps,
                 out int pitLap,
@@ -416,6 +464,7 @@ namespace benofficial2.Tests
                 /*extraConsumptionPct*/ 1.0,
                 /*extraRaceLaps*/ 0.0,
                 /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.0,
                 /*evenFuelStints*/ false,
                 out double remainingLaps,
                 out int pitLap,
@@ -454,6 +503,7 @@ namespace benofficial2.Tests
                 /*extraConsumptionPct*/ 1.0,
                 /*extraRaceLaps*/ 0.0,
                 /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.0,
                 /*evenFuelStints*/ false,
                 out double remainingLaps,
                 out int pitLap,
@@ -492,6 +542,7 @@ namespace benofficial2.Tests
                 /*extraConsumptionPct*/ 1.0,
                 /*extraRaceLaps*/ 0.0,
                 /*extraRaceLapsOval*/ 3.0,
+                /*extraFuelPerStop*/ 0.0,
                 /*evenFuelStints*/ false,
                 out double remainingLaps,
                 out int pitLap,

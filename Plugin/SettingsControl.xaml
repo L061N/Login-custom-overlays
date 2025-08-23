@@ -645,7 +645,7 @@
                         <Label Content="Fuel Reserve (liters)"/>
 
                         <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.FuelReserveLiters.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
-                                 ToolTip="How much fuel to keep as a reserve in liters to avoid bogging down the engine.">
+                                 ToolTip="How much fuel to keep as a reserve to avoid bogging down the engine.">
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
@@ -660,8 +660,17 @@
 
                         <Label Content="Extra Consumption (%)" Margin="0,10,0,0"/>
 
-                        <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraConsumption.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
-                                 ToolTip="Extra per-lap consumption in percentage. Can be negative. Use this to increase/decrease the estimated average consumption per lap.">
+                        <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraConsumption.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left">
+                            <TextBox.ToolTip>
+                                <TextBlock>
+                                    Extra per-lap consumption in percentage. Can be negative.
+                                    <LineBreak/>
+                                    Use this to increase/decrease the estimated consumption per lap for the fuel to add.
+                                    <LineBreak/>
+                                    Does not affect the laps remaining estimate.
+                                </TextBlock>
+                            </TextBox.ToolTip>
+                            
                             <!-- Style to highlight invalid input -->
                             <TextBox.Style>
                                 <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
@@ -678,8 +687,15 @@
                             <StackPanel HorizontalAlignment="Left">
                                 <Label Content="Extra Race Lap(s)" Margin="0,10,0,0"/>
 
-                                <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLaps.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"
-                                         ToolTip="How many extra race laps of fuel to add as a safety. Can have decimals or be negative. Be careful at long tracks as this could add a considerable amount of fuel.">
+                                <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLaps.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left">
+                                    <TextBox.ToolTip>
+                                        <TextBlock>
+                                            How many extra race laps of fuel to add as a safety. Can have decimals or be negative.
+                                            <LineBreak/>
+                                            Be careful at long tracks as this could add a considerable amount of fuel.
+                                        </TextBlock>
+                                    </TextBox.ToolTip>
+
                                     <!-- Style to highlight invalid input -->
                                     <TextBox.Style>
                                         <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
@@ -712,9 +728,56 @@
                             </StackPanel>
                         </StackPanel>
 
+                        <StackPanel HorizontalAlignment="Left">
+                            <Label Content="Extra per stop (liters)" Margin="0,10,0,0"/>
+
+                            <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraFuelPerStopLiters.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left">
+                                <TextBox.ToolTip>
+                                    <TextBlock>
+                                        Fixed amount of extra fuel to add each pit stop.
+                                        <LineBreak/>
+                                        Use this to compensate for extra consumption in pit lane.
+                                    </TextBlock>
+                                </TextBox.ToolTip>
+                                <!-- Style to highlight invalid input -->
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLaps.Valid}" Value="False">
+                                                <Setter Property="Background" Value="LightCoral"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                        </StackPanel>
+
                         <StackPanel Orientation="Horizontal">
-                            <ui:TitledSlider Width="400" Title="Recent Consumption History (laps)" Maximum="10" Minimum="1" Value="{Binding Plugin.Modules[FuelCalcModule].Settings.ConsumptionRecentLapCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" ToolTip="Number of recent laps to consider for the average consumption. Affects the laps remaining estimate and pit lap. Does not affect the fuel to add." />
-                            <ui:TitledSlider Width="400" Title="Consumption Percentile" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[FuelCalcModule].Settings.ConsumptionPercentile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0" ToolTip="Consumption to use to determine the fuel to add. A value of 50 will use the median consumption, 100 will use the max and 0 the min. Considers the whole history, not just recent. Does not affect the laps remaining estimate." />
+                            <ui:TitledSlider Width="400" Title="Recent Consumption History (laps)" Maximum="10" Minimum="1" Value="{Binding Plugin.Modules[FuelCalcModule].Settings.ConsumptionRecentLapCount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0">
+                                <ui:TitledSlider.ToolTip>
+                                    <TextBlock>
+                                        Number of recent laps to consider for the average consumption.
+                                        <LineBreak/>
+                                        Affects the laps remaining estimate and pit lap.
+                                        <LineBreak/>
+                                        Does not affect the fuel to add.
+                                    </TextBlock>
+                                </ui:TitledSlider.ToolTip>
+                            </ui:TitledSlider>
+                            
+                            <ui:TitledSlider Width="400" Title="Consumption Percentile" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[FuelCalcModule].Settings.ConsumptionPercentile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,0,0">
+                                <ui:TitledSlider.ToolTip>
+                                    <TextBlock>
+                                        Consumption to use to determine the fuel to add.
+                                        <LineBreak/>
+                                        A value of 50 will use the median consumption, 100 will use the max and 0 the min.
+                                        <LineBreak/>
+                                        Considers the whole history, not just recent.
+                                        <LineBreak/>
+                                        Does not affect the laps remaining estimate.
+                                    </TextBlock>
+                                </ui:TitledSlider.ToolTip>
+                            </ui:TitledSlider>
                         </StackPanel>
                         
                         <styles:SHToggleCheckbox 

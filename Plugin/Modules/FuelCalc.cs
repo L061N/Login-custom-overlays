@@ -36,6 +36,7 @@ namespace benofficial2.Plugin
         public ModuleSettingFloat ExtraRaceLaps { get; set; } = new ModuleSettingFloat(0.0f);
         public ModuleSettingFloat ExtraRaceLapsOval { get; set; } = new ModuleSettingFloat(3.0f);
         public ModuleSettingFloat ExtraConsumption { get; set; } = new ModuleSettingFloat(1.0f);
+        public ModuleSettingFloat ExtraFuelPerStopLiters { get; set; } = new ModuleSettingFloat(0.3f);
         public bool FuelRemainingInfoVisible { get; set; } = true;
         public bool PitStopInfoVisible { get; set; } = true;
         public bool ConsumptionInfoVisible { get; set; } = true;
@@ -598,6 +599,7 @@ namespace benofficial2.Plugin
                     /*extraConsumptionPct*/ Settings.ExtraConsumption,
                     /*extraRaceLaps*/ Settings.ExtraRaceLaps,
                     /*extraRaceLapsOval*/ Settings.ExtraRaceLapsOval,
+                    /*extraFuelPerStop*/ Settings.ExtraFuelPerStopLiters.Value * ConvertFromLiters,
                     /*evenFuelStints*/ Settings.EvenFuelStints,
                     out double remainingLaps,
                     out int pitLap,
@@ -632,6 +634,7 @@ namespace benofficial2.Plugin
             double extraConsumptionPct,
             double extraRaceLaps,
             double extraRaceLapsOval,
+            double extraFuelPerStop,
             bool evenFuelStints,
             out double remainingLaps,
             out int pitLap,
@@ -684,7 +687,14 @@ namespace benofficial2.Plugin
                         fuelToFinishSafe += (extraRaceLaps * consumptionPerLapSafe);
                 }
 
+                double pitStopsNeededProvisional = (int)Math.Floor(fuelToFinishSafe / maxFuelAllowed) + 1;
+                fuelToFinishSafe += (pitStopsNeededProvisional * extraFuelPerStop);
                 pitStopsNeeded = (int)Math.Floor(fuelToFinishSafe / maxFuelAllowed) + 1;
+
+                if (pitStopsNeeded > pitStopsNeededProvisional)
+                {
+                    fuelToFinishSafe += extraFuelPerStop;
+                }
 
                 if (evenFuelStints)
                 {
