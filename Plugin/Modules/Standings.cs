@@ -784,7 +784,8 @@ namespace benofficial2.Plugin
                 // TODO: Missing edge cases such as when the player gets lapped on the leader's last lap.
                 // Or when the player tows before starting the last lap. Etc.
                 bool playerStartingLastLap = _driverModule.PlayerHadWhiteFlag && _driverModule.PlayerCurrentLapHighPrecision % 1.0 < 0.50;
-                if (playerStartingLastLap)
+                bool playerHadCheckered = data.NewData.Flag_Checkered > 0;
+                if (playerStartingLastLap || playerHadCheckered)
                 {
                     carClass.EstimatedTotalLaps = (int)Math.Max(1, Math.Ceiling(leaderCurrentLapHighPrecision));
                     carClass.EstimatedTotalLapsConfirmed = true;
