@@ -178,6 +178,9 @@ namespace benofficial2.Plugin
             // Update consumption tracker every frame for precise new lap detection.
             UpdateConsumptionTracker(ref data);
 
+            RawDataHelper.TryGetTelemetryData<double>(ref data, out double fuelLevel, "FuelLevel");
+            FuelLevel = fuelLevel * ConvertFromLiters;
+
             if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
             _lastUpdateTime = data.FrameTime;
 
@@ -201,9 +204,6 @@ namespace benofficial2.Plugin
 
             UpdateSetupFuelLevel(ref data);
             UpdateConsumptionPerLap(pluginManager, ref data);
-
-            RawDataHelper.TryGetTelemetryData<double>(ref data, out double fuelLevel, "FuelLevel");
-            FuelLevel = fuelLevel * ConvertFromLiters;
 
             RawDataHelper.TryGetSessionData<double>(ref data, out double driverCarFuelMaxLtr, "DriverInfo", "DriverCarFuelMaxLtr");
             MaxFuel = driverCarFuelMaxLtr * ConvertFromLiters;
