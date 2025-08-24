@@ -36,6 +36,7 @@ namespace benofficial2.Plugin
         public float QualStartTrackPct { get; set; } = 0.0f;
         public float RaceStartTrackPct { get; set; } = 0.0f;
         public string TrackType { get; set; } = string.Empty;
+        public double TrackLength { get; set; } = 0.0;
         public override int UpdatePriority => 20;
 
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
@@ -51,7 +52,7 @@ namespace benofficial2.Plugin
             if (_trackInfo.Json == null) return;
             if (data.NewData.TrackId == _lastTrackId) return;
             _lastTrackId = data.NewData.TrackId;
-            
+
             dynamic raw = data.NewData.GetRawDataObject();
             if (raw == null) return;
 
@@ -61,6 +62,7 @@ namespace benofficial2.Plugin
                 QualStartTrackPct = 0.0f;
                 RaceStartTrackPct = 0.0f;
                 TrackType = string.Empty;
+                TrackLength = 0.0;
                 return;
             }
 
@@ -79,6 +81,13 @@ namespace benofficial2.Plugin
             RaceStartTrackPct = track?["raceStartTrackPct"]?.Value<float>() ?? 0.0f;
 
             try { TrackType = raw.AllSessionData["WeekendInfo"]["TrackType"]; } catch { Debug.Assert(false); }
+
+            RawDataHelper.TryGetSessionData<string>(ref data, out string trackLengthStr, "WeekendInfo", "TrackLength");
+            string[] parts = trackLengthStr.Split(' '); // e.g. "3.426 km"
+            if (double.TryParse(parts[0], out double value))
+                TrackLength = value;
+            else
+                TrackLength = 0.0;
         }
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)

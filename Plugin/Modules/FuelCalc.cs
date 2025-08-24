@@ -37,6 +37,7 @@ namespace benofficial2.Plugin
         public ModuleSettingFloat ExtraRaceLapsOval { get; set; } = new ModuleSettingFloat(3.0f);
         public ModuleSettingFloat ExtraConsumption { get; set; } = new ModuleSettingFloat(1.0f);
         public ModuleSettingFloat ExtraFuelPerStopLiters { get; set; } = new ModuleSettingFloat(0.3f);
+        public ModuleSettingFloat ExtraDistance { get; set; } = new ModuleSettingFloat(0.2f);
         public bool FuelRemainingInfoVisible { get; set; } = true;
         public bool PitStopInfoVisible { get; set; } = true;
         public bool ConsumptionInfoVisible { get; set; } = true;
@@ -562,6 +563,9 @@ namespace benofficial2.Plugin
                         session.FuelNeeded += ConsumptionPerLapSafe * Settings.ExtraRaceLaps;
                     }
                 }
+
+                double extraDistanceLaps = (_trackModule.TrackLength > Constants.DistanceEpsilon) ? (Settings.ExtraDistance.Value / _trackModule.TrackLength) : 0.0;
+                session.FuelNeeded += (extraDistanceLaps * ConsumptionPerLapSafe);
             }
 
             session.StopsNeeded = (int)Math.Floor(session.FuelNeeded / MaxFuelAllowed);
@@ -594,12 +598,14 @@ namespace benofficial2.Plugin
                     /*estimatedTotalLaps*/ EstimatedTotalLaps,
                     /*isRace*/ _sessionModule.Race,
                     /*isOval*/ _sessionModule.Oval,
+                    /*trackLength*/ _trackModule.TrackLength,
                     /*maxFuelAllowed*/ MaxFuelAllowed,
                     /*fuelReserve*/ Settings.FuelReserveLiters.Value * ConvertFromLiters,
                     /*extraConsumptionPct*/ Settings.ExtraConsumption,
                     /*extraRaceLaps*/ Settings.ExtraRaceLaps,
                     /*extraRaceLapsOval*/ Settings.ExtraRaceLapsOval,
                     /*extraFuelPerStop*/ Settings.ExtraFuelPerStopLiters.Value * ConvertFromLiters,
+                    /*extraDistance*/ Settings.ExtraDistance.Value,
                     /*evenFuelStints*/ Settings.EvenFuelStints,
                     out double remainingLaps,
                     out int pitLap,
@@ -629,12 +635,14 @@ namespace benofficial2.Plugin
             int estimatedTotalLaps,
             bool isRace,
             bool isOval,
+            double trackLength,
             double maxFuelAllowed,
             double fuelReserve,
             double extraConsumptionPct,
             double extraRaceLaps,
             double extraRaceLapsOval,
             double extraFuelPerStop,
+            double extraDistance,
             bool evenFuelStints,
             out double remainingLaps,
             out int pitLap,
@@ -686,6 +694,9 @@ namespace benofficial2.Plugin
                     else
                         fuelToFinishSafe += (extraRaceLaps * consumptionPerLapSafe);
                 }
+
+                double extraDistanceLaps = (trackLength > Constants.DistanceEpsilon) ? (extraDistance / trackLength) : 0.0;
+                fuelToFinishSafe += (extraDistanceLaps * consumptionPerLapSafe);
 
                 double pitStopsNeededProvisional = (int)Math.Floor(fuelToFinishSafe / maxFuelAllowed) + 1;
                 fuelToFinishSafe += (pitStopsNeededProvisional * extraFuelPerStop);

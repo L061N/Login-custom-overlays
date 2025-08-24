@@ -35,6 +35,9 @@ namespace benofficial2.Plugin
         // Smallest fraction of a lap that is considered not zero.
         public const double LapEpsilon = 1e-9;
 
+        // Smallest fraction of a distance unit that is considered not zero.
+        public const double DistanceEpsilon = 1e-9;
+
         // Maximum amount of a lap left for iRacing to show the white flag.
         // It is unknown what are the exact white flag rule constants used by iRacing and seem to change per track.
         public const double WhiteFlagRuleLapPct = 0.97;

@@ -636,9 +636,15 @@
                 <styles:SHSection Title="FUEL CALCULATOR OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
                         <styles:SHToggleCheckbox 
-                            ToolTip="When entering the pit, automatically set the fuel to add to the calculated amount needed. Overrides iRacing's Auto Fuel." 
                             HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[FuelCalcModule].Settings.AutoFuelEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <styles:SHToggleCheckbox.ToolTip>
+                                <TextBlock>
+                                    When entering the pit, automatically set the fuel to add to the calculated amount needed.
+                                    <LineBreak/>
+                                    Overrides iRacing's Auto Fuel.
+                                </TextBlock>
+                            </styles:SHToggleCheckbox.ToolTip>
                             Automatically set fuel to add on pit entry
                         </styles:SHToggleCheckbox>
                         
@@ -728,28 +734,54 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <StackPanel HorizontalAlignment="Left">
-                            <Label Content="Extra per stop (liters)" Margin="0,10,0,0"/>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel HorizontalAlignment="Left">
+                                <Label Content="Extra Distance (km)" Margin="0,10,0,0"/>
 
-                            <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraFuelPerStopLiters.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left">
-                                <TextBox.ToolTip>
-                                    <TextBlock>
-                                        Fixed amount of extra fuel to add each pit stop.
-                                        <LineBreak/>
-                                        Use this to compensate for extra consumption in pit lane.
-                                    </TextBlock>
-                                </TextBox.ToolTip>
-                                <!-- Style to highlight invalid input -->
-                                <TextBox.Style>
-                                    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraRaceLaps.Valid}" Value="False">
-                                                <Setter Property="Background" Value="LightCoral"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
+                                <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraDistance.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left" Margin="0,0,0,0">
+                                    <TextBox.ToolTip>
+                                        <TextBlock>
+                                            Fixed extra distance of fuel to add as a safety.
+                                            <LineBreak/>
+                                            This is regardless of track length.
+                                        </TextBlock>
+                                    </TextBox.ToolTip>
+                                    <!-- Style to highlight invalid input -->
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraDistance.Valid}" Value="False">
+                                                    <Setter Property="Background" Value="LightCoral"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </StackPanel>
+                            
+                            <StackPanel HorizontalAlignment="Left">
+                                <Label Content="Extra per Stop (liters)" Margin="20,10,0,0"/>
+
+                                <TextBox Text="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraFuelPerStopLiters.ValueString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="113" HorizontalAlignment="Left"  Margin="20,0,0,0">
+                                    <TextBox.ToolTip>
+                                        <TextBlock>
+                                            Fixed amount of extra fuel to add each pit stop.
+                                            <LineBreak/>
+                                            Use this to compensate for extra consumption in pit lane.
+                                        </TextBlock>
+                                    </TextBox.ToolTip>
+                                    <!-- Style to highlight invalid input -->
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Plugin.Modules[FuelCalcModule].Settings.ExtraFuelPerStopLiters.Valid}" Value="False">
+                                                    <Setter Property="Background" Value="LightCoral"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </StackPanel>
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
