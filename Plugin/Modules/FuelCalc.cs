@@ -37,7 +37,7 @@ namespace benofficial2.Plugin
         public ModuleSettingFloat ExtraRaceLapsOval { get; set; } = new ModuleSettingFloat(3.0f);
         public ModuleSettingFloat ExtraConsumption { get; set; } = new ModuleSettingFloat(1.0f);
         public ModuleSettingFloat ExtraFuelPerStopLiters { get; set; } = new ModuleSettingFloat(0.3f);
-        public ModuleSettingFloat ExtraDistance { get; set; } = new ModuleSettingFloat(0.2f);
+        public ModuleSettingFloat ExtraDistance { get; set; } = new ModuleSettingFloat(0.5f);
         public bool FuelRemainingInfoVisible { get; set; } = true;
         public bool PitStopInfoVisible { get; set; } = true;
         public bool ConsumptionInfoVisible { get; set; } = true;
