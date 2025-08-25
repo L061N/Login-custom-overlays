@@ -1,21 +1,21 @@
 {
-    "plugin": "3.7",
+    "plugin": "3.8",
     "standings": "3.7",
-    "relative": "3.7",
-    "trackmap": "3.7",
+    "relative": "3.8",
+    "trackmap": "3.8",
     "delta": "3.5",
     "inputs": "3.3",
-    "dash": "3.7",
+    "dash": "3.8",
     "setupcover": "3.3",
     "twitchchat": "3.3",
     "launchassist": "3.5",
     "spotter": "3.3",
-    "fuelcalc": "3.7",
+    "fuelcalc": "3.8",
     "fuelcalclive": "3.8",
     "wind": "3.3",
     "weather": "3.3",
-    "multiclassstandings": "3.7",
+    "multiclassstandings": "3.8",
     "precipitation": "3.3",
     "trackwetness": "3.3",
-    "highlighteddriver": "3.7"
+    "highlighteddriver": "3.8"
 }
