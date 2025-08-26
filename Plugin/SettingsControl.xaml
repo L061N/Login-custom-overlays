@@ -452,12 +452,21 @@
                             <ui:TitledSlider MinWidth="400" Title="Traces Speed" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[TelemetryModule].Settings.TracesSpeed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="How fast the trace chart is scrolling" />
                         </StackPanel>
 
-                        <styles:SHToggleCheckbox 
-                            ToolTip="Show a bar graph for each pedal input" 
-                            HorizontalAlignment="Left" Margin="0,0,4,8"
-                            IsChecked="{Binding Plugin.Modules[TelemetryModule].Settings.PedalsVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            Show Pedals
-                        </styles:SHToggleCheckbox>
+                        <StackPanel Orientation="Horizontal">
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show a bar graph for each pedal input" 
+                                HorizontalAlignment="Left" Margin="0,0,4,8"
+                                IsChecked="{Binding Plugin.Modules[TelemetryModule].Settings.PedalsVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show Pedals
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Show the number value for each pedal input" 
+                                HorizontalAlignment="Left" Margin="10,0,4,8"
+                                IsChecked="{Binding Plugin.Modules[TelemetryModule].Settings.PedalsValuesVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Show Pedals Values
+                            </styles:SHToggleCheckbox>
+                        </StackPanel>
 
                         <styles:SHToggleCheckbox 
                             ToolTip="Show a rotating steering wheel image" 

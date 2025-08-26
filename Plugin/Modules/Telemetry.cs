@@ -31,6 +31,7 @@ namespace benofficial2.Plugin
         public bool SteeringTraceVisible { get; set; } = true;
         public bool GuideLinesVisible { get; set; } = true;
         public bool PedalsVisible { get; set; } = true;
+        public bool PedalsValuesVisible { get; set; } = true;
         public bool SteeringVisible { get; set; } = true;
         public bool GearAndSpeedVisible { get; set; } = true;
         public bool ShiftLightsVisible { get; set; } = true;
@@ -66,6 +67,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Telemetry.SteeringTraceVisible", valueProvider: () => Settings.SteeringTraceVisible);
             plugin.AttachDelegate(name: "Telemetry.GuideLinesVisible", valueProvider: () => Settings.GuideLinesVisible);
             plugin.AttachDelegate(name: "Telemetry.PedalsVisible", valueProvider: () => Settings.PedalsVisible);
+            plugin.AttachDelegate(name: "Telemetry.PedalsValuesVisible", valueProvider: () => Settings.PedalsValuesVisible);
             plugin.AttachDelegate(name: "Telemetry.PedalsLeft", valueProvider: () => PedalsLeft);
             plugin.AttachDelegate(name: "Telemetry.SteeringVisible", valueProvider: () => Settings.SteeringVisible);
             plugin.AttachDelegate(name: "Telemetry.SteeringLeft", valueProvider: () => SteeringLeft);
