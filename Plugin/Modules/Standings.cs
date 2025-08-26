@@ -766,6 +766,10 @@ namespace benofficial2.Plugin
 
         public void UpdateEstimatedTotalLaps(ref GameData data, StandingCarClass carClass, OpponentsWithDrivers opponentsWithDrivers)
         {
+            // Use a slightly faster avg lap time as a safety margin in case the leader will pace up.
+            // This will overestimate the laps slightly in the beginning, but for fuel decisions it's better than underestimating.
+            const double lapTimeSafePct = 0.99;
+
             if (_sessionModule.Race)
             {
                 if (!_sessionModule.RaceStarted)
@@ -806,7 +810,10 @@ namespace benofficial2.Plugin
                 if (avgLapTime <= TimeSpan.Zero)
                     avgLapTime = carClass.BestQualLapTime;
 
-                carClass.EstimatedTotalLaps = EstimateTotalLaps(leaderCurrentLapHighPrecision, _sessionModule.SessionLapsTotal, sessionTimeRemain, avgLapTime.TotalSeconds);
+                carClass.EstimatedTotalLaps = EstimateTotalLaps(leaderCurrentLapHighPrecision, 
+                    _sessionModule.SessionLapsTotal, 
+                    sessionTimeRemain, 
+                    avgLapTime.TotalSeconds * lapTimeSafePct);
 
                 if (_driverModule.PlayerHadWhiteFlag && !carClass.EstimatedTotalLapsLogged)
                 {
@@ -827,7 +834,7 @@ namespace benofficial2.Plugin
             carClass.EstimatedTotalLaps = EstimateTotalLaps(_driverModule.PlayerCurrentLapHighPrecision, 
                 _sessionModule.SessionLapsTotal,
                 data.NewData.SessionTimeLeft.TotalSeconds, 
-                _driverModule.PlayerBestLapTime.TotalSeconds);
+                _driverModule.PlayerBestLapTime.TotalSeconds * lapTimeSafePct);
         }
 
         static public int EstimateTotalLaps(double currentLapHighPrecision, int sessionTotalLaps, double sessionTimeRemain, double avgLapTime)
