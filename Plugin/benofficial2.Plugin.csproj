@@ -100,6 +100,9 @@
     <Reference Include="WoteverLocalization">
       <HintPath>$(SIMHUB_INSTALL_PATH)WoteverLocalization.dll</HintPath>
     </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>$(SIMHUB_INSTALL_PATH)Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="benofficial2.cs" />

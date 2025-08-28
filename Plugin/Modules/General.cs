@@ -26,6 +26,7 @@ namespace benofficial2.Plugin
     {
         public bool CheckForUpdates { get; set; } = true;
         public bool ClockFormat24h { get; set; } = true;
+        public System.Windows.Media.Color BackgroundColor { get; set; } = System.Windows.Media.Colors.Black;
     }
 
     public class GeneralModule : PluginModuleBase
@@ -38,6 +39,7 @@ namespace benofficial2.Plugin
             Settings = plugin.ReadCommonSettings<GeneralSettings>("GeneralSettings_3.1", () => new GeneralSettings());
             plugin.AttachDelegate(name: "CheckForUpdates", valueProvider: () => Settings.CheckForUpdates);
             plugin.AttachDelegate(name: "ClockFormat24h", valueProvider: () => Settings.ClockFormat24h);
+            plugin.AttachDelegate(name: "BackgroundColor", valueProvider: () => Settings.BackgroundColor);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)

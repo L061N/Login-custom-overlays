@@ -54,7 +54,7 @@ namespace benofficial2.Plugin
         public bool UseDeltaToPlayer { get; set; } = false;
         public bool InvertDeltaToPlayer { get; set; } = false;
         public bool ShowStintLapInRace { get; set; } = true;
-        public int AlternateRowBackgroundColor { get; set; } = 5;
+        public int AlternateRowBackgroundColor { get; set; } = 33;
         public bool HighlightPlayerRow { get; set; } = true;
         public int HeaderOpacity { get; set; } = 90;
         public int BackgroundOpacity { get; set; } = 7;

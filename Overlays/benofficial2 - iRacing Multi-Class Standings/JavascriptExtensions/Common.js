@@ -97,3 +97,58 @@ function formatSecondsToTimecode(totalSeconds)
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
 }
+
+function blendColors(color1, color2, percentage) 
+{
+    // Force inputs to strings
+    color1 = "" + color1;
+    color2 = "" + color2;
+
+    // Clamp percentage between 0 and 100
+    if (percentage < 0) percentage = 0;
+    if (percentage > 100) percentage = 100;
+    var t = percentage / 100;
+
+    function hexToRGBA(hex) 
+    {
+        if (hex.charAt(0) === "#") 
+        {
+            hex = hex.substring(1);
+        }
+        var a, r, g, b;
+        if (hex.length === 6) 
+        {
+            a = 255;
+            r = parseInt(hex.substring(0, 2), 16);
+            g = parseInt(hex.substring(2, 4), 16);
+            b = parseInt(hex.substring(4, 6), 16);
+        } 
+        else if (hex.length === 8) {
+            a = parseInt(hex.substring(0, 2), 16);
+            r = parseInt(hex.substring(2, 4), 16);
+            g = parseInt(hex.substring(4, 6), 16);
+            b = parseInt(hex.substring(6, 8), 16);
+        } 
+        else 
+        {
+            throw "Invalid color format: " + hex;
+        }
+        return { a: a, r: r, g: g, b: b };
+    }
+
+    function toHex(v) 
+    {
+        var h = v.toString(16).toUpperCase();
+        return h.length === 1 ? "0" + h : h;
+    }
+
+    var c1 = hexToRGBA(color1);
+    var c2 = hexToRGBA(color2);
+
+    var r = Math.round(c1.r + (c2.r - c1.r) * t);
+    var g = Math.round(c1.g + (c2.g - c1.g) * t);
+    var b = Math.round(c1.b + (c2.b - c1.b) * t);
+    var a = Math.round(c1.a + (c2.a - c1.a) * t);
+
+    return "#" + toHex(a) + toHex(r) + toHex(g) + toHex(b);
+}
