@@ -110,6 +110,8 @@ namespace benofficial2.Plugin
         public bool TrackerLastLapValid { get { return _consumptionTracker.IsPreviousLapValid(); } }
         public double TrackerMedianConsumption { get; internal set; } = 0.0;
         public double TrackerRecentConsumption { get; internal set; } = 0.0;
+        public double TrackerMinConsumption { get; internal set; } = 0.0;
+        public double TrackerMaxConsumption { get; internal set; } = 0.0;
 
         public const int MaxSessions = 6;
         public List<FuelCalcSession> Sessions { get; internal set; }
@@ -131,6 +133,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "FuelCalc.FuelRemainingInfoVisible", valueProvider: () => Settings.FuelRemainingInfoVisible);
             plugin.AttachDelegate(name: "FuelCalc.PitStopInfoVisible", valueProvider: () => Settings.PitStopInfoVisible);
             plugin.AttachDelegate(name: "FuelCalc.ConsumptionInfoVisible", valueProvider: () => Settings.ConsumptionInfoVisible);
+            plugin.AttachDelegate(name: "FuelCalc.ConsumptionPercentile", valueProvider: () => Settings.ConsumptionPercentile);
             plugin.AttachDelegate(name: "FuelCalc.EnablePreRaceWarning", valueProvider: () => Settings.EnablePreRaceWarning);
             plugin.AttachDelegate(name: "FuelCalc.EvenFuelStints", valueProvider: () => Settings.EvenFuelStints);
             plugin.AttachDelegate(name: "FuelCalc.AutoFuelEnabled", valueProvider: () => Settings.AutoFuelEnabled);
@@ -159,6 +162,8 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "FuelCalc.Tracker.LastLapValid", valueProvider: () => TrackerLastLapValid);
             plugin.AttachDelegate(name: "FuelCalc.Tracker.MedianConsumption", valueProvider: () => TrackerMedianConsumption);
             plugin.AttachDelegate(name: "FuelCalc.Tracker.RecentConsumption", valueProvider: () => TrackerRecentConsumption);
+            plugin.AttachDelegate(name: "FuelCalc.Tracker.MinConsumption", valueProvider: () => TrackerMinConsumption);
+            plugin.AttachDelegate(name: "FuelCalc.Tracker.MaxConsumption", valueProvider: () => TrackerMaxConsumption);
 
             Sessions = new List<FuelCalcSession>(Enumerable.Range(0, MaxSessions).Select(x => new FuelCalcSession()));
             for (int sessionIdx = 0; sessionIdx < MaxSessions; sessionIdx++)
@@ -398,7 +403,9 @@ namespace benofficial2.Plugin
             // Even though the property is called "LitersPerLap", consumption will be in gallons when SimHub is set to gallons.
             ConsumptionLastLap = fuelLastLapSimHub * ConvertFromSimHubUnits;
 
+            TrackerMinConsumption = _consumptionTracker.GetConsumption(0) * ConvertFromLiters;
             TrackerMedianConsumption = _consumptionTracker.GetConsumption(Settings.ConsumptionPercentile) * ConvertFromLiters;
+            TrackerMaxConsumption = _consumptionTracker.GetConsumption(100) * ConvertFromLiters;
             TrackerRecentConsumption = _consumptionTracker.GetRecentConsumption(Settings.ConsumptionRecentLapCount) * ConvertFromLiters;
 
             if (_consumptionTracker.GetValidLapCount() > 0)
