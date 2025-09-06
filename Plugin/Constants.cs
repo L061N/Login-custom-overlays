@@ -53,4 +53,13 @@ namespace benofficial2.Plugin
         // IRSDK_UNLIMITED_TIME
         public const double UnlimitedTimeSeconds = 604800.0f;
     }
+
+    public enum TrackLoc
+    {
+        NotInWorld = -1,
+        OffTrack = 0,
+        InPitStall,
+        AproachingPits,
+        OnTrack
+    }
 }

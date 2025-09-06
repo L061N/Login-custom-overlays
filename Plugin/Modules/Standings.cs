@@ -403,7 +403,7 @@ namespace benofficial2.Plugin
                         row.CarClassColor = driver.CarClassColor;
                         row.CarClassTextColor = "0x000000";
                         row.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
-                        row.InPitLane = driver.OnPitRoad;
+                        row.InPitLane = driver.InPit;
                         row.Towing = driver.Towing;
                         row.OutLap = driver.OutLap;
                         row.EnterPitLap = driver.EnterPitLap;

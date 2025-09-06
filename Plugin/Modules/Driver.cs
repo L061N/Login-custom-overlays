@@ -119,8 +119,9 @@ namespace benofficial2.Plugin
         public int EnterPitLap { get; set; } = -1;
         public int ExitPitLap { get; set; } = -1;
         public bool OutLap { get; set; } = false;
-        public bool OnPitRoad { get; set; } = false;
+        public bool InPit { get; set; } = false;
         public DateTime InPitSince { get; set; } = DateTime.MinValue;
+        public bool InPitBox { get; set; } = false;
         public DateTime InPitBoxSince { get; set; } = DateTime.MinValue;
         public TimeSpan LastPitStopDuration { get; set; } = TimeSpan.Zero;
         public int StintLap { get; set; } = 0;
@@ -130,6 +131,7 @@ namespace benofficial2.Plugin
         public int LivePositionInClass { get; set; } = 0;
         public double LastCurrentLapHighPrecision { get; set; } = -1;
         public double CurrentLapHighPrecision { get; set; } = -1;
+        public double TrackPositionPercent { get; set; } = -1;
         public bool Towing { get; set; } = false;
         public DateTime TowingEndTime { get; set; } = DateTime.MinValue;
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
@@ -335,7 +337,7 @@ namespace benofficial2.Plugin
                 driver.AvgLapTime.AddLapTime(currentLap - 1, driver.LastLapTime);
 
                 // Evaluate the lap when they entered the pit lane
-                if (opponent.IsCarInPitLane)
+                if (driver.InPit)
                 {
                     // Ignore in-laps and out-laps for the average lap time.
                     driver.AvgLapTime.InvalidateLap(currentLap);
@@ -356,7 +358,7 @@ namespace benofficial2.Plugin
                         driver.ExitPitLap = -1;
                         driver.StintLap = 0;
 
-                        if (opponent.IsCarInPit)
+                        if (driver.InPitBox)
                         {
                             if (driver.InPitBoxSince == DateTime.MinValue)
                             {
@@ -374,7 +376,7 @@ namespace benofficial2.Plugin
                 {
                     // If they are in the pit for a very short time then we consider that a glitch in telemetry and ignore it.
                     // Ignore pit exit before the race start.
-                    if (opponent.IsConnected &&
+                    if (driver.IsConnected &&
                         driver.InPitSince > DateTime.MinValue &&
                         !(_sessionModule.Race && !_sessionModule.RaceStarted) &&
                         driver.InPitSince + _minTimeInPit < DateTime.Now)
@@ -389,7 +391,7 @@ namespace benofficial2.Plugin
                         }
                     }
 
-                    driver.OutLap = opponent.IsConnected && driver.ExitPitLap >= currentLap;
+                    driver.OutLap = driver.IsConnected && driver.ExitPitLap >= currentLap;
                     driver.InPitSince = DateTime.MinValue;
                     driver.InPitBoxSince = DateTime.MinValue;
 
@@ -417,14 +419,14 @@ namespace benofficial2.Plugin
                         {
                             // Use avg speed because in SimHub we can step forward in time in a recorded replay.
                             double avgSpeedKph = ComputeAvgSpeedKph(data.NewData.TrackLength, driver.CurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value, _sessionState.DeltaTime);
-                            bool teleportingToPit = avgSpeedKph > 500 && opponent.IsCarInPit;
-                            bool playerTowing = opponent.IsPlayer && playerCarTowTime > 0;
+                            bool teleportingToPit = avgSpeedKph > 500 && driver.InPitBox;
+                            bool playerTowing = driver.IsPlayer && playerCarTowTime > 0;
 
                             if (playerTowing || teleportingToPit)
                             {
                                 driver.Towing = true;
 
-                                if (opponent.IsPlayer)
+                                if (driver.IsPlayer)
                                 {
                                     driver.TowingEndTime = DateTime.Now + TimeSpan.FromSeconds(playerCarTowTime);
                                 }
@@ -448,8 +450,8 @@ namespace benofficial2.Plugin
                             opponent.CurrentLapHighPrecision > driver.LastCurrentLapHighPrecision + smallDistancePct;
 
                         bool done = opponent.CurrentLapHighPrecision == -1;
-                        bool towEnded = !opponent.IsPlayer && DateTime.Now > driver.TowingEndTime;
-                        bool playerNotTowing = opponent.IsPlayer && playerCarTowTime <= 0;
+                        bool towEnded = !driver.IsPlayer && DateTime.Now > driver.TowingEndTime;
+                        bool playerNotTowing = driver.IsPlayer && playerCarTowTime <= 0;
                         if (playerNotTowing || towEnded || movingForward || done)
                         {
                             driver.Towing = false;
@@ -656,8 +658,8 @@ namespace benofficial2.Plugin
                 RawDataHelper.TryGetValue<string>(drivers, out string userName, i, "UserName");
                 RawDataHelper.TryGetValue<string>(drivers, out string teamName, i, "TeamName");
 
-                RawDataHelper.TryGetTelemetryData<double>(ref data, out double lastLapTime, "CarIdxLastLapTime", carIdx);
-                RawDataHelper.TryGetTelemetryData<double>(ref data, out double bestLapTime, "CarIdxBestLapTime", carIdx);
+                RawDataHelper.TryGetTelemetryData<float>(ref data, out float lastLapTime, "CarIdxLastLapTime", carIdx);
+                RawDataHelper.TryGetTelemetryData<float>(ref data, out float bestLapTime, "CarIdxBestLapTime", carIdx);
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int sessionFlags, "CarIdxSessionFlags", carIdx);
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int position, "CarIdxPosition", carIdx);
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int classPosition, "CarIdxClassPosition", carIdx);
@@ -665,6 +667,7 @@ namespace benofficial2.Plugin
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int lap, "CarIdxLap", carIdx);
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int trackSurface, "CarIdxTrackSurface", carIdx);
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int lapCompleted, "CarIdxLapCompleted", carIdx);
+                RawDataHelper.TryGetTelemetryData<float>(ref data, out float lapDistPct, "CarIdxLapDistPct", carIdx);
 
                 if (!Drivers.TryGetValue(carNumber, out Driver driver))
                 {
@@ -682,7 +685,7 @@ namespace benofficial2.Plugin
                 driver.TeamName = teamName;
                 driver.FlairId = flairId;
                 driver.IsPlayer = carIdx == playerCarIdx;
-                driver.IsConnected = trackSurface >= 0;
+                driver.IsConnected = trackSurface > (int)TrackLoc.NotInWorld;
                 driver.CarClassId = carClassId;
                 driver.CarClassColor = ConvertColorString(carClassColor);
                 driver.TeamIncidentCount = teamIncidentCount;
@@ -693,9 +696,11 @@ namespace benofficial2.Plugin
                 driver.SessionFlags = sessionFlags;
                 driver.Position = position;
                 driver.PositionInClass = classPosition;
-                driver.OnPitRoad = onPitRoad;
+                driver.InPit = onPitRoad;
+                driver.InPitBox = trackSurface == (int)TrackLoc.InPitStall;
                 driver.Lap = lap;
                 driver.LapsCompleted = lapCompleted;
+                driver.TrackPositionPercent = lapDistPct;
             }
         }
 
