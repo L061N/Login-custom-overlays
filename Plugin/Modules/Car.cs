@@ -155,6 +155,9 @@ namespace benofficial2.Plugin
             if (!RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> driverTires, "DriverInfo", "DriverTires"))
                 return;
 
+            if (driverTires == null)
+                return;
+
             for (int i = 0; i < driverTires.Count; i++)
             {
                 RawDataHelper.TryGetSessionData<string>(ref data, out string compoundType, "DriverInfo", "DriverTires", i, "TireCompoundType");

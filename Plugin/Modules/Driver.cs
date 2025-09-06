@@ -131,6 +131,7 @@ namespace benofficial2.Plugin
         public int LivePositionInClass { get; set; } = 0;
         public double LastCurrentLapHighPrecision { get; set; } = -1;
         public double CurrentLapHighPrecision { get; set; } = -1;
+        public double CurrentLapHighPrecisionRaw { get; set; } = -1;
         public double TrackPositionPercent { get; set; } = -1;
         public bool Towing { get; set; } = false;
         public DateTime TowingEndTime { get; set; } = DateTime.MinValue;
@@ -269,12 +270,10 @@ namespace benofficial2.Plugin
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
+            if (data.FrameTime - _lastUpdateTime < _updateInterval) 
+                return;
+
             _lastUpdateTime = data.FrameTime;
-
-            dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) return;
-
             _sessionState.Update(ref data);
 
             // Reset when changing/restarting session
@@ -385,7 +384,7 @@ namespace benofficial2.Plugin
 
                         // Edge case when the pit exit is before the finish line.
                         // The currentLap will increment, so consider the next lap an out lap too.
-                        if (opponent.TrackPositionPercent > 0.5)
+                        if (driver.TrackPositionPercent > 0.5)
                         {
                             driver.ExitPitLap++;
                         }
@@ -408,17 +407,15 @@ namespace benofficial2.Plugin
 
                 if (_sessionModule.Race)
                 {
-                    double playerCarTowTime = 0;
-                    try { playerCarTowTime = (double)raw.Telemetry["PlayerCarTowTime"]; } catch { }
+                    RawDataHelper.TryGetTelemetryData<double>(ref data, out double playerCarTowTime, "PlayerCarTowTime");
 
                     if (!driver.Towing)
                     {
                         // Check for a jump in continuity, this means the driver teleported (towed) back to the pit.
-                        if (driver.CurrentLapHighPrecision > -1 && 
-                            opponent.CurrentLapHighPrecision.HasValue && opponent.CurrentLapHighPrecision.Value > -1)
+                        if (driver.CurrentLapHighPrecision > -1 && driver.CurrentLapHighPrecisionRaw > -1)
                         {
                             // Use avg speed because in SimHub we can step forward in time in a recorded replay.
-                            double avgSpeedKph = ComputeAvgSpeedKph(data.NewData.TrackLength, driver.CurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value, _sessionState.DeltaTime);
+                            double avgSpeedKph = ComputeAvgSpeedKph(data.NewData.TrackLength, driver.CurrentLapHighPrecision, driver.CurrentLapHighPrecisionRaw, _sessionState.DeltaTime);
                             bool teleportingToPit = avgSpeedKph > 500 && driver.InPitBox;
                             bool playerTowing = driver.IsPlayer && playerCarTowTime > 0;
 
@@ -432,7 +429,7 @@ namespace benofficial2.Plugin
                                 }
                                 else
                                 {
-                                    (double towLength, TimeSpan towTime) = ComputeTowLengthAndTime(data.NewData.TrackLength, driver.CurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value);
+                                    (double towLength, TimeSpan towTime) = ComputeTowLengthAndTime(data.NewData.TrackLength, driver.CurrentLapHighPrecision, driver.CurrentLapHighPrecisionRaw);
                                     driver.TowingEndTime = DateTime.Now + towTime;
                                 }
                             }
@@ -444,12 +441,11 @@ namespace benofficial2.Plugin
                         // Consider towing done if the car starts moving forward from a valid position
                         double smallDistancePct = 0.05 / data.NewData.TrackLength; // 0.05m is roughly the distance you cover at 10km/h in 16ms.
 
-                        bool movingForward = opponent.CurrentLapHighPrecision.HasValue &&
-                            opponent.CurrentLapHighPrecision.Value > -1 &&
+                        bool movingForward = driver.CurrentLapHighPrecisionRaw > -1 &&
                             driver.LastCurrentLapHighPrecision > -1 &&
-                            opponent.CurrentLapHighPrecision > driver.LastCurrentLapHighPrecision + smallDistancePct;
+                            driver.CurrentLapHighPrecisionRaw > driver.LastCurrentLapHighPrecision + smallDistancePct;
 
-                        bool done = opponent.CurrentLapHighPrecision == -1;
+                        bool done = driver.CurrentLapHighPrecisionRaw == -1;
                         bool towEnded = !driver.IsPlayer && DateTime.Now > driver.TowingEndTime;
                         bool playerNotTowing = driver.IsPlayer && playerCarTowTime <= 0;
                         if (playerNotTowing || towEnded || movingForward || done)
@@ -465,17 +461,17 @@ namespace benofficial2.Plugin
                     {
                         // Stop updating the current lap if the driver is done (-1), so they stay at their last known position in the live standings.
                         // Happens at the end of the race when they get out of the car.
-                        if (opponent.CurrentLapHighPrecision.HasValue && opponent.CurrentLapHighPrecision.Value > -1)
+                        if (driver.CurrentLapHighPrecisionRaw > -1)
                         {
-                            driver.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision.Value;
+                            driver.CurrentLapHighPrecision = driver.CurrentLapHighPrecisionRaw;
                         }
                     }
 
-                    driver.LastCurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? -1;
+                    driver.LastCurrentLapHighPrecision = driver.CurrentLapHighPrecisionRaw;
                 }
                 else
                 {
-                    driver.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? -1;
+                    driver.CurrentLapHighPrecision = driver.CurrentLapHighPrecisionRaw;
                 }
 
                 if (driver.IsPlayer)
@@ -636,6 +632,9 @@ namespace benofficial2.Plugin
             if (!RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> drivers, "DriverInfo", "Drivers"))
                 return;
 
+            if (drivers == null)
+                return;
+
             for (int i = 0; i < drivers.Count; i++)
             {
                 RawDataHelper.TryGetValue<int>(drivers, out int carIdx, i, "CarIdx");
@@ -701,6 +700,15 @@ namespace benofficial2.Plugin
                 driver.Lap = lap;
                 driver.LapsCompleted = lapCompleted;
                 driver.TrackPositionPercent = lapDistPct;
+
+                if (driver.Lap > -1 && driver.TrackPositionPercent > -Constants.DistanceEpsilon)
+                {
+                    driver.CurrentLapHighPrecisionRaw = driver.Lap - 1 + driver.TrackPositionPercent;
+                }
+                else
+                {
+                    driver.CurrentLapHighPrecisionRaw = -1;
+                }
             }
         }
 
@@ -794,10 +802,13 @@ namespace benofficial2.Plugin
             if (!RawDataHelper.TryGetSessionData<int>(ref data, out int sessionIdx, "SessionInfo", "CurrentSessionNum"))
                 return;
 
-            if (sessionIdx < 0 || sessionIdx >= sessions.Count)
+            if (sessions == null || sessionIdx < 0 || sessionIdx >= sessions.Count)
                 return;
 
             if (!RawDataHelper.TryGetValue<List<object>>(sessions, out List<object> positions, sessionIdx, "ResultsPositions"))
+                return;
+
+            if (positions == null)
                 return;
 
             for (int posIdx = 0; posIdx < positions.Count; posIdx++)

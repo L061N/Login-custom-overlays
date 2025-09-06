@@ -199,7 +199,7 @@ namespace benofficial2.Plugin
                 row.SafetyRating = driver.SafetyRating;
                 row.GapToPlayer = opponent.RelativeGapToPlayer ?? 0;
                 row.GapToPlayerCombined = opponent.GapToPlayerCombined;
-                row.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? 0;
+                row.CurrentLapHighPrecision = driver.CurrentLapHighPrecisionRaw;
                 row.LastLapTime = driver.LastLapTime;
                 row.SessionFlags = driver.SessionFlags;
             }
