@@ -65,7 +65,6 @@ namespace benofficial2.Plugin
         public bool RowVisible { get; set; } = false;
         public bool IsPlayer { get; set; } = false;
         public bool IsHighlighted { get; set; } = false;
-        public string PlayerID { get; set; } = string.Empty;
         public bool Connected { get; set; } = false;
         public int LivePositionInClass { get; set; } = 0;
         public int PositionChange { get; set; } = 0;
@@ -220,7 +219,6 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.RowVisible", valueProvider: () => row.RowVisible);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.IsPlayer", valueProvider: () => row.IsPlayer);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.IsHighlighted", valueProvider: () => row.IsHighlighted);
-                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PlayerID", valueProvider: () => row.PlayerID);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Connected", valueProvider: () => row.Connected);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LivePositionInClass", valueProvider: () => row.LivePositionInClass);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.PositionChange", valueProvider: () => row.PositionChange);
@@ -381,10 +379,9 @@ namespace benofficial2.Plugin
                         }
 
                         row.RowVisible = true;
-                        row.IsPlayer = opponent.IsPlayer;
+                        row.IsPlayer = driver.IsPlayer;
                         row.IsHighlighted = ((highlightedDriver?.CarIdx ?? -1) == driver.CarIdx);
-                        row.PlayerID = opponent.Id;
-                        row.Connected = opponent.IsConnected;
+                        row.Connected = driver.IsConnected;
                         row.LivePositionInClass = driver.LivePositionInClass;
 
                         if (_sessionModule.Race && driver.QualPositionInClass > 0 && driver.LivePositionInClass > 0)
@@ -392,36 +389,37 @@ namespace benofficial2.Plugin
                             row.PositionChange = driver.QualPositionInClass - driver.LivePositionInClass;
                         }
 
-                        row.Number = opponent.CarNumber;
+                        row.Number = driver.CarNumber;
                         if (_sessionModule.TeamRacing)
                         {
-                            row.Name = opponent.TeamName;
+                            row.Name = driver.TeamName;
                         }
                         else
                         {
-                            row.Name = opponent.Name;
+                            row.Name = driver.Name;
                         }
                         row.CarId = driver.CarId;
-                        row.CarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName);
-                        row.CarClassColor = opponent.CarClassColor;
-                        row.CarClassTextColor = opponent.CarClassTextColor;
+                        row.CarBrand = _carModule.GetCarBrand(driver.CarId, driver.CarName);
+                        row.CarClassColor = driver.CarClassColor;
+                        row.CarClassTextColor = "0x000000";
                         row.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
-                        row.InPitLane = opponent.IsCarInPitLane;
+                        row.InPitLane = driver.OnPitRoad;
                         row.Towing = driver.Towing;
                         row.OutLap = driver.OutLap;
                         row.EnterPitLap = driver.EnterPitLap;
                         row.LastPitStopDuration = driver.LastPitStopDuration;
-                        row.iRating = (int)(opponent.IRacing_IRating ?? 0);
+                        row.iRating = driver.IRating;
                         row.iRatingChange = driver.IRatingChange;
-                        (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
-                        row.CurrentLap = opponent.CurrentLap ?? 0;
+                        row.License = driver.License;
+                        row.SafetyRating = driver.SafetyRating;
+                        row.CurrentLap = Math.Max(0, driver.Lap);
                         row.StintLap = driver.StintLap;
                         row.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;
                         row.GapToClassLeader = opponent.GaptoClassLeader ?? 0;
                         (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, driver.CarIdx);
                         row.BestLapTime = driver.BestLapTime;
                         row.LastLapTime = driver.LastLapTime;
-                        row.JokerLapsComplete = driver.JokerLapsComplete;
+                        row.JokerLapsComplete = driver.JokerLapsCompleted;
 
                         if (_sessionModule.Race)
                         {
@@ -536,7 +534,6 @@ namespace benofficial2.Plugin
             row.RowVisible = false;
             row.IsPlayer = false;
             row.IsHighlighted = false;
-            row.PlayerID = string.Empty;
             row.Connected = false;
             row.LivePositionInClass = 0;
             row.PositionChange = 0;

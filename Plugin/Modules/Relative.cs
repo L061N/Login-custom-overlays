@@ -176,8 +176,8 @@ namespace benofficial2.Plugin
 
                 Opponent opponent = opponents[rowIdx];
                 Driver driver = null;
-                if (_driverModule.Drivers != null) _driverModule.Drivers.TryGetValue(opponent.CarNumber, out driver);
 
+                _driverModule.Drivers?.TryGetValue(opponent.CarNumber, out driver);
                 if (driver == null || !IsValidRow(opponent))
                 {
                     BlankRow(row);
@@ -186,16 +186,17 @@ namespace benofficial2.Plugin
 
                 row.RowVisible = true;
                 row.LivePositionInClass = driver.LivePositionInClass;
-                row.ClassColor = opponent.CarClassColor;
-                row.ClassTextColor = opponent.CarClassTextColor;
-                row.Number = opponent.CarNumber;
-                row.Name = opponent.Name;
-                row.CarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName); ;
+                row.ClassColor = driver.CarClassColor;
+                row.ClassTextColor = "0x000000";
+                row.Number = driver.CarNumber;
+                row.Name = driver.Name;
+                row.CarBrand = _carModule.GetCarBrand(driver.CarId, driver.CarName); ;
                 row.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
                 row.OutLap = driver.OutLap;
-                row.iRating = (int)(opponent.IRacing_IRating ?? 0);
+                row.iRating = driver.IRating;
                 row.iRatingChange = driver.IRatingChange;
-                (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
+                row.License = driver.License;
+                row.SafetyRating = driver.SafetyRating;
                 row.GapToPlayer = opponent.RelativeGapToPlayer ?? 0;
                 row.GapToPlayerCombined = opponent.GapToPlayerCombined;
                 row.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? 0;
