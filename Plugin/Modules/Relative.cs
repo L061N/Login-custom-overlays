@@ -187,7 +187,7 @@ namespace benofficial2.Plugin
                 row.RowVisible = true;
                 row.LivePositionInClass = driver.LivePositionInClass;
                 row.ClassColor = driver.CarClassColor;
-                row.ClassTextColor = "0x000000";
+                row.ClassTextColor = "#000000";
                 row.Number = driver.CarNumber;
                 row.Name = driver.Name;
                 row.CarBrand = _carModule.GetCarBrand(driver.CarId, driver.CarName); ;

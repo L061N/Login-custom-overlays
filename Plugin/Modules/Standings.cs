@@ -401,7 +401,7 @@ namespace benofficial2.Plugin
                         row.CarId = driver.CarId;
                         row.CarBrand = _carModule.GetCarBrand(driver.CarId, driver.CarName);
                         row.CarClassColor = driver.CarClassColor;
-                        row.CarClassTextColor = "0x000000";
+                        row.CarClassTextColor = "#000000";
                         row.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
                         row.InPitLane = driver.InPit;
                         row.Towing = driver.Towing;
