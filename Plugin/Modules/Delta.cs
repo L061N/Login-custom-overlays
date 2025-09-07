@@ -122,7 +122,7 @@ namespace benofficial2.Plugin
 
             List<Driver> drivers = _driverModule.LiveClassLeaderboards[_standingsModule.HighlightedCarClassIdx].Drivers;
 
-            int livePositionInClass = _driverModule.PlayerLivePositionInClass + relativeIdx;
+            int livePositionInClass = _driverModule.PlayerDriver.LivePositionInClass + relativeIdx;
             int opponentIdx = livePositionInClass - 1;
             if (opponentIdx < 0 || opponentIdx >= drivers.Count)
             {

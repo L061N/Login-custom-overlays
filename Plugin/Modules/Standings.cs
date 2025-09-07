@@ -574,7 +574,7 @@ namespace benofficial2.Plugin
             }
             else
             {
-                highlightedCarIdx = _driverModule.PlayerCarIdx;
+                highlightedCarIdx = _driverModule.PlayerDriver.CarIdx;
             }
 
             _driverModule.DriversByCarIdx.TryGetValue(highlightedCarIdx, out highlightedDriver);           
@@ -781,7 +781,7 @@ namespace benofficial2.Plugin
                 // Because we don't have the data for other cars in the iRacing SDK.
                 // TODO: Missing edge cases such as when the player gets lapped on the leader's last lap.
                 // Or when the player tows before starting the last lap. Etc.
-                bool playerStartingLastLap = _driverModule.PlayerHadWhiteFlag && _driverModule.PlayerCurrentLapHighPrecision % 1.0 < 0.50;
+                bool playerStartingLastLap = _driverModule.PlayerDriver.HadWhiteFlag && _driverModule.PlayerDriver.CurrentLapHighPrecision % 1.0 < 0.50;
                 bool playerHadCheckered = data.NewData.Flag_Checkered > 0;
                 if (playerStartingLastLap || playerHadCheckered)
                 {
@@ -809,7 +809,7 @@ namespace benofficial2.Plugin
                     sessionTimeRemain, 
                     avgLapTime.TotalSeconds * lapTimeSafePct);
 
-                if (_driverModule.PlayerHadWhiteFlag && !carClass.EstimatedTotalLapsLogged)
+                if (_driverModule.PlayerDriver.HadWhiteFlag && !carClass.EstimatedTotalLapsLogged)
                 {
                     SimHub.Logging.Current.Info($"Estimated total laps at player's white flag: " +
                         $"CarClassName={carClass.Name}, " +
@@ -825,10 +825,10 @@ namespace benofficial2.Plugin
                 return;
             }
 
-            carClass.EstimatedTotalLaps = EstimateTotalLaps(_driverModule.PlayerCurrentLapHighPrecision, 
+            carClass.EstimatedTotalLaps = EstimateTotalLaps(_driverModule.PlayerDriver.CurrentLapHighPrecision, 
                 _sessionModule.SessionLapsTotal,
                 data.NewData.SessionTimeLeft.TotalSeconds, 
-                _driverModule.PlayerBestLapTime.TotalSeconds * lapTimeSafePct);
+                _driverModule.PlayerDriver.BestLapTime.TotalSeconds * lapTimeSafePct);
         }
 
         static public int EstimateTotalLaps(double currentLapHighPrecision, int sessionTotalLaps, double sessionTimeRemain, double avgLapTime)
