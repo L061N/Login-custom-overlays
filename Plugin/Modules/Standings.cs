@@ -255,7 +255,9 @@ namespace benofficial2.Plugin
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
+            if (data.FrameTime - _lastUpdateTime < _updateInterval) 
+                return;
+
             _lastUpdateTime = data.FrameTime;
 
             Driver highlightedDriver = null;
@@ -285,43 +287,39 @@ namespace benofficial2.Plugin
                 StandingCarClass carClass = CarClasses[carClassIdx];
                 if (carClassIdx < _driverModule.LiveClassLeaderboards.Count)
                 {
-                    LeaderboardCarClassDescription opponentClass = _driverModule.LiveClassLeaderboards[carClassIdx].CarClassDescription;
-                    OpponentsWithDrivers opponentsWithDrivers = _driverModule.LiveClassLeaderboards[carClassIdx].Drivers;
+                    ClassLeaderboard leaderboard = _driverModule.LiveClassLeaderboards[carClassIdx];
+                    carClass.Color = leaderboard.CarClassColor;
+                    carClass.TextColor = "#000000";
 
-                    carClass.Color = opponentClass.ClassColor;
-                    carClass.TextColor = opponentClass.ClassTextColor;
-
-                    if ((opponentClass.ClassName == null || opponentClass.ClassName.Length == 0 || opponentClass.ClassName == "Hosted All Cars"))
+                    if ((leaderboard.CarClassName == null || leaderboard.CarClassName.Length == 0 || leaderboard.CarClassName == "Hosted All Cars"))
                     {
-                        if (opponentClass.CarModels.Count == 1)
+                        // iRacing does not provide a class name in AI races.
+                        if (leaderboard.CarNames.Count == 1)
                         {
-                            // Fallback to the car model name when we don't have a class name and there's only 1 car model.
-                            carClass.Name = opponentClass.CarModels[0];
+                            // Fallback to the car model name when there's only 1 car model.
+                            carClass.Name = leaderboard.CarNames.First();
                         }
                         else
                         {
-                            // There's an issue with AI races where iRacing does not provide a class name, and SimHub fails to create the classes.
-                            // https://github.com/fixfactory/bo2-official-overlays/issues/33
-                            carClass.Name = "All Cars";
-                            carClass.Color = "#FFFFFF";
-                            carClass.TextColor = "#000000";
+                            // Fallback to a generic name when there are multiple car models.
+                            carClass.Name = "Class " + leaderboard.CarClassId;
                         }
                     }
                     else
                     {
-                        carClass.Name = _carModule.GetCarClassName(opponentClass.ClassName);
+                        carClass.Name = _carModule.GetCarClassName(leaderboard.CarClassName);
                     }
 
                     carClass.NameSize = MeasureTextInPixels(carClass.Name);
-                    carClass.Sof = CalculateSof(opponentsWithDrivers);
-                    carClass.DriverCount = opponentsWithDrivers.Count;
-                    carClass.BestLapTime = FindBestLapTime(opponentsWithDrivers);
-                    carClass.BestQualLapTime = FindBestQualLapTime(opponentsWithDrivers);
+                    carClass.Sof = CalculateSof(leaderboard.Drivers);
+                    carClass.DriverCount = leaderboard.Drivers.Count;
+                    carClass.BestLapTime = FindBestLapTime(leaderboard.Drivers);
+                    carClass.BestQualLapTime = FindBestQualLapTime(leaderboard.Drivers);
 
-                    if (opponentsWithDrivers.Count > 0)
+                    if (leaderboard.Drivers.Count > 0)
                     {
-                        carClass.LeaderLastLapTime = opponentsWithDrivers[0].Item2.LastLapTime;
-                        carClass.LeaderAvgLapTime = opponentsWithDrivers[0].Item2.AvgLapTime.GetAverageLapTime();
+                        carClass.LeaderLastLapTime = leaderboard.Drivers[0].LastLapTime;
+                        carClass.LeaderAvgLapTime = leaderboard.Drivers[0].AvgLapTime.GetAverageLapTime();
                     }
                     else
                     {
@@ -329,7 +327,7 @@ namespace benofficial2.Plugin
                         carClass.LeaderAvgLapTime = TimeSpan.Zero;
                     }
 
-                    UpdateEstimatedTotalLaps(ref data, carClass, opponentsWithDrivers);
+                    UpdateEstimatedTotalLaps(ref data, carClass, leaderboard.Drivers);
 
                     int skipRowCount = 0;
                     int maxRowCount;
@@ -338,7 +336,7 @@ namespace benofficial2.Plugin
                         maxRowCount = Settings.MaxRowsPlayerClass;
 
                         // How many rows to skip to have a lead-focused leaderboard
-                        skipRowCount = GetLeadFocusedSkipRowCount(highlightedDriver.CarIdx, opponentsWithDrivers);
+                        skipRowCount = GetLeadFocusedSkipRowCount(highlightedDriver.CarIdx, leaderboard.Drivers);
                     }
                     else
                     {
@@ -364,15 +362,14 @@ namespace benofficial2.Plugin
                             actualDriverIdx += skipRowCount;
                         }
 
-                        if (actualDriverIdx >= opponentsWithDrivers.Count)
+                        if (actualDriverIdx >= leaderboard.Drivers.Count)
                         {
                             BlankRow(row);
                             continue;
                         }
 
-                        Opponent opponent = opponentsWithDrivers[actualDriverIdx].Item1;
-                        Driver driver = opponentsWithDrivers[actualDriverIdx].Item2;
-                        if (!IsValidRow(opponent))
+                        Driver driver = leaderboard.Drivers[actualDriverIdx];
+                        if (!IsValidRow(driver))
                         {
                             BlankRow(row);
                             continue;
@@ -414,8 +411,8 @@ namespace benofficial2.Plugin
                         row.SafetyRating = driver.SafetyRating;
                         row.CurrentLap = Math.Max(0, driver.Lap);
                         row.StintLap = driver.StintLap;
-                        row.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;
-                        row.GapToClassLeader = opponent.GaptoClassLeader ?? 0;
+                        row.LapsToClassLeader = driver.LapsToClassLeader;
+                        row.GapToClassLeader = driver.GapToClassLeader;
                         (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, driver.CarIdx);
                         row.BestLapTime = driver.BestLapTime;
                         row.LastLapTime = driver.LastLapTime;
@@ -584,16 +581,15 @@ namespace benofficial2.Plugin
 
             if (highlightedDriver != null)
             {
-                for (int carClassIdx = 0; carClassIdx < data.NewData.OpponentsClassses.Count; carClassIdx++)
+                for (int carClassIdx = 0; carClassIdx < _driverModule.LiveClassLeaderboards.Count; carClassIdx++)
                 {
-                    var carClass = data.NewData.OpponentsClassses[carClassIdx];
-                    List<Opponent> opponents = carClass.Opponents;
+                    var leaderboard = _driverModule.LiveClassLeaderboards[carClassIdx];
 
                     // Looping instead of only checking the first opponent, because in AI races
                     // all classes are grouped together.
-                    for (int opponentIdx = 0; opponentIdx < opponents.Count; opponentIdx++)
+                    for (int opponentIdx = 0; opponentIdx < leaderboard.Drivers.Count; opponentIdx++)
                     {
-                        if (opponents[opponentIdx].CarClassID == highlightedDriver.CarClassId.ToString())
+                        if (leaderboard.Drivers[opponentIdx].CarClassId == highlightedDriver.CarClassId)
                         {
                             return (highlightedDriver, carClassIdx);
                         }
@@ -622,41 +618,42 @@ namespace benofficial2.Plugin
             return (tireCompoundName[0].ToString(), true);
         }
 
-        public bool IsValidRow(Opponent opponent)
+        public bool IsValidRow(Driver driver)
         {
-            return opponent.PositionInClass > 0;
+            return true;
         }
 
-        public int GetValidRowCount(OpponentsWithDrivers opponentsWithDrivers)
+        public int GetValidRowCount(List<Driver> drivers)
         {
             int validRowCount = 0;
-            for (int opponentIdx = 0; opponentIdx < opponentsWithDrivers.Count; opponentIdx++)
+            for (int opponentIdx = 0; opponentIdx < drivers.Count; opponentIdx++)
             {
-                if (IsValidRow(opponentsWithDrivers[opponentIdx].Item1)) { validRowCount++; }
+                if (IsValidRow(drivers[opponentIdx])) 
+                    validRowCount++;
             }
             return validRowCount;
         }
 
-        public int GetLeadFocusedSkipRowCount(int highlightedCarIdx, OpponentsWithDrivers opponentsWithDrivers)
+        public int GetLeadFocusedSkipRowCount(int highlightedCarIdx, List<Driver> drivers)
         {
             // Find the highlighted car in the opponent list
             int highlightedOpponentIdx = -1;
-            for (int opponentIdx = 0; opponentIdx < opponentsWithDrivers.Count; opponentIdx++)
+            for (int opponentIdx = 0; opponentIdx < drivers.Count; opponentIdx++)
             {
-                if (opponentsWithDrivers[opponentIdx].Item2.CarIdx == highlightedCarIdx)
+                if (drivers[opponentIdx].CarIdx == highlightedCarIdx)
                 {
                     highlightedOpponentIdx = opponentIdx;
                     break;
                 }
             }
 
-            if (highlightedOpponentIdx < 0 || !IsValidRow(opponentsWithDrivers[highlightedOpponentIdx].Item1))
+            if (highlightedOpponentIdx < 0 || !IsValidRow(drivers[highlightedOpponentIdx]))
             {
                 // Highlighted car not in opponent list
                 return 0;
             }
 
-            int validRowCount = GetValidRowCount(opponentsWithDrivers);
+            int validRowCount = GetValidRowCount(drivers);
             if (validRowCount <= Settings.MaxRowsPlayerClass)
             {
                 // They all fit in
@@ -695,12 +692,12 @@ namespace benofficial2.Plugin
             return skipRowCount;
         }
 
-        public TimeSpan FindBestLapTime(OpponentsWithDrivers opponentsWithDrivers)
+        public TimeSpan FindBestLapTime(List<Driver> drivers)
         {
             TimeSpan bestLapTime = TimeSpan.MaxValue;
-            for (int opponentIdx = 0; opponentIdx < opponentsWithDrivers.Count; opponentIdx++)
+            for (int opponentIdx = 0; opponentIdx < drivers.Count; opponentIdx++)
             {
-                Driver driver = opponentsWithDrivers[opponentIdx].Item2;
+                Driver driver = drivers[opponentIdx];
                 if (driver.BestLapTime > TimeSpan.Zero && driver.BestLapTime < bestLapTime)
                 {
                     bestLapTime = driver.BestLapTime;
@@ -709,12 +706,12 @@ namespace benofficial2.Plugin
             return bestLapTime < TimeSpan.MaxValue ? bestLapTime : TimeSpan.Zero;
         }
 
-        public TimeSpan FindBestQualLapTime(OpponentsWithDrivers opponentsWithDrivers)
+        public TimeSpan FindBestQualLapTime(List<Driver> drivers)
         {
             TimeSpan bestQualLapTime = TimeSpan.MaxValue;
-            for (int opponentIdx = 0; opponentIdx < opponentsWithDrivers.Count; opponentIdx++)
+            for (int opponentIdx = 0; opponentIdx < drivers.Count; opponentIdx++)
             {
-                Driver driver = opponentsWithDrivers[opponentIdx].Item2;
+                Driver driver = drivers[opponentIdx];
                 if (driver.QualLapTime > TimeSpan.Zero && driver.QualLapTime < bestQualLapTime)
                 {
                     bestQualLapTime = driver.QualLapTime;
@@ -723,18 +720,18 @@ namespace benofficial2.Plugin
             return bestQualLapTime < TimeSpan.MaxValue ? bestQualLapTime : TimeSpan.Zero;
         }
 
-        public int CalculateSof(OpponentsWithDrivers opponentsWithDrivers)
+        public int CalculateSof(List<Driver> drivers)
         {
-            if (opponentsWithDrivers.Count <= 0) 
+            if (drivers.Count <= 0) 
                 return 0;
 
             double sum = 0.0;
-            foreach (var (opponent, driver) in opponentsWithDrivers)
+            foreach (var driver in drivers)
             {
-                sum += Math.Pow(2.0, -(opponent.IRacing_IRating ?? 0.0) / 1600.0);
+                sum += Math.Pow(2.0, -(driver.IRating) / 1600.0);
             }
 
-            return (int)((1600.0 / Math.Log(2.0)) * Math.Log(opponentsWithDrivers.Count / sum));
+            return (int)((1600.0 / Math.Log(2.0)) * Math.Log(drivers.Count / sum));
         }
 
         public int CalculateTotalSof(List<Opponent> opponents)
@@ -761,7 +758,7 @@ namespace benofficial2.Plugin
             return textSize.Width;
         }
 
-        public void UpdateEstimatedTotalLaps(ref GameData data, StandingCarClass carClass, OpponentsWithDrivers opponentsWithDrivers)
+        public void UpdateEstimatedTotalLaps(ref GameData data, StandingCarClass carClass, List<Driver> drivers)
         {
             // Use a slightly faster avg lap time as a safety margin in case the leader will pace up.
             // This will overestimate the laps slightly in the beginning, but for fuel decisions it's better than underestimating.
@@ -778,7 +775,7 @@ namespace benofficial2.Plugin
                 if (carClass.EstimatedTotalLapsConfirmed)
                     return;
 
-                double leaderCurrentLapHighPrecision = opponentsWithDrivers.Count > 0 ? opponentsWithDrivers[0].Item1.CurrentLapHighPrecision ?? 0.0 : 0.0;
+                double leaderCurrentLapHighPrecision = drivers.Count > 0 ? drivers[0].CurrentLapHighPrecisionRaw : 0.0;
 
                 // Confirm the total laps when the player gets the white flag.
                 // Because we don't have the data for other cars in the iRacing SDK.

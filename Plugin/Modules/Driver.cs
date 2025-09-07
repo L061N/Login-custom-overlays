@@ -111,6 +111,7 @@ namespace benofficial2.Plugin
         public string TeamName { get; set; } = string.Empty;
         public int FlairId { get; set; } = 0;
         public int CarClassId { get; set; } = 0;
+        public string CarClassName { get; set; } = string.Empty;
         public string CarClassColor { get; set; } = string.Empty;
         public bool IsPlayer { get; set; } = false;
         public bool IsConnected { get; set; } = false;
@@ -147,12 +148,19 @@ namespace benofficial2.Plugin
         public int IRatingChange { get; set; } = 0;
         public string License { get; set; } = string.Empty;
         public double SafetyRating { get; set; } = 0.0;
+        public int LapsToClassLeader { get; set; } = 0;
+        public double GapToClassLeader { get; set; } = 0.0;
+        public double RelativeGapToPlayer { get; set; } = 0.0;
     }
 
     public class ClassLeaderboard
     {
-        public LeaderboardCarClassDescription CarClassDescription { get; set; } = null;
-        public OpponentsWithDrivers Drivers { get; set; } = new OpponentsWithDrivers();
+        public int CarClassId { get; set; } = 0;
+        public string CarClassName { get; set; } = string.Empty;
+        public string CarClassColor { get; set; } = string.Empty;
+        public List<Driver> Drivers { get; set; } = new List<Driver>();
+        public HashSet<string> CarNames { get; } = new HashSet<string>();
+        public int LeaderPosition { get; set; } = 0;
     }
 
     public class HighlightedDriver
@@ -514,7 +522,8 @@ namespace benofficial2.Plugin
             }
 
             UpdateQualResult(ref data);
-            UpdateLivePositionInClass(ref data);
+            UpdateGaps(ref data);
+            UpdateLeaderboards(ref data);
             UpdateIRatingChange(ref data);
         }
 
@@ -569,15 +578,15 @@ namespace benofficial2.Plugin
             {
                 for (int i = 0; i < qualResults.Count; i++)
                 {
-                    RawDataHelper.TryGetSessionData<int>(ref data, out int carIdx, "QualifyResultsInfo", "Results", i, "CarIdx");
+                    RawDataHelper.TryGetValue<int>(qualResults, out int carIdx, i, "CarIdx");
                     if (!DriversByCarIdx.TryGetValue(carIdx, out Driver driver))
                     {
                         Debug.Assert(false);
                         continue;
                     }
 
-                    RawDataHelper.TryGetSessionData<int>(ref data, out int positionInClass, "QualifyResultsInfo", "Results", i, "ClassPosition");
-                    RawDataHelper.TryGetSessionData<double>(ref data, out double fastestTime, "QualifyResultsInfo", "Results", i, "FastestTime");
+                    RawDataHelper.TryGetValue<int>(qualResults, out int positionInClass, i, "ClassPosition");
+                    RawDataHelper.TryGetValue<double>(qualResults, out double fastestTime, i, "FastestTime");
 
                     driver.QualPositionInClass = positionInClass + 1;
                     driver.QualLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
@@ -587,7 +596,9 @@ namespace benofficial2.Plugin
                 return;
             }
 
-            RawDataHelper.TryGetSessionData<int>(ref data, out int currentSessionIdx, "SessionInfo", "CurrentSessionNum");
+            if (!RawDataHelper.TryGetSessionData<int>(ref data, out int currentSessionIdx, "SessionInfo", "CurrentSessionNum"))
+                return;
+
             if (currentSessionIdx < 0)
                 return;
 
@@ -596,15 +607,15 @@ namespace benofficial2.Plugin
             {
                 for (int i = 0; i < qualPositions.Count; i++)
                 {
-                    RawDataHelper.TryGetSessionData<int>(ref data, out int carIdx, "SessionInfo", "Sessions", currentSessionIdx, "QualifyPositions", i, "CarIdx");
+                    RawDataHelper.TryGetValue<int>(qualPositions, out int carIdx, i, "CarIdx");
                     if (!DriversByCarIdx.TryGetValue(carIdx, out Driver driver))
                     {
                         Debug.Assert(false);
                         continue;
                     }
 
-                    RawDataHelper.TryGetSessionData<int>(ref data, out int positionInClass, "SessionInfo", "Sessions", currentSessionIdx, "QualifyPositions", i, "ClassPosition");
-                    RawDataHelper.TryGetSessionData<double>(ref data, out double fastestTime, "SessionInfo", "Sessions", currentSessionIdx, "QualifyPositions", i, "FastestTime");
+                    RawDataHelper.TryGetValue<int>(qualPositions, out int positionInClass, i, "ClassPosition");
+                    RawDataHelper.TryGetValue<double>(qualPositions, out double fastestTime, i, "FastestTime");
 
                     driver.QualPositionInClass = positionInClass + 1;
                     driver.QualLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
@@ -652,6 +663,7 @@ namespace benofficial2.Plugin
                 RawDataHelper.TryGetValue<int>(drivers, out int teamIncidentCount, i, "TeamIncidentCount");
                 RawDataHelper.TryGetValue<int>(drivers, out int iRating, i, "IRating");
                 RawDataHelper.TryGetValue<string>(drivers, out string carScreenNameShort, i, "CarScreenNameShort");
+                RawDataHelper.TryGetValue<string>(drivers, out string carClassShortName, i, "CarClassShortName");
                 RawDataHelper.TryGetValue<string>(drivers, out string carClassColor, i, "CarClassColor");
                 RawDataHelper.TryGetValue<string>(drivers, out string licString, i, "LicString");
                 RawDataHelper.TryGetValue<string>(drivers, out string userName, i, "UserName");
@@ -686,6 +698,7 @@ namespace benofficial2.Plugin
                 driver.IsPlayer = carIdx == playerCarIdx;
                 driver.IsConnected = trackSurface > (int)TrackLoc.NotInWorld;
                 driver.CarClassId = carClassId;
+                driver.CarClassName = carClassShortName;
                 driver.CarClassColor = ConvertColorString(carClassColor);
                 driver.TeamIncidentCount = teamIncidentCount;
                 driver.IRating = iRating;
@@ -712,35 +725,54 @@ namespace benofficial2.Plugin
             }
         }
 
-        private void UpdateLivePositionInClass(ref GameData data)
+        private void UpdateLeaderboards(ref GameData data)
         {
             LiveClassLeaderboards = new List<ClassLeaderboard>();
 
-            for (int carClassIdx = 0; carClassIdx < data.NewData.OpponentsClassses.Count; carClassIdx++)
+            foreach (var group in Drivers.Values.GroupBy(d => d.CarClassId))
             {
+                int carClassId = group.Key;
+                int countInClass = group.Count();
+
                 ClassLeaderboard leaderboard = new ClassLeaderboard();
                 LiveClassLeaderboards.Add(leaderboard);
 
-                leaderboard.CarClassDescription = data.NewData.OpponentsClassses[carClassIdx];
-                List<Opponent> opponents = leaderboard.CarClassDescription.Opponents;
-                for (int i = 0; i < opponents.Count; i++)
+                foreach (var driver in group)
                 {
-                    Opponent opponent = opponents[i];
-                    if (!Drivers.TryGetValue(opponent.CarNumber, out Driver driver))
+                    if (leaderboard.CarClassId == 0)
                     {
-                        // Can happen when spectating a race and driving, the player car has no car number.
-                        continue;
+                        leaderboard.CarClassId = carClassId;
+                        leaderboard.CarClassColor = driver.CarClassColor;
+                        leaderboard.CarClassName = driver.CarClassName;
                     }
 
-                    leaderboard.Drivers.Add((opponent, driver));
+                    bool scored = true;
+                    if (_sessionModule.Race)
+                    {
+                        // Only consider drivers that have an official qual position.
+                        // In heat races, this ignores drivers not in the current heat.
+                        scored = driver.QualPositionInClass > 0;
+                    }
+                    else
+                    {
+                        scored = driver.Position > 0 || driver.IsConnected;
+                    }
+
+                    if (scored)
+                    {
+                        leaderboard.Drivers.Add(driver);
+                        leaderboard.CarNames.Add(driver.CarName);
+                    }                    
                 }
 
+                bool sorted = false;
                 if (_sessionModule.Race)
                 {
                     if (!_sessionModule.RaceStarted)
                     {
                         // Before the start keep the leaderboard sorted by qual position
-                        leaderboard.Drivers = leaderboard.Drivers.OrderBy(p => p.Item2.QualPositionInClass).ToList();
+                        leaderboard.Drivers = leaderboard.Drivers.OrderBy(p => p.QualPositionInClass).ToList();
+                        sorted = true;
                     }
                     else if (!_sessionModule.RaceFinished)
                     {
@@ -748,20 +780,23 @@ namespace benofficial2.Plugin
                         // Except for ovals under caution, show the official position.
                         if (!(_sessionModule.Oval && data.NewData.Flag_Yellow == 1))
                         {
-                            leaderboard.Drivers = leaderboard.Drivers.OrderByDescending(p => p.Item2.CurrentLapHighPrecision).ToList();
+                            leaderboard.Drivers = leaderboard.Drivers.OrderByDescending(p => p.CurrentLapHighPrecision).ToList();
+                            sorted = true;
                         }
-                    }
-                    else
-                    {
-                        // After the race don't sort to show the official race result
                     }
                 }
 
-                for (int i = 0; i < leaderboard.Drivers.Count; i++)
+                if (!sorted)
                 {
-                    Opponent opponent = leaderboard.Drivers[i].Item1;
-                    Driver driver = leaderboard.Drivers[i].Item2;
+                    leaderboard.Drivers = leaderboard.Drivers
+                        .OrderBy(p => p.PositionInClass == 0)   // false (0) comes before true (1)
+                        .ThenBy(p => p.PositionInClass)         // sort positions normally
+                        .ToList();
+                }
 
+                int posInClass = 1;
+                foreach (var driver in leaderboard.Drivers)
+                {
                     if (_sessionModule.Race)
                     {
                         if (!_sessionModule.RaceStarted)
@@ -770,15 +805,15 @@ namespace benofficial2.Plugin
                         }
                         else
                         {
-                            driver.LivePositionInClass = i + 1;
+                            driver.LivePositionInClass = posInClass++;
                         }
                     }
                     else
                     {
-                        driver.LivePositionInClass = opponent.Position > 0 ? i + 1 : 0;
+                        driver.LivePositionInClass = driver.Position > 0 ? posInClass++ : 0;
                     }
 
-                    if (opponent.IsPlayer)
+                    if (driver.IsPlayer)
                     {
                         PlayerLivePositionInClass = driver.LivePositionInClass;
                     }
@@ -786,11 +821,19 @@ namespace benofficial2.Plugin
                     if (driver.CarIdx == HighlightedDriver.CarIdx)
                     {
                         HighlightedDriver.LivePositionInClass = driver.LivePositionInClass;
-                        HighlightedDriver.CarClassColor = leaderboard.CarClassDescription.ClassColor;
-                        HighlightedDriver.CarClassTextColor = leaderboard.CarClassDescription.ClassTextColor;
+                        HighlightedDriver.CarClassColor = driver.CarClassColor;
+                        HighlightedDriver.CarClassTextColor = "#000000";
+                    }
+
+                    if (driver.Position > 0 && (leaderboard.LeaderPosition == 0 || driver.Position < leaderboard.LeaderPosition))
+                    {
+                        leaderboard.LeaderPosition = driver.Position;
                     }
                 }
             }
+
+            // Sort the class leaderboards on the position of their leader.
+            LiveClassLeaderboards = LiveClassLeaderboards.OrderBy(lb => lb.LeaderPosition).ToList();
         }
 
         private void UpdateSessionResults(ref GameData data)
@@ -934,6 +977,22 @@ namespace benofficial2.Plugin
                         PlayerIRatingChange = change;
                     }
                 }
+            }
+        }
+
+        private void UpdateGaps(ref GameData data)
+        {
+            foreach (Opponent opponent in data.NewData.Opponents)
+            {
+                if (!Drivers.TryGetValue(opponent.CarNumber, out Driver driver))
+                {
+                    Debug.Assert(false);
+                    continue;
+                }
+
+                driver.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;
+                driver.GapToClassLeader = opponent.GaptoClassLeader ?? 0.0;
+                driver.RelativeGapToPlayer = opponent.RelativeGapToPlayer ?? 0.0;
             }
         }
 

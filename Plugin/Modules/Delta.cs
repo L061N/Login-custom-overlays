@@ -120,29 +120,29 @@ namespace benofficial2.Plugin
                 return;
             }
 
-            OpponentsWithDrivers opponentsWithDrivers = _driverModule.LiveClassLeaderboards[_standingsModule.HighlightedCarClassIdx].Drivers;
+            List<Driver> drivers = _driverModule.LiveClassLeaderboards[_standingsModule.HighlightedCarClassIdx].Drivers;
 
             int livePositionInClass = _driverModule.PlayerLivePositionInClass + relativeIdx;
             int opponentIdx = livePositionInClass - 1;
-            if (opponentIdx < 0 || opponentIdx >= opponentsWithDrivers.Count)
+            if (opponentIdx < 0 || opponentIdx >= drivers.Count)
             {
                 BlankRow(row);
                 return;
             }
 
-            Opponent opponent = opponentsWithDrivers[opponentIdx].Item1;
+            Driver driver = drivers[opponentIdx];
 
-            if (!opponent.IsConnected)
+            if (!driver.IsConnected)
             {
                 BlankRow(row);
                 return;
             }
 
-            row.Visible = opponent.Position > 0;
+            row.Visible = driver.Position > 0;
             row.LivePositionInClass = livePositionInClass;
-            row.Name = opponent.Name;
-            row.GapToPlayer = opponent.RelativeGapToPlayer ?? 0;
-            row.LastLapTime = opponent.LastLapTime;
+            row.Name = driver.Name;
+            row.GapToPlayer = driver.RelativeGapToPlayer;
+            row.LastLapTime = driver.LastLapTime;
         }
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)
