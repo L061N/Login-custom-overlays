@@ -123,6 +123,16 @@ namespace benofficial2.Plugin
         }
     }
 
+    public class ClassLeaderboard
+    {
+        public int CarClassId { get; set; } = 0;
+        public string CarClassName { get; set; } = string.Empty;
+        public string CarClassColor { get; set; } = string.Empty;
+        public List<Driver> Drivers { get; set; } = new List<Driver>();
+        public HashSet<string> CarNames { get; } = new HashSet<string>();
+        public int LeaderPosition { get; set; } = 0;
+    }
+
     public class StandingsModule : PluginModuleBase
     {
         private DriverModule _driverModule = null;
@@ -137,9 +147,9 @@ namespace benofficial2.Plugin
         private Bitmap _fontBitmap = null;
         private Graphics _fontGraphics = null;
 
-        public StandingsSettings Settings { get; set; }
-
         public const int MaxCarClasses = 4;
+
+        public StandingsSettings Settings { get; set; }
         public List<StandingCarClass> CarClasses { get; internal set; }
         public int VisibleClassCount { get; internal set; } = 0;
         public int TotalDriverCount { get; internal set; } = 0;
@@ -150,6 +160,8 @@ namespace benofficial2.Plugin
         public bool BestVisible { get; internal set; } = true;
         public bool LastVisible { get; internal set; } = true;
         public bool DeltaVisible { get; internal set; } = true;
+
+        public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
 
         public override int UpdatePriority => 80;
 
@@ -260,6 +272,8 @@ namespace benofficial2.Plugin
 
             _lastUpdateTime = data.FrameTime;
 
+            UpdateLeaderboards(ref data);
+
             Driver highlightedDriver = null;
             (highlightedDriver, HighlightedCarClassIdx) = FindHighlightedDriver(ref data);
 
@@ -285,9 +299,9 @@ namespace benofficial2.Plugin
             for (int carClassIdx = 0; carClassIdx < MaxCarClasses; carClassIdx++)
             {
                 StandingCarClass carClass = CarClasses[carClassIdx];
-                if (carClassIdx < _driverModule.LiveClassLeaderboards.Count)
+                if (carClassIdx < LiveClassLeaderboards.Count)
                 {
-                    ClassLeaderboard leaderboard = _driverModule.LiveClassLeaderboards[carClassIdx];
+                    ClassLeaderboard leaderboard = LiveClassLeaderboards[carClassIdx];
                     carClass.Color = leaderboard.CarClassColor;
                     carClass.TextColor = "#000000";
 
@@ -563,6 +577,117 @@ namespace benofficial2.Plugin
             row.JokerLapsComplete = 0;
         }
 
+        private void UpdateLeaderboards(ref GameData data)
+        {
+            LiveClassLeaderboards = new List<ClassLeaderboard>();
+
+            foreach (var group in _driverModule.Drivers.Values.GroupBy(d => d.CarClassId))
+            {
+                int carClassId = group.Key;
+                int countInClass = group.Count();
+
+                ClassLeaderboard leaderboard = new ClassLeaderboard();
+                LiveClassLeaderboards.Add(leaderboard);
+
+                foreach (var driver in group)
+                {
+                    if (leaderboard.CarClassId == 0)
+                    {
+                        leaderboard.CarClassId = carClassId;
+                        leaderboard.CarClassColor = driver.CarClassColor;
+                        leaderboard.CarClassName = driver.CarClassName;
+                    }
+
+                    bool scored = true;
+                    if (_sessionModule.Race)
+                    {
+                        // Only consider drivers that have an official qual position.
+                        // In heat races, this ignores drivers not in the current heat.
+                        scored = driver.QualPositionInClass > 0;
+                    }
+                    else
+                    {
+                        scored = driver.Position > 0 || driver.IsConnected;
+                    }
+
+                    if (scored)
+                    {
+                        leaderboard.Drivers.Add(driver);
+                        leaderboard.CarNames.Add(driver.CarName);
+                    }
+                }
+
+                bool sorted = false;
+                if (_sessionModule.Race)
+                {
+                    if (!_sessionModule.RaceStarted)
+                    {
+                        // Before the start keep the leaderboard sorted by qual position
+                        leaderboard.Drivers = leaderboard.Drivers.OrderBy(p => p.QualPositionInClass).ToList();
+                        sorted = true;
+                    }
+                    else if (!_sessionModule.RaceFinished)
+                    {
+                        // During the race sort on position on track for a live leaderboard.
+                        // Except for ovals under caution, show the official position.
+                        if (!(_sessionModule.Oval && data.NewData.Flag_Yellow == 1))
+                        {
+                            leaderboard.Drivers = leaderboard.Drivers.OrderByDescending(p => p.CurrentLapHighPrecision).ToList();
+                            sorted = true;
+                        }
+                    }
+                }
+
+                if (!sorted)
+                {
+                    leaderboard.Drivers = leaderboard.Drivers
+                        .OrderBy(p => p.PositionInClass == 0)   // false (0) comes before true (1)
+                        .ThenBy(p => p.PositionInClass)         // sort positions normally
+                        .ToList();
+                }
+
+                int posInClass = 1;
+                foreach (var driver in leaderboard.Drivers)
+                {
+                    if (_sessionModule.Race)
+                    {
+                        if (!_sessionModule.RaceStarted)
+                        {
+                            driver.LivePositionInClass = driver.QualPositionInClass;
+                        }
+                        else
+                        {
+                            driver.LivePositionInClass = posInClass++;
+                        }
+                    }
+                    else
+                    {
+                        driver.LivePositionInClass = driver.Position > 0 ? posInClass++ : 0;
+                    }
+
+                    if (driver.IsPlayer)
+                    {
+                        _driverModule.PlayerDriver.LivePositionInClass = driver.LivePositionInClass;
+                    }
+
+                    if (driver.CarIdx == _driverModule.HighlightedDriver.CarIdx)
+                    {
+                        _driverModule.HighlightedDriver.LivePositionInClass = driver.LivePositionInClass;
+                        _driverModule.HighlightedDriver.CarClassColor = driver.CarClassColor;
+                        _driverModule.HighlightedDriver.CarClassTextColor = "#000000";
+                    }
+
+                    if (driver.Position > 0 && (leaderboard.LeaderPosition == 0 || driver.Position < leaderboard.LeaderPosition))
+                    {
+                        leaderboard.LeaderPosition = driver.Position;
+                    }
+                }
+            }
+
+            // Sort the class leaderboards on the position of their leader.
+            LiveClassLeaderboards = LiveClassLeaderboards.OrderBy(lb => lb.LeaderPosition).ToList();
+        }
+
         public (Driver, int) FindHighlightedDriver(ref GameData data)
         {
             int highlightedCarIdx = -1;
@@ -581,9 +706,9 @@ namespace benofficial2.Plugin
 
             if (highlightedDriver != null)
             {
-                for (int carClassIdx = 0; carClassIdx < _driverModule.LiveClassLeaderboards.Count; carClassIdx++)
+                for (int carClassIdx = 0; carClassIdx < LiveClassLeaderboards.Count; carClassIdx++)
                 {
-                    var leaderboard = _driverModule.LiveClassLeaderboards[carClassIdx];
+                    var leaderboard = LiveClassLeaderboards[carClassIdx];
 
                     // Looping instead of only checking the first opponent, because in AI races
                     // all classes are grouped together.

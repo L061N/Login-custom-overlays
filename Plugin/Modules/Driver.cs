@@ -153,16 +153,6 @@ namespace benofficial2.Plugin
         public double RelativeGapToPlayer { get; set; } = 0.0;
     }
 
-    public class ClassLeaderboard
-    {
-        public int CarClassId { get; set; } = 0;
-        public string CarClassName { get; set; } = string.Empty;
-        public string CarClassColor { get; set; } = string.Empty;
-        public List<Driver> Drivers { get; set; } = new List<Driver>();
-        public HashSet<string> CarNames { get; } = new HashSet<string>();
-        public int LeaderPosition { get; set; } = 0;
-    }
-
     public class PlayerDriver
     {
         public int CarIdx { get; set; } = -1;
@@ -229,8 +219,6 @@ namespace benofficial2.Plugin
 
         public HighlightedDriverSettings HighlightedDriverSettings { get; set; }
 
-        public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
-
         public PlayerDriver PlayerDriver { get; private set; } = new PlayerDriver();
 
         public HighlightedDriver HighlightedDriver { get; private set; } = new HighlightedDriver();
@@ -294,7 +282,6 @@ namespace benofficial2.Plugin
             {
                 Drivers = new Dictionary<string, Driver>();
                 DriversByCarIdx = new Dictionary<int, Driver>();
-                LiveClassLeaderboards = new List<ClassLeaderboard>();
                 BlankPlayerDriver();
                 BlankHighlightedDriver();
                 _qualResultsUpdated = false;
@@ -514,7 +501,6 @@ namespace benofficial2.Plugin
 
             UpdateQualResult(ref data);
             UpdateGaps(ref data);
-            UpdateLeaderboards(ref data);
             UpdateIRatingChange(ref data);
         }
 
@@ -714,117 +700,6 @@ namespace benofficial2.Plugin
                     driver.CurrentLapHighPrecisionRaw = -1;
                 }
             }
-        }
-
-        private void UpdateLeaderboards(ref GameData data)
-        {
-            LiveClassLeaderboards = new List<ClassLeaderboard>();
-
-            foreach (var group in Drivers.Values.GroupBy(d => d.CarClassId))
-            {
-                int carClassId = group.Key;
-                int countInClass = group.Count();
-
-                ClassLeaderboard leaderboard = new ClassLeaderboard();
-                LiveClassLeaderboards.Add(leaderboard);
-
-                foreach (var driver in group)
-                {
-                    if (leaderboard.CarClassId == 0)
-                    {
-                        leaderboard.CarClassId = carClassId;
-                        leaderboard.CarClassColor = driver.CarClassColor;
-                        leaderboard.CarClassName = driver.CarClassName;
-                    }
-
-                    bool scored = true;
-                    if (_sessionModule.Race)
-                    {
-                        // Only consider drivers that have an official qual position.
-                        // In heat races, this ignores drivers not in the current heat.
-                        scored = driver.QualPositionInClass > 0;
-                    }
-                    else
-                    {
-                        scored = driver.Position > 0 || driver.IsConnected;
-                    }
-
-                    if (scored)
-                    {
-                        leaderboard.Drivers.Add(driver);
-                        leaderboard.CarNames.Add(driver.CarName);
-                    }                    
-                }
-
-                bool sorted = false;
-                if (_sessionModule.Race)
-                {
-                    if (!_sessionModule.RaceStarted)
-                    {
-                        // Before the start keep the leaderboard sorted by qual position
-                        leaderboard.Drivers = leaderboard.Drivers.OrderBy(p => p.QualPositionInClass).ToList();
-                        sorted = true;
-                    }
-                    else if (!_sessionModule.RaceFinished)
-                    {
-                        // During the race sort on position on track for a live leaderboard.
-                        // Except for ovals under caution, show the official position.
-                        if (!(_sessionModule.Oval && data.NewData.Flag_Yellow == 1))
-                        {
-                            leaderboard.Drivers = leaderboard.Drivers.OrderByDescending(p => p.CurrentLapHighPrecision).ToList();
-                            sorted = true;
-                        }
-                    }
-                }
-
-                if (!sorted)
-                {
-                    leaderboard.Drivers = leaderboard.Drivers
-                        .OrderBy(p => p.PositionInClass == 0)   // false (0) comes before true (1)
-                        .ThenBy(p => p.PositionInClass)         // sort positions normally
-                        .ToList();
-                }
-
-                int posInClass = 1;
-                foreach (var driver in leaderboard.Drivers)
-                {
-                    if (_sessionModule.Race)
-                    {
-                        if (!_sessionModule.RaceStarted)
-                        {
-                            driver.LivePositionInClass = driver.QualPositionInClass;
-                        }
-                        else
-                        {
-                            driver.LivePositionInClass = posInClass++;
-                        }
-                    }
-                    else
-                    {
-                        driver.LivePositionInClass = driver.Position > 0 ? posInClass++ : 0;
-                    }
-
-                    if (driver.IsPlayer)
-                    {
-                        PlayerDriver.LivePositionInClass = driver.LivePositionInClass;
-                    }
-
-                    if (driver.CarIdx == HighlightedDriver.CarIdx)
-                    {
-                        HighlightedDriver.LivePositionInClass = driver.LivePositionInClass;
-                        HighlightedDriver.CarClassColor = driver.CarClassColor;
-                        HighlightedDriver.CarClassTextColor = "#000000";
-                    }
-
-                    if (driver.Position > 0 && (leaderboard.LeaderPosition == 0 || driver.Position < leaderboard.LeaderPosition))
-                    {
-                        leaderboard.LeaderPosition = driver.Position;
-                    }
-                }
-            }
-
-            // Sort the class leaderboards on the position of their leader.
-            LiveClassLeaderboards = LiveClassLeaderboards.OrderBy(lb => lb.LeaderPosition).ToList();
         }
 
         private void UpdateSessionResults(ref GameData data)

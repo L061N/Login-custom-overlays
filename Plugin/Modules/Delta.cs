@@ -114,13 +114,13 @@ namespace benofficial2.Plugin
 
         public void UpdateHeadToHead(ref GameData data, HeadToHeadRow row, int relativeIdx)
         {
-            if (_standingsModule.HighlightedCarClassIdx < 0 || _standingsModule.HighlightedCarClassIdx >= _driverModule.LiveClassLeaderboards.Count)
+            if (_standingsModule.HighlightedCarClassIdx < 0 || _standingsModule.HighlightedCarClassIdx >= _standingsModule.LiveClassLeaderboards.Count)
             {
                 BlankRow(row);
                 return;
             }
 
-            List<Driver> drivers = _driverModule.LiveClassLeaderboards[_standingsModule.HighlightedCarClassIdx].Drivers;
+            List<Driver> drivers = _standingsModule.LiveClassLeaderboards[_standingsModule.HighlightedCarClassIdx].Drivers;
 
             int livePositionInClass = _driverModule.PlayerDriver.LivePositionInClass + relativeIdx;
             int opponentIdx = livePositionInClass - 1;
