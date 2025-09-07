@@ -641,7 +641,7 @@ namespace benofficial2.Plugin
                 if (!sorted)
                 {
                     leaderboard.Drivers = leaderboard.Drivers
-                        .OrderBy(p => p.PositionInClass == 0)   // false (0) comes before true (1)
+                        .OrderBy(p => p.PositionInClass <= 0)   // false (0) comes before true (1)
                         .ThenBy(p => p.PositionInClass)         // sort positions normally
                         .ToList();
                 }
