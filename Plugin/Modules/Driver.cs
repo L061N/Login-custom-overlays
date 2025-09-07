@@ -491,7 +491,7 @@ namespace benofficial2.Plugin
                     HighlightedDriver.IRating = driver.IRating;
                     HighlightedDriver.License = driver.License;
                     HighlightedDriver.SafetyRating = driver.SafetyRating;
-                    HighlightedDriver.CurrentLap = driver.Lap;
+                    HighlightedDriver.CurrentLap = Math.Max(0, driver.Lap);
                     HighlightedDriver.CurrentLapHighPrecision = driver.CurrentLapHighPrecision;
                     HighlightedDriver.TeamIncidentCount = driver.TeamIncidentCount;
                     HighlightedDriver.LastLapTime = driver.LastLapTime;
@@ -755,6 +755,12 @@ namespace benofficial2.Plugin
                 if (driver.LastLapTime == TimeSpan.Zero && lastTime > 0)
                 {
                     driver.LastLapTime = TimeSpan.FromSeconds(lastTime);
+                }
+
+                RawDataHelper.TryGetValue<int>(positions, out int lap, posIdx, "Lap");
+                if (driver.Lap <= 0 && lap >= 0)
+                {
+                    driver.Lap = lap;
                 }
 
                 RawDataHelper.TryGetValue<int>(positions, out int lapsComplete, posIdx, "LapsComplete");
