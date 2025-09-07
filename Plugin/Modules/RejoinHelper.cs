@@ -18,6 +18,7 @@
 
 using GameReaderCommon;
 using SimHub.Plugins;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -38,6 +39,7 @@ namespace benofficial2.Plugin
 
     public class RejoinHelperModule : PluginModuleBase
     {
+        private DriverModule _driverModule = null;
         private SessionModule _sessionModule = null;
 
         public RejoinHelperSettings Settings { get; set; }
@@ -52,6 +54,7 @@ namespace benofficial2.Plugin
 
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
+            _driverModule = plugin.GetModule<DriverModule>();
             _sessionModule = plugin.GetModule<SessionModule>();
 
             Settings = plugin.ReadCommonSettings<RejoinHelperSettings>("RejoinHelperSettings", () => new RejoinHelperSettings());
@@ -67,9 +70,6 @@ namespace benofficial2.Plugin
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) return;
-
             // Wait for race to be started for a few seconds not to trigger on a standing start
             if (!Settings.Enabled || (_sessionModule.Race && (_sessionModule.RaceFinished || _sessionModule.RaceTimer < 3)))
             {
@@ -80,16 +80,22 @@ namespace benofficial2.Plugin
             }
             else
             {
-                int trackSurface = 0;
-                try { trackSurface = (int)raw.Telemetry["PlayerTrackSurface"]; } catch { }
-
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int trackSurface, "PlayerTrackSurface");
                 bool isSlow = data.NewData.SpeedKmh < Settings.MinSpeed;
                 Visible = isSlow || trackSurface == 0;
 
                 List<Opponent> opponents = data.NewData.OpponentsBehindOnTrack;
                 if (opponents.Count > 0)
                 {
-                    Gap = opponents[0].RelativeGapToPlayer ?? 0;
+                    _driverModule.Drivers.TryGetValue(opponents[0].CarNumber, out Driver driver);
+                    if (driver != null)
+                    {
+                        Gap = Math.Abs(driver.RelativeGapToPlayer);
+                    }
+                    else
+                    {
+                        Gap = 0;
+                    }
                 }
                 else
                 {

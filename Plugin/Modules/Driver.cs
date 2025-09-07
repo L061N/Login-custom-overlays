@@ -858,7 +858,6 @@ namespace benofficial2.Plugin
 
                 driver.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;
                 driver.GapToClassLeader = opponent.GaptoClassLeader ?? 0.0;
-                driver.RelativeGapToPlayer = opponent.RelativeGapToPlayer ?? 0.0;
             }
         }
 

@@ -153,7 +153,12 @@ namespace benofficial2.Plugin
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
+            // Update gaps every frame to keep them smooth in the Rejoin Helper.
+            UpdateGaps(ref data);
+
+            if (data.FrameTime - _lastUpdateTime < _updateInterval) 
+                return;
+
             _lastUpdateTime = data.FrameTime;
 
             UpdateRelative(ref data, Ahead.Rows, RelativeAhead.MaxRows, data.NewData.OpponentsAheadOnTrack);
@@ -205,6 +210,57 @@ namespace benofficial2.Plugin
         public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("RelativeSettings", Settings);
+        }
+
+        public void UpdateGaps(ref GameData data)
+        {
+            RawDataHelper.TryGetSessionData<double>(ref data, out double driverCarEstLapTime, "DriverInfo", "DriverCarEstLapTime");
+
+            foreach (Opponent opponent in data.NewData.OpponentsAheadOnTrack)
+            {
+                _driverModule.Drivers.TryGetValue(opponent.CarNumber, out Driver driver);
+                if (driver == null)
+                    continue;
+
+                double timeDiff = GetEstTimeDiff(ref data, driverCarEstLapTime, _driverModule.PlayerDriver.CarIdx, driver.CarIdx);
+                while (timeDiff < 0.0)
+                    timeDiff += driverCarEstLapTime;
+
+                driver.RelativeGapToPlayer = timeDiff;
+            }
+
+            foreach (Opponent opponent in data.NewData.OpponentsBehindOnTrack)
+            {
+                _driverModule.Drivers.TryGetValue(opponent.CarNumber, out Driver driver);
+                if (driver == null)
+                    continue;
+
+                double timeDiff = GetEstTimeDiff(ref data, driverCarEstLapTime, _driverModule.PlayerDriver.CarIdx, driver.CarIdx);
+
+                while (timeDiff > 0.0)
+                    timeDiff -= driverCarEstLapTime;
+
+                driver.RelativeGapToPlayer = timeDiff;
+            }
+        }
+
+        private double GetEstTimeDiff(ref GameData data, double playerCarEstLapTime, int playerCarIdx, int opponentCarIdx)
+        {
+            RawDataHelper.TryGetTelemetryData<double>(ref data, out double playerEstTime, "CarIdxEstTime", playerCarIdx);
+            RawDataHelper.TryGetTelemetryData<double>(ref data, out double opponentEstTime, "CarIdxEstTime", opponentCarIdx);
+
+            if (playerEstTime < Constants.SecondsEpsilon || opponentEstTime < Constants.SecondsEpsilon)
+                return 0.0;
+
+            double timeDiff = opponentEstTime - playerEstTime;
+
+            while (timeDiff < -0.5 * playerCarEstLapTime)
+                timeDiff += playerCarEstLapTime;
+
+            while (timeDiff > 0.5 * playerCarEstLapTime)
+                timeDiff -= playerCarEstLapTime;
+
+            return timeDiff;
         }
 
         public void BlankRow(RelativeRow row)
