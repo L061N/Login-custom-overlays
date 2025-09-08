@@ -225,10 +225,7 @@ namespace benofficial2.Plugin
                     continue;
 
                 // Scale opponent estimated time to player's car class
-                double opponentEstTimeScaled = opponentDriver.EstTime * playerDriver.CarClassEstLapTime / opponentDriver.CarClassEstLapTime;
-
-                // Make sure opponent time is not behind.
-                opponentEstTimeScaled = Math.Max(playerDriver.EstTime, opponentEstTimeScaled);
+                double opponentEstTimeScaled = GetEstTimeScaled(opponentDriver, playerDriver);
 
                 double timeDiff = GetEstTimeDiff(playerDriver.CarClassEstLapTime, opponentEstTimeScaled, playerDriver.EstTime);
 
@@ -246,10 +243,7 @@ namespace benofficial2.Plugin
                     continue;
 
                 // Scale opponent estimated time to player's car class
-                double opponentEstTimeScaled = opponentDriver.EstTime * playerDriver.CarClassEstLapTime / opponentDriver.CarClassEstLapTime;
-
-                // Make sure opponent time is not ahead.
-                opponentEstTimeScaled = Math.Min(playerDriver.EstTime, opponentEstTimeScaled);
+                double opponentEstTimeScaled = GetEstTimeScaled(opponentDriver, playerDriver);
 
                 double timeDiff = GetEstTimeDiff(playerDriver.CarClassEstLapTime, opponentEstTimeScaled, playerDriver.EstTime);
 
@@ -259,6 +253,24 @@ namespace benofficial2.Plugin
 
                 opponentDriver.RelativeGapToPlayer = timeDiff;
             }
+        }
+
+        private double GetEstTimeScaled(Driver opponentDriver, Driver playerDriver)
+        {
+            // Scale opponent estimated time to player's car class
+            double opponentEstTimeScaled = opponentDriver.EstTime * playerDriver.CarClassEstLapTime / opponentDriver.CarClassEstLapTime;
+
+            // Make sure opponent time is not ahead when behind on track, and not behind when ahead on track.
+            if (opponentDriver.TrackPositionPercent < playerDriver.TrackPositionPercent)
+            {
+                opponentEstTimeScaled = Math.Min(playerDriver.EstTime, opponentEstTimeScaled);
+            }
+            else if (opponentDriver.TrackPositionPercent > playerDriver.TrackPositionPercent)
+            {
+                opponentEstTimeScaled = Math.Max(playerDriver.EstTime, opponentEstTimeScaled);
+            }
+
+            return opponentEstTimeScaled;
         }
 
         private double GetEstTimeDiff(double estLapTime, double opponentEstTime, double playerEstTime)
