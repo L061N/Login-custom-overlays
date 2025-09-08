@@ -453,6 +453,13 @@ namespace benofficial2.Plugin
                         }
                     }
 
+                    // Edge case when joining in progress while the driver is out of the car.
+                    // We can't know for sure where they got out, so we just set their current lap to the last completed lap.
+                    if (driver.CurrentLapHighPrecision < Constants.DistanceEpsilon && driver.LapsCompleted > 0)
+                    {
+                        driver.CurrentLapHighPrecision = driver.LapsCompleted;
+                    }
+
                     driver.LastCurrentLapHighPrecision = driver.CurrentLapHighPrecisionRaw;
                 }
                 else
