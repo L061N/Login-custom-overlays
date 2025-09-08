@@ -598,21 +598,22 @@ namespace benofficial2.Plugin
                     bool scored = true;
                     if (_sessionModule.Race)
                     {
-                        // Only consider drivers that have an official qual position.
-                        // In heat races, this ignores drivers not in the current heat.
-                        scored = driver.QualPositionInClass > 0;
-
                         // In a loaded replay, sometimes the qual results are missing.
                         // Consider all drivers as scored in that case.
-                        if (!_driverModule.QualResultsUpdated)
+                        if (_driverModule.QualResultsUpdated)
                         {
-                            scored = !driver.IsPaceCar;
+                            // Only consider drivers that have an official qual position.
+                            // In heat races, this ignores drivers not in the current heat.
+                            scored = driver.QualPositionInClass > 0;
                         }
                     }
                     else
                     {
                         scored = driver.Position > 0 || driver.IsConnected;
                     }
+
+                    if (driver.IsPaceCar)
+                        scored = false;
 
                     if (scored)
                     {
