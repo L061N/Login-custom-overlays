@@ -131,6 +131,7 @@ namespace benofficial2.Plugin
         public List<Driver> Drivers { get; set; } = new List<Driver>();
         public HashSet<string> CarNames { get; } = new HashSet<string>();
         public int LeaderPosition { get; set; } = 0;
+        public double EstLapTime { get; set; } = 0.0;
     }
 
     public class StandingsModule : PluginModuleBase
@@ -688,11 +689,16 @@ namespace benofficial2.Plugin
                     {
                         leaderboard.LeaderPosition = driver.Position;
                     }
+
+                    if (driver.CarClassEstLapTime > 0 && (leaderboard.EstLapTime == 0.0 || driver.CarClassEstLapTime < leaderboard.EstLapTime))
+                    {
+                        leaderboard.EstLapTime = driver.CarClassEstLapTime;
+                    }
                 }
             }
 
             // Sort the class leaderboards on the position of their leader.
-            LiveClassLeaderboards = LiveClassLeaderboards.OrderBy(lb => lb.LeaderPosition).ToList();
+            LiveClassLeaderboards = LiveClassLeaderboards.OrderBy(lb => lb.EstLapTime).ToList();
         }
 
         public (Driver, int) FindHighlightedDriver(ref GameData data)
