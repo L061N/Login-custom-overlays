@@ -725,11 +725,11 @@ namespace benofficial2.Plugin
                 {
                     var leaderboard = LiveClassLeaderboards[carClassIdx];
 
-                    // Looping instead of only checking the first opponent, because in AI races
+                    // Looping instead of only checking the first driver, because in AI races
                     // all classes are grouped together.
-                    for (int opponentIdx = 0; opponentIdx < leaderboard.Drivers.Count; opponentIdx++)
+                    foreach (Driver driver in leaderboard.Drivers)
                     {
-                        if (leaderboard.Drivers[opponentIdx].CarClassId == highlightedDriver.CarClassId)
+                        if (driver.CarClassId == highlightedDriver.CarClassId)
                         {
                             return (highlightedDriver, carClassIdx);
                         }
@@ -766,9 +766,9 @@ namespace benofficial2.Plugin
         public int GetValidRowCount(List<Driver> drivers)
         {
             int validRowCount = 0;
-            for (int opponentIdx = 0; opponentIdx < drivers.Count; opponentIdx++)
+            foreach (Driver driver in drivers)
             {
-                if (IsValidRow(drivers[opponentIdx])) 
+                if (IsValidRow(driver)) 
                     validRowCount++;
             }
             return validRowCount;
@@ -776,20 +776,20 @@ namespace benofficial2.Plugin
 
         public int GetLeadFocusedSkipRowCount(int highlightedCarIdx, List<Driver> drivers)
         {
-            // Find the highlighted car in the opponent list
-            int highlightedOpponentIdx = -1;
-            for (int opponentIdx = 0; opponentIdx < drivers.Count; opponentIdx++)
+            // Find the highlighted car in the driver list
+            int highlightedDriverIdx = -1;
+            for (int driverIdx = 0; driverIdx < drivers.Count; driverIdx++)
             {
-                if (drivers[opponentIdx].CarIdx == highlightedCarIdx)
+                if (drivers[driverIdx].CarIdx == highlightedCarIdx)
                 {
-                    highlightedOpponentIdx = opponentIdx;
+                    highlightedDriverIdx = driverIdx;
                     break;
                 }
             }
 
-            if (highlightedOpponentIdx < 0 || !IsValidRow(drivers[highlightedOpponentIdx]))
+            if (highlightedDriverIdx < 0 || !IsValidRow(drivers[highlightedDriverIdx]))
             {
-                // Highlighted car not in opponent list
+                // Highlighted car not in driver list
                 return 0;
             }
 
@@ -801,7 +801,7 @@ namespace benofficial2.Plugin
             }
 
             int nonLeadFocusedRowCount = Math.Max(0, Settings.MaxRowsPlayerClass - Settings.LeadFocusedRows);
-            if (highlightedOpponentIdx <= Settings.LeadFocusedRows + nonLeadFocusedRowCount / 2)
+            if (highlightedDriverIdx <= Settings.LeadFocusedRows + nonLeadFocusedRowCount / 2)
             {
                 // Player already centered in top rows
                 return 0;
@@ -809,8 +809,8 @@ namespace benofficial2.Plugin
 
             // Center the player in the view by trying to keep an equal amount of rows before as after 
             int shown = Math.Max(0, validRowCount - Settings.LeadFocusedRows);
-            int before = Math.Max(0, highlightedOpponentIdx - Settings.LeadFocusedRows);
-            int after = Math.Max(0, validRowCount - highlightedOpponentIdx - 1);
+            int before = Math.Max(0, highlightedDriverIdx - Settings.LeadFocusedRows);
+            int after = Math.Max(0, validRowCount - highlightedDriverIdx - 1);
             int skipRowCount = 0;
 
             // TODO make this O(1)
@@ -835,9 +835,8 @@ namespace benofficial2.Plugin
         public TimeSpan FindBestLapTime(List<Driver> drivers)
         {
             TimeSpan bestLapTime = TimeSpan.MaxValue;
-            for (int opponentIdx = 0; opponentIdx < drivers.Count; opponentIdx++)
+            foreach (Driver driver in drivers)
             {
-                Driver driver = drivers[opponentIdx];
                 if (driver.BestLapTime > TimeSpan.Zero && driver.BestLapTime < bestLapTime)
                 {
                     bestLapTime = driver.BestLapTime;
@@ -849,9 +848,8 @@ namespace benofficial2.Plugin
         public TimeSpan FindBestQualLapTime(List<Driver> drivers)
         {
             TimeSpan bestQualLapTime = TimeSpan.MaxValue;
-            for (int opponentIdx = 0; opponentIdx < drivers.Count; opponentIdx++)
+            foreach (Driver driver in drivers)
             {
-                Driver driver = drivers[opponentIdx];
                 if (driver.QualLapTime > TimeSpan.Zero && driver.QualLapTime < bestQualLapTime)
                 {
                     bestQualLapTime = driver.QualLapTime;
