@@ -585,7 +585,6 @@ namespace benofficial2.Plugin
                 int countInClass = group.Count();
 
                 ClassLeaderboard leaderboard = new ClassLeaderboard();
-                LiveClassLeaderboards.Add(leaderboard);
 
                 foreach (var driver in group)
                 {
@@ -621,6 +620,12 @@ namespace benofficial2.Plugin
                         leaderboard.CarNames.Add(driver.CarName);
                     }
                 }
+
+                // Don't add empty classes
+                if (leaderboard.Drivers.Count == 0)
+                    continue;
+
+                LiveClassLeaderboards.Add(leaderboard);
 
                 bool sorted = false;
                 if (_sessionModule.Race)
