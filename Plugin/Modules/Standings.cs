@@ -604,6 +604,13 @@ namespace benofficial2.Plugin
                         // Only consider drivers that have an official qual position.
                         // In heat races, this ignores drivers not in the current heat.
                         scored = driver.QualPositionInClass > 0;
+
+                        // In a loaded replay, sometimes the qual results are missing.
+                        // Consider all drivers as scored in that case.
+                        if (!_driverModule.QualResultsUpdated)
+                        {
+                            scored = !driver.IsPaceCar;
+                        }
                     }
                     else
                     {

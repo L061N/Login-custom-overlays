@@ -115,6 +115,7 @@ namespace benofficial2.Plugin
         public string CarClassColor { get; set; } = string.Empty;
         public bool IsPlayer { get; set; } = false;
         public bool IsConnected { get; set; } = false;
+        public bool IsPaceCar { get; set; } = false;
         public int Lap { get; set; } = 0;
         public int EnterPitLapUnconfirmed { get; set; } = -1;
         public int EnterPitLap { get; set; } = -1;
@@ -207,9 +208,10 @@ namespace benofficial2.Plugin
         private RelativeModule _relativeModule = null;
 
         private SessionState _sessionState = new SessionState();
-        private bool _qualResultsUpdated = false;
 
         public const int MaxDrivers = 64;
+
+        public bool QualResultsUpdated { get; private set; } = false;       
 
         // Key is car number
         public Dictionary<string, Driver> Drivers { get; private set; } = new Dictionary<string, Driver>();
@@ -284,7 +286,7 @@ namespace benofficial2.Plugin
                 DriversByCarIdx = new Dictionary<int, Driver>();
                 BlankPlayerDriver();
                 BlankHighlightedDriver();
-                _qualResultsUpdated = false;
+                QualResultsUpdated = false;
             }
 
             InvalidatePositions();
@@ -554,7 +556,7 @@ namespace benofficial2.Plugin
         private void UpdateQualResult(ref GameData data)
         {
             // Optimization: Only update the qualifying results once before the race starts.
-            if (_qualResultsUpdated || !_sessionModule.Race)
+            if (QualResultsUpdated || !_sessionModule.Race)
                 return;
 
             RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> qualResults, "QualifyResultsInfo", "Results");
@@ -576,7 +578,7 @@ namespace benofficial2.Plugin
                     driver.QualLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
                 }
 
-                _qualResultsUpdated = true;
+                QualResultsUpdated = true;
                 return;
             }
 
@@ -605,7 +607,7 @@ namespace benofficial2.Plugin
                     driver.QualLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
                 }
 
-                _qualResultsUpdated = true;
+                QualResultsUpdated = true;
             }
         }
 
@@ -652,6 +654,7 @@ namespace benofficial2.Plugin
                 RawDataHelper.TryGetValue<string>(drivers, out string licString, i, "LicString");
                 RawDataHelper.TryGetValue<string>(drivers, out string userName, i, "UserName");
                 RawDataHelper.TryGetValue<string>(drivers, out string teamName, i, "TeamName");
+                RawDataHelper.TryGetValue<int>(drivers, out int carIsPaceCar, i, "CarIsPaceCar");
 
                 RawDataHelper.TryGetTelemetryData<float>(ref data, out float lastLapTime, "CarIdxLastLapTime", carIdx);
                 RawDataHelper.TryGetTelemetryData<float>(ref data, out float bestLapTime, "CarIdxBestLapTime", carIdx);
@@ -681,6 +684,7 @@ namespace benofficial2.Plugin
                 driver.FlairId = flairId;
                 driver.IsPlayer = carIdx == playerCarIdx;
                 driver.IsConnected = trackSurface > (int)TrackLoc.NotInWorld;
+                driver.IsPaceCar = carIsPaceCar == 1;
                 driver.CarClassId = carClassId;
                 driver.CarClassName = carClassShortName;
                 driver.CarClassColor = ConvertColorString(carClassColor);
