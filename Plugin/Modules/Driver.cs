@@ -26,8 +26,6 @@ using System.Runtime;
 
 namespace benofficial2.Plugin
 {
-    using OpponentsWithDrivers = List<(Opponent, Driver)>;
-
     public class HighlightedDriverSettings : ModuleSettings
     {
         public bool HideWhenInCar { get; set; } = true;
@@ -312,15 +310,8 @@ namespace benofficial2.Plugin
                 BlankHighlightedDriver();
             }
 
-            for (int i = 0; i < data.NewData.Opponents.Count; i++)
+            foreach (Driver driver in Drivers.Values)
             {
-                Opponent opponent = data.NewData.Opponents[i];
-                if (!Drivers.TryGetValue(opponent.CarNumber, out Driver driver))
-                {
-                    // Can happen when spectating a race and driving, the player car has no car number.
-                    continue;
-                }
-
                 // Update the average lap time for the driver
                 int currentLap = driver.Lap;
                 driver.AvgLapTime.AddLapTime(currentLap - 1, driver.LastLapTime);
@@ -494,19 +485,26 @@ namespace benofficial2.Plugin
 
                 if (driver.CarIdx == HighlightedDriver.CarIdx)
                 {
-                    HighlightedDriver.Name = driver.Name;
-                    HighlightedDriver.Number = driver.CarNumber;
-                    HighlightedDriver.CarBrand = _carModule.GetCarBrand(driver.CarId, driver.CarName);
-                    HighlightedDriver.CarName = driver.CarName;
-                    HighlightedDriver.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
-                    HighlightedDriver.IRating = driver.IRating;
-                    HighlightedDriver.License = driver.License;
-                    HighlightedDriver.SafetyRating = driver.SafetyRating;
-                    HighlightedDriver.CurrentLap = Math.Max(0, driver.Lap);
-                    HighlightedDriver.CurrentLapHighPrecision = driver.CurrentLapHighPrecision;
-                    HighlightedDriver.TeamIncidentCount = driver.TeamIncidentCount;
-                    HighlightedDriver.LastLapTime = driver.LastLapTime;
-                    HighlightedDriver.BestLapTime = driver.BestLapTime;
+                    if (driver.IsPaceCar)
+                    {
+                        BlankHighlightedDriver();
+                    }
+                    else
+                    {
+                        HighlightedDriver.Name = driver.Name;
+                        HighlightedDriver.Number = driver.CarNumber;
+                        HighlightedDriver.CarBrand = _carModule.GetCarBrand(driver.CarId, driver.CarName);
+                        HighlightedDriver.CarName = driver.CarName;
+                        HighlightedDriver.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
+                        HighlightedDriver.IRating = driver.IRating;
+                        HighlightedDriver.License = driver.License;
+                        HighlightedDriver.SafetyRating = driver.SafetyRating;
+                        HighlightedDriver.CurrentLap = Math.Max(0, driver.Lap);
+                        HighlightedDriver.CurrentLapHighPrecision = driver.CurrentLapHighPrecision;
+                        HighlightedDriver.TeamIncidentCount = driver.TeamIncidentCount;
+                        HighlightedDriver.LastLapTime = driver.LastLapTime;
+                        HighlightedDriver.BestLapTime = driver.BestLapTime;
+                    }                        
                 }
             }
 
