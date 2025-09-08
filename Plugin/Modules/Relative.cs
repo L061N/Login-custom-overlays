@@ -214,51 +214,65 @@ namespace benofficial2.Plugin
 
         public void UpdateGaps(ref GameData data)
         {
-            RawDataHelper.TryGetSessionData<double>(ref data, out double driverCarEstLapTime, "DriverInfo", "DriverCarEstLapTime");
+            _driverModule.DriversByCarIdx.TryGetValue(_driverModule.PlayerDriver.CarIdx, out Driver playerDriver);
+            if (playerDriver == null)
+                return;
 
             foreach (Opponent opponent in data.NewData.OpponentsAheadOnTrack)
             {
-                _driverModule.Drivers.TryGetValue(opponent.CarNumber, out Driver driver);
-                if (driver == null)
+                _driverModule.Drivers.TryGetValue(opponent.CarNumber, out Driver opponentDriver);
+                if (opponentDriver == null)
                     continue;
 
-                double timeDiff = GetEstTimeDiff(ref data, driverCarEstLapTime, _driverModule.PlayerDriver.CarIdx, driver.CarIdx);
-                while (timeDiff < 0.0)
-                    timeDiff += driverCarEstLapTime;
+                // Scale opponent estimated time to player's car class
+                double opponentEstTimeScaled = opponentDriver.EstTime * playerDriver.CarClassEstLapTime / opponentDriver.CarClassEstLapTime;
 
-                driver.RelativeGapToPlayer = timeDiff;
+                // Make sure opponent time is not behind.
+                opponentEstTimeScaled = Math.Max(playerDriver.EstTime, opponentEstTimeScaled);
+
+                double timeDiff = GetEstTimeDiff(playerDriver.CarClassEstLapTime, opponentEstTimeScaled, playerDriver.EstTime);
+
+                // Make sure timeDiff is positive
+                while (timeDiff < 0.0)
+                    timeDiff += playerDriver.CarClassEstLapTime;
+
+                opponentDriver.RelativeGapToPlayer = timeDiff;
             }
 
             foreach (Opponent opponent in data.NewData.OpponentsBehindOnTrack)
             {
-                _driverModule.Drivers.TryGetValue(opponent.CarNumber, out Driver driver);
-                if (driver == null)
+                _driverModule.Drivers.TryGetValue(opponent.CarNumber, out Driver opponentDriver);
+                if (opponentDriver == null)
                     continue;
 
-                double timeDiff = GetEstTimeDiff(ref data, driverCarEstLapTime, _driverModule.PlayerDriver.CarIdx, driver.CarIdx);
+                // Scale opponent estimated time to player's car class
+                double opponentEstTimeScaled = opponentDriver.EstTime * playerDriver.CarClassEstLapTime / opponentDriver.CarClassEstLapTime;
 
+                // Make sure opponent time is not ahead.
+                opponentEstTimeScaled = Math.Min(playerDriver.EstTime, opponentEstTimeScaled);
+
+                double timeDiff = GetEstTimeDiff(playerDriver.CarClassEstLapTime, opponentEstTimeScaled, playerDriver.EstTime);
+
+                // Make sure timeDiff is negative
                 while (timeDiff > 0.0)
-                    timeDiff -= driverCarEstLapTime;
+                    timeDiff -= playerDriver.CarClassEstLapTime;
 
-                driver.RelativeGapToPlayer = timeDiff;
+                opponentDriver.RelativeGapToPlayer = timeDiff;
             }
         }
 
-        private double GetEstTimeDiff(ref GameData data, double playerCarEstLapTime, int playerCarIdx, int opponentCarIdx)
+        private double GetEstTimeDiff(double estLapTime, double opponentEstTime, double playerEstTime)
         {
-            RawDataHelper.TryGetTelemetryData<double>(ref data, out double playerEstTime, "CarIdxEstTime", playerCarIdx);
-            RawDataHelper.TryGetTelemetryData<double>(ref data, out double opponentEstTime, "CarIdxEstTime", opponentCarIdx);
-
-            if (playerEstTime < Constants.SecondsEpsilon || opponentEstTime < Constants.SecondsEpsilon)
+            if (estLapTime < Constants.SecondsEpsilon || playerEstTime < Constants.SecondsEpsilon || opponentEstTime < Constants.SecondsEpsilon)
                 return 0.0;
 
             double timeDiff = opponentEstTime - playerEstTime;
 
-            while (timeDiff < -0.5 * playerCarEstLapTime)
-                timeDiff += playerCarEstLapTime;
+            while (timeDiff < -0.5 * estLapTime)
+                timeDiff += estLapTime;
 
-            while (timeDiff > 0.5 * playerCarEstLapTime)
-                timeDiff -= playerCarEstLapTime;
+            while (timeDiff > 0.5 * estLapTime)
+                timeDiff -= estLapTime;
 
             return timeDiff;
         }

@@ -113,6 +113,7 @@ namespace benofficial2.Plugin
         public int CarClassId { get; set; } = 0;
         public string CarClassName { get; set; } = string.Empty;
         public string CarClassColor { get; set; } = string.Empty;
+        public double CarClassEstLapTime { get; set; } = 0.0;
         public bool IsPlayer { get; set; } = false;
         public bool IsConnected { get; set; } = false;
         public bool IsPaceCar { get; set; } = false;
@@ -152,6 +153,7 @@ namespace benofficial2.Plugin
         public int LapsToClassLeader { get; set; } = 0;
         public double GapToClassLeader { get; set; } = 0.0;
         public double RelativeGapToPlayer { get; set; } = 0.0;
+        public double EstTime { get; set; } = 0.0;
     }
 
     public class PlayerDriver
@@ -655,6 +657,7 @@ namespace benofficial2.Plugin
                 RawDataHelper.TryGetValue<string>(drivers, out string userName, i, "UserName");
                 RawDataHelper.TryGetValue<string>(drivers, out string teamName, i, "TeamName");
                 RawDataHelper.TryGetValue<int>(drivers, out int carIsPaceCar, i, "CarIsPaceCar");
+                RawDataHelper.TryGetValue<float>(drivers, out float carClassEstLapTime, i, "CarClassEstLapTime");
 
                 RawDataHelper.TryGetTelemetryData<float>(ref data, out float lastLapTime, "CarIdxLastLapTime", carIdx);
                 RawDataHelper.TryGetTelemetryData<float>(ref data, out float bestLapTime, "CarIdxBestLapTime", carIdx);
@@ -666,6 +669,7 @@ namespace benofficial2.Plugin
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int trackSurface, "CarIdxTrackSurface", carIdx);
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int lapCompleted, "CarIdxLapCompleted", carIdx);
                 RawDataHelper.TryGetTelemetryData<float>(ref data, out float lapDistPct, "CarIdxLapDistPct", carIdx);
+                RawDataHelper.TryGetTelemetryData<float>(ref data, out float estTime, "CarIdxEstTime", carIdx);
 
                 if (!Drivers.TryGetValue(carNumber, out Driver driver))
                 {
@@ -688,6 +692,7 @@ namespace benofficial2.Plugin
                 driver.CarClassId = carClassId;
                 driver.CarClassName = carClassShortName;
                 driver.CarClassColor = ConvertColorString(carClassColor);
+                driver.CarClassEstLapTime = carClassEstLapTime;
                 driver.TeamIncidentCount = teamIncidentCount;
                 driver.IRating = iRating;
                 (driver.License, driver.SafetyRating) = ParseLicenseString(licString);
@@ -701,6 +706,7 @@ namespace benofficial2.Plugin
                 driver.Lap = lap;
                 driver.LapsCompleted = lapCompleted;
                 driver.TrackPositionPercent = lapDistPct;
+                driver.EstTime = estTime;
 
                 if (driver.Lap > -1 && driver.TrackPositionPercent > -Constants.DistanceEpsilon)
                 {
