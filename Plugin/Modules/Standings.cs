@@ -25,8 +25,6 @@ using System.Linq;
 
 namespace benofficial2.Plugin
 {
-    using OpponentsWithDrivers = List<(Opponent, Driver)>;
-
     public class StandingsSettings : ModuleSettings
     {
         public int HeaderWidth { get; set; } = 10;
@@ -508,8 +506,6 @@ namespace benofficial2.Plugin
             }
 
             VisibleClassCount = visibleClassCount;
-            TotalDriverCount = data.NewData.OpponentsCount;
-            TotalSoF = CalculateTotalSof(data.NewData.Opponents);
         }
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)
@@ -581,6 +577,7 @@ namespace benofficial2.Plugin
         private void UpdateLeaderboards(ref GameData data)
         {
             LiveClassLeaderboards = new List<ClassLeaderboard>();
+            List<Driver> scoredDriversAllClasses = new List<Driver>();
 
             foreach (var group in _driverModule.Drivers.Values.GroupBy(d => d.CarClassId))
             {
@@ -654,6 +651,8 @@ namespace benofficial2.Plugin
                         .ToList();
                 }
 
+                scoredDriversAllClasses.AddRange(leaderboard.Drivers);
+
                 int posInClass = 1;
                 foreach (var driver in leaderboard.Drivers)
                 {
@@ -699,6 +698,9 @@ namespace benofficial2.Plugin
 
             // Sort the class leaderboards on the position of their leader.
             LiveClassLeaderboards = LiveClassLeaderboards.OrderBy(lb => lb.EstLapTime).ToList();
+
+            TotalDriverCount = scoredDriversAllClasses.Count;
+            TotalSoF = CalculateSof(scoredDriversAllClasses);
         }
 
         public (Driver, int) FindHighlightedDriver(ref GameData data)
@@ -870,20 +872,6 @@ namespace benofficial2.Plugin
             }
 
             return (int)((1600.0 / Math.Log(2.0)) * Math.Log(drivers.Count / sum));
-        }
-
-        public int CalculateTotalSof(List<Opponent> opponents)
-        {
-            if (opponents.Count <= 0) 
-                return 0;
-
-            double sum = 0.0;
-            foreach (var opponent in opponents)
-            {
-                sum += Math.Pow(2.0, -(opponent.IRacing_IRating ?? 0.0) / 1600.0);
-            }
-
-            return (int)((1600.0 / Math.Log(2.0)) * Math.Log(opponents.Count / sum));
         }
 
         public float MeasureTextInPixels(string text)
