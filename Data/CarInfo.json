@@ -173,6 +173,12 @@
         "hasRearARB": true,
         "hasWeightJacker": true
     },
+    "dallarail15": {
+        "hasPushToPass": true,
+        "hasPushToPassCount": true,
+        "hasFrontARB": true,
+        "hasRearARB": true
+    },
     "superformulasf23 toyota": {
         "hasPushToPass": true,
         "hasPushToPassTimer": true,
