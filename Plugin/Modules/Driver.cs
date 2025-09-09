@@ -152,6 +152,7 @@ namespace benofficial2.Plugin
         public double GapToClassLeader { get; set; } = 0.0;
         public double RelativeGapToPlayer { get; set; } = 0.0;
         public double EstTime { get; set; } = 0.0;
+        public int TireCompoundIdx { get; set; } = -1;
     }
 
     public class PlayerDriver
@@ -668,6 +669,7 @@ namespace benofficial2.Plugin
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int lapCompleted, "CarIdxLapCompleted", carIdx);
                 RawDataHelper.TryGetTelemetryData<float>(ref data, out float lapDistPct, "CarIdxLapDistPct", carIdx);
                 RawDataHelper.TryGetTelemetryData<float>(ref data, out float estTime, "CarIdxEstTime", carIdx);
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int tireCompoundIdx, "CarIdxTireCompound", carIdx);
 
                 if (!Drivers.TryGetValue(carNumber, out Driver driver))
                 {
@@ -705,6 +707,7 @@ namespace benofficial2.Plugin
                 driver.LapsCompleted = lapCompleted;
                 driver.TrackPositionPercent = lapDistPct;
                 driver.EstTime = estTime;
+                driver.TireCompoundIdx = tireCompoundIdx;
 
                 if (driver.Lap > -1 && driver.TrackPositionPercent > -Constants.DistanceEpsilon)
                 {
@@ -941,5 +944,19 @@ namespace benofficial2.Plugin
             return "#" + input.ToUpper();
         }
 
+        public string GetTireCompoundLetter(Driver driver)
+        {
+            if (_carModule.TireCompounds == null)
+                return string.Empty;
+
+            if (!_carModule.TireCompounds.TryGetValue(driver.TireCompoundIdx, out string tireCompoundName))
+                return string.Empty;
+
+            if (tireCompoundName == null || tireCompoundName.Length == 0)
+                return string.Empty;
+
+            // Return the first letter of the compound name as a short representation
+            return tireCompoundName[0].ToString();
+        }
     }
 }

@@ -71,6 +71,11 @@ function isOffline()
     return isnull($prop('benofficial2.Session.Offline'), false);
 }
 
+function isInvalidTime(time)
+{
+    return time == null || time == '' || time == '00:00:00' || time == '00:00.000' || time == '00:00.0000000';
+}
+
 function formatSecondsToTimecode(totalSeconds) 
 {
     if (totalSeconds < 0 || totalSeconds > 172800)

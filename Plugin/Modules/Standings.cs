@@ -426,7 +426,8 @@ namespace benofficial2.Plugin
                         row.StintLap = driver.StintLap;
                         row.LapsToClassLeader = driver.LapsToClassLeader;
                         row.GapToClassLeader = driver.GapToClassLeader;
-                        (row.TireCompound, row.TireCompoundVisible) = GetTireCompound(ref data, driver.CarIdx);
+                        row.TireCompound = _driverModule.GetTireCompoundLetter(driver);
+                        row.TireCompoundVisible = row.TireCompound.Length > 0;
                         row.BestLapTime = driver.BestLapTime;
                         row.LastLapTime = driver.LastLapTime;
                         row.JokerLapsComplete = driver.JokerLapsCompleted;
@@ -744,24 +745,6 @@ namespace benofficial2.Plugin
             }
 
             return (null, -1);
-        }
-
-        public (string compound, bool visible) GetTireCompound(ref GameData data, int carIdx)
-        {
-            if (_carModule.TireCompounds == null)
-                return ("", false);
-
-            if (!RawDataHelper.TryGetTelemetryData<int>(ref data, out int tireCompoundIdx, "CarIdxTireCompound", carIdx))
-                return ("", false);
-
-            if (!_carModule.TireCompounds.TryGetValue(tireCompoundIdx, out string tireCompoundName))
-                return ("", false);
-
-            if (tireCompoundName == null || tireCompoundName.Length == 0)
-                return ("", false);
-
-            // Return the first letter of the compound name as a short representation
-            return (tireCompoundName[0].ToString(), true);
         }
 
         public bool IsValidRow(Driver driver)
