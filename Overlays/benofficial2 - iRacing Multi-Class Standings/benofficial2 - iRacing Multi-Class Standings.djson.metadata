@@ -12,12 +12,12 @@
   "MetadataVersion": 2.0,
   "EnableOnDashboardMessaging": true,
   "PitScreensIndexs": [],
-  "SimHubVersion": "9.9.5",
+  "SimHubVersion": "9.9.9",
   "Category": null,
   "Title": null,
   "Description": null,
   "Author": "twitch.tv/benofficial2",
-  "Width": 559.0,
+  "Width": 600.0,
   "Height": 695.0,
   "DashboardVersion": ""
 }

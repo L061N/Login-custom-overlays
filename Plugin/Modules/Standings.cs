@@ -28,7 +28,7 @@ namespace benofficial2.Plugin
     public class StandingsSettings : ModuleSettings
     {
         public int HeaderWidth { get; set; } = 10;
-        public int Width { get; set; } = 80;
+        public int WidthPixels { get; set; } = 550;
         public bool HideInReplay { get; set; } = true;
         public bool HeaderVisible { get; set; } = true;
         public bool CarClassHeaderVisible { get; set; } = true;
@@ -43,7 +43,7 @@ namespace benofficial2.Plugin
         public bool IRatingChangeVisible { get; set; } = true;
         public bool CarLogoVisibleInRace { get; set; } = true;
         public bool GapVisibleInRace { get; set; } = true;
-        public bool BestVisibleInRace { get; set; } = true;
+        public bool BestVisibleInRace { get; set; } = false;
         public bool LastVisibleInRace { get; set; } = true;
         public bool DeltaVisibleInRace { get; set; } = true;
         public bool BestVisible { get; set; } = true;
@@ -55,7 +55,10 @@ namespace benofficial2.Plugin
         public int AlternateRowBackgroundColor { get; set; } = 33;
         public bool HighlightPlayerRow { get; set; } = true;
         public int HeaderOpacity { get; set; } = 90;
-        public int BackgroundOpacity { get; set; } = 7;
+        public int BackgroundOpacity { get; set; } = 60;
+
+        // Deprecated pre-4.0
+        public int Width { get; set; } = 80;
     }
 
     public class StandingRow
@@ -183,7 +186,7 @@ namespace benofficial2.Plugin
             Settings = plugin.ReadCommonSettings<StandingsSettings>("StandingsSettings", () => new StandingsSettings());
             plugin.AttachDelegate(name: $"Standings.HeaderVisible", valueProvider: () => Settings.HeaderVisible);
             plugin.AttachDelegate(name: $"Standings.HeaderWidth", valueProvider: () => Settings.HeaderWidth);
-            plugin.AttachDelegate(name: $"Standings.Width", valueProvider: () => Settings.Width);
+            plugin.AttachDelegate(name: $"Standings.Width", valueProvider: () => Settings.WidthPixels);
             plugin.AttachDelegate(name: $"Standings.CarClassHeaderVisible", valueProvider: () => Settings.CarClassHeaderVisible);
             plugin.AttachDelegate(name: $"Standings.VisibleClassCount", valueProvider: () => VisibleClassCount);
             plugin.AttachDelegate(name: $"Standings.TotalDriverCount", valueProvider: () => TotalDriverCount);

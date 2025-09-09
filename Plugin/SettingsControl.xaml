@@ -305,7 +305,8 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <ui:TitledSlider Width="400" Title="Width (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <ui:TitledSlider Width="400" Title="Width" Maximum="600" Minimum="250" Value="{Binding Plugin.Modules[StandingsModule].Settings.WidthPixels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                             ToolTip="Minimum width of the overlay in pixels. Actual width might be larger if selected data fields don't fit."/>
                             <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </StackPanel>
