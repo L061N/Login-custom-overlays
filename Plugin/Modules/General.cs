@@ -26,7 +26,7 @@ namespace benofficial2.Plugin
     {
         public bool CheckForUpdates { get; set; } = true;
         public bool ClockFormat24h { get; set; } = true;
-        public System.Windows.Media.Color BackgroundColor { get; set; } = System.Windows.Media.Colors.Black;
+        public System.Windows.Media.Color BackgroundColor { get; set; } = System.Windows.Media.Color.FromRgb(0x1B, 0x1B, 0x24);
     }
 
     public class GeneralModule : PluginModuleBase
