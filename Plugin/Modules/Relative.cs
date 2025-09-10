@@ -29,7 +29,7 @@ namespace benofficial2.Plugin
     public class RelativeSettings : ModuleSettings
     {
         public bool HideInReplay { get; set; } = true;
-        public int WidthPixels { get; set; } = 420;
+        public int WidthPixels { get; set; } = 480;
         public int MaxRows { get; set; } = 4;
         public bool HeaderVisible { get; set; } = true;
         public int HeaderOpacity { get; set; } = 90;
@@ -39,7 +39,7 @@ namespace benofficial2.Plugin
         public bool SafetyRatingVisible { get; set; } = true;
         public bool IRatingVisible { get; set; } = true;
         public bool IRatingChangeVisible { get; set; } = false;
-        public bool LastLapTimeVisible { get; set; } = false;
+        public bool LastLapTimeVisible { get; set; } = true;
         public bool TireCompoundVisible { get; set; } = true;
         public int AlternateRowBackgroundColor { get; set; } = 15;
         public bool HighlightPlayerRow { get; set; } = true;
