@@ -41,7 +41,7 @@ namespace benofficial2.Plugin
         public bool IRatingChangeVisible { get; set; } = false;
         public bool LastLapTimeVisible { get; set; } = false;
         public bool TireCompoundVisible { get; set; } = true;
-        public int AlternateRowBackgroundColor { get; set; } = 33;
+        public int AlternateRowBackgroundColor { get; set; } = 15;
         public bool HighlightPlayerRow { get; set; } = true;
         public int BackgroundOpacity { get; set; } = 60;
 
