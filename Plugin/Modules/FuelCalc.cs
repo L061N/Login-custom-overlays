@@ -778,7 +778,7 @@ namespace benofficial2.Plugin
                 else
                 {
                     extraFuelAtFinish = 0.0;
-                    pitIndicatorOn = false;
+                    pitIndicatorOn = pitLap == currentLap;
                     pitStopsNeeded = 0;
                     refuelNeeded = 0.0;
                     pitWindowLap = 0;
