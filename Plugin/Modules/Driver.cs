@@ -173,6 +173,7 @@ namespace benofficial2.Plugin
         public int CurrentLap { get; set; } = 0;
         public int TeamIncidentCount { get; set; } = 0;
         public int IRatingChange { get; set; } = 0;
+        public string TireCompound { get; set; } = string.Empty;
     }
 
     public class HighlightedDriver
@@ -250,6 +251,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.CurrentLap", valueProvider: () => PlayerDriver.CurrentLap);
             plugin.AttachDelegate(name: "Player.TeamIncidentCount", valueProvider: () => PlayerDriver.TeamIncidentCount);
             plugin.AttachDelegate(name: "Player.iRatingChange", valueProvider: () => PlayerDriver.IRatingChange);
+            plugin.AttachDelegate(name: "Player.TireCompound", valueProvider: () => PlayerDriver.TireCompound);
             plugin.AttachDelegate(name: "Highlighted.HideWhenInCar", valueProvider: () => HighlightedDriverSettings.HideWhenInCar);
             plugin.AttachDelegate(name: "Highlighted.CarBrandVisible", valueProvider: () => HighlightedDriverSettings.CarBrandVisible);
             plugin.AttachDelegate(name: "Highlighted.Width", valueProvider: () => HighlightedDriverSettings.Width);
@@ -476,6 +478,7 @@ namespace benofficial2.Plugin
                     PlayerDriver.CurrentLapHighPrecision = driver.CurrentLapHighPrecision;
                     PlayerDriver.CurrentLap = driver.Lap;
                     PlayerDriver.TeamIncidentCount = driver.TeamIncidentCount;
+                    PlayerDriver.TireCompound = GetTireCompoundLetter(driver);
 
                     if (_sessionModule.Race)
                     {
