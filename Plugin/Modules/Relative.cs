@@ -29,7 +29,7 @@ namespace benofficial2.Plugin
     public class RelativeSettings : ModuleSettings
     {
         public bool HideInReplay { get; set; } = true;
-        public int WidthPixels { get; set; } = 480;
+        public int WidthPixels { get; set; } = 430;
         public int MaxRows { get; set; } = 4;
         public bool HeaderVisible { get; set; } = true;
         public int HeaderOpacity { get; set; } = 90;
@@ -213,7 +213,7 @@ namespace benofficial2.Plugin
                 row.CurrentLapHighPrecision = driver.CurrentLapHighPrecisionRaw;
                 row.LastLapTime = driver.LastLapTime;
                 row.SessionFlags = driver.SessionFlags;
-                row.TireCompound = _driverModule.GetTireCompoundLetter(driver);
+                row.TireCompound = _carModule.GetTireCompoundLetter(driver.TireCompoundIdx);
             }
         }
 

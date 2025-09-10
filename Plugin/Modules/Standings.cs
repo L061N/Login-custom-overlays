@@ -429,7 +429,7 @@ namespace benofficial2.Plugin
                         row.StintLap = driver.StintLap;
                         row.LapsToClassLeader = driver.LapsToClassLeader;
                         row.GapToClassLeader = driver.GapToClassLeader;
-                        row.TireCompound = _driverModule.GetTireCompoundLetter(driver);
+                        row.TireCompound = _carModule.GetTireCompoundLetter(driver.TireCompoundIdx);
                         row.TireCompoundVisible = row.TireCompound.Length > 0;
                         row.BestLapTime = driver.BestLapTime;
                         row.LastLapTime = driver.LastLapTime;

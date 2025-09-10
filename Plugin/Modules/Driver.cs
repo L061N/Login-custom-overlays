@@ -478,7 +478,7 @@ namespace benofficial2.Plugin
                     PlayerDriver.CurrentLapHighPrecision = driver.CurrentLapHighPrecision;
                     PlayerDriver.CurrentLap = driver.Lap;
                     PlayerDriver.TeamIncidentCount = driver.TeamIncidentCount;
-                    PlayerDriver.TireCompound = GetTireCompoundLetter(driver);
+                    PlayerDriver.TireCompound = _carModule.GetTireCompoundLetter(driver.TireCompoundIdx);
 
                     if (_sessionModule.Race)
                     {
@@ -945,21 +945,6 @@ namespace benofficial2.Plugin
 
             // Return in #RRGGBB format, uppercase
             return "#" + input.ToUpper();
-        }
-
-        public string GetTireCompoundLetter(Driver driver)
-        {
-            if (_carModule.TireCompounds == null)
-                return string.Empty;
-
-            if (!_carModule.TireCompounds.TryGetValue(driver.TireCompoundIdx, out string tireCompoundName))
-                return string.Empty;
-
-            if (tireCompoundName == null || tireCompoundName.Length == 0)
-                return string.Empty;
-
-            // Return the first letter of the compound name as a short representation
-            return tireCompoundName[0].ToString();
         }
     }
 }
