@@ -62,6 +62,7 @@ namespace benofficial2.Plugin
         public bool Offline { get; internal set; } = false;
         public bool ReplayPlaying { get; internal set; } = false;
         public bool SessionScreen { get; internal set; } = false;
+        public bool UIHidden { get; internal set; } = false;
         public bool RaceStarted { get; internal set; } = false;
         public bool RaceFinished { get; internal set; } = false;
         public TimeSpan SessionTimeTotal { get; internal set; } = TimeSpan.Zero;
@@ -84,6 +85,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Session.Offline", valueProvider: () => Offline);
             plugin.AttachDelegate(name: "Session.ReplayPlaying", valueProvider: () => ReplayPlaying);
             plugin.AttachDelegate(name: "Session.SessionScreen", valueProvider: () => SessionScreen);
+            plugin.AttachDelegate(name: "Session.UIHidden", valueProvider: () => UIHidden);
             plugin.AttachDelegate(name: "Session.RaceStarted", valueProvider: () => RaceStarted);
             plugin.AttachDelegate(name: "Session.RaceFinished", valueProvider: () => RaceFinished);
             plugin.AttachDelegate(name: "Session.RaceTimer", valueProvider: () => RaceTimer);
@@ -155,8 +157,9 @@ namespace benofficial2.Plugin
 
             // Determine if Session Screen is active (out of car)
             // Remains true when spotting.
-            RawDataHelper.TryGetTelemetryData<int>(ref data, out int sessionScreen, "CamCameraState");
-            SessionScreen = (sessionScreen & 0x0001) != 0; // irsdk_IsSessionScreen
+            RawDataHelper.TryGetTelemetryData<int>(ref data, out int camCameraState, "CamCameraState");
+            SessionScreen = (camCameraState & 0x0001) != 0; // irsdk_IsSessionScreen
+            UIHidden = (camCameraState & 0x0008) != 0; // irsdk_UIHidden
 
             // Determine if race started
             int sessionState = 0;
