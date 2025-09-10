@@ -310,14 +310,52 @@ function getRelativeGapToPlayer(index)
     return Math.min(999.9, Math.abs(gap).toFixed(1));
 }
 
+function getRelativeLastLapTime(index)
+{
+    let time;
+    if (index == 0)
+    {
+        time = $prop('benofficial2.Player.LastLapTime')
+    }
+    else if (g_UseSimHubProp)
+    {
+        const position = getopponentleaderboardposition_aheadbehind(index);
+        time = driverlastlap(position);
+    }
+    else
+    {
+        time = getRelativeProp(index, 'LastLapTime');
+    }
+    
+    if (isInvalidTime(time))
+        return '-:--.---'
+    
+    return toshorttime(time, 3, false, true)
+}
+
+function getRelativeTireCompound(index)
+{
+    if (index == 0)
+    {
+        return $prop('benofficial2.Player.TireCompound')
+    }
+    else
+    {
+        return getRelativeProp(index, 'TireCompound');
+    }
+}
+
 function getRelativeTextColor(index)
 {
-    if (!isRace()) return 'White';
+    if (!isRace()) 
+        return 'White';
 
     if (index == 0)
     {
         const highlight = isnull($prop('benofficial2.Relative.HighlightPlayerRow'), false)
-        if (highlight) return 'White'
+        if (highlight) 
+            return 'White'
+
         return '#FFEBAE00'
     }
 
@@ -335,7 +373,8 @@ function getRelativeTextColor(index)
     const playerPosition = getopponentleaderboardposition_aheadbehind(0);
     const playerLap = drivercurrentlaphighprecision(playerPosition);
 
-    if (playerLap <= 0 || lap <= 0) return 'White';
+    if (playerLap <= 0 || lap <= 0) 
+        return 'White';
 
     const red = '#FFFF6345';
     const blue = '#43B7EA';
@@ -345,13 +384,19 @@ function getRelativeTextColor(index)
 
     if (index < 0)
     {
-        if (deltaLap < -0.75) return red;
-        if (deltaLap > 0.25) return blue;
+        if (deltaLap < -0.75) 
+            return red;
+
+        if (deltaLap > 0.25) 
+            return blue;
     }
     else if (index > 0)
     {
-        if (deltaLap < -0.25) return red;
-        if (deltaLap > 0.75) return blue;
+        if (deltaLap < -0.25) 
+            return red;
+
+        if (deltaLap > 0.75) 
+            return blue;
     }
     return white;
 }

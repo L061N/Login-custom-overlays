@@ -29,7 +29,7 @@ namespace benofficial2.Plugin
     public class RelativeSettings : ModuleSettings
     {
         public bool HideInReplay { get; set; } = true;
-        public int Width { get; set; } = 80;
+        public int WidthPixels { get; set; } = 430;
         public int MaxRows { get; set; } = 4;
         public bool HeaderVisible { get; set; } = true;
         public int HeaderOpacity { get; set; } = 90;
@@ -39,9 +39,14 @@ namespace benofficial2.Plugin
         public bool SafetyRatingVisible { get; set; } = true;
         public bool IRatingVisible { get; set; } = true;
         public bool IRatingChangeVisible { get; set; } = false;
-        public int AlternateRowBackgroundColor { get; set; } = 33;
+        public bool LastLapTimeVisible { get; set; } = true;
+        public bool TireCompoundVisible { get; set; } = true;
+        public int AlternateRowBackgroundColor { get; set; } = 15;
         public bool HighlightPlayerRow { get; set; } = true;
         public int BackgroundOpacity { get; set; } = 60;
+
+        // Deprecated pre-4.0
+        public int Width { get; set; } = 80;
     }
 
     public class RelativeRow
@@ -60,10 +65,10 @@ namespace benofficial2.Plugin
         public string License { get; set; } = string.Empty;
         public double SafetyRating { get; set; } = 0;
         public double GapToPlayer { get; set; } = 0;
-        public string GapToPlayerCombined { get; set; } = string.Empty;
         public double CurrentLapHighPrecision { get; set; } = 0;
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
         public int SessionFlags { get; set; } = 0;
+        public string TireCompound { get; set; } = string.Empty;
     }
 
     public class RelativeAhead
@@ -109,7 +114,7 @@ namespace benofficial2.Plugin
 
             Settings = plugin.ReadCommonSettings<RelativeSettings>("RelativeSettings", () => new RelativeSettings());
             plugin.AttachDelegate(name: "Relative.HideInReplay", valueProvider: () => Settings.HideInReplay);
-            plugin.AttachDelegate(name: "Relative.Width", valueProvider: () => Settings.Width);
+            plugin.AttachDelegate(name: "Relative.Width", valueProvider: () => Settings.WidthPixels);
             plugin.AttachDelegate(name: "Relative.MaxRows", valueProvider: () => Settings.MaxRows);
             plugin.AttachDelegate(name: "Relative.HeaderVisible", valueProvider: () => Settings.HeaderVisible);
             plugin.AttachDelegate(name: "Relative.HeaderOpacity", valueProvider: () => Settings.HeaderOpacity);
@@ -119,6 +124,8 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Relative.SafetyRatingVisible", valueProvider: () => Settings.SafetyRatingVisible);
             plugin.AttachDelegate(name: "Relative.iRatingVisible", valueProvider: () => Settings.IRatingVisible);
             plugin.AttachDelegate(name: "Relative.iRatingChangeVisible", valueProvider: () => Settings.IRatingChangeVisible);
+            plugin.AttachDelegate(name: "Relative.LastLapTimeVisible", valueProvider: () => Settings.LastLapTimeVisible);
+            plugin.AttachDelegate(name: "Relative.TireCompoundVisible", valueProvider: () => Settings.TireCompoundVisible);
             plugin.AttachDelegate(name: "Relative.AlternateRowBackgroundColor", valueProvider: () => Settings.AlternateRowBackgroundColor);
             plugin.AttachDelegate(name: "Relative.HighlightPlayerRow", valueProvider: () => Settings.HighlightPlayerRow);
             plugin.AttachDelegate(name: "Relative.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
@@ -146,16 +153,21 @@ namespace benofficial2.Plugin
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.License", valueProvider: () => row.License);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.SafetyRating", valueProvider: () => row.SafetyRating);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.GapToPlayer", valueProvider: () => row.GapToPlayer);
-                plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.GapToPlayerCombined", valueProvider: () => row.GapToPlayerCombined);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.CurrentLapHighPrecision", valueProvider: () => row.CurrentLapHighPrecision);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.LastLapTime", valueProvider: () => row.LastLapTime);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.SessionFlags", valueProvider: () => row.SessionFlags);
+                plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.TireCompound", valueProvider: () => row.TireCompound);
             }
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
+            // Update gaps every frame to keep them smooth in the Rejoin Helper.
+            UpdateGaps(ref data);
+
+            if (data.FrameTime - _lastUpdateTime < _updateInterval) 
+                return;
+
             _lastUpdateTime = data.FrameTime;
 
             UpdateRelative(ref data, Ahead.Rows, RelativeAhead.MaxRows, data.NewData.OpponentsAheadOnTrack);
@@ -176,8 +188,8 @@ namespace benofficial2.Plugin
 
                 Opponent opponent = opponents[rowIdx];
                 Driver driver = null;
-                if (_driverModule.Drivers != null) _driverModule.Drivers.TryGetValue(opponent.CarNumber, out driver);
 
+                _driverModule.Drivers?.TryGetValue(opponent.CarNumber, out driver);
                 if (driver == null || !IsValidRow(opponent))
                 {
                     BlankRow(row);
@@ -186,27 +198,105 @@ namespace benofficial2.Plugin
 
                 row.RowVisible = true;
                 row.LivePositionInClass = driver.LivePositionInClass;
-                row.ClassColor = opponent.CarClassColor;
-                row.ClassTextColor = opponent.CarClassTextColor;
-                row.Number = opponent.CarNumber;
-                row.Name = opponent.Name;
-                row.CarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName); ;
+                row.ClassColor = driver.CarClassColor;
+                row.ClassTextColor = "#000000";
+                row.Number = driver.CarNumber;
+                row.Name = driver.Name;
+                row.CarBrand = _carModule.GetCarBrand(driver.CarId, driver.CarName); ;
                 row.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
                 row.OutLap = driver.OutLap;
-                row.iRating = (int)(opponent.IRacing_IRating ?? 0);
+                row.iRating = driver.IRating;
                 row.iRatingChange = driver.IRatingChange;
-                (row.License, row.SafetyRating) = DriverModule.ParseLicenseString(opponent.LicenceString);
-                row.GapToPlayer = opponent.RelativeGapToPlayer ?? 0;
-                row.GapToPlayerCombined = opponent.GapToPlayerCombined;
-                row.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? 0;
+                row.License = driver.License;
+                row.SafetyRating = driver.SafetyRating;
+                row.GapToPlayer = driver.RelativeGapToPlayer;
+                row.CurrentLapHighPrecision = driver.CurrentLapHighPrecisionRaw;
                 row.LastLapTime = driver.LastLapTime;
                 row.SessionFlags = driver.SessionFlags;
+                row.TireCompound = _carModule.GetTireCompoundLetter(driver.TireCompoundIdx);
             }
         }
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)
         {
             plugin.SaveCommonSettings("RelativeSettings", Settings);
+        }
+
+        public void UpdateGaps(ref GameData data)
+        {
+            _driverModule.DriversByCarIdx.TryGetValue(_driverModule.PlayerDriver.CarIdx, out Driver playerDriver);
+            if (playerDriver == null)
+                return;
+
+            foreach (Opponent opponent in data.NewData.OpponentsAheadOnTrack)
+            {
+                _driverModule.Drivers.TryGetValue(opponent.CarNumber, out Driver opponentDriver);
+                if (opponentDriver == null)
+                    continue;
+
+                // Scale opponent estimated time to player's car class
+                double opponentEstTimeScaled = GetEstTimeScaled(opponentDriver, playerDriver);
+
+                double timeDiff = GetEstTimeDiff(playerDriver.CarClassEstLapTime, opponentEstTimeScaled, playerDriver.EstTime);
+
+                // Make sure timeDiff is positive
+                while (timeDiff < 0.0)
+                    timeDiff += playerDriver.CarClassEstLapTime;
+
+                opponentDriver.RelativeGapToPlayer = timeDiff;
+            }
+
+            foreach (Opponent opponent in data.NewData.OpponentsBehindOnTrack)
+            {
+                _driverModule.Drivers.TryGetValue(opponent.CarNumber, out Driver opponentDriver);
+                if (opponentDriver == null)
+                    continue;
+
+                // Scale opponent estimated time to player's car class
+                double opponentEstTimeScaled = GetEstTimeScaled(opponentDriver, playerDriver);
+
+                double timeDiff = GetEstTimeDiff(playerDriver.CarClassEstLapTime, opponentEstTimeScaled, playerDriver.EstTime);
+
+                // Make sure timeDiff is negative
+                while (timeDiff > 0.0)
+                    timeDiff -= playerDriver.CarClassEstLapTime;
+
+                opponentDriver.RelativeGapToPlayer = timeDiff;
+            }
+        }
+
+        private double GetEstTimeScaled(Driver opponentDriver, Driver playerDriver)
+        {
+            // Scale opponent estimated time to player's car class
+            double opponentEstTimeScaled = opponentDriver.EstTime * playerDriver.CarClassEstLapTime / opponentDriver.CarClassEstLapTime;
+
+            // Make sure opponent time is not ahead when behind on track, and not behind when ahead on track.
+            if (opponentDriver.TrackPositionPercent < playerDriver.TrackPositionPercent)
+            {
+                opponentEstTimeScaled = Math.Min(playerDriver.EstTime, opponentEstTimeScaled);
+            }
+            else if (opponentDriver.TrackPositionPercent > playerDriver.TrackPositionPercent)
+            {
+                opponentEstTimeScaled = Math.Max(playerDriver.EstTime, opponentEstTimeScaled);
+            }
+
+            return opponentEstTimeScaled;
+        }
+
+        private double GetEstTimeDiff(double estLapTime, double opponentEstTime, double playerEstTime)
+        {
+            if (estLapTime < Constants.SecondsEpsilon || playerEstTime < Constants.SecondsEpsilon || opponentEstTime < Constants.SecondsEpsilon)
+                return 0.0;
+
+            double timeDiff = opponentEstTime - playerEstTime;
+
+            while (timeDiff < -0.5 * estLapTime)
+                timeDiff += estLapTime;
+
+            while (timeDiff > 0.5 * estLapTime)
+                timeDiff -= estLapTime;
+
+            return timeDiff;
         }
 
         public void BlankRow(RelativeRow row)
@@ -225,7 +315,6 @@ namespace benofficial2.Plugin
             row.License = string.Empty;
             row.SafetyRating = 0;
             row.GapToPlayer = 0;
-            row.GapToPlayerCombined = string.Empty;
             row.CurrentLapHighPrecision = 0;
             row.LastLapTime = TimeSpan.Zero;
             row.SessionFlags = 0;

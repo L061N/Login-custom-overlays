@@ -29,7 +29,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d">
     <ScrollViewer>
-        <Grid Height="4900">
+        <Grid Height="5000">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="44*"/>
                 <ColumnDefinition Width="377*"/>
@@ -305,7 +305,8 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <ui:TitledSlider Width="400" Title="Width (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <ui:TitledSlider Width="400" Title="Width" Maximum="600" Minimum="250" Value="{Binding Plugin.Modules[StandingsModule].Settings.WidthPixels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                             ToolTip="Minimum width of the overlay in pixels. Actual width might be larger if selected data fields don't fit."/>
                             <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </StackPanel>
@@ -341,8 +342,8 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <ui:TitledSlider HorizontalAlignment="Left" Width="400" Title="Width (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[RelativeModule].Settings.Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                ToolTip="Maximum number of visible rows ahead and behind the player"/>
+                            <ui:TitledSlider HorizontalAlignment="Left" Width="400" Title="Width" Maximum="475" Minimum="200" Value="{Binding Plugin.Modules[RelativeModule].Settings.WidthPixels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                ToolTip="Minimum width of the overlay in pixels. Actual width might be larger if selected data fields don't fit."/>
                             <ui:TitledSlider HorizontalAlignment="Left" Width="400" Title="Max Row Count (Ahead and Behind)" Maximum="5" Minimum="1" Value="{Binding Plugin.Modules[RelativeModule].Settings.MaxRows, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 ToolTip="Maximum number of visible rows ahead and behind the player"/>
                         </StackPanel>
@@ -382,6 +383,20 @@
                             HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.CarLogoVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Show car logo
+                        </styles:SHToggleCheckbox>
+
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show the driver's last lap time" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.LastLapTimeVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show Last Lap Time
+                        </styles:SHToggleCheckbox>
+
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Show the driver's current tire compound" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[RelativeModule].Settings.TireCompoundVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Show Tire Compound
                         </styles:SHToggleCheckbox>
 
                         <styles:SHToggleCheckbox 

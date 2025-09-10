@@ -29,9 +29,9 @@ namespace benofficial2.Plugin
     {
         public bool Enabled { get; set; } = true;
         public ModuleSettingFloat DistanceThreshold { get; set; } = new ModuleSettingFloat(5.5f);
-        public int Height { get; set; } = 129;
+        public int Height { get; set; } = 105;
         public int MinHeight { get; set; } = 15;
-        public int Width { get; set; } = 12;
+        public int Width { get; set; } = 15;
         public int Border { get; set; } = 3;
         public int Spacing { get; set; } = 100;
 

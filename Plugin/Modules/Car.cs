@@ -155,6 +155,9 @@ namespace benofficial2.Plugin
             if (!RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> driverTires, "DriverInfo", "DriverTires"))
                 return;
 
+            if (driverTires == null)
+                return;
+
             for (int i = 0; i < driverTires.Count; i++)
             {
                 RawDataHelper.TryGetSessionData<string>(ref data, out string compoundType, "DriverInfo", "DriverTires", i, "TireCompoundType");
@@ -410,6 +413,21 @@ namespace benofficial2.Plugin
                 }
             }
             return classId;
+        }
+
+        public string GetTireCompoundLetter(int tireCompoundIdx)
+        {
+            if (TireCompounds == null)
+                return string.Empty;
+
+            if (!TireCompounds.TryGetValue(tireCompoundIdx, out string tireCompoundName))
+                return string.Empty;
+
+            if (tireCompoundName == null || tireCompoundName.Length == 0)
+                return string.Empty;
+
+            // Return the first letter of the compound name as a short representation
+            return tireCompoundName[0].ToString();
         }
     }
 }

@@ -26,8 +26,6 @@ using System.Runtime;
 
 namespace benofficial2.Plugin
 {
-    using OpponentsWithDrivers = List<(Opponent, Driver)>;
-
     public class HighlightedDriverSettings : ModuleSettings
     {
         public bool HideWhenInCar { get; set; } = true;
@@ -104,40 +102,78 @@ namespace benofficial2.Plugin
         // Index in the array AllSessionData["DriverInfo"]["Drivers"]
         public int DriverInfoIdx { get; set; } = -1;
         public int CarIdx { get; set; } = -1;
-        public string CarId { get; set; } = "";
+        public string CarId { get; set; } = string.Empty;
+        public string CarName { get; set; } = string.Empty;
+        public string CarNumber { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string TeamName { get; set; } = string.Empty;
         public int FlairId { get; set; } = 0;
         public int CarClassId { get; set; } = 0;
+        public string CarClassName { get; set; } = string.Empty;
+        public string CarClassColor { get; set; } = string.Empty;
+        public double CarClassEstLapTime { get; set; } = 0.0;
+        public bool IsPlayer { get; set; } = false;
+        public bool IsConnected { get; set; } = false;
+        public bool IsPaceCar { get; set; } = false;
+        public int Lap { get; set; } = 0;
         public int EnterPitLapUnconfirmed { get; set; } = -1;
         public int EnterPitLap { get; set; } = -1;
         public int ExitPitLap { get; set; } = -1;
         public bool OutLap { get; set; } = false;
+        public bool InPit { get; set; } = false;
         public DateTime InPitSince { get; set; } = DateTime.MinValue;
+        public bool InPitBox { get; set; } = false;
         public DateTime InPitBoxSince { get; set; } = DateTime.MinValue;
         public TimeSpan LastPitStopDuration { get; set; } = TimeSpan.Zero;
         public int StintLap { get; set; } = 0;
+        public int Position { get; set; } = 0;
         public int PositionInClass { get; set; } = 0;
         public int QualPositionInClass { get; set; } = 0;
         public int LivePositionInClass { get; set; } = 0;
         public double LastCurrentLapHighPrecision { get; set; } = -1;
         public double CurrentLapHighPrecision { get; set; } = -1;
+        public double CurrentLapHighPrecisionRaw { get; set; } = -1;
+        public double TrackPositionPercent { get; set; } = -1;
         public bool Towing { get; set; } = false;
         public DateTime TowingEndTime { get; set; } = DateTime.MinValue;
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan QualLapTime { get; set; } = TimeSpan.Zero;
         public AverageLapTime AvgLapTime { get; set; } = new AverageLapTime(3);
-        public int LapsComplete { get; set; } = 0;
-        public int JokerLapsComplete { get; set; } = 0;
+        public int LapsCompleted { get; set; } = 0;
+        public int JokerLapsCompleted { get; set; } = 0;
         public int SessionFlags { get; set; } = 0;
         public int TeamIncidentCount { get; set; } = 0;
         public int IRating { get; set; } = 0;
         public int IRatingChange { get; set; } = 0;
+        public string License { get; set; } = string.Empty;
+        public double SafetyRating { get; set; } = 0.0;
+        public int LapsToClassLeader { get; set; } = 0;
+        public double GapToClassLeader { get; set; } = 0.0;
+        public double RelativeGapToPlayer { get; set; } = 0.0;
+        public double EstTime { get; set; } = 0.0;
+        public int TireCompoundIdx { get; set; } = -1;
     }
 
-    public class ClassLeaderboard
+    public class PlayerDriver
     {
-        public LeaderboardCarClassDescription CarClassDescription { get; set; } = null;
-        public OpponentsWithDrivers Drivers { get; set; } = new OpponentsWithDrivers();
+        public int CarIdx { get; set; } = -1;
+        public bool OutLap { get; internal set; } = false;
+        public int StintLap { get; internal set; } = 0;
+        public string Number { get; internal set; } = "";
+        public string CarBrand { get; internal set; } = "";
+        public string CountryCode { get; internal set; } = "";
+        public int LivePositionInClass { get; internal set; } = 0;
+        public bool HadWhiteFlag { get; internal set; } = false;
+        public bool HadCheckeredFlag { get; internal set; } = false;
+        public TimeSpan LastLapTime { get; internal set; } = TimeSpan.Zero;
+        public TimeSpan BestLapTime { get; internal set; } = TimeSpan.Zero;
+        public TimeSpan AvgLapTime { get; internal set; } = TimeSpan.Zero;
+        public double CurrentLapHighPrecision { get; set; } = -1;
+        public int CurrentLap { get; set; } = 0;
+        public int TeamIncidentCount { get; set; } = 0;
+        public int IRatingChange { get; set; } = 0;
+        public string TireCompound { get; set; } = string.Empty;
     }
 
     public class HighlightedDriver
@@ -174,9 +210,10 @@ namespace benofficial2.Plugin
         private RelativeModule _relativeModule = null;
 
         private SessionState _sessionState = new SessionState();
-        private bool _qualResultsUpdated = false;
 
         public const int MaxDrivers = 64;
+
+        public bool QualResultsUpdated { get; private set; } = false;       
 
         // Key is car number
         public Dictionary<string, Driver> Drivers { get; private set; } = new Dictionary<string, Driver>();
@@ -186,25 +223,7 @@ namespace benofficial2.Plugin
 
         public HighlightedDriverSettings HighlightedDriverSettings { get; set; }
 
-        public int PlayerCarIdx { get; set; } = -1;
-        public bool PlayerOutLap { get; internal set; } = false;
-        public int PlayerStintLap { get; internal set; } = 0;
-        public string PlayerNumber { get; internal set; } = "";
-        public string PlayerCarBrand { get; internal set; } = "";
-        public string PlayerCountryCode { get; internal set; } = "";
-        public int PlayerPositionInClass { get; internal set; } = 0;
-        public int PlayerLivePositionInClass { get; internal set; } = 0;
-        public bool PlayerHadWhiteFlag { get; internal set; } = false;
-        public bool PlayerHadCheckeredFlag { get; internal set; } = false;
-        public TimeSpan PlayerLastLapTime { get; internal set; } = TimeSpan.Zero;
-        public TimeSpan PlayerBestLapTime { get; internal set; } = TimeSpan.Zero;
-        public TimeSpan PlayerAvgLapTime { get; internal set; } = TimeSpan.Zero;
-        public double PlayerCurrentLapHighPrecision { get; set; } = -1;
-        public int PlayerCurrentLap { get; set; } = 0;
-        public int PlayerTeamIncidentCount { get; set; } = 0;
-        public int PlayerIRatingChange { get; set; } = 0;
-
-        public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
+        public PlayerDriver PlayerDriver { get; private set; } = new PlayerDriver();
 
         public HighlightedDriver HighlightedDriver { get; private set; } = new HighlightedDriver();
 
@@ -220,19 +239,19 @@ namespace benofficial2.Plugin
 
             HighlightedDriverSettings = plugin.ReadCommonSettings<HighlightedDriverSettings>("HighlightedDriverSettings", () => new HighlightedDriverSettings());
 
-            plugin.AttachDelegate(name: "Player.OutLap", valueProvider: () => PlayerOutLap);
-            plugin.AttachDelegate(name: "Player.StintLap", valueProvider: () => PlayerStintLap);
-            plugin.AttachDelegate(name: "Player.Number", valueProvider: () => PlayerNumber);
-            plugin.AttachDelegate(name: "Player.CarBrand", valueProvider: () => PlayerCarBrand);
-            plugin.AttachDelegate(name: "Player.CountryCode", valueProvider: () => PlayerCountryCode);
-            plugin.AttachDelegate(name: "Player.PositionInClass", valueProvider: () => PlayerPositionInClass);
-            plugin.AttachDelegate(name: "Player.LivePositionInClass", valueProvider: () => PlayerLivePositionInClass);
-            plugin.AttachDelegate(name: "Player.LastLapTime", valueProvider: () => PlayerLastLapTime);
-            plugin.AttachDelegate(name: "Player.BestLapTime", valueProvider: () => PlayerBestLapTime);
-            plugin.AttachDelegate(name: "Player.AvgLapTime", valueProvider: () => PlayerAvgLapTime);
-            plugin.AttachDelegate(name: "Player.CurrentLap", valueProvider: () => PlayerCurrentLap);
-            plugin.AttachDelegate(name: "Player.TeamIncidentCount", valueProvider: () => PlayerTeamIncidentCount);
-            plugin.AttachDelegate(name: "Player.iRatingChange", valueProvider: () => PlayerIRatingChange);
+            plugin.AttachDelegate(name: "Player.OutLap", valueProvider: () => PlayerDriver.OutLap);
+            plugin.AttachDelegate(name: "Player.StintLap", valueProvider: () => PlayerDriver.StintLap);
+            plugin.AttachDelegate(name: "Player.Number", valueProvider: () => PlayerDriver.Number);
+            plugin.AttachDelegate(name: "Player.CarBrand", valueProvider: () => PlayerDriver.CarBrand);
+            plugin.AttachDelegate(name: "Player.CountryCode", valueProvider: () => PlayerDriver.CountryCode);
+            plugin.AttachDelegate(name: "Player.LivePositionInClass", valueProvider: () => PlayerDriver.LivePositionInClass);
+            plugin.AttachDelegate(name: "Player.LastLapTime", valueProvider: () => PlayerDriver.LastLapTime);
+            plugin.AttachDelegate(name: "Player.BestLapTime", valueProvider: () => PlayerDriver.BestLapTime);
+            plugin.AttachDelegate(name: "Player.AvgLapTime", valueProvider: () => PlayerDriver.AvgLapTime);
+            plugin.AttachDelegate(name: "Player.CurrentLap", valueProvider: () => PlayerDriver.CurrentLap);
+            plugin.AttachDelegate(name: "Player.TeamIncidentCount", valueProvider: () => PlayerDriver.TeamIncidentCount);
+            plugin.AttachDelegate(name: "Player.iRatingChange", valueProvider: () => PlayerDriver.IRatingChange);
+            plugin.AttachDelegate(name: "Player.TireCompound", valueProvider: () => PlayerDriver.TireCompound);
             plugin.AttachDelegate(name: "Highlighted.HideWhenInCar", valueProvider: () => HighlightedDriverSettings.HideWhenInCar);
             plugin.AttachDelegate(name: "Highlighted.CarBrandVisible", valueProvider: () => HighlightedDriverSettings.CarBrandVisible);
             plugin.AttachDelegate(name: "Highlighted.Width", valueProvider: () => HighlightedDriverSettings.Width);
@@ -257,12 +276,10 @@ namespace benofficial2.Plugin
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
-            if (data.FrameTime - _lastUpdateTime < _updateInterval) return;
+            if (data.FrameTime - _lastUpdateTime < _updateInterval) 
+                return;
+
             _lastUpdateTime = data.FrameTime;
-
-            dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) return;
-
             _sessionState.Update(ref data);
 
             // Reset when changing/restarting session
@@ -270,33 +287,18 @@ namespace benofficial2.Plugin
             {
                 Drivers = new Dictionary<string, Driver>();
                 DriversByCarIdx = new Dictionary<int, Driver>();
-                PlayerCarIdx = -1;
-                PlayerOutLap = false;
-                PlayerStintLap = 0;
-                PlayerNumber = "";
-                PlayerCarBrand = "";
-                PlayerCountryCode = "";
-                PlayerPositionInClass = 0;
-                PlayerLivePositionInClass = 0;
-                PlayerHadWhiteFlag = false;
-                PlayerHadCheckeredFlag = false;
-                LiveClassLeaderboards = new List<ClassLeaderboard>();
-                PlayerLastLapTime = TimeSpan.Zero;
-                PlayerBestLapTime = TimeSpan.Zero;
-                PlayerAvgLapTime = TimeSpan.Zero;
-                PlayerCurrentLap = 0;
-                PlayerTeamIncidentCount = 0;
-                PlayerIRatingChange = 0;
+                BlankPlayerDriver();
                 BlankHighlightedDriver();
-                _qualResultsUpdated = false;
+                QualResultsUpdated = false;
             }
 
+            InvalidatePositions();
             UpdateDrivers(ref data);
 
             // Update lap times for all drivers based on the session results.
             // Do this after first trying to get the times from telemetry. 
-            // Because lap times will be invalid in telemetry after the driver diconnected or exited the car.
-            UpdateLapTimesFromSessionResults(ref data);
+            // Because lap times will be invalid in telemetry after the driver disconnected or exited the car.
+            UpdateSessionResults(ref data);
 
             // Update the highlighted car index
             RawDataHelper.TryGetTelemetryData<int>(ref data, out int highlightedCarIdx, "CamCarIdx");
@@ -311,21 +313,14 @@ namespace benofficial2.Plugin
                 BlankHighlightedDriver();
             }
 
-            for (int i = 0; i < data.NewData.Opponents.Count; i++)
+            foreach (Driver driver in Drivers.Values)
             {
-                Opponent opponent = data.NewData.Opponents[i];
-                if (!Drivers.TryGetValue(opponent.CarNumber, out Driver driver))
-                {
-                    // Can happen when spectating a race and driving, the player car has no car number.
-                    continue;
-                }
-
                 // Update the average lap time for the driver
-                int currentLap = opponent.CurrentLap ?? -1;
+                int currentLap = driver.Lap;
                 driver.AvgLapTime.AddLapTime(currentLap - 1, driver.LastLapTime);
 
                 // Evaluate the lap when they entered the pit lane
-                if (opponent.IsCarInPitLane)
+                if (driver.InPit)
                 {
                     // Ignore in-laps and out-laps for the average lap time.
                     driver.AvgLapTime.InvalidateLap(currentLap);
@@ -334,7 +329,7 @@ namespace benofficial2.Plugin
                     if (driver.InPitSince == DateTime.MinValue)
                     {
                         driver.InPitSince = DateTime.Now;
-                        driver.EnterPitLapUnconfirmed = opponent.CurrentLap ?? -1;
+                        driver.EnterPitLapUnconfirmed = currentLap;
                     }
 
                     // If they are in the pit for a very short time then we consider that a glitch in telemetry and ignore it.
@@ -346,7 +341,7 @@ namespace benofficial2.Plugin
                         driver.ExitPitLap = -1;
                         driver.StintLap = 0;
 
-                        if (opponent.IsCarInPit)
+                        if (driver.InPitBox)
                         {
                             if (driver.InPitBoxSince == DateTime.MinValue)
                             {
@@ -364,63 +359,61 @@ namespace benofficial2.Plugin
                 {
                     // If they are in the pit for a very short time then we consider that a glitch in telemetry and ignore it.
                     // Ignore pit exit before the race start.
-                    if (opponent.IsConnected &&
+                    if (driver.IsConnected &&
                         driver.InPitSince > DateTime.MinValue &&
                         !(_sessionModule.Race && !_sessionModule.RaceStarted) &&
                         driver.InPitSince + _minTimeInPit < DateTime.Now)
                     {
-                        driver.ExitPitLap = opponent.CurrentLap ?? -1;
+                        driver.ExitPitLap = currentLap;
 
                         // Edge case when the pit exit is before the finish line.
                         // The currentLap will increment, so consider the next lap an out lap too.
-                        if (opponent.TrackPositionPercent > 0.5)
+                        if (driver.TrackPositionPercent > 0.5)
                         {
                             driver.ExitPitLap++;
                         }
                     }
 
-                    driver.OutLap = opponent.IsConnected && driver.ExitPitLap >= opponent.CurrentLap;
+                    driver.OutLap = driver.IsConnected && driver.ExitPitLap >= currentLap;
                     driver.InPitSince = DateTime.MinValue;
                     driver.InPitBoxSince = DateTime.MinValue;
 
                     if (driver.ExitPitLap >= 0)
                     {
-                        driver.StintLap = (opponent.CurrentLap ?? 0) - driver.ExitPitLap + 1;
+                        driver.StintLap = currentLap - driver.ExitPitLap + 1;
                     }
                     else if (_sessionModule.Race && !_sessionModule.JoinedRaceInProgress)
                     {
                         // When we join a race session in progress, we cannot know when the driver exited the pit, so StintLap should stay 0.
-                        driver.StintLap = opponent.CurrentLap ?? 0;
+                        driver.StintLap = currentLap;
                     }
                 }
 
                 if (_sessionModule.Race)
                 {
-                    double playerCarTowTime = 0;
-                    try { playerCarTowTime = (double)raw.Telemetry["PlayerCarTowTime"]; } catch { }
+                    RawDataHelper.TryGetTelemetryData<double>(ref data, out double playerCarTowTime, "PlayerCarTowTime");
 
                     if (!driver.Towing)
                     {
                         // Check for a jump in continuity, this means the driver teleported (towed) back to the pit.
-                        if (driver.CurrentLapHighPrecision > -1 && 
-                            opponent.CurrentLapHighPrecision.HasValue && opponent.CurrentLapHighPrecision.Value > -1)
+                        if (driver.CurrentLapHighPrecision > -1 && driver.CurrentLapHighPrecisionRaw > -1)
                         {
                             // Use avg speed because in SimHub we can step forward in time in a recorded replay.
-                            double avgSpeedKph = ComputeAvgSpeedKph(data.NewData.TrackLength, driver.CurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value, _sessionState.DeltaTime);
-                            bool teleportingToPit = avgSpeedKph > 500 && opponent.IsCarInPit;
-                            bool playerTowing = opponent.IsPlayer && playerCarTowTime > 0;
+                            double avgSpeedKph = ComputeAvgSpeedKph(data.NewData.TrackLength, driver.CurrentLapHighPrecision, driver.CurrentLapHighPrecisionRaw, _sessionState.DeltaTime);
+                            bool teleportingToPit = avgSpeedKph > 500 && driver.InPitBox;
+                            bool playerTowing = driver.IsPlayer && playerCarTowTime > 0;
 
                             if (playerTowing || teleportingToPit)
                             {
                                 driver.Towing = true;
 
-                                if (opponent.IsPlayer)
+                                if (driver.IsPlayer)
                                 {
                                     driver.TowingEndTime = DateTime.Now + TimeSpan.FromSeconds(playerCarTowTime);
                                 }
                                 else
                                 {
-                                    (double towLength, TimeSpan towTime) = ComputeTowLengthAndTime(data.NewData.TrackLength, driver.CurrentLapHighPrecision, opponent.CurrentLapHighPrecision.Value);
+                                    (double towLength, TimeSpan towTime) = ComputeTowLengthAndTime(data.NewData.TrackLength, driver.CurrentLapHighPrecision, driver.CurrentLapHighPrecisionRaw);
                                     driver.TowingEndTime = DateTime.Now + towTime;
                                 }
                             }
@@ -432,14 +425,13 @@ namespace benofficial2.Plugin
                         // Consider towing done if the car starts moving forward from a valid position
                         double smallDistancePct = 0.05 / data.NewData.TrackLength; // 0.05m is roughly the distance you cover at 10km/h in 16ms.
 
-                        bool movingForward = opponent.CurrentLapHighPrecision.HasValue &&
-                            opponent.CurrentLapHighPrecision.Value > -1 &&
+                        bool movingForward = driver.CurrentLapHighPrecisionRaw > -1 &&
                             driver.LastCurrentLapHighPrecision > -1 &&
-                            opponent.CurrentLapHighPrecision > driver.LastCurrentLapHighPrecision + smallDistancePct;
+                            driver.CurrentLapHighPrecisionRaw > driver.LastCurrentLapHighPrecision + smallDistancePct;
 
-                        bool done = opponent.CurrentLapHighPrecision == -1;
-                        bool towEnded = !opponent.IsPlayer && DateTime.Now > driver.TowingEndTime;
-                        bool playerNotTowing = opponent.IsPlayer && playerCarTowTime <= 0;
+                        bool done = driver.CurrentLapHighPrecisionRaw == -1;
+                        bool towEnded = !driver.IsPlayer && DateTime.Now > driver.TowingEndTime;
+                        bool playerNotTowing = driver.IsPlayer && playerCarTowTime <= 0;
                         if (playerNotTowing || towEnded || movingForward || done)
                         {
                             driver.Towing = false;
@@ -453,60 +445,75 @@ namespace benofficial2.Plugin
                     {
                         // Stop updating the current lap if the driver is done (-1), so they stay at their last known position in the live standings.
                         // Happens at the end of the race when they get out of the car.
-                        if (opponent.CurrentLapHighPrecision.HasValue && opponent.CurrentLapHighPrecision.Value > -1)
+                        if (driver.CurrentLapHighPrecisionRaw > -1)
                         {
-                            driver.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision.Value;
+                            driver.CurrentLapHighPrecision = driver.CurrentLapHighPrecisionRaw;
                         }
                     }
 
-                    driver.LastCurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? -1;
+                    // Edge case when joining in progress while the driver is out of the car.
+                    // We can't know for sure where they got out, so we just set their current lap to the last completed lap.
+                    if (driver.CurrentLapHighPrecision < Constants.DistanceEpsilon && driver.LapsCompleted > 0)
+                    {
+                        driver.CurrentLapHighPrecision = driver.LapsCompleted;
+                    }
+
+                    driver.LastCurrentLapHighPrecision = driver.CurrentLapHighPrecisionRaw;
                 }
                 else
                 {
-                    driver.CurrentLapHighPrecision = opponent.CurrentLapHighPrecision ?? -1;
+                    driver.CurrentLapHighPrecision = driver.CurrentLapHighPrecisionRaw;
                 }
 
-                if (opponent.IsPlayer)
+                if (driver.IsPlayer)
                 {
-                    PlayerOutLap = driver.OutLap;
-                    PlayerStintLap = driver.StintLap;
-                    PlayerNumber = opponent.CarNumber;
-                    PlayerCarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName);
-                    PlayerCountryCode = _flairModule.GetCountryCode(driver.FlairId);
-                    PlayerPositionInClass = opponent.Position > 0 ? opponent.PositionInClass : 0;
-                    PlayerLastLapTime = driver.LastLapTime;
-                    PlayerBestLapTime = driver.BestLapTime;
-                    PlayerAvgLapTime = driver.AvgLapTime.GetAverageLapTime();
-                    PlayerCurrentLapHighPrecision = driver.CurrentLapHighPrecision;
-                    PlayerCurrentLap = opponent.CurrentLap ?? 0;
-                    PlayerTeamIncidentCount = driver.TeamIncidentCount;
+                    PlayerDriver.OutLap = driver.OutLap;
+                    PlayerDriver.StintLap = driver.StintLap;
+                    PlayerDriver.Number = driver.CarNumber;
+                    PlayerDriver.CarBrand = _carModule.GetCarBrand(driver.CarId, driver.CarName);
+                    PlayerDriver.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
+                    PlayerDriver.LastLapTime = driver.LastLapTime;
+                    PlayerDriver.BestLapTime = driver.BestLapTime;
+                    PlayerDriver.AvgLapTime = driver.AvgLapTime.GetAverageLapTime();
+                    PlayerDriver.CurrentLapHighPrecision = driver.CurrentLapHighPrecision;
+                    PlayerDriver.CurrentLap = driver.Lap;
+                    PlayerDriver.TeamIncidentCount = driver.TeamIncidentCount;
+                    PlayerDriver.TireCompound = _carModule.GetTireCompoundLetter(driver.TireCompoundIdx);
 
                     if (_sessionModule.Race)
                     {
-                        PlayerHadWhiteFlag = PlayerHadWhiteFlag || data.NewData.Flag_White == 1;
-                        PlayerHadCheckeredFlag = PlayerHadCheckeredFlag || data.NewData.Flag_Checkered == 1;
+                        PlayerDriver.HadWhiteFlag = PlayerDriver.HadWhiteFlag || data.NewData.Flag_White == 1;
+                        PlayerDriver.HadCheckeredFlag = PlayerDriver.HadCheckeredFlag || data.NewData.Flag_Checkered == 1;
                     }
                 }
 
                 if (driver.CarIdx == HighlightedDriver.CarIdx)
                 {
-                    HighlightedDriver.Name = opponent.Name;
-                    HighlightedDriver.Number = opponent.CarNumber;
-                    HighlightedDriver.CarBrand = _carModule.GetCarBrand(driver.CarId, opponent.CarName);
-                    HighlightedDriver.CarName = opponent.CarName;
-                    HighlightedDriver.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
-                    HighlightedDriver.IRating = (int)(opponent.IRacing_IRating ?? 0);
-                    (HighlightedDriver.License, HighlightedDriver.SafetyRating) = ParseLicenseString(opponent.LicenceString);
-                    HighlightedDriver.CurrentLap = opponent.CurrentLap ?? 0;
-                    HighlightedDriver.CurrentLapHighPrecision = driver.CurrentLapHighPrecision;
-                    HighlightedDriver.TeamIncidentCount = driver.TeamIncidentCount;
-                    HighlightedDriver.LastLapTime = driver.LastLapTime;
-                    HighlightedDriver.BestLapTime = driver.BestLapTime;
+                    if (driver.IsPaceCar)
+                    {
+                        BlankHighlightedDriver();
+                    }
+                    else
+                    {
+                        HighlightedDriver.Name = driver.Name;
+                        HighlightedDriver.Number = driver.CarNumber;
+                        HighlightedDriver.CarBrand = _carModule.GetCarBrand(driver.CarId, driver.CarName);
+                        HighlightedDriver.CarName = driver.CarName;
+                        HighlightedDriver.CountryCode = _flairModule.GetCountryCode(driver.FlairId);
+                        HighlightedDriver.IRating = driver.IRating;
+                        HighlightedDriver.License = driver.License;
+                        HighlightedDriver.SafetyRating = driver.SafetyRating;
+                        HighlightedDriver.CurrentLap = Math.Max(0, driver.Lap);
+                        HighlightedDriver.CurrentLapHighPrecision = driver.CurrentLapHighPrecision;
+                        HighlightedDriver.TeamIncidentCount = driver.TeamIncidentCount;
+                        HighlightedDriver.LastLapTime = driver.LastLapTime;
+                        HighlightedDriver.BestLapTime = driver.BestLapTime;
+                    }                        
                 }
             }
 
             UpdateQualResult(ref data);
-            UpdateLivePositionInClass(ref data);
+            UpdateGaps(ref data);
             UpdateIRatingChange(ref data);
         }
 
@@ -553,7 +560,7 @@ namespace benofficial2.Plugin
         private void UpdateQualResult(ref GameData data)
         {
             // Optimization: Only update the qualifying results once before the race starts.
-            if (_qualResultsUpdated || !_sessionModule.Race)
+            if (QualResultsUpdated || !_sessionModule.Race)
                 return;
 
             RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> qualResults, "QualifyResultsInfo", "Results");
@@ -561,25 +568,27 @@ namespace benofficial2.Plugin
             {
                 for (int i = 0; i < qualResults.Count; i++)
                 {
-                    RawDataHelper.TryGetSessionData<int>(ref data, out int carIdx, "QualifyResultsInfo", "Results", i, "CarIdx");
+                    RawDataHelper.TryGetValue<int>(qualResults, out int carIdx, i, "CarIdx");
                     if (!DriversByCarIdx.TryGetValue(carIdx, out Driver driver))
                     {
                         Debug.Assert(false);
                         continue;
                     }
 
-                    RawDataHelper.TryGetSessionData<int>(ref data, out int positionInClass, "QualifyResultsInfo", "Results", i, "ClassPosition");
-                    RawDataHelper.TryGetSessionData<double>(ref data, out double fastestTime, "QualifyResultsInfo", "Results", i, "FastestTime");
+                    RawDataHelper.TryGetValue<int>(qualResults, out int positionInClass, i, "ClassPosition");
+                    RawDataHelper.TryGetValue<double>(qualResults, out double fastestTime, i, "FastestTime");
 
                     driver.QualPositionInClass = positionInClass + 1;
                     driver.QualLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
                 }
 
-                _qualResultsUpdated = true;
+                QualResultsUpdated = true;
                 return;
             }
 
-            RawDataHelper.TryGetSessionData<int>(ref data, out int currentSessionIdx, "SessionInfo", "CurrentSessionNum");
+            if (!RawDataHelper.TryGetSessionData<int>(ref data, out int currentSessionIdx, "SessionInfo", "CurrentSessionNum"))
+                return;
+
             if (currentSessionIdx < 0)
                 return;
 
@@ -588,196 +597,154 @@ namespace benofficial2.Plugin
             {
                 for (int i = 0; i < qualPositions.Count; i++)
                 {
-                    RawDataHelper.TryGetSessionData<int>(ref data, out int carIdx, "SessionInfo", "Sessions", currentSessionIdx, "QualifyPositions", i, "CarIdx");
+                    RawDataHelper.TryGetValue<int>(qualPositions, out int carIdx, i, "CarIdx");
                     if (!DriversByCarIdx.TryGetValue(carIdx, out Driver driver))
                     {
                         Debug.Assert(false);
                         continue;
                     }
 
-                    RawDataHelper.TryGetSessionData<int>(ref data, out int positionInClass, "SessionInfo", "Sessions", currentSessionIdx, "QualifyPositions", i, "ClassPosition");
-                    RawDataHelper.TryGetSessionData<double>(ref data, out double fastestTime, "SessionInfo", "Sessions", currentSessionIdx, "QualifyPositions", i, "FastestTime");
+                    RawDataHelper.TryGetValue<int>(qualPositions, out int positionInClass, i, "ClassPosition");
+                    RawDataHelper.TryGetValue<double>(qualPositions, out double fastestTime, i, "FastestTime");
 
                     driver.QualPositionInClass = positionInClass + 1;
                     driver.QualLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
                 }
 
-                _qualResultsUpdated = true;
+                QualResultsUpdated = true;
+            }
+        }
+
+        private void InvalidatePositions()
+        {
+            foreach (var driver in Drivers.Values)
+            {
+                driver.Position = 0;
+                driver.PositionInClass = 0;
+                driver.LivePositionInClass = 0;
             }
         }
 
         private void UpdateDrivers(ref GameData data)
         {
-            dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) 
+            RawDataHelper.TryGetSessionData<int>(ref data, out int playerCarIdx, "DriverInfo", "DriverCarIdx");
+            PlayerDriver.CarIdx = playerCarIdx;
+
+            if (!RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> drivers, "DriverInfo", "Drivers"))
                 return;
 
-            RawDataHelper.TryGetSessionData<int>(ref data, out int playerCarIdx, "DriverInfo", "DriverCarIdx");
-            PlayerCarIdx = playerCarIdx;
+            if (drivers == null)
+                return;
 
-            int driverCount = 0;
-            try { driverCount = (int)raw.AllSessionData["DriverInfo"]["Drivers"].Count; } catch { Debug.Assert(false); }
-
-            for (int i = 0; i < driverCount; i++)
+            for (int i = 0; i < drivers.Count; i++)
             {
-                int carIdx = -1;
-                try { carIdx = int.Parse(raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarIdx"]); } catch { Debug.Assert(false); }
+                RawDataHelper.TryGetValue<int>(drivers, out int carIdx, i, "CarIdx");
+                RawDataHelper.TryGetValue<string>(drivers, out string carNumber, i, "CarNumber");
 
-                string carNumber = string.Empty;
-                try { carNumber = raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarNumber"]; } catch { Debug.Assert(false); }
-
-                string carPath = string.Empty;
-                try { carPath = raw.AllSessionData["DriverInfo"]["Drivers"][i]["CarPath"]; } catch { Debug.Assert(false); }
-
-                RawDataHelper.TryGetSessionData<int>(ref data, out int flairId, "DriverInfo", "Drivers", i, "FlairID");
-                RawDataHelper.TryGetSessionData<int>(ref data, out int carClassId, "DriverInfo", "Drivers", i, "CarClassID");
-                RawDataHelper.TryGetSessionData<int>(ref data, out int teamIncidentCount, "DriverInfo", "Drivers", i, "TeamIncidentCount");
-                RawDataHelper.TryGetSessionData<int>(ref data, out int iRating, "DriverInfo", "Drivers", i, "IRating");
-
-                double lastLapTime = 0;
-                try { lastLapTime = Math.Max(0, (double)raw.Telemetry["CarIdxLastLapTime"][carIdx]); } catch { Debug.Assert(false); }
-
-                double bestLapTime = 0;
-                try { bestLapTime = Math.Max(0, (double)raw.Telemetry["CarIdxBestLapTime"][carIdx]); } catch { Debug.Assert(false); }
-
-                RawDataHelper.TryGetTelemetryData<int>(ref data, out int sessionFlags, "CarIdxSessionFlags", carIdx);
-                RawDataHelper.TryGetTelemetryData<int>(ref data, out int classPosition, "CarIdxClassPosition", carIdx);
-
-                if (carIdx >= 0 && carNumber.Length > 0)
+                if (carIdx < 0 || carIdx >= MaxDrivers || carNumber.Length == 0)
                 {
-                    if (!Drivers.TryGetValue(carNumber, out Driver driver))
-                    {
-                        driver = new Driver();
-                        Drivers[carNumber] = driver;
-                        DriversByCarIdx[carIdx] = driver;
-                    }
+                    Debug.Assert(false);
+                    continue;
+                }
 
-                    driver.DriverInfoIdx = i;
-                    driver.CarIdx = carIdx;
-                    driver.CarId = carPath;
-                    driver.FlairId = flairId;
-                    driver.CarClassId = carClassId;
-                    driver.TeamIncidentCount = teamIncidentCount;
-                    driver.IRating = iRating;
-                    driver.LastLapTime = lastLapTime > 0 ? TimeSpan.FromSeconds(lastLapTime) : TimeSpan.Zero;
-                    driver.BestLapTime = bestLapTime > 0 ? TimeSpan.FromSeconds(bestLapTime) : TimeSpan.Zero;
-                    driver.SessionFlags = sessionFlags;
-                    driver.PositionInClass = classPosition;
+                RawDataHelper.TryGetValue<string>(drivers, out string carPath, i, "CarPath");
+                RawDataHelper.TryGetValue<int>(drivers, out int flairId, i, "FlairID");
+                RawDataHelper.TryGetValue<int>(drivers, out int carClassId, i, "CarClassID");
+                RawDataHelper.TryGetValue<int>(drivers, out int teamIncidentCount, i, "TeamIncidentCount");
+                RawDataHelper.TryGetValue<int>(drivers, out int iRating, i, "IRating");
+                RawDataHelper.TryGetValue<string>(drivers, out string carScreenNameShort, i, "CarScreenNameShort");
+                RawDataHelper.TryGetValue<string>(drivers, out string carClassShortName, i, "CarClassShortName");
+                RawDataHelper.TryGetValue<string>(drivers, out string carClassColor, i, "CarClassColor");
+                RawDataHelper.TryGetValue<string>(drivers, out string licString, i, "LicString");
+                RawDataHelper.TryGetValue<string>(drivers, out string userName, i, "UserName");
+                RawDataHelper.TryGetValue<string>(drivers, out string teamName, i, "TeamName");
+                RawDataHelper.TryGetValue<int>(drivers, out int carIsPaceCar, i, "CarIsPaceCar");
+                RawDataHelper.TryGetValue<float>(drivers, out float carClassEstLapTime, i, "CarClassEstLapTime");
+
+                RawDataHelper.TryGetTelemetryData<float>(ref data, out float lastLapTime, "CarIdxLastLapTime", carIdx);
+                RawDataHelper.TryGetTelemetryData<float>(ref data, out float bestLapTime, "CarIdxBestLapTime", carIdx);
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int sessionFlags, "CarIdxSessionFlags", carIdx);
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int position, "CarIdxPosition", carIdx);
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int classPosition, "CarIdxClassPosition", carIdx);
+                RawDataHelper.TryGetTelemetryData<bool>(ref data, out bool onPitRoad, "CarIdxOnPitRoad", carIdx);
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int lap, "CarIdxLap", carIdx);
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int trackSurface, "CarIdxTrackSurface", carIdx);
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int lapCompleted, "CarIdxLapCompleted", carIdx);
+                RawDataHelper.TryGetTelemetryData<float>(ref data, out float lapDistPct, "CarIdxLapDistPct", carIdx);
+                RawDataHelper.TryGetTelemetryData<float>(ref data, out float estTime, "CarIdxEstTime", carIdx);
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int tireCompoundIdx, "CarIdxTireCompound", carIdx);
+
+                if (!Drivers.TryGetValue(carNumber, out Driver driver))
+                {
+                    driver = new Driver();
+                    Drivers[carNumber] = driver;
+                    DriversByCarIdx[carIdx] = driver;
+                }
+
+                driver.DriverInfoIdx = i;
+                driver.CarIdx = carIdx;
+                driver.CarId = carPath;
+                driver.CarName = carScreenNameShort;
+                driver.CarNumber = carNumber;
+                driver.Name = userName;
+                driver.TeamName = teamName;
+                driver.FlairId = flairId;
+                driver.IsPlayer = carIdx == playerCarIdx;
+                driver.IsConnected = trackSurface > (int)TrackLoc.NotInWorld;
+                driver.IsPaceCar = carIsPaceCar == 1;
+                driver.CarClassId = carClassId;
+                driver.CarClassName = carClassShortName;
+                driver.CarClassColor = ConvertColorString(carClassColor);
+                driver.CarClassEstLapTime = carClassEstLapTime;
+                driver.TeamIncidentCount = teamIncidentCount;
+                driver.IRating = iRating;
+                (driver.License, driver.SafetyRating) = ParseLicenseString(licString);
+                driver.LastLapTime = lastLapTime > 0 ? TimeSpan.FromSeconds(lastLapTime) : TimeSpan.Zero;
+                driver.BestLapTime = bestLapTime > 0 ? TimeSpan.FromSeconds(bestLapTime) : TimeSpan.Zero;
+                driver.SessionFlags = sessionFlags;
+                driver.Position = position;
+                driver.PositionInClass = classPosition;
+                driver.InPit = onPitRoad;
+                driver.InPitBox = trackSurface == (int)TrackLoc.InPitStall;
+                driver.Lap = lap;
+                driver.LapsCompleted = lapCompleted;
+                driver.TrackPositionPercent = lapDistPct;
+                driver.EstTime = estTime;
+                driver.TireCompoundIdx = tireCompoundIdx;
+
+                if (driver.Lap > -1 && driver.TrackPositionPercent > -Constants.DistanceEpsilon)
+                {
+                    driver.CurrentLapHighPrecisionRaw = driver.Lap - 1 + driver.TrackPositionPercent;
                 }
                 else
                 {
-                    Debug.Assert(false);
+                    driver.CurrentLapHighPrecisionRaw = -1;
                 }
             }
         }
 
-        private void UpdateLivePositionInClass(ref GameData data)
+        private void UpdateSessionResults(ref GameData data)
         {
-            LiveClassLeaderboards = new List<ClassLeaderboard>();
-
-            for (int carClassIdx = 0; carClassIdx < data.NewData.OpponentsClassses.Count; carClassIdx++)
-            {
-                ClassLeaderboard leaderboard = new ClassLeaderboard();
-                LiveClassLeaderboards.Add(leaderboard);
-
-                leaderboard.CarClassDescription = data.NewData.OpponentsClassses[carClassIdx];
-                List<Opponent> opponents = leaderboard.CarClassDescription.Opponents;
-                for (int i = 0; i < opponents.Count; i++)
-                {
-                    Opponent opponent = opponents[i];
-                    if (!Drivers.TryGetValue(opponent.CarNumber, out Driver driver))
-                    {
-                        // Can happen when spectating a race and driving, the player car has no car number.
-                        continue;
-                    }
-
-                    leaderboard.Drivers.Add((opponent, driver));
-                }
-
-                if (_sessionModule.Race)
-                {
-                    if (!_sessionModule.RaceStarted)
-                    {
-                        // Before the start keep the leaderboard sorted by qual position
-                        leaderboard.Drivers = leaderboard.Drivers.OrderBy(p => p.Item2.QualPositionInClass).ToList();
-                    }
-                    else if (!_sessionModule.RaceFinished)
-                    {
-                        // During the race sort on position on track for a live leaderboard.
-                        // Except for ovals under caution, show the official position.
-                        if (!(_sessionModule.Oval && data.NewData.Flag_Yellow == 1))
-                        {
-                            leaderboard.Drivers = leaderboard.Drivers.OrderByDescending(p => p.Item2.CurrentLapHighPrecision).ToList();
-                        }
-                    }
-                    else
-                    {
-                        // After the race don't sort to show the official race result
-                    }
-                }
-
-                for (int i = 0; i < leaderboard.Drivers.Count; i++)
-                {
-                    Opponent opponent = leaderboard.Drivers[i].Item1;
-                    Driver driver = leaderboard.Drivers[i].Item2;
-
-                    if (_sessionModule.Race)
-                    {
-                        if (!_sessionModule.RaceStarted)
-                        {
-                            driver.LivePositionInClass = driver.QualPositionInClass;
-                        }
-                        else
-                        {
-                            driver.LivePositionInClass = i + 1;
-                        }
-                    }
-                    else
-                    {
-                        driver.LivePositionInClass = opponent.Position > 0 ? i + 1 : 0;
-                    }
-
-                    if (opponent.IsPlayer)
-                    {
-                        PlayerLivePositionInClass = driver.LivePositionInClass;
-                    }
-
-                    if (driver.CarIdx == HighlightedDriver.CarIdx)
-                    {
-                        HighlightedDriver.LivePositionInClass = driver.LivePositionInClass;
-                        HighlightedDriver.CarClassColor = leaderboard.CarClassDescription.ClassColor;
-                        HighlightedDriver.CarClassTextColor = leaderboard.CarClassDescription.ClassTextColor;
-                    }
-                }
-            }
-        }
-
-        private void UpdateLapTimesFromSessionResults(ref GameData data)
-        {
-            dynamic raw = data.NewData.GetRawDataObject();
-            if (raw == null) 
+            if (!RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> sessions, "SessionInfo", "Sessions"))
                 return;
 
             // It can happen that CurrentSessionNum is missing on SessionInfo. We can't tell which session to use in that case.
-            int sessionInfoCount = -1;
-            try { sessionInfoCount = raw.AllSessionData["SessionInfo"].Count; } catch { Debug.Assert(false); }
-            if (sessionInfoCount <= 1) 
+            if (!RawDataHelper.TryGetSessionData<int>(ref data, out int sessionIdx, "SessionInfo", "CurrentSessionNum"))
                 return;
 
-            int sessionIdx = -1;
-            try { sessionIdx = int.Parse(raw.AllSessionData["SessionInfo"]["CurrentSessionNum"]); } catch { Debug.Assert(false); }
-            if (sessionIdx < 0) 
+            if (sessions == null || sessionIdx < 0 || sessionIdx >= sessions.Count)
                 return;
 
-            List<object> positions = null;
-            try { positions = raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"]; } catch { Debug.Assert(false); }
-            if (positions == null) 
+            if (!RawDataHelper.TryGetValue<List<object>>(sessions, out List<object> positions, sessionIdx, "ResultsPositions"))
+                return;
+
+            if (positions == null)
                 return;
 
             for (int posIdx = 0; posIdx < positions.Count; posIdx++)
             {
-                int carIdx = -1;
-                try { carIdx = int.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["CarIdx"]); } catch { Debug.Assert(false); }
+                RawDataHelper.TryGetValue<int>(positions, out int carIdx, posIdx, "CarIdx");
+
                 if (carIdx < 0) 
                     continue;
 
@@ -787,29 +754,44 @@ namespace benofficial2.Plugin
                     continue;
                 }
 
-                double bestLapTime = 0;
-                try { bestLapTime = double.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["FastestTime"]); } catch { Debug.Assert(false); }
-
-                if (driver.BestLapTime == TimeSpan.Zero && bestLapTime > 0)
+                RawDataHelper.TryGetValue<int>(positions, out int position, posIdx, "Position");
+                if (driver.Position <= 0 && position > 0)
                 {
-                    driver.BestLapTime = TimeSpan.FromSeconds(bestLapTime);
+                    driver.Position = position;
                 }
 
-                double lastLapTime = 0;
-                try { lastLapTime = double.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["LastTime"]); } catch { Debug.Assert(false); }
-
-                if (driver.LastLapTime == TimeSpan.Zero && lastLapTime > 0)
+                RawDataHelper.TryGetValue<int>(positions, out int classPosition, posIdx, "ClassPosition");
+                if (driver.PositionInClass <= 0 && classPosition > 0)
                 {
-                    driver.LastLapTime = TimeSpan.FromSeconds(lastLapTime);
+                    driver.PositionInClass = classPosition;
                 }
 
-                int lapsComplete = 0;
-                RawDataHelper.TryGetSessionData<int>(ref data, out lapsComplete, "SessionInfo", "Sessions", sessionIdx, "ResultsPositions", posIdx, "LapsComplete");
-                driver.LapsComplete = lapsComplete;
+                RawDataHelper.TryGetValue<double>(positions, out double fastestTime, posIdx, "FastestTime");
+                if (driver.BestLapTime == TimeSpan.Zero && fastestTime > 0)
+                {
+                    driver.BestLapTime = TimeSpan.FromSeconds(fastestTime);
+                }
 
-                int jokerLapsComplete = 0;
-                try { jokerLapsComplete = int.Parse(raw.AllSessionData["SessionInfo"]["Sessions"][sessionIdx]["ResultsPositions"][posIdx]["JokerLapsComplete"]); } catch { Debug.Assert(false); }
-                driver.JokerLapsComplete = jokerLapsComplete;
+                RawDataHelper.TryGetValue<double>(positions, out double lastTime, posIdx, "LastTime");
+                if (driver.LastLapTime == TimeSpan.Zero && lastTime > 0)
+                {
+                    driver.LastLapTime = TimeSpan.FromSeconds(lastTime);
+                }
+
+                RawDataHelper.TryGetValue<int>(positions, out int lap, posIdx, "Lap");
+                if (driver.Lap <= 0 && lap >= 0)
+                {
+                    driver.Lap = lap;
+                }
+
+                RawDataHelper.TryGetValue<int>(positions, out int lapsComplete, posIdx, "LapsComplete");
+                if (driver.LapsCompleted <= 0 && lapsComplete >= 0)
+                {
+                    driver.LapsCompleted = lapsComplete;
+                }
+
+                RawDataHelper.TryGetValue<int>(positions, out int jokerLapsComplete, posIdx, "JokerLapsComplete");
+                driver.JokerLapsCompleted = jokerLapsComplete;
             }
         }
 
@@ -883,14 +865,47 @@ namespace benofficial2.Plugin
                     int change = (int)result.NewIRating - (int)result.RaceResult.StartIRating;
                     result.RaceResult.Driver.IRatingChange = change;
 
-                    if (result.RaceResult.Driver.CarIdx == PlayerCarIdx)
+                    if (result.RaceResult.Driver.CarIdx == PlayerDriver.CarIdx)
                     {
-                        PlayerIRatingChange = change;
+                        PlayerDriver.IRatingChange = change;
                     }
                 }
             }
         }
 
+        private void UpdateGaps(ref GameData data)
+        {
+            foreach (Opponent opponent in data.NewData.Opponents)
+            {
+                if (!Drivers.TryGetValue(opponent.CarNumber, out Driver driver))
+                {
+                    Debug.Assert(false);
+                    continue;
+                }
+
+                driver.LapsToClassLeader = opponent.LapsToClassLeader ?? 0;
+                driver.GapToClassLeader = opponent.GaptoClassLeader ?? 0.0;
+            }
+        }
+
+        private void BlankPlayerDriver()
+        {
+            PlayerDriver.CarIdx = -1;
+            PlayerDriver.OutLap = false;
+            PlayerDriver.StintLap = 0;
+            PlayerDriver.Number = "";
+            PlayerDriver.CarBrand = "";
+            PlayerDriver.CountryCode = "";
+            PlayerDriver.LivePositionInClass = 0;
+            PlayerDriver.HadWhiteFlag = false;
+            PlayerDriver.HadCheckeredFlag = false;
+            PlayerDriver.LastLapTime = TimeSpan.Zero;
+            PlayerDriver.BestLapTime = TimeSpan.Zero;
+            PlayerDriver.AvgLapTime = TimeSpan.Zero;
+            PlayerDriver.CurrentLap = 0;
+            PlayerDriver.TeamIncidentCount = 0;
+            PlayerDriver.IRatingChange = 0;
+        }
         private void BlankHighlightedDriver()
         {
             HighlightedDriver.CarIdx = -1;
@@ -913,8 +928,23 @@ namespace benofficial2.Plugin
 
         public Driver GetPlayerDriver()
         {
-            DriversByCarIdx.TryGetValue(PlayerCarIdx, out Driver driver);
+            DriversByCarIdx.TryGetValue(PlayerDriver.CarIdx, out Driver driver);
             return driver;
+        }
+
+        public static string ConvertColorString(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return string.Empty;
+
+            // Remove the "0x" prefix if present
+            if (input.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            {
+                input = input.Substring(2);
+            }
+
+            // Return in #RRGGBB format, uppercase
+            return "#" + input.ToUpper();
         }
     }
 }

@@ -12,12 +12,12 @@
   "MetadataVersion": 2.0,
   "EnableOnDashboardMessaging": true,
   "PitScreensIndexs": [],
-  "SimHubVersion": "9.9.5",
+  "SimHubVersion": "9.9.9",
   "Category": null,
   "Title": "benofficial2 - iRacing Relative",
   "Description": null,
   "Author": "twitch.tv/benofficial2",
-  "Width": 380.0,
+  "Width": 469.0,
   "Height": 268.0,
   "DashboardVersion": ""
 }
