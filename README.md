@@ -61,7 +61,7 @@ This overlay shows the live **Leaderboard** for up to 4 car classes. Optional co
 This overlay shows the nearby drivers **Ahead & Behind** on-track. This includes cars from every car class. In blue are cars that are a lap down and in red are those a lap ahead. The **Out Lap Indicator** shows when a car is on an out-lap. The last column shows the **Gap** in seconds to that car. The header shows the **Strength of Field** and **Incident Count**. The temperature is the **Track Temperature** and the time is your computer's **Local Time**.
 
 <p align="center">
-  <img src="Images/Screenshots/Relative-LMP3.png" width="350"/>
+  <img src="Images/Screenshots/Relative.png" width="400"/>
 </p>
 
 There's an optional footer (not enabled by default) that shows additional session information typically seen in the Standings header.
