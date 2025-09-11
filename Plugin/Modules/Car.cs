@@ -179,11 +179,11 @@ namespace benofficial2.Plugin
                 return;
             }
 
-            RawDataHelper.TryGetTelemetryData<double>(ref data, out double telemetryBB, "dcBrakeBias");
+            bool hasTelemetryBB = RawDataHelper.TryGetTelemetryData<double>(ref data, out double telemetryBB, "dcBrakeBias");
             RawDataHelper.TryGetTelemetryData<double>(ref data, out double telemetryFineBB, "dcBrakeBiasFine");
             RawDataHelper.TryGetTelemetryData<double>(ref data, out double telemetryPeakBB, "dcPeakBrakeBias");
 
-            if (HasTwoPartBrakeBias)
+            if (HasTwoPartBrakeBias || !hasTelemetryBB)
             {
                 TryGetSetupBrakeBias(ref data, out double setupBB);
                 TotalBrakeBias = Math.Round(telemetryBB, 2) + setupBB + telemetryFineBB;
