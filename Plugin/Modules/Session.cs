@@ -27,6 +27,7 @@ namespace benofficial2.Plugin
     {
         private double _lastSessionTime = double.MaxValue;
         private Guid _lastSessionId = Guid.Empty;
+        private string _lastSessionTypeName = string.Empty;
 
         public TimeSpan SessionTime { get; private set; } = TimeSpan.Zero;
         public TimeSpan DeltaTime { get; private set; } = TimeSpan.Zero;
@@ -41,16 +42,16 @@ namespace benofficial2.Plugin
             // Also consider the session changed when time flows backward.
             // Because many checks are based on time flowing forward and would break otherwise.
             // Only happens when manually moving the time backwards in a SimHub replay.
-            SessionChanged = (sessionTime < _lastSessionTime || data.SessionId != _lastSessionId);
+            SessionChanged = (sessionTime < _lastSessionTime || data.SessionId != _lastSessionId || data.NewData.SessionTypeName != _lastSessionTypeName);
             
             _lastSessionTime = sessionTime;
             _lastSessionId = data.SessionId;
+            _lastSessionTypeName = data.NewData.SessionTypeName;
         }
     }
 
     public class SessionModule : PluginModuleBase
     {
-        private string _lastSessionTypeName = string.Empty;
         private bool _raceFinishedForPlayer = false;
         private double? _lastTrackPct = null;
         private TimeSpan _raceStartedTime = TimeSpan.Zero;
@@ -102,8 +103,7 @@ namespace benofficial2.Plugin
 
             State.Update(ref data);
 
-            bool sessionChanged = State.SessionChanged || data.NewData.SessionTypeName != _lastSessionTypeName;
-            if (sessionChanged)
+            if (State.SessionChanged)
             {
                 Race = data.NewData.SessionTypeName.IndexOf("Race") != -1;
                 Qual = data.NewData.SessionTypeName.IndexOf("Qual") != -1;
@@ -136,8 +136,6 @@ namespace benofficial2.Plugin
 
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int totalLaps, "SessionLapsTotal");
                 SessionLapsTotal = (totalLaps > 0) && (totalLaps < 20000) ? totalLaps : 0;
-
-                _lastSessionTypeName = data.NewData.SessionTypeName;
             }
 
             // Determine if replay is playing.
@@ -170,7 +168,7 @@ namespace benofficial2.Plugin
             // This will also be true when stepping backwards in a SimHub replay.
             if (RaceStarted)
             {
-                if (sessionChanged)
+                if (State.SessionChanged)
                 {
                     JoinedRaceInProgress = true;
                 }

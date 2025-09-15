@@ -949,6 +949,8 @@ namespace benofficial2.Plugin
 
         static public int EstimateTotalLaps(double currentLapHighPrecision, int sessionTotalLaps, double sessionTimeRemain, double avgLapTime)
         {
+            currentLapHighPrecision = Math.Max(0.0, currentLapHighPrecision);
+
             if (sessionTimeRemain >= Constants.UnlimitedTimeSeconds)
                 return Math.Max(0, sessionTotalLaps);
 

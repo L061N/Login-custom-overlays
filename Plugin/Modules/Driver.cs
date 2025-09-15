@@ -622,6 +622,15 @@ namespace benofficial2.Plugin
                 driver.Position = 0;
                 driver.PositionInClass = 0;
                 driver.LivePositionInClass = 0;
+
+                // Patch for bug observed in a hosted session where a driver with a qualifying time but did not grid
+                // was shown as P1 in the race's live standings.
+                // Should normally not be needed after a SessionChanged.
+                if (_sessionModule.Race && !_sessionModule.RaceStarted)
+                {
+                    driver.CurrentLapHighPrecision = -1;
+                    driver.CurrentLapHighPrecisionRaw = -1;
+                }
             }
         }
 
