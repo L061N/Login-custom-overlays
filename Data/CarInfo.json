@@ -239,6 +239,8 @@
     },
     "dallarap217": {
         "isLMP2": true,
+        "hasTC": true,
+        "hasTC2": true,
         "hasThrottleShaping": true
     },
     "dallarair01": {
