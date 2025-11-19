@@ -770,9 +770,9 @@ namespace benofficial2.Plugin
                 }
 
                 RawDataHelper.TryGetValue<int>(positions, out int classPosition, posIdx, "ClassPosition");
-                if (driver.PositionInClass <= 0 && classPosition > 0)
+                if (driver.PositionInClass <= 0 && classPosition > -1)
                 {
-                    driver.PositionInClass = classPosition;
+                    driver.PositionInClass = classPosition + 1;
                 }
 
                 RawDataHelper.TryGetValue<double>(positions, out double fastestTime, posIdx, "FastestTime");
@@ -824,6 +824,9 @@ namespace benofficial2.Plugin
                     // Consider all drivers as if they finished in their qualifying position.
                     foreach (var driver in group)
                     {
+                        if (driver.IsPaceCar)
+                            continue;
+
                         raceResults.Add(new RaceResult<Driver>(
                          driver,
                          (uint)driver.QualPositionInClass,
@@ -839,6 +842,9 @@ namespace benofficial2.Plugin
                     var withPosition = group.Where(d => d.PositionInClass != 0).ToList();
                     foreach (var driver in withPosition)
                     {
+                        if (driver.IsPaceCar)
+                            continue;
+
                         int positionInClass = driver.LivePositionInClass;
                         if (positionInClass <= 0)
                         {
