@@ -13,7 +13,7 @@
   "EnableOnDashboardMessaging": true,
   "PitScreensIndexs": [],
   "SimHubVersion": "9.8.4",
-  "Category": null,
+  "Category": "benofficial2",
   "Title": "benofficial2 - iRacing Standings (deprecated)",
   "Description": "This overlay has been deprecated, please use the new Multi-Class Standings",
   "Author": "twitch.tv/benofficial2",

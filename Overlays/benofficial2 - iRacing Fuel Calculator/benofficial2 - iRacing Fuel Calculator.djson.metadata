@@ -13,7 +13,7 @@
   "EnableOnDashboardMessaging": true,
   "PitScreensIndexs": [],
   "SimHubVersion": "9.9.9",
-  "Category": null,
+  "Category": "benofficial2",
   "Title": "benofficial2 - iRacing Setup Fuel Calculator (visible in garage only)",
   "Description": "Shows how much fuel to put in the setup for each session.",
   "Author": "twitch.tv/benofficial2",
