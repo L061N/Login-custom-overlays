@@ -514,7 +514,6 @@ namespace benofficial2.Plugin
 
             UpdateQualResult(ref data);
             UpdateGaps(ref data);
-            UpdateIRatingChange(ref data);
         }
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)
@@ -804,7 +803,7 @@ namespace benofficial2.Plugin
             }
         }
 
-        private void UpdateIRatingChange(ref GameData data)
+        public void UpdateIRatingChange(ref GameData data)
         {
             if (!(_sessionModule.Race))
                 return;

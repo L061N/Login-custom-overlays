@@ -275,6 +275,7 @@ namespace benofficial2.Plugin
             _lastUpdateTime = data.FrameTime;
 
             UpdateLeaderboards(ref data);
+            _driverModule.UpdateIRatingChange(ref data);
 
             Driver highlightedDriver = null;
             (highlightedDriver, HighlightedCarClassIdx) = FindHighlightedDriver(ref data);
