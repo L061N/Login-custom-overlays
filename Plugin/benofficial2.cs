@@ -95,6 +95,10 @@ namespace benofficial2.Plugin
                 {
                     VersionChecker versionChecker = new VersionChecker();
                     versionChecker.CheckForUpdateAsync().Wait();
+                    if (versionChecker.FailedToCheck)
+                    {
+                        GetModule<GeneralModule>().ErrorMessage = "Server unreachable";
+                    }
                 });
             }
 

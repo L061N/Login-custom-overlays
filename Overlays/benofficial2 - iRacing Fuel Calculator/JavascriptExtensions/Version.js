@@ -35,6 +35,12 @@ function checkVersion(versionName, versionNumber)
 
     if (jsonStr) 
     {
+        if (jsonStr.startsWith("ERROR")) 
+        {
+	    	root['hide'] = true
+		    return false
+        }
+		
         const json = JSON.parse(jsonStr);
         if (json[versionName] != versionNumber) 
         {
@@ -53,4 +59,30 @@ function checkVersion(versionName, versionNumber)
     }
 
     return false;
+}
+
+function getErrorMessage()
+{
+    if (!root['timeChanged'])
+        root['timeChanged'] = Date.now()
+
+    if (!root['errormessage'])
+        root['errormessage'] = ''
+
+    const errorMessage = isnull($prop('benofficial2.ErrorMessage'), '')
+    if (errorMessage != '' && root['errormessage'] != errorMessage)
+    {
+        root['errormessage'] = errorMessage
+        root['timeChanged'] = Date.now()
+        root['show'] = true
+        return errorMessage
+    }
+
+    if (((Date.now() - root['timeChanged'])) > 5000)
+        root['show'] = false
+
+    if (root['show'] == true)
+        return root['errormessage']
+
+    return ''
 }

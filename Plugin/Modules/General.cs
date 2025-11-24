@@ -32,6 +32,7 @@ namespace benofficial2.Plugin
     public class GeneralModule : PluginModuleBase
     {
         public GeneralSettings Settings { get; set; }
+        public string ErrorMessage { get; set; } = "";
 
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
@@ -40,6 +41,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "CheckForUpdates", valueProvider: () => Settings.CheckForUpdates);
             plugin.AttachDelegate(name: "ClockFormat24h", valueProvider: () => Settings.ClockFormat24h);
             plugin.AttachDelegate(name: "BackgroundColor", valueProvider: () => Settings.BackgroundColor);
+            plugin.AttachDelegate(name: "ErrorMessage", valueProvider: () => ErrorMessage);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)

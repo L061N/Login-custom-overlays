@@ -31,7 +31,8 @@ namespace benofficial2.Plugin
 
         public const string CurrentVersion = "4.1";
         public const string BetaVersion = "1";
-        
+        public bool FailedToCheck { get; private set; } = false;
+
         static public bool IsBetaVersion
         {
             get
@@ -81,6 +82,7 @@ namespace benofficial2.Plugin
             }
             catch (Exception ex)
             {
+                FailedToCheck = true;
                 SimHub.Logging.Current.Error($"An error occurred while checking for benofficial2 plugin updates:\n{ex.Message}");
             }
         }
