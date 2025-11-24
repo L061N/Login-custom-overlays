@@ -153,6 +153,8 @@ namespace benofficial2.Plugin
         public double RelativeGapToPlayer { get; set; } = 0.0;
         public double EstTime { get; set; } = 0.0;
         public int TireCompoundIdx { get; set; } = -1;
+        public int PushToPassCount { get; set; } = 0;
+        public bool PushToPassActivated { get; set; } = false;
     }
 
     public class PlayerDriver
@@ -681,6 +683,8 @@ namespace benofficial2.Plugin
                 RawDataHelper.TryGetTelemetryData<float>(ref data, out float lapDistPct, "CarIdxLapDistPct", carIdx);
                 RawDataHelper.TryGetTelemetryData<float>(ref data, out float estTime, "CarIdxEstTime", carIdx);
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int tireCompoundIdx, "CarIdxTireCompound", carIdx);
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int p2pCount, "CarIdxP2P_Count", carIdx);
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int p2pStatus, "CarIdxP2P_Status", carIdx);
 
                 if (!Drivers.TryGetValue(carNumber, out Driver driver))
                 {
@@ -719,6 +723,8 @@ namespace benofficial2.Plugin
                 driver.TrackPositionPercent = lapDistPct;
                 driver.EstTime = estTime;
                 driver.TireCompoundIdx = tireCompoundIdx;
+                driver.PushToPassCount = p2pCount;
+                driver.PushToPassActivated = p2pStatus > 0;
 
                 if (driver.Lap > -1 && driver.TrackPositionPercent > -Constants.DistanceEpsilon)
                 {

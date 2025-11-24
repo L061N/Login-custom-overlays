@@ -69,6 +69,8 @@ namespace benofficial2.Plugin
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
         public int SessionFlags { get; set; } = 0;
         public string TireCompound { get; set; } = string.Empty;
+        public int PushToPassCount { get; set; } = 0;
+        public bool PushToPassActivated { get; set; } = false;
     }
 
     public class RelativeAhead
@@ -157,6 +159,8 @@ namespace benofficial2.Plugin
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.LastLapTime", valueProvider: () => row.LastLapTime);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.SessionFlags", valueProvider: () => row.SessionFlags);
                 plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.TireCompound", valueProvider: () => row.TireCompound);
+                plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.PushToPassCount", valueProvider: () => row.PushToPassCount);
+                plugin.AttachDelegate(name: $"Relative.{aheadBehind}{rowIdx:00}.PushToPassActivated", valueProvider: () => row.PushToPassActivated);
             }
         }
 
@@ -214,6 +218,8 @@ namespace benofficial2.Plugin
                 row.LastLapTime = driver.LastLapTime;
                 row.SessionFlags = driver.SessionFlags;
                 row.TireCompound = _carModule.GetTireCompoundLetter(driver.TireCompoundIdx);
+                row.PushToPassCount = driver.PushToPassCount;
+                row.PushToPassActivated = driver.PushToPassActivated;
             }
         }
 

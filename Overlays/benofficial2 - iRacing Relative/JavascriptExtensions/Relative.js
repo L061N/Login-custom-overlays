@@ -401,6 +401,33 @@ function getRelativeTextColor(index)
     return white;
 }
 
+function getRelativePushToPassCount(index)
+{
+    if (index == 0)
+    {
+        if ($prop('benofficial2.Car.HasPushToPassTimer') == true)
+            return isnull($prop('benofficial2.PushToPass.TimeLeft'), 0)
+
+        return isnull($prop('benofficial2.PushToPass.Count'), 0)
+    }
+    else
+    {
+        return isnull(getRelativeProp(index, 'PushToPassCount'), 0)
+    }
+}
+
+function getRelativePushToPassActivated(index)
+{
+    if (index == 0)
+    {
+        return isnull($prop('benofficial2.PushToPass.Activated'), false)
+    }
+    else
+    {
+        return isnull(getRelativeProp(index, 'PushToPassActivated'), false)
+    }
+}
+
 function getClassSof(classIdx)
 {
     return isnull(getStandingsClassProp(classIdx, 'Sof'), 0);

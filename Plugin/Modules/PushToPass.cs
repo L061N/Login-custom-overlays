@@ -33,6 +33,7 @@ namespace benofficial2.Plugin
 
         private TrackModule _trackModule = null;
         private CarModule _carModule = null;
+        private SessionModule _sessionModule = null;
         private bool _wasActivated = false;
         private DateTime _activatedTime = DateTime.MinValue;
         private DateTime _deactivatedTime = DateTime.MinValue;
@@ -41,6 +42,7 @@ namespace benofficial2.Plugin
         {
             _trackModule = plugin.GetModule<TrackModule>();
             _carModule = plugin.GetModule<CarModule>();
+            _sessionModule = plugin.GetModule<SessionModule>();
 
             plugin.AttachDelegate(name: "PushToPass.Enabled", valueProvider: () => Enabled);
             plugin.AttachDelegate(name: "PushToPass.Activated", valueProvider: () => Activated);
@@ -54,7 +56,7 @@ namespace benofficial2.Plugin
         {
             if (_carModule?.HasPushToPassCount ?? false)
             {
-                Enabled = true;
+                Enabled = !_sessionModule.Oval;
                 Activated = (bool)data.NewData.PushToPassActive;
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int p2pCount, "P2P_Count");
                 Count = p2pCount;
@@ -66,7 +68,7 @@ namespace benofficial2.Plugin
             {
                 // For Super Formula, the telemetry only exposes 'activated' and 'timeLeft'.
                 // We have to generate the other values.
-                Enabled = true;
+                Enabled = !_sessionModule.Oval;
                 Activated = (bool)data.NewData.PushToPassActive;
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int p2pCount, "P2P_Count");
                 TimeLeft = p2pCount;
