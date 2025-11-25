@@ -29,7 +29,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d">
     <ScrollViewer>
-        <Grid Height="5000">
+        <Grid Height="5200">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="44*"/>
                 <ColumnDefinition Width="377*"/>
@@ -999,6 +999,13 @@
                             HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[DriverModule].HighlightedDriverSettings.HideWhenInCar, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             Hide when in car
+                        </styles:SHToggleCheckbox>
+
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Hide the overlay when the iRacing UI is visible (toggle the UI with spacebar)." 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[DriverModule].HighlightedDriverSettings.HideWhenUIVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Hide when UI visible
                         </styles:SHToggleCheckbox>
 
                         <styles:SHToggleCheckbox 
