@@ -446,6 +446,13 @@
 
                 <styles:SHSection Title="INPUT TELEMETRY OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Hide the overlay when the replay is playing (i.e. when out of the car)" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[TelemetryModule].Settings.HideInReplay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Hide in replay
+                        </styles:SHToggleCheckbox>
+                        
                         <StackPanel Orientation="Horizontal">
                             <styles:SHToggleCheckbox 
                                 ToolTip="Show a scrolling chart with input values" 
@@ -922,6 +929,13 @@
                 <styles:SHSection Title="WIND OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
                         <styles:SHToggleCheckbox 
+                            ToolTip="Hide the overlay when the replay is playing (i.e. when out of the car)" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[WindModule].Settings.HideInReplay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Hide in replay
+                        </styles:SHToggleCheckbox>
+
+                        <styles:SHToggleCheckbox 
                             ToolTip="Rotate the wind direction arrow relative to the car rotation" 
                             HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[WindModule].Settings.RotateWithCar, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -937,6 +951,13 @@
                 <styles:SHSection Title="PRECIPITATION OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
                         <styles:SHToggleCheckbox 
+                            ToolTip="Hide the overlay when the replay is playing (i.e. when out of the car)" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[PrecipitationModule].Settings.HideInReplay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Hide in replay
+                        </styles:SHToggleCheckbox>
+                        
+                        <styles:SHToggleCheckbox 
                             ToolTip="Hide the overlay when rain precipitation is 0%" 
                             HorizontalAlignment="Left" Margin="0,0,4,8"
                             IsChecked="{Binding Plugin.Modules[PrecipitationModule].Settings.HideWhenZero, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -951,6 +972,13 @@
 
                 <styles:SHSection Title="TRACK WETNESS OVERLAY OPTIONS" ShowSeparator="True">
                     <StackPanel HorizontalAlignment="Left">
+                        <styles:SHToggleCheckbox 
+                            ToolTip="Hide the overlay when the replay is playing (i.e. when out of the car)" 
+                            HorizontalAlignment="Left" Margin="0,0,4,8"
+                            IsChecked="{Binding Plugin.Modules[TrackWetnessModule].Settings.HideInReplay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            Hide in replay
+                        </styles:SHToggleCheckbox>
+                        
                         <styles:SHToggleCheckbox 
                             ToolTip="Hide the overlay when track wetness is 0%" 
                             HorizontalAlignment="Left" Margin="0,0,4,8"

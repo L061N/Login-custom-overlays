@@ -24,6 +24,7 @@ namespace benofficial2.Plugin
 {
     public class PrecipitationSettings : ModuleSettings
     {
+        public bool HideInReplay { get; set; } = true;
         public bool HideWhenZero { get; set; } = true;
 
         public int BackgroundOpacity { get; set; } = 0;
@@ -36,6 +37,7 @@ namespace benofficial2.Plugin
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<PrecipitationSettings>("PrecipitationSettings", () => new PrecipitationSettings());
+            plugin.AttachDelegate(name: "Precipitation.HideInReplay", valueProvider: () => Settings.HideInReplay);
             plugin.AttachDelegate(name: "Precipitation.HideWhenZero", valueProvider: () => Settings.HideWhenZero);
             plugin.AttachDelegate(name: "Precipitation.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
         }

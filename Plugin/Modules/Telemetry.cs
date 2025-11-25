@@ -24,6 +24,7 @@ namespace benofficial2.Plugin
 {
     public class TelemetrySettings : ModuleSettings
     {
+        public bool HideInReplay { get; set; } = true;
         public bool TracesVisible { get; set; } = true;
         public int TracesWidth { get; set; } = 500;
         public int TracesSpeed { get; set; } = 75;
@@ -45,6 +46,7 @@ namespace benofficial2.Plugin
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<TelemetrySettings>("TelemetrySettings", () => new TelemetrySettings());
+            plugin.AttachDelegate(name: "Telemetry.HideInReplay", valueProvider: () => Settings.HideInReplay);
             plugin.AttachDelegate(name: "Telemetry.TracesVisible", valueProvider: () => Settings.TracesVisible);
             plugin.AttachDelegate(name: "Telemetry.TracesWidth", valueProvider: () => Settings.TracesWidth);
             plugin.AttachDelegate(name: "Telemetry.TracesSpeed", valueProvider: () => Settings.TracesSpeed);

@@ -24,6 +24,7 @@ namespace benofficial2.Plugin
 {
     public class WindSettings : ModuleSettings
     {
+        public bool HideInReplay { get; set; } = true;
         public bool RotateWithCar { get; set; } = true;
 
         public int BackgroundOpacity { get; set; } = 0;
@@ -36,6 +37,7 @@ namespace benofficial2.Plugin
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<WindSettings>("WindSettings", () => new WindSettings());
+            plugin.AttachDelegate(name: "Wind.HideInReplay", valueProvider: () => Settings.HideInReplay);
             plugin.AttachDelegate(name: "Wind.RotateWithCar", valueProvider: () => Settings.RotateWithCar);
             plugin.AttachDelegate(name: "Wind.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
         }

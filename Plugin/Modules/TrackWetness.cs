@@ -24,6 +24,7 @@ namespace benofficial2.Plugin
 {
     public class TrackWetnessSettings : ModuleSettings
     {
+        public bool HideInReplay { get; set; } = true;
         public bool HideWhenZero { get; set; } = true;
 
         public int BackgroundOpacity { get; set; } = 0;
@@ -36,6 +37,7 @@ namespace benofficial2.Plugin
         public override void Init(PluginManager pluginManager, benofficial2 plugin)
         {
             Settings = plugin.ReadCommonSettings<TrackWetnessSettings>("TrackWetnessSettings", () => new TrackWetnessSettings());
+            plugin.AttachDelegate(name: "TrackWetness.HideInReplay", valueProvider: () => Settings.HideInReplay);
             plugin.AttachDelegate(name: "TrackWetness.HideWhenZero", valueProvider: () => Settings.HideWhenZero);
             plugin.AttachDelegate(name: "TrackWetness.BackgroundOpacity", valueProvider: () => Settings.BackgroundOpacity);
         }
