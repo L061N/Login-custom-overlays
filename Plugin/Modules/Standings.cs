@@ -117,6 +117,7 @@ namespace benofficial2.Plugin
         public int EstimatedTotalLaps { get; set; } = 0;
         public bool EstimatedTotalLapsConfirmed { get; set; } = false;
         public bool EstimatedTotalLapsLogged { get; set; } = false;
+        public bool IsLeadingClass { get; set; } = false;
 
         public StandingCarClass()
         {
@@ -162,6 +163,7 @@ namespace benofficial2.Plugin
         public bool BestVisible { get; internal set; } = true;
         public bool LastVisible { get; internal set; } = true;
         public bool DeltaVisible { get; internal set; } = true;
+        public bool LeadingClassDoingExtraLap { get; internal set; } = false;
 
         public List<ClassLeaderboard> LiveClassLeaderboards { get; private set; } = new List<ClassLeaderboard>();
 
@@ -305,6 +307,7 @@ namespace benofficial2.Plugin
                 if (carClassIdx < LiveClassLeaderboards.Count)
                 {
                     ClassLeaderboard leaderboard = LiveClassLeaderboards[carClassIdx];
+                    carClass.IsLeadingClass = (carClassIdx == 0);
                     carClass.Color = leaderboard.CarClassColor;
                     carClass.TextColor = "#000000";
 
@@ -534,6 +537,8 @@ namespace benofficial2.Plugin
             carClass.LeaderAvgLapTime = TimeSpan.Zero;
             carClass.EstimatedTotalLaps = 0;
             carClass.EstimatedTotalLapsConfirmed = false;
+            carClass.EstimatedTotalLapsLogged = false;
+            carClass.IsLeadingClass = false;
 
             for (int driverIdx = 0; driverIdx < StandingCarClass.MaxRows; driverIdx++)
             {
@@ -707,7 +712,7 @@ namespace benofficial2.Plugin
                 }
             }
 
-            // Sort the class leaderboards on the position of their leader.
+            // Sort the class leaderboards on the estimated lap time (fastest first).
             LiveClassLeaderboards = LiveClassLeaderboards.OrderBy(lb => lb.EstLapTime).ToList();
 
             TotalDriverCount = scoredDriversAllClasses.Count;
@@ -880,6 +885,7 @@ namespace benofficial2.Plugin
             // Use a slightly faster avg lap time as a safety margin in case the leader will pace up.
             // This will overestimate the laps slightly in the beginning, but for fuel decisions it's better than underestimating.
             const double lapTimeSafePct = 0.99;
+            bool extraLap = false;
 
             if (_sessionModule.Race)
             {
@@ -924,7 +930,22 @@ namespace benofficial2.Plugin
                 carClass.EstimatedTotalLaps = EstimateTotalLaps(leaderCurrentLapHighPrecision, 
                     _sessionModule.SessionLapsTotal, 
                     sessionTimeRemain, 
-                    avgLapTime.TotalSeconds * lapTimeSafePct);
+                    avgLapTime.TotalSeconds * lapTimeSafePct,
+                    out extraLap);
+
+                if (carClass.IsLeadingClass)
+                {
+                    if (sessionTimeRemain > Constants.SecondsEpsilon)
+                        LeadingClassDoingExtraLap = extraLap;
+                }
+                else
+                {
+                    if (LeadingClassDoingExtraLap && !extraLap && sessionTimeRemain > Constants.SecondsEpsilon)
+                    {
+                        // Other classes must do the extra lap as well.
+                        carClass.EstimatedTotalLaps += 1;
+                    }
+                }
 
                 if (_driverModule.PlayerDriver.HadWhiteFlag && !carClass.EstimatedTotalLapsLogged)
                 {
@@ -945,12 +966,14 @@ namespace benofficial2.Plugin
             carClass.EstimatedTotalLaps = EstimateTotalLaps(_driverModule.PlayerDriver.CurrentLapHighPrecision, 
                 _sessionModule.SessionLapsTotal,
                 data.NewData.SessionTimeLeft.TotalSeconds, 
-                _driverModule.PlayerDriver.BestLapTime.TotalSeconds * lapTimeSafePct);
+                _driverModule.PlayerDriver.BestLapTime.TotalSeconds * lapTimeSafePct,
+                out extraLap);
         }
 
-        static public int EstimateTotalLaps(double currentLapHighPrecision, int sessionTotalLaps, double sessionTimeRemain, double avgLapTime)
+        static public int EstimateTotalLaps(double currentLapHighPrecision, int sessionTotalLaps, double sessionTimeRemain, double avgLapTime, out bool extraLap)
         {
             currentLapHighPrecision = Math.Max(0.0, currentLapHighPrecision);
+            extraLap = false;
 
             if (sessionTimeRemain >= Constants.UnlimitedTimeSeconds)
                 return Math.Max(0, sessionTotalLaps);
@@ -980,6 +1003,7 @@ namespace benofficial2.Plugin
             if (lapCompletedPctWhenTimerHitsZero < Constants.LapEpsilon || lapCompletedPctWhenTimerHitsZero > Constants.WhiteFlagRuleLapPct)
             {
                 estimatedTotalLaps++;
+                extraLap = true;
             }
 
             return (int)Math.Max(0, Math.Ceiling(estimatedTotalLaps));
