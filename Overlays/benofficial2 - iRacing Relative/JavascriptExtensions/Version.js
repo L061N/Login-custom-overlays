@@ -19,18 +19,13 @@
 function checkVersion(versionName, versionNumber)
 {
     if (root['hide'])
-    {
         return false;
-    }
 
     const checkForUpdates = isnull($prop('benofficial2.CheckForUpdates'), true);
     if (!checkForUpdates)
-    {
         return false;
-    }
 
     const url = 'https://raw.githubusercontent.com/fixfactory/bo2-official-overlays/main/Versions.json';
-
     const jsonStr = downloadstringasync(500, url);
 
     if (jsonStr) 
@@ -42,23 +37,45 @@ function checkVersion(versionName, versionNumber)
         }
 		
         const json = JSON.parse(jsonStr);
-        if (json[versionName] != versionNumber) 
+        if (isVersionNewer(json[versionName], versionNumber))
         {
             if (!root['timeChecked'])
-            {
                 root['timeChecked'] = Date.now();
-            }
 
             if (((Date.now() - root['timeChecked'])) < 5000)
-            {
                 return true;
-            }
         }
 
         root['hide'] = true;
     }
 
     return false;
+}
+
+function isVersionNewer(v1, v2) 
+{
+    // Coerce to string; null/undefined/number → string
+    v1 = (v1 ?? "").toString();
+    v2 = (v2 ?? "").toString();
+
+    const a = v1.split('.').map(n => parseInt(n, 10) || 0);
+    const b = v2.split('.').map(n => parseInt(n, 10) || 0);
+
+    const len = Math.max(a.length, b.length);
+
+    for (let i = 0; i < len; i++) 
+    {
+        const num1 = a[i] ?? 0;
+        const num2 = b[i] ?? 0;
+
+        if (num1 > num2) 
+            return true;
+
+        if (num1 < num2) 
+            return false;
+    }
+
+    return false; // equal or invalid → not newer
 }
 
 function getErrorMessage()
