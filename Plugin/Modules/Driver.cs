@@ -459,7 +459,7 @@ namespace benofficial2.Plugin
                     // We can't know for sure where they got out, so we just set their current lap to the last completed lap.
                     if (driver.CurrentLapHighPrecision < Constants.DistanceEpsilon && driver.LapsCompleted > 0)
                     {
-                        driver.CurrentLapHighPrecision = driver.LapsCompleted;
+                        driver.CurrentLapHighPrecision = driver.LapsCompleted + Constants.LapEpsilon;
                     }
 
                     driver.LastCurrentLapHighPrecision = driver.CurrentLapHighPrecisionRaw;
@@ -480,7 +480,7 @@ namespace benofficial2.Plugin
                     PlayerDriver.BestLapTime = driver.BestLapTime;
                     PlayerDriver.AvgLapTime = driver.AvgLapTime.GetAverageLapTime();
                     PlayerDriver.CurrentLapHighPrecision = driver.CurrentLapHighPrecision;
-                    PlayerDriver.CurrentLap = driver.Lap;
+                    PlayerDriver.CurrentLap = Math.Max(0, driver.Lap > 0 ? driver.Lap : (int)Math.Ceiling(driver.CurrentLapHighPrecision));
                     PlayerDriver.TeamIncidentCount = driver.TeamIncidentCount;
                     PlayerDriver.TireCompound = _carModule.GetTireCompoundLetter(driver.TireCompoundIdx);
 
@@ -507,7 +507,7 @@ namespace benofficial2.Plugin
                         HighlightedDriver.IRating = driver.IRating;
                         HighlightedDriver.License = driver.License;
                         HighlightedDriver.SafetyRating = driver.SafetyRating;
-                        HighlightedDriver.CurrentLap = Math.Max(0, driver.Lap);
+                        HighlightedDriver.CurrentLap = Math.Max(0, driver.Lap > 0 ? driver.Lap : (int)Math.Ceiling(driver.CurrentLapHighPrecision));
                         HighlightedDriver.CurrentLapHighPrecision = driver.CurrentLapHighPrecision;
                         HighlightedDriver.TeamIncidentCount = driver.TeamIncidentCount;
                         HighlightedDriver.LastLapTime = driver.LastLapTime;

@@ -430,7 +430,7 @@ namespace benofficial2.Plugin
                         row.iRatingChange = driver.IRatingChange;
                         row.License = driver.License;
                         row.SafetyRating = driver.SafetyRating;
-                        row.CurrentLap = Math.Max(0, driver.Lap);
+                        row.CurrentLap = Math.Max(0, driver.Lap > 0 ? driver.Lap : (int)Math.Ceiling(driver.CurrentLapHighPrecision));
                         row.StintLap = driver.StintLap;
                         row.LapsToClassLeader = driver.LapsToClassLeader;
                         row.GapToClassLeader = driver.GapToClassLeader;
@@ -737,13 +737,7 @@ namespace benofficial2.Plugin
                     }
                     else
                     {
-                        driver.LapsToClassLeader = classLeader.LapsCompleted - driver.LapsCompleted;
-
-                        if (driver.TrackPositionPercent > classLeader.TrackPositionPercent)
-                        {
-                            // Account for the track rollover when calculating laps to leader
-                            driver.LapsToClassLeader = Math.Max(0, driver.LapsToClassLeader - 1);
-                        }
+                        driver.LapsToClassLeader = Math.Max(0, (int)Math.Floor(classLeader.CurrentLapHighPrecision - driver.CurrentLapHighPrecision));
 
                         if (driver.LapsToClassLeader > 0)
                         {
