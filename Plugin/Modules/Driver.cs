@@ -796,16 +796,20 @@ namespace benofficial2.Plugin
                     driver.LastLapTime = TimeSpan.FromSeconds(lastTime);
                 }
 
-                RawDataHelper.TryGetValue<int>(positions, out int lap, posIdx, "Lap");
-                if (driver.Lap <= 0 && lap >= 0)
-                {
-                    driver.Lap = lap;
-                }
-
                 RawDataHelper.TryGetValue<int>(positions, out int lapsComplete, posIdx, "LapsComplete");
                 if (driver.LapsCompleted <= 0 && lapsComplete >= 0)
                 {
                     driver.LapsCompleted = lapsComplete;
+                }
+
+                RawDataHelper.TryGetValue<int>(positions, out int lap, posIdx, "Lap");
+                if (driver.Lap <= 0 && lap >= 0)
+                {
+                    // Fix a bug in iRacing's session results where the lap number is inconsistent for lapped cars.
+                    if (driver.Lap < driver.LapsCompleted)
+                        driver.Lap = 0;
+                    else
+                        driver.Lap = lap;
                 }
 
                 RawDataHelper.TryGetValue<int>(positions, out int jokerLapsComplete, posIdx, "JokerLapsComplete");
