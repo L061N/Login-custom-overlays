@@ -572,6 +572,35 @@ namespace benofficial2.Plugin
             if (QualResultsUpdated || !_sessionModule.Race)
                 return;
 
+            // First try to get from the current session's qualifying results.
+            // In Heat races, only the drivers particpating in the heat will be present in the QualifyPositions array.
+            if (RawDataHelper.TryGetSessionData<int>(ref data, out int currentSessionIdx, "SessionInfo", "CurrentSessionNum") && currentSessionIdx >= 0)
+            {
+                RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> qualPositions, "SessionInfo", "Sessions", currentSessionIdx, "QualifyPositions");
+                if (qualPositions != null)
+                {
+                    for (int i = 0; i < qualPositions.Count; i++)
+                    {
+                        RawDataHelper.TryGetValue<int>(qualPositions, out int carIdx, i, "CarIdx");
+                        if (!DriversByCarIdx.TryGetValue(carIdx, out Driver driver))
+                        {
+                            Debug.Assert(false);
+                            continue;
+                        }
+
+                        RawDataHelper.TryGetValue<int>(qualPositions, out int positionInClass, i, "ClassPosition");
+                        RawDataHelper.TryGetValue<double>(qualPositions, out double fastestTime, i, "FastestTime");
+
+                        driver.QualPositionInClass = positionInClass + 1;
+                        driver.QualLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
+                    }
+
+                    QualResultsUpdated = true;
+                    return;
+                }
+            }
+
+            // For normal races, get from the overall QualifyResultsInfo.
             RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> qualResults, "QualifyResultsInfo", "Results");
             if (qualResults != null)
             {
@@ -593,34 +622,6 @@ namespace benofficial2.Plugin
 
                 QualResultsUpdated = true;
                 return;
-            }
-
-            if (!RawDataHelper.TryGetSessionData<int>(ref data, out int currentSessionIdx, "SessionInfo", "CurrentSessionNum"))
-                return;
-
-            if (currentSessionIdx < 0)
-                return;
-
-            RawDataHelper.TryGetSessionData<List<object>>(ref data, out List<object> qualPositions, "SessionInfo", "Sessions", currentSessionIdx, "QualifyPositions");
-            if (qualPositions != null)
-            {
-                for (int i = 0; i < qualPositions.Count; i++)
-                {
-                    RawDataHelper.TryGetValue<int>(qualPositions, out int carIdx, i, "CarIdx");
-                    if (!DriversByCarIdx.TryGetValue(carIdx, out Driver driver))
-                    {
-                        Debug.Assert(false);
-                        continue;
-                    }
-
-                    RawDataHelper.TryGetValue<int>(qualPositions, out int positionInClass, i, "ClassPosition");
-                    RawDataHelper.TryGetValue<double>(qualPositions, out double fastestTime, i, "FastestTime");
-
-                    driver.QualPositionInClass = positionInClass + 1;
-                    driver.QualLapTime = fastestTime > 0 ? TimeSpan.FromSeconds(fastestTime) : TimeSpan.Zero;
-                }
-
-                QualResultsUpdated = true;
             }
         }
 
