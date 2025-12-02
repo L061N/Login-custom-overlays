@@ -151,6 +151,8 @@ namespace benofficial2.Plugin
         public double SafetyRating { get; set; } = 0.0;
         public int LapsToClassLeader { get; set; } = 0;
         public double GapToClassLeader { get; set; } = 0.0;
+        public int LapsToClassOpponentAhead { get; set; } = 0;
+        public double GapToClassOpponentAhead { get; set; } = 0.0;
         public double RelativeGapToPlayer { get; set; } = 0.0;
         public double EstTime { get; set; } = 0.0;
         public int TireCompoundIdx { get; set; } = -1;

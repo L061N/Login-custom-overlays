@@ -220,7 +220,14 @@
                                 ToolTip="Driver's gap to the race leader in seconds or laps" 
                                 HorizontalAlignment="Left" Margin="0,0,4,8"
                                 IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.GapVisibleInRace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                Gap to Leader
+                                Gap
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                ToolTip="Driver's gap to their opponent ahead in seconds or laps" 
+                                HorizontalAlignment="Left" Margin="0,0,4,8"
+                                IsChecked="{Binding Plugin.Modules[StandingsModule].Settings.IntervalVisibleInRace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                Interval
                             </styles:SHToggleCheckbox>
 
                             <styles:SHToggleCheckbox 
@@ -261,7 +268,15 @@
                                 ToolTip="Driver's gap to the race leader in seconds or laps" 
                                 HorizontalAlignment="Left" Margin="0,0,4,8"
                                 IsChecked="False">
-                                Gap to Leader
+                                Gap
+                            </styles:SHToggleCheckbox>
+
+                            <styles:SHToggleCheckbox 
+                                IsEnabled="False"
+                                ToolTip="Driver's gap to their opponent ahead in seconds or laps" 
+                                HorizontalAlignment="Left" Margin="0,0,4,8"
+                                IsChecked="False">
+                                Interval
                             </styles:SHToggleCheckbox>
 
                             <styles:SHToggleCheckbox 
@@ -305,7 +320,7 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal">
-                            <ui:TitledSlider Width="400" Title="Width" Maximum="600" Minimum="250" Value="{Binding Plugin.Modules[StandingsModule].Settings.WidthPixels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                            <ui:TitledSlider Width="400" Title="Width" Maximum="680" Minimum="250" Value="{Binding Plugin.Modules[StandingsModule].Settings.WidthPixels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                              ToolTip="Minimum width of the overlay in pixels. Actual width might be larger if selected data fields don't fit."/>
                             <ui:TitledSlider Width="400" Title="Background Opacity (%)" Maximum="100" Minimum="0" Value="{Binding Plugin.Modules[StandingsModule].Settings.BackgroundOpacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>

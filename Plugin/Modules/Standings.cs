@@ -43,6 +43,7 @@ namespace benofficial2.Plugin
         public bool IRatingChangeVisible { get; set; } = true;
         public bool CarLogoVisibleInRace { get; set; } = true;
         public bool GapVisibleInRace { get; set; } = true;
+        public bool IntervalVisibleInRace { get; set; } = false;
         public bool BestVisibleInRace { get; set; } = false;
         public bool LastVisibleInRace { get; set; } = true;
         public bool DeltaVisibleInRace { get; set; } = true;
@@ -89,6 +90,8 @@ namespace benofficial2.Plugin
         public int StintLap { get; set; } = 0;
         public int LapsToClassLeader { get; set; } = 0;
         public double GapToClassLeader { get; set; } = 0;
+        public int LapsToClassOpponentAhead { get; set; } = 0;
+        public double GapToClassOpponentAhead { get; set; } = 0.0;
         public TimeSpan? DeltaToClassLeader { get; set; } = null;
         public TimeSpan? DeltaToPlayer { get; set; } = null;
         public string TireCompound {  get; set; } = string.Empty;
@@ -160,6 +163,7 @@ namespace benofficial2.Plugin
         public int HighlightedCarClassIdx { get; internal set; } = 0;
         public bool CarLogoVisible { get; internal set; } = true;
         public bool GapVisible { get; internal set; } = true;
+        public bool IntervalVisible { get; internal set; } = true;
         public bool BestVisible { get; internal set; } = true;
         public bool LastVisible { get; internal set; } = true;
         public bool DeltaVisible { get; internal set; } = true;
@@ -205,6 +209,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: $"Standings.iRatingVisible", valueProvider: () => Settings.IRatingVisible);
             plugin.AttachDelegate(name: $"Standings.iRatingChangeVisible", valueProvider: () => Settings.IRatingChangeVisible);
             plugin.AttachDelegate(name: $"Standings.GapVisible", valueProvider: () => GapVisible);
+            plugin.AttachDelegate(name: $"Standings.IntervalVisible", valueProvider: () => IntervalVisible);
             plugin.AttachDelegate(name: $"Standings.BestVisible", valueProvider: () => BestVisible);
             plugin.AttachDelegate(name: $"Standings.LastVisible", valueProvider: () => LastVisible);
             plugin.AttachDelegate(name: $"Standings.DeltaVisible", valueProvider: () => DeltaVisible);
@@ -258,6 +263,8 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.StintLap", valueProvider: () => row.StintLap);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LapsToClassLeader", valueProvider: () => row.LapsToClassLeader);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.GapToClassLeader", valueProvider: () => row.GapToClassLeader);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LapsToClassOpponentAhead", valueProvider: () => row.LapsToClassOpponentAhead);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.GapToClassOpponentAhead", valueProvider: () => row.GapToClassOpponentAhead);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.DeltaToClassLeader", valueProvider: () => row.DeltaToClassLeader);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.DeltaToPlayer", valueProvider: () => row.DeltaToPlayer);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.TireCompound", valueProvider: () => row.TireCompound);
@@ -287,6 +294,7 @@ namespace benofficial2.Plugin
             {
                 CarLogoVisible = Settings.CarLogoVisibleInRace;
                 GapVisible = Settings.GapVisibleInRace;
+                IntervalVisible = Settings.IntervalVisibleInRace;
                 BestVisible = Settings.BestVisibleInRace;
                 LastVisible = Settings.LastVisibleInRace;
                 DeltaVisible = Settings.DeltaVisibleInRace;
@@ -295,6 +303,7 @@ namespace benofficial2.Plugin
             {
                 CarLogoVisible = Settings.CarLogoVisible;
                 GapVisible = false;
+                IntervalVisible = false;
                 BestVisible = Settings.BestVisible;
                 LastVisible = Settings.LastVisible;
                 DeltaVisible = Settings.DeltaVisible;
@@ -434,6 +443,8 @@ namespace benofficial2.Plugin
                         row.StintLap = driver.StintLap;
                         row.LapsToClassLeader = driver.LapsToClassLeader;
                         row.GapToClassLeader = driver.GapToClassLeader;
+                        row.LapsToClassOpponentAhead = driver.LapsToClassOpponentAhead;
+                        row.GapToClassOpponentAhead = driver.GapToClassOpponentAhead;
                         row.TireCompound = _carModule.GetTireCompoundLetter(driver.TireCompoundIdx);
                         row.TireCompoundVisible = row.TireCompound.Length > 0;
                         row.BestLapTime = driver.BestLapTime;
@@ -576,6 +587,8 @@ namespace benofficial2.Plugin
             row.StintLap = 0;
             row.LapsToClassLeader = 0;
             row.GapToClassLeader = 0;
+            row.LapsToClassOpponentAhead = 0;
+            row.GapToClassOpponentAhead = 0;
             row.DeltaToClassLeader = null;
             row.DeltaToPlayer = null;
             row.TireCompound = string.Empty;
@@ -728,12 +741,15 @@ namespace benofficial2.Plugin
                     continue;
 
                 Driver classLeader = leaderboard.Drivers[0];
+                Driver driverAhead = null;
                 foreach (var driver in leaderboard.Drivers)
                 {
                     if (driver.CarIdx == classLeader.CarIdx)
                     {
                         driver.LapsToClassLeader = 0;
                         driver.GapToClassLeader = 0.0;
+                        driver.LapsToClassOpponentAhead = 0;
+                        driver.GapToClassOpponentAhead = 0.0;
                     }
                     else
                     {
@@ -747,7 +763,27 @@ namespace benofficial2.Plugin
                         {
                             driver.GapToClassLeader = GapToCarAhead(driver, classLeader);
                         }
+
+                        if (driverAhead != null)
+                        {
+                            driver.LapsToClassOpponentAhead = Math.Max(0, (int)Math.Floor(driverAhead.CurrentLapHighPrecision - driver.CurrentLapHighPrecision));
+                            if (driver.LapsToClassOpponentAhead > 0)
+                            {
+                                driver.GapToClassOpponentAhead = 0.0;
+                            }
+                            else
+                            {
+                                driver.GapToClassOpponentAhead = GapToCarAhead(driver, driverAhead);
+                            }
+                        }
+                        else
+                        {
+                            driver.LapsToClassOpponentAhead = 0;
+                            driver.GapToClassOpponentAhead = 0.0;
+                        }
                     }
+
+                    driverAhead = driver;
                 }
             }
         }
