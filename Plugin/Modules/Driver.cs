@@ -282,6 +282,8 @@ namespace benofficial2.Plugin
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
         {
+            UpdateDriversHighFreq(ref data);
+
             if (data.FrameTime - _lastUpdateTime < _updateInterval) 
                 return;
 
@@ -740,6 +742,19 @@ namespace benofficial2.Plugin
                 {
                     driver.CurrentLapHighPrecisionRaw = -1;
                 }
+            }
+        }
+
+        private void UpdateDriversHighFreq(ref GameData data)
+        {
+            foreach (var driver in Drivers.Values)
+            {
+                if (driver.CarIdx < 0 || driver.CarIdx >= MaxDrivers)
+                    continue;
+
+                RawDataHelper.TryGetTelemetryData<float>(ref data, out float estTime, "CarIdxEstTime", driver.CarIdx);
+
+                driver.EstTime = estTime;
             }
         }
 
