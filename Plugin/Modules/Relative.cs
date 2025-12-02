@@ -289,7 +289,7 @@ namespace benofficial2.Plugin
             return opponentEstTimeScaled;
         }
 
-        private double GetEstTimeDiff(double estLapTime, double opponentEstTime, double playerEstTime)
+        static public double GetEstTimeDiff(double estLapTime, double opponentEstTime, double playerEstTime)
         {
             if (estLapTime < Constants.SecondsEpsilon || playerEstTime < Constants.SecondsEpsilon || opponentEstTime < Constants.SecondsEpsilon)
                 return 0.0;

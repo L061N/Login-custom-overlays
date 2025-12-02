@@ -517,7 +517,9 @@ namespace benofficial2.Plugin
             }
 
             UpdateQualResult(ref data);
-            UpdateGaps(ref data);
+
+            // Now done in standings module
+            //UpdateGaps(ref data);
         }
 
         public override void End(PluginManager pluginManager, benofficial2 plugin)
@@ -967,6 +969,15 @@ namespace benofficial2.Plugin
 
             // Return in #RRGGBB format, uppercase
             return "#" + input.ToUpper();
+        }
+
+        public static bool IsAheadOnTrack(double currentTrackPosPct, double otherTrackPosPct)
+        {
+            // Return true if 'other' is ahead of 'current' on track, considering the lap wrap-around.
+            if (currentTrackPosPct < otherTrackPosPct)
+                return otherTrackPosPct - currentTrackPosPct < 0.5;
+            else
+                return currentTrackPosPct - otherTrackPosPct > 0.5;
         }
     }
 }

@@ -277,6 +277,7 @@ namespace benofficial2.Plugin
             _lastUpdateTime = data.FrameTime;
 
             UpdateLeaderboards(ref data);
+            UpdateLeaderboardGaps(ref data);
             _driverModule.UpdateIRatingChange(ref data);
 
             Driver highlightedDriver = null;
@@ -717,6 +718,55 @@ namespace benofficial2.Plugin
 
             TotalDriverCount = scoredDriversAllClasses.Count;
             TotalSoF = CalculateSof(scoredDriversAllClasses);
+        }
+
+        private void UpdateLeaderboardGaps(ref GameData data)
+        {
+            foreach (var leaderboard in LiveClassLeaderboards)
+            {
+                if (leaderboard.Drivers.Count == 0)
+                    continue;
+
+                Driver classLeader = leaderboard.Drivers[0];
+                foreach (var driver in leaderboard.Drivers)
+                {
+                    if (driver.CarIdx == classLeader.CarIdx)
+                    {
+                        driver.LapsToClassLeader = 0;
+                        driver.GapToClassLeader = 0.0;
+                    }
+                    else
+                    {
+                        driver.LapsToClassLeader = classLeader.LapsCompleted - driver.LapsCompleted;
+
+                        if (driver.TrackPositionPercent > classLeader.TrackPositionPercent)
+                        {
+                            // Account for the track rollover when calculating laps to leader
+                            driver.LapsToClassLeader = Math.Max(0, driver.LapsToClassLeader - 1);
+                        }
+
+                        if (driver.LapsToClassLeader > 0)
+                        {
+                            driver.GapToClassLeader = 0.0;
+                        }
+                        else
+                        {
+                            driver.GapToClassLeader = GapToCarAhead(driver, classLeader);
+                        }
+                    }
+                }
+            }
+        }
+
+        static private double GapToCarAhead(Driver current, Driver ahead)
+        {
+            double timeDiff = RelativeModule.GetEstTimeDiff(current.CarClassEstLapTime, ahead.EstTime, current.EstTime);
+
+            // Make sure timeDiff is positive
+            while (timeDiff < 0.0)
+                timeDiff += current.CarClassEstLapTime;
+
+            return timeDiff;
         }
 
         public (Driver, int) FindHighlightedDriver(ref GameData data)
