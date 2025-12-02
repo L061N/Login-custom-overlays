@@ -75,6 +75,7 @@ namespace benofficial2.Plugin
         public bool ShortParadeLap { get; internal set; } = false;
         public double MaxFuelPct { get; internal set; } = 1.0;
         public bool TeamRacing { get; internal set; } = false;
+        public string SubType { get; internal set; } = string.Empty;
 
         public override int UpdatePriority => 10;
 
@@ -94,6 +95,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Session.StandingStart", valueProvider: () => StandingStart);
             plugin.AttachDelegate(name: "Session.TeamRacing", valueProvider: () => TeamRacing);
             plugin.AttachDelegate(name: "Session.LapsTotal", valueProvider: () => SessionLapsTotal);
+            plugin.AttachDelegate(name: "Session.SubType", valueProvider: () => SubType);
         }
 
         public override void DataUpdate(PluginManager pluginManager, benofficial2 plugin, ref GameData data)
@@ -130,6 +132,16 @@ namespace benofficial2.Plugin
 
                 RawDataHelper.TryGetSessionData<string>(ref data, out string teamRacing, "WeekendInfo", "TeamRacing");
                 TeamRacing = teamRacing == "1";
+
+                if (RawDataHelper.TryGetSessionData<int>(ref data, out int currentSessionIdx, "SessionInfo", "CurrentSessionNum") && currentSessionIdx >= 0)
+                {
+                    RawDataHelper.TryGetSessionData<string>(ref data, out string sessionSubType, "SessionInfo", "Sessions", currentSessionIdx, "SessionSubType");
+                    SubType = sessionSubType;
+                }
+                else
+                {
+                    SubType = string.Empty;
+                }
 
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int sessionTimeTotal, "SessionTimeTotal");
                 SessionTimeTotal = TimeSpan.FromSeconds(sessionTimeTotal);
