@@ -28,7 +28,7 @@ namespace benofficial2.Plugin
     public class StandingsSettings : ModuleSettings
     {
         public int HeaderWidth { get; set; } = 10;
-        public int WidthPixels { get; set; } = 550;
+        public int WidthPixels { get; set; } = 593;
         public bool HideInReplay { get; set; } = true;
         public bool HeaderVisible { get; set; } = true;
         public bool CarClassHeaderVisible { get; set; } = true;
