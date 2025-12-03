@@ -25,16 +25,23 @@ namespace benofficial2.Plugin
 {
     public class SessionState
     {
+        private int _lastSessionIdx = -1;
         private double _lastSessionTime = double.MaxValue;
         private Guid _lastSessionId = Guid.Empty;
         private string _lastSessionTypeName = string.Empty;
 
+        public int CurrentSessionIdx { get; private set; } = -1;
         public TimeSpan SessionTime { get; private set; } = TimeSpan.Zero;
         public TimeSpan DeltaTime { get; private set; } = TimeSpan.Zero;
         public bool SessionChanged { get; private set; } = true;
         
         public void Update(ref GameData data)
         {
+            if (RawDataHelper.TryGetSessionData<int>(ref data, out int currentSessionIdx, "SessionInfo", "CurrentSessionNum"))
+                CurrentSessionIdx = currentSessionIdx;
+            else
+                CurrentSessionIdx = -1;
+
             RawDataHelper.TryGetTelemetryData<double>(ref data, out double sessionTime, "SessionTime");
             SessionTime = TimeSpan.FromSeconds(sessionTime);
             DeltaTime = TimeSpan.FromSeconds(Math.Max(sessionTime - _lastSessionTime, 0));
@@ -42,8 +49,12 @@ namespace benofficial2.Plugin
             // Also consider the session changed when time flows backward.
             // Because many checks are based on time flowing forward and would break otherwise.
             // Only happens when manually moving the time backwards in a SimHub replay.
-            SessionChanged = (sessionTime < _lastSessionTime || data.SessionId != _lastSessionId || data.NewData.SessionTypeName != _lastSessionTypeName);
-            
+            SessionChanged = (CurrentSessionIdx != _lastSessionIdx || 
+                sessionTime < _lastSessionTime || 
+                data.SessionId != _lastSessionId || 
+                data.NewData.SessionTypeName != _lastSessionTypeName);
+
+            _lastSessionIdx = CurrentSessionIdx;
             _lastSessionTime = sessionTime;
             _lastSessionId = data.SessionId;
             _lastSessionTypeName = data.NewData.SessionTypeName;
@@ -133,9 +144,9 @@ namespace benofficial2.Plugin
                 RawDataHelper.TryGetSessionData<string>(ref data, out string teamRacing, "WeekendInfo", "TeamRacing");
                 TeamRacing = teamRacing == "1";
 
-                if (RawDataHelper.TryGetSessionData<int>(ref data, out int currentSessionIdx, "SessionInfo", "CurrentSessionNum") && currentSessionIdx >= 0)
+                if (State.CurrentSessionIdx >= 0)
                 {
-                    RawDataHelper.TryGetSessionData<string>(ref data, out string sessionSubType, "SessionInfo", "Sessions", currentSessionIdx, "SessionSubType");
+                    RawDataHelper.TryGetSessionData<string>(ref data, out string sessionSubType, "SessionInfo", "Sessions", State.CurrentSessionIdx, "SessionSubType");
                     SubType = sessionSubType;
                 }
                 else
