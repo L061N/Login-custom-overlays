@@ -43,7 +43,7 @@ namespace benofficial2.Plugin
         public bool IRatingChangeVisible { get; set; } = true;
         public bool CarLogoVisibleInRace { get; set; } = true;
         public bool GapVisibleInRace { get; set; } = true;
-        public bool IntervalVisibleInRace { get; set; } = false;
+        public bool IntervalVisibleInRace { get; set; } = true;
         public bool BestVisibleInRace { get; set; } = false;
         public bool LastVisibleInRace { get; set; } = true;
         public bool DeltaVisibleInRace { get; set; } = true;
