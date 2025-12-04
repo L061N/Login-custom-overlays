@@ -29,6 +29,7 @@ namespace benofficial2.Plugin
         private double _lastSessionTime = double.MaxValue;
         private Guid _lastSessionId = Guid.Empty;
         private string _lastSessionTypeName = string.Empty;
+        private string _lastSubSessionID = string.Empty;
 
         public int CurrentSessionIdx { get; private set; } = -1;
         public TimeSpan SessionTime { get; private set; } = TimeSpan.Zero;
@@ -42,6 +43,7 @@ namespace benofficial2.Plugin
             else
                 CurrentSessionIdx = -1;
 
+            RawDataHelper.TryGetSessionData<string>(ref data, out string subSessionID, "WeekendInfo", "SubSessionID");
             RawDataHelper.TryGetTelemetryData<double>(ref data, out double sessionTime, "SessionTime");
             SessionTime = TimeSpan.FromSeconds(sessionTime);
             DeltaTime = TimeSpan.FromSeconds(Math.Max(sessionTime - _lastSessionTime, 0));
@@ -50,6 +52,7 @@ namespace benofficial2.Plugin
             // Because many checks are based on time flowing forward and would break otherwise.
             // Only happens when manually moving the time backwards in a SimHub replay.
             SessionChanged = (CurrentSessionIdx != _lastSessionIdx || 
+                subSessionID != _lastSubSessionID ||
                 sessionTime < _lastSessionTime || 
                 data.SessionId != _lastSessionId || 
                 data.NewData.SessionTypeName != _lastSessionTypeName);
@@ -58,6 +61,7 @@ namespace benofficial2.Plugin
             _lastSessionTime = sessionTime;
             _lastSessionId = data.SessionId;
             _lastSessionTypeName = data.NewData.SessionTypeName;
+            _lastSubSessionID = subSessionID;
         }
     }
 

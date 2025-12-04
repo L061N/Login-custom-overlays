@@ -948,9 +948,11 @@ namespace benofficial2.Plugin
             PlayerDriver.LastLapTime = TimeSpan.Zero;
             PlayerDriver.BestLapTime = TimeSpan.Zero;
             PlayerDriver.AvgLapTime = TimeSpan.Zero;
+            PlayerDriver.CurrentLapHighPrecision = -1;
             PlayerDriver.CurrentLap = 0;
             PlayerDriver.TeamIncidentCount = 0;
             PlayerDriver.IRatingChange = 0;
+            PlayerDriver.TireCompound = string.Empty;
         }
         private void BlankHighlightedDriver()
         {
@@ -965,6 +967,7 @@ namespace benofficial2.Plugin
             HighlightedDriver.SafetyRating = 0.0;
             HighlightedDriver.LivePositionInClass = 0;
             HighlightedDriver.CurrentLap = 0;
+            HighlightedDriver.CurrentLapHighPrecision = -1;
             HighlightedDriver.TeamIncidentCount = 0;
             HighlightedDriver.CarClassColor = string.Empty;
             HighlightedDriver.CarClassTextColor = string.Empty;
