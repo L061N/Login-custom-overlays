@@ -163,7 +163,9 @@
         "hasFrontARB": true,
         "hasRearARB": true,
         "hasWeightJacker": true,
-        "hasDryTireCompounds": true
+        "hasDryTireCompounds": true,
+        "hasErs": true,
+        "hasLapDeployLimit": true
     },
     "dallaradw12": {
         "hasPushToPass": true,
