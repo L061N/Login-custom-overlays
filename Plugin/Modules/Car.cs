@@ -61,6 +61,7 @@ namespace benofficial2.Plugin
         public bool HasDeployMode { get; set; } = false;
         public bool HasDeployModeType1 { get; set; } = false;
         public bool HasDeployModeType2 { get; set; } = false;
+        public bool HasLapDeployLimit { get; set; } = false;
         public bool HasThrottleShaping { get; set; } = false;
         public bool HasFuelMix { get; set; } = false;
         public bool HasARBModeP { get; set; } = false;
@@ -105,6 +106,7 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Car.HasDeployMode", valueProvider: () => HasDeployMode);
             plugin.AttachDelegate(name: "Car.HasDeployModeType1", valueProvider: () => HasDeployModeType1);
             plugin.AttachDelegate(name: "Car.HasDeployModeType2", valueProvider: () => HasDeployModeType2);
+            plugin.AttachDelegate(name: "Car.HasLapDeployLimit", valueProvider: () => HasLapDeployLimit);
             plugin.AttachDelegate(name: "Car.HasThrottleShaping", valueProvider: () => HasThrottleShaping);
             plugin.AttachDelegate(name: "Car.HasFuelMix", valueProvider: () => HasFuelMix);
             plugin.AttachDelegate(name: "Car.HasARBModeP", valueProvider: () => HasARBModeP);
@@ -324,6 +326,7 @@ namespace benofficial2.Plugin
             HasDeployMode = car["hasDeployMode"]?.Value<bool>() ?? false;
             HasDeployModeType1 = car["hasDeployModeType1"]?.Value<bool>() ?? false;
             HasDeployModeType2 = car["hasDeployModeType2"]?.Value<bool>() ?? false;
+            HasLapDeployLimit = car["hasLapDeployLimit"]?.Value<bool>() ?? false;
             HasThrottleShaping = car["hasThrottleShaping"]?.Value<bool>() ?? false;
             HasFuelMix = car["hasFuelMix"]?.Value<bool>() ?? false;
             HasARBModeP = car["hasARBModeP"]?.Value<bool>() ?? false;
