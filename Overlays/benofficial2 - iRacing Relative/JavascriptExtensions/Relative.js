@@ -439,7 +439,20 @@ function truncateToDecimal(num, decimals)
   return (Math.floor(num * factor) / factor).toFixed(decimals)
 }
 
+function formatSafetyRating(license, sr)
+{
+    let rating = String(license) + ' '
+
+    if (Number(sr) <= 0.01)
+        return rating + '--'
+    
+    return rating + truncateToDecimal(sr, 1)
+}
+
 function formatIRating(iRating)
 {
+    if (Number(iRating) / 1000 <= 0.01)
+        return '--'
+    
     return truncateToDecimal(Number(iRating) / 1000, 1) + 'k';
 }
