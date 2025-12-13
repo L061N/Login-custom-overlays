@@ -315,5 +315,10 @@
     },
     "stockcars2 arcachevy25": {
         "hasTwoPartBrakeBias": true
+    },
+    "porsche9922cup": {
+        "hasTC": true,
+        "hasABS": true,
+        "hasThrottleShaping": true
     }
 }
