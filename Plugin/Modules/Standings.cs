@@ -512,11 +512,22 @@ namespace benofficial2.Plugin
                             }
                         }
 
+                        // Use qualifying lap time as best lap until a lap is completed
                         // Make sure we have a best lap time for the first lap of a race
                         // iRacing often doesn't provide a valid best lap time for lap 1
-                        if (_sessionModule.Race && row.BestLapTime <= TimeSpan.Zero && row.LastLapTime > TimeSpan.Zero)
+                        if (_sessionModule.Race)
+                        {
+                            if(driver.LapsCompleted < 1)
+                            {
+                                if (row.BestLapTime <= TimeSpan.Zero && driver.QualLapTime > TimeSpan.Zero)
+                                {
+                                    row.BestLapTime = driver.QualLapTime;
+                                }
+                            }
+                            else if (row.BestLapTime <= TimeSpan.Zero && row.LastLapTime > TimeSpan.Zero)
                         {
                             row.BestLapTime = row.LastLapTime;
+                        }
                         }
 
                         visibleRowCount++;
