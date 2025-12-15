@@ -159,6 +159,7 @@ namespace benofficial2.Plugin
         public int PushToPassCount { get; set; } = 0;
         public bool PushToPassActivated { get; set; } = false;
         public bool Offtrack { get; set; } = false;
+        public double time { get; set; } = 0.0;
     }
 
     public class PlayerDriver
@@ -316,7 +317,7 @@ namespace benofficial2.Plugin
             // Do this after first trying to get the times from telemetry. 
             // Because lap times will be invalid in telemetry after the driver disconnected or exited the car.
             UpdateSessionResults(ref data);
-
+            
             // Update the highlighted car index
             RawDataHelper.TryGetTelemetryData<int>(ref data, out int highlightedCarIdx, "CamCarIdx");
             RawDataHelper.TryGetTelemetryData<int>(ref data, out int camCameraState, "CamCameraState");
@@ -580,7 +581,7 @@ namespace benofficial2.Plugin
             // Optimization: Only update the qualifying results once before the race starts.
             if (QualResultsUpdated || !_sessionModule.Race)
                 return;
-
+            
             // First try to get from the current session's qualifying results.
             // In Heat races, only the drivers particpating in the heat will be present in the QualifyPositions array.
             if (RawDataHelper.TryGetSessionData<int>(ref data, out int currentSessionIdx, "SessionInfo", "CurrentSessionNum") && currentSessionIdx >= 0)
@@ -692,8 +693,8 @@ namespace benofficial2.Plugin
                 RawDataHelper.TryGetTelemetryData<float>(ref data, out float lastLapTime, "CarIdxLastLapTime", carIdx);
                 RawDataHelper.TryGetTelemetryData<float>(ref data, out float bestLapTime, "CarIdxBestLapTime", carIdx);
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int sessionFlags, "CarIdxSessionFlags", carIdx);
-                RawDataHelper.TryGetTelemetryData<int>(ref data, out int position, "CarIdxPosition", carIdx);
-                RawDataHelper.TryGetTelemetryData<int>(ref data, out int classPosition, "CarIdxClassPosition", carIdx);
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int position, "CarIdxPosition", carIdx);               
+                RawDataHelper.TryGetTelemetryData<int>(ref data, out int classPosition, "CarIdxClassPosition", carIdx);     
                 RawDataHelper.TryGetTelemetryData<bool>(ref data, out bool onPitRoad, "CarIdxOnPitRoad", carIdx);
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int lap, "CarIdxLap", carIdx);
                 RawDataHelper.TryGetTelemetryData<int>(ref data, out int trackSurface, "CarIdxTrackSurface", carIdx);
@@ -822,6 +823,12 @@ namespace benofficial2.Plugin
                 if (driver.LastLapTime == TimeSpan.Zero && lastTime > 0)
                 {
                     driver.LastLapTime = TimeSpan.FromSeconds(lastTime);
+                }
+
+                RawDataHelper.TryGetValue<double>(positions, out double time, posIdx, "Time");
+                if (driver.time <= 0 && time > 0)
+                {
+                    driver.time = time;
                 }
 
                 RawDataHelper.TryGetValue<int>(positions, out int lapsComplete, posIdx, "LapsComplete");
