@@ -25,7 +25,7 @@ namespace benofficial2.Plugin
 {
     public class SessionState
     {
-        private int _lastSessionIdx = -1;
+               private int _lastSessionIdx = -1;
         private double _lastSessionTime = double.MaxValue;
         private Guid _lastSessionId = Guid.Empty;
         private string _lastSessionTypeName = string.Empty;
@@ -91,6 +91,7 @@ namespace benofficial2.Plugin
         public double MaxFuelPct { get; internal set; } = 1.0;
         public bool TeamRacing { get; internal set; } = false;
         public string SubType { get; internal set; } = string.Empty;
+        public int SessionState { get; internal set; } = 0;
 
         public override int UpdatePriority => 10;
 
@@ -189,7 +190,8 @@ namespace benofficial2.Plugin
             // Determine if race started
             int sessionState = 0;
             try { sessionState = (int)raw.Telemetry["SessionState"]; } catch { }
-            RaceStarted = Race && sessionState >= 4;
+            SessionState = sessionState; // make available for other modules
+            RaceStarted = Race && SessionState >= 4;
 
             // Determine if we joined a race session in progress.
             // This will also be true when stepping backwards in a SimHub replay.
@@ -220,12 +222,12 @@ namespace benofficial2.Plugin
                     // Race finished
                     RaceFinished = true;
                 }
-                else if (data.NewData.Flag_Checkered != 1)
+                else if (data.NewData.Flag_Checkered != 1 && SessionState < 5) // SessionState < 5 funcions in iracing replays, data.NewData.Flag_Checkered does not
                 {
                     // Checkered flag is not shown
                     RaceFinished = false;
                 }
-                else if (!_lastTrackPct.HasValue || _lastTrackPct.Value <= data.NewData.TrackPositionPercent)
+                else if (!_lastTrackPct.HasValue || _lastTrackPct.Value < data.NewData.TrackPositionPercent)
                 {
                     // Heading toward the checkered flag
                     _lastTrackPct = data.NewData.TrackPositionPercent;
