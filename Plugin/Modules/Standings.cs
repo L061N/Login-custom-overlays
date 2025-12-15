@@ -100,6 +100,7 @@ namespace benofficial2.Plugin
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
         public int JokerLapsComplete { get; set; } = 0;
         public bool Offtrack { get; set; } = false;
+        public int SessionFlags { get; set; } = 0;
     }
 
     public class StandingCarClass
@@ -274,6 +275,7 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LastLapTime", valueProvider: () => row.LastLapTime);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.JokerLapsComplete", valueProvider: () => row.JokerLapsComplete);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Offtrack", valueProvider: () => row.Offtrack);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.SessionFlags", valueProvider: () => row.SessionFlags);
                 }
             }
         }
@@ -453,6 +455,7 @@ namespace benofficial2.Plugin
                         row.LastLapTime = driver.LastLapTime;
                         row.JokerLapsComplete = driver.JokerLapsCompleted;
                         row.Offtrack = driver.Offtrack;
+                        row.SessionFlags = driver.SessionFlags;
 
                         if (_sessionModule.Race)
                         {
@@ -600,6 +603,7 @@ namespace benofficial2.Plugin
             row.LastLapTime = TimeSpan.Zero;
             row.JokerLapsComplete = 0;
             row.Offtrack = false;
+            row.SessionFlags = 0;
         }
 
         private void UpdateLeaderboards(ref GameData data)
