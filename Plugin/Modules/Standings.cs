@@ -99,6 +99,7 @@ namespace benofficial2.Plugin
         public TimeSpan BestLapTime { get; set; } = TimeSpan.Zero;
         public TimeSpan LastLapTime { get; set; } = TimeSpan.Zero;
         public int JokerLapsComplete { get; set; } = 0;
+        public bool Offtrack { get; set; } = false;
     }
 
     public class StandingCarClass
@@ -272,6 +273,7 @@ namespace benofficial2.Plugin
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.BestLapTime", valueProvider: () => row.BestLapTime);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.LastLapTime", valueProvider: () => row.LastLapTime);
                     plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.JokerLapsComplete", valueProvider: () => row.JokerLapsComplete);
+                    plugin.AttachDelegate(name: $"Standings.Class{carClassIdx:00}.Row{rowIdx:00}.Offtrack", valueProvider: () => row.Offtrack);
                 }
             }
         }
@@ -332,7 +334,7 @@ namespace benofficial2.Plugin
                         else
                         {
                             // Fallback to a generic name when there are multiple car models.
-                            carClass.Name = "Class " + leaderboard.CarClassId;
+                            carClass.Name = "Class " + (leaderboard.CarClassId + 1);
                         }
                     }
                     else
@@ -450,6 +452,7 @@ namespace benofficial2.Plugin
                         row.BestLapTime = driver.BestLapTime;
                         row.LastLapTime = driver.LastLapTime;
                         row.JokerLapsComplete = driver.JokerLapsCompleted;
+                        row.Offtrack = driver.Offtrack;
 
                         if (_sessionModule.Race)
                         {
@@ -596,6 +599,7 @@ namespace benofficial2.Plugin
             row.BestLapTime = TimeSpan.Zero;
             row.LastLapTime = TimeSpan.Zero;
             row.JokerLapsComplete = 0;
+            row.Offtrack = false;
         }
 
         private void UpdateLeaderboards(ref GameData data)

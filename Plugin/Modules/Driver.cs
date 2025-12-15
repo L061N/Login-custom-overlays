@@ -158,6 +158,7 @@ namespace benofficial2.Plugin
         public int TireCompoundIdx { get; set; } = -1;
         public int PushToPassCount { get; set; } = 0;
         public bool PushToPassActivated { get; set; } = false;
+        public bool Offtrack { get; set; } = false;
     }
 
     public class PlayerDriver
@@ -723,6 +724,7 @@ namespace benofficial2.Plugin
                 driver.LastLapTime = lastLapTime > 0 ? TimeSpan.FromSeconds(lastLapTime) : TimeSpan.Zero;
                 driver.BestLapTime = bestLapTime > 0 ? TimeSpan.FromSeconds(bestLapTime) : TimeSpan.Zero;
                 driver.SessionFlags = sessionFlags;
+                driver.Offtrack = trackSurface == (int)TrackLoc.OffTrack;
                 driver.Position = position;
                 driver.PositionInClass = classPosition;
                 driver.InPit = onPitRoad;
