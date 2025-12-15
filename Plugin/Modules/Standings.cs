@@ -791,6 +791,14 @@ namespace benofficial2.Plugin
                         }
                     }
 
+                    if (driver.IsPlayer)
+                    {
+                        _driverModule.PlayerDriver.LapsToClassLeader = driver.LapsToClassLeader;
+                        _driverModule.PlayerDriver.GapToClassLeader = driver.GapToClassLeader;
+                        _driverModule.PlayerDriver.LapsToClassOpponentAhead = driver.LapsToClassOpponentAhead;
+                        _driverModule.PlayerDriver.GapToClassOpponentAhead = driver.GapToClassOpponentAhead;
+                    }
+
                     driverAhead = driver;
                 }
             }
@@ -1016,7 +1024,7 @@ namespace benofficial2.Plugin
                     avgLapTime = carClass.BestQualLapTime;
 
                 carClass.EstimatedTotalLaps = EstimateTotalLaps(leaderCurrentLapHighPrecision, 
-                    _sessionModule.SessionLapsTotal, 
+                    _driverModule.PlayerDriver.LapsToClassLeader == 0 ? _sessionModule.SessionLapsTotal : _sessionModule.SessionLapsTotal - _driverModule.PlayerDriver.LapsToClassLeader, 
                     sessionTimeRemain, 
                     avgLapTime.TotalSeconds * lapTimeSafePct,
                     out extraLap);
@@ -1052,7 +1060,7 @@ namespace benofficial2.Plugin
             }
 
             carClass.EstimatedTotalLaps = EstimateTotalLaps(_driverModule.PlayerDriver.CurrentLapHighPrecision, 
-                _sessionModule.SessionLapsTotal,
+                _driverModule.PlayerDriver.LapsToClassLeader == 0 ? _sessionModule.SessionLapsTotal : _sessionModule.SessionLapsTotal - _driverModule.PlayerDriver.LapsToClassLeader,
                 data.NewData.SessionTimeLeft.TotalSeconds, 
                 _driverModule.PlayerDriver.BestLapTime.TotalSeconds * lapTimeSafePct,
                 out extraLap);

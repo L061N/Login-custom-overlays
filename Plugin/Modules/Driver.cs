@@ -180,6 +180,10 @@ namespace benofficial2.Plugin
         public int TeamIncidentCount { get; set; } = 0;
         public int IRatingChange { get; set; } = 0;
         public string TireCompound { get; set; } = string.Empty;
+        public int LapsToClassLeader { get; set; } = 0;
+        public double GapToClassLeader { get; set; } = 0.0;
+        public int LapsToClassOpponentAhead { get; set; } = 0;
+        public double GapToClassOpponentAhead { get; set; } = 0.0;
     }
 
     public class HighlightedDriver
@@ -255,6 +259,10 @@ namespace benofficial2.Plugin
             plugin.AttachDelegate(name: "Player.BestLapTime", valueProvider: () => PlayerDriver.BestLapTime);
             plugin.AttachDelegate(name: "Player.AvgLapTime", valueProvider: () => PlayerDriver.AvgLapTime);
             plugin.AttachDelegate(name: "Player.CurrentLap", valueProvider: () => PlayerDriver.CurrentLap);
+            plugin.AttachDelegate(name: "Player.LapsToClassLeader", valueProvider: () => PlayerDriver.LapsToClassLeader);
+            plugin.AttachDelegate(name: "Player.GapToClassLeader", valueProvider: () => PlayerDriver.GapToClassLeader);
+            plugin.AttachDelegate(name: "Player.LapsToClassOpponentAhead", valueProvider: () => PlayerDriver.LapsToClassOpponentAhead);
+            plugin.AttachDelegate(name: "Player.GapToClassOpponentAhead", valueProvider: () => PlayerDriver.GapToClassOpponentAhead);
             plugin.AttachDelegate(name: "Player.TeamIncidentCount", valueProvider: () => PlayerDriver.TeamIncidentCount);
             plugin.AttachDelegate(name: "Player.iRatingChange", valueProvider: () => PlayerDriver.IRatingChange);
             plugin.AttachDelegate(name: "Player.TireCompound", valueProvider: () => PlayerDriver.TireCompound);
