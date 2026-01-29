@@ -525,9 +525,9 @@ namespace benofficial2.Plugin
                                 }
                             }
                             else if (row.BestLapTime <= TimeSpan.Zero && row.LastLapTime > TimeSpan.Zero)
-                            {
-                                row.BestLapTime = row.LastLapTime;
-                            }
+                        {
+                            row.BestLapTime = row.LastLapTime;
+                        }
                         }
 
                         visibleRowCount++;
@@ -652,9 +652,9 @@ namespace benofficial2.Plugin
                     }
                     else
                     {
-                        scored = driver.CarIdx > 0 || driver.IsConnected; // All Drivers Should be considered scored in practice/qual sessions
+                        scored = driver.Position > 0 || driver.IsConnected;
                     }
-                    
+
                     if (driver.IsPaceCar)
                         scored = false;
 
@@ -1034,7 +1034,7 @@ namespace benofficial2.Plugin
                 if (avgLapTime <= TimeSpan.Zero)
                     avgLapTime = carClass.BestQualLapTime;
 
-                carClass.EstimatedTotalLaps = EstimateTotalLaps(leaderCurrentLapHighPrecision,
+                carClass.EstimatedTotalLaps = EstimateTotalLaps(leaderCurrentLapHighPrecision, 
                     _driverModule.PlayerDriver.LapsToClassLeader == 0 ? _sessionModule.SessionLapsTotal : _sessionModule.SessionLapsTotal - _driverModule.PlayerDriver.LapsToClassLeader, 
                     sessionTimeRemain, 
                     avgLapTime.TotalSeconds * lapTimeSafePct,
@@ -1070,7 +1070,7 @@ namespace benofficial2.Plugin
                 return;
             }
 
-            carClass.EstimatedTotalLaps = EstimateTotalLaps(_driverModule.PlayerDriver.CurrentLapHighPrecision,
+            carClass.EstimatedTotalLaps = EstimateTotalLaps(_driverModule.PlayerDriver.CurrentLapHighPrecision, 
                 _driverModule.PlayerDriver.LapsToClassLeader == 0 ? _sessionModule.SessionLapsTotal : _sessionModule.SessionLapsTotal - _driverModule.PlayerDriver.LapsToClassLeader,
                 data.NewData.SessionTimeLeft.TotalSeconds, 
                 _driverModule.PlayerDriver.BestLapTime.TotalSeconds * lapTimeSafePct,
